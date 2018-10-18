@@ -19,11 +19,12 @@ export interface Props extends StateProps, DispatchProps {}
 export default function noTimer(props: Props): JSX.Element {
   // Note: similar help text in renderPrepareTimer()
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
+  const solo = props.players === 1;
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {props.settings.numLocalPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {solo && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
           <li>
             <strong>Shuffle</strong> your ability draw pile.

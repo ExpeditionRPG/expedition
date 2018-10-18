@@ -2,7 +2,7 @@ import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
-import {numAdventurers, numPlayers} from 'app/actions/Settings';
+import {numAdventurers, numLocalAdventurers, numPlayers} from 'app/actions/Settings';
 import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_DAMAGE_MULT, PLAYER_TIME_MULT} from 'app/Constants';
 import {ENCOUNTERS} from 'app/Encounters';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
@@ -356,7 +356,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.node.ctx.templates.combat = combat;
   }
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.rp, a.elapsedMillis, arng);
-  combat.mostRecentRolls = generateRolls(a.settings.numLocalPlayers, arng);
+  combat.mostRecentRolls = generateRolls(numLocalAdventurers(a.settings), arng);
   combat.roundCount++;
 
   // This is parsed when loading a saved quest, so that "on round" nodes

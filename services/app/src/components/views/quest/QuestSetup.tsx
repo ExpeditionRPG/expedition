@@ -1,10 +1,12 @@
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {SettingsType} from '../../../reducers/StateTypes';
 import Button from '../../base/Button';
 import Callout from '../../base/Callout';
 import Card from '../../base/Card';
 
 export interface StateProps {
+  adventurers: number;
+  players: number;
   settings: SettingsType;
 }
 
@@ -15,9 +17,9 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 const QuestSetup = (props: Props): JSX.Element => {
-  const singlePlayer = (props.settings.numLocalPlayers === 1);
-  const twoAdventurer = (props.settings.numLocalPlayers === 1 || props.settings.numLocalPlayers === 2);
-  const multiPlayer = (props.settings.numLocalPlayers > 1);
+  const twoAdventurer = props.adventurers === 2;
+  const singlePlayer = props.players === 1;
+  const multiPlayer = props.players > 1;
   const theHorror = (props.settings.contentSets.horror === true);
   return (
     <Card title="Setup">

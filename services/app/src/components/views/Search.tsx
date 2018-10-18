@@ -12,14 +12,15 @@ const Moment = require('moment');
 
 export interface StateProps {
   params: SearchParams;
-  settings: SettingsType;
-  user: UserState;
+  players: number;
   results: Quest[]|null;
   searching: boolean;
+  settings: SettingsType;
+  user: UserState;
 }
 
 export interface DispatchProps {
-  onSearch: (params: SearchParams, settings: SettingsType) => void;
+  onSearch: (params: SearchParams, players: number, settings: SettingsType) => void;
   toCard: (name: CardName) => void;
   onReturn: () => void;
   onQuest: (quest: Quest) => void;
@@ -103,7 +104,7 @@ export class Search extends React.Component<Props, {}> {
 
   public componentDidMount() {
     if (!this.props.results && this.props.user.loggedIn) {
-      this.props.onSearch(this.props.params, this.props.settings);
+      this.props.onSearch(this.props.params, this.props.players, this.props.settings);
     }
   }
 
@@ -143,7 +144,7 @@ export class Search extends React.Component<Props, {}> {
           <Button
             className="searchResultInfo"
             disabled={true}>
-              {this.props.results.length} quests for {this.props.settings.numLocalPlayers}
+              {this.props.results.length} quests for {this.props.players}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
               {(horror || future) && <span> with </span>}
               {horror && <img className="inline_icon" src="images/horror_small.svg"/>}
