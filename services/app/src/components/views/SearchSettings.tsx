@@ -10,6 +10,8 @@ import {SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
+const pluralize = require('pluralize');
+
 export interface StateProps {
   params: SearchParams;
   settings: SettingsType;
@@ -62,7 +64,7 @@ export class SearchSettings extends React.Component<Props, {}> {
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
-            For {players} player{players > 1 ? 's ' : ' '} with {content} (based on settings)
+            For {players} {pluralize('players', players)} with {content} (based on settings)
           </div>
           <FormControl fullWidth={true}>
             <TextField
