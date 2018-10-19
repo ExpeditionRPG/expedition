@@ -17,6 +17,7 @@ import {
 import AudioContainer from './base/AudioContainer';
 import DialogsContainer from './base/DialogsContainer';
 import NavigationContainer from './base/NavigationContainer';
+import MultiplayerClientContainer from './multiplayer/MultiplayerClientContainer';
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import CheckoutContainer from './views/CheckoutContainer';
@@ -179,6 +180,7 @@ export default class Compositor extends React.Component<Props, {}> {
           action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
         />
         <AudioContainer />
+        <MultiplayerClientContainer />
       </div>
     );
   }

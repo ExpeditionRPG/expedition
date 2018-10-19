@@ -230,6 +230,8 @@ body {
     .group {
       padding-left: size(base);
       padding-right: size(base);
+      display: flex;
+      flex-direction: row;
     }
 
     svg {

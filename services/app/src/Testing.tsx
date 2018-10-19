@@ -4,7 +4,7 @@ import * as React from 'react';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
-import {MultiplayerClient} from './Multiplayer';
+import {Connection} from './Multiplayer';
 import combinedReducers from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
 import {loggedOutUser} from './reducers/User';
@@ -21,7 +21,7 @@ interface MockStore extends Redux.Store {
 }
 
 export function newMockStore(state: object): MockStore {
-  const client = new MultiplayerClient();
+  const client = new Connection();
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);
   (store as any).multiplayerClient = client;
@@ -37,7 +37,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
 
   function internalReducerCommands(initialState: object) {
-    const client = new MultiplayerClient();
+    const client = new Connection();
     const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
     return {
       execute: (action: A) => {
@@ -78,7 +78,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
 }
 
 export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
-  const client = new MultiplayerClient();
+  const client = new Connection();
   client.sendEvent = jasmine.createSpy('sendEvent');
   let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
