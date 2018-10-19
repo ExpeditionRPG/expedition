@@ -1,7 +1,7 @@
+import {NAV_CARD_STORAGE_KEY} from 'app/Constants';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard} from '../../actions/Card';
-import {NAV_CARD_STORAGE_KEY} from '../../Constants';
 import {setStorageKeyValue} from '../../LocalStorage';
 import {AppState, CardName} from '../../reducers/StateTypes';
 import Navigation, {DispatchProps, Props, StateProps} from './Navigation';

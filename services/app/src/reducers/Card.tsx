@@ -1,7 +1,8 @@
 import Redux from 'redux';
 import {NavigateAction} from '../actions/ActionTypes';
-import {NAVIGATION_DEBOUNCE_MS} from '../Constants';
+import {NAV_CARD_STORAGE_KEY, NAVIGATION_DEBOUNCE_MS} from '../Constants';
 import {getHistoryApi} from '../Globals';
+import {getStorageString} from '../LocalStorage';
 import {CardName, CardState} from './StateTypes';
 
 export const initialCardState = {
@@ -25,6 +26,12 @@ export function card(state: CardState = initialCardState, action: Redux.Action):
         return state;
       }
       return to;
+    case 'QUEST_EXIT':
+      getHistoryApi().pushState(null, '', '#');
+      return {
+        ...initialCardState,
+        name: getStorageString(NAV_CARD_STORAGE_KEY, 'TUTORIAL_QUESTS') as CardName,
+      };
     default:
       return state;
   }
