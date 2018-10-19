@@ -26,8 +26,8 @@ export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateConte
   };
 }
 
-export const exitQuest = remoteify(function exitQuest(): QuestExitAction {
-  return {type: 'QUEST_EXIT'};
+export const exitQuest = remoteify(function exitQuest(a: any, dispatch: Redux.Dispatch<any>) {
+  dispatch({type: 'QUEST_EXIT'} as QuestExitAction);
 });
 
 interface EndQuestArgs {}
