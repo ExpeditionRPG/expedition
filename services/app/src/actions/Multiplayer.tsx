@@ -118,7 +118,9 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
 
 export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient()) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    c.sendStatus(ev);
+    if (c.sendStatus) {
+      c.sendStatus(ev);
+    }
     dispatch({
       client: c.getID(),
       instance: c.getInstance(),
