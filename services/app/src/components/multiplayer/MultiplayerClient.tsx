@@ -2,7 +2,7 @@ import * as React from 'react';
 import {MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
 import {getMultiplayerAction} from '../../actions/ActionTypes';
 import {Connection} from '../../Multiplayer';
-import {MultiplayerState, QuestState, SettingsType} from '../../reducers/StateTypes';
+import {MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 
 const STATUS_DEBOUNCE_MS = 1000;
 
@@ -18,7 +18,7 @@ export interface DispatchProps {
   onMultiEventStart: (syncId: number) => void;
   onMultiEventComplete: () => void;
   onStatus: (client: string, instance: string, status: StatusEvent) => void;
-  onAction: (action: any) => void;
+  onAction: (action: any) => any;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -134,6 +134,10 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
         }
         return result;
       case 'MULTI_EVENT':
+        if (this.props.multiplayer.multiEvent) {
+          console.log('Ignoring MULTI_EVENT, already parsing');
+          return null;
+        }
         let chain = Promise.resolve().then(() => {
           this.props.onMultiEventStart(body.lastId);
         });
@@ -159,7 +163,7 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
               setTimeout(() => {
                 const route: any = this.handleEvent(parsed);
                 if (route && typeof(route) === 'object' && route.then) {
-                  return route;
+                  fulfill(route);
                 }
                 fulfill();
               }, 0);
@@ -172,7 +176,6 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
         });
         this.props.conn.publish(e);
         return chain;
-        break;
       case 'ERROR':
         console.error(JSON.stringify(body));
         break;
@@ -183,6 +186,7 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
         }
     }
     this.props.conn.publish(e);
+    return null;
   }
 
   public render(): JSX.Element|null {

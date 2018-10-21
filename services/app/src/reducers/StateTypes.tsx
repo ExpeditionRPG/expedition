@@ -208,6 +208,7 @@ export interface MultiplayerState {
   session: MultiplayerSessionType|null;
   history: MultiplayerSessionMeta[];
   syncing: boolean;
+  multiEvent: boolean;
   syncID: number;
   clientStatus: {[client: string]: StatusEvent};
 }
@@ -215,7 +216,7 @@ export interface MultiplayerState {
 // AppStateBase is what's stored in AppState._history.
 // It contains all the reduced state that should be restored
 // to the redux main state when the "<" button is pressed in
-// the UI. Notably, it does excludes "permanent" attributes
+// the UI. Notably, it excludes "permanent" attributes
 // such as settings.
 export interface AppStateBase {
   announcement: AnnouncementState;

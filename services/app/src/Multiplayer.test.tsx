@@ -28,6 +28,25 @@ describe('Multiplayer', () => {
       });
     });
 
+    describe('on actions returning promise', () => {
+      const store = newMockStore();
+      let actions = 0;
+      const asyncAction = (args: {n: number}) => {
+        return {
+          promise: new Promise((a, r) => {
+            setTimeout(() => a(5), 100);
+          }),
+        };
+      };
+
+      test('propagates promise', () => {
+        spyOn(store.multiplayerClient, 'sendEvent');
+        store.dispatch(["asyncAction", asyncAction, {n: 1}]).then((result) => {
+          expect(result).toEqual(5);
+        })
+      });
+    });
+
     describe('on actions of type ["name", args]', () => {
       const store = newMockStore();
       const client = store.multiplayerClient;

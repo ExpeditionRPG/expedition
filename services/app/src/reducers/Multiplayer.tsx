@@ -7,6 +7,7 @@ export const initialMultiplayer: MultiplayerState = {
   history: [],
   session: null,
   syncing: false,
+  multiEvent: false,
   syncID: 0,
 };
 
@@ -22,9 +23,9 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
     case 'MULTIPLAYER_REJECT':
       return {...state, syncing: true};
     case 'MULTIPLAYER_MULTI_EVENT_START':
-      return {...state, syncID: (action as MultiplayerMultiEventStartAction).syncID};
+      return {...state, multiEvent: true, syncID: (action as MultiplayerMultiEventStartAction).syncID};
     case 'MULTIPLAYER_MULTI_EVENT':
-      return {...state, syncing: false, syncID: 0};
+      return {...state, multiEvent: false, syncing: false, syncID: 0};
     case 'MULTIPLAYER_CLIENT_STATUS':
       const rpcs = (action as any) as MultiplayerClientStatus;
       const newClientStatus = {...state.clientStatus};

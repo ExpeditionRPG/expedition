@@ -1,10 +1,11 @@
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {AUTH_SETTINGS} from '../Constants';
+import * as requests from 'shared/requests';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
 import {loggedOutUser} from '../reducers/User';
 import {Action} from '../Testing';
-import {loadQuestXML} from './Web';
+import {fetchQuestXML, loadQuestXML} from './Web';
 
 const cheerio = require('cheerio') as CheerioAPI;
 const fetchMock = require('fetch-mock');
@@ -17,6 +18,21 @@ describe('Web action', () => {
     test.skip('shows snackbar on request error', () => { /* TODO */ }); // $10
     test.skip('dispatches loaded quest', () => { /* TODO */ }); // $10
     test.skip('publishes generated seed remotely', () => { /* TODO */ }); // $10
+    test('resolves promise after quest node dispatched', (done) => {
+      // This is necessary for multiplayer replay.
+      spyOn(requests, 'fetchLocal').and.returnValue(new Promise((a, r) => {
+        setTimeout(() => {
+          a("<quest><roleplay></roleplay></quest>");
+        }, 200);
+      }));
+      const result = Action(fetchQuestXML, {}).execute({
+        details: {publishedurl: "testurl"},
+      }).then((result) => {
+        const result_types = result.map((r) => r.type);
+        expect(result_types).toContain('QUEST_NODE');
+        done();
+      }).catch(done.fail);
+    });
   });
 
   describe('loadQuestXML', () => {

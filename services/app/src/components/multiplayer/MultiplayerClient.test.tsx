@@ -36,7 +36,7 @@ describe('Multiplayer', () => {
       onMultiEventStart: jasmine.createSpy('onMultiEventStart'),
       onMultiEventComplete: jasmine.createSpy('onMultiEventComplete'),
       onStatus: jasmine.createSpy('onStatus'),
-      onAction: (a) => {store.dispatch(local(a));},
+      onAction: (a) => {return store.dispatch(local(a));},
       disableAudio: jasmine.createSpy('disableAudio'),
       onLoadChange: jasmine.createSpy('onLoadChange'),
       loadAudio: jasmine.createSpy('loadAudio'),
@@ -108,7 +108,41 @@ describe('Multiplayer', () => {
         expect(props.onMultiEventStart).toHaveBeenCalled();
         expect(props.onMultiEventComplete).toHaveBeenCalled();
         expect(props.conn.committedEvent.calls.mostRecent().args).toEqual([3]);
-        done()
+        done();
+      }).catch(done.fail);
+    });
+    test('handles MULTI_EVENT with async events', (done) => {
+      // Update the commit ID when the action is executed
+      const {props, a} = setup();
+      let actions = 0;
+      const asyncAction = remoteify(function asyncAction(args: {n: number}) {
+        return {
+          promise: new Promise((f, r) => {
+            setTimeout(() => {
+              actions++;
+              a.setProps({commitID: args.n});
+              f();
+            }, 200);
+          }),
+        };
+      });
+      a.instance().handleEvent({
+        id: 1,
+        event: {
+          type: 'MULTI_EVENT',
+          lastId: 3,
+          events: [
+            JSON.stringify({id: 1, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 1})}}),
+            JSON.stringify({id: 2, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 2})}}),
+            JSON.stringify({id: 3, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 3})}}),
+          ],
+        } as MultiEvent,
+      } as MultiplayerEvent).then(() => {
+        expect(actions).toEqual(3);
+        setTimeout(() => {
+          done();
+        }, 500);
+
       }).catch(done.fail);
     });
   });

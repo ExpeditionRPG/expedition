@@ -85,6 +85,9 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     try {
       const state = getState();
+      if (!state.quest) {
+        return;
+      }
       const quest = state.quest.details;
       const data = {
         difficulty: state.settings.difficulty,

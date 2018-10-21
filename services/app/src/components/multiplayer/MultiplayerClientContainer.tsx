@@ -29,8 +29,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onStatus: (client: string, instance: string, status: StatusEvent) => {
       dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status});
     },
-    onAction: (action: any) => {
-      dispatch(local(action));
+    onAction: (action: any): any => {
+      return dispatch(local(action));
     },
   };
 };
