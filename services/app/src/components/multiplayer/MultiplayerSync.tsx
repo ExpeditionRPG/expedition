@@ -14,18 +14,8 @@ export interface Props {
 export default class MultiplayerSync extends React.Component<Props, {}> {
 
   public render() {
-    // TODO: this could be much more fancy.
-    // Single action (choice):
-    // - Fade in a button and remote-ripple it with the client's choice,
-    //   then trigger a Next to the thing.
-    // Single action (prev):
-    // - Fade in a < and remote-ripple it with the client's choice,
-    //   then trigger a Prev to the thing.
-    // Multiple actions or non-choice:
-    // - Sweep an equivalent # "micro-card" symbols across the screen, then Next to the result.
     let body = null;
     if (this.props.multiplayer && this.props.multiplayer.syncing === true) {
-      // TODO: Make this update even if nothing else updates
       const value = Math.floor(100 * this.props.commitID / this.props.multiplayer.syncID);
       console.log(this.props.multiplayer.syncID, this.props.commitID, value);
       body = (
