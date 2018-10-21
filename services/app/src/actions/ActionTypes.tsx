@@ -255,3 +255,8 @@ export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getSta
 export function getMultiplayerAction(name: string) {
   return MULTIPLAYER_ACTIONS[name];
 }
+export function clearMultiplayerActions() {
+  for (const k of Object.keys(MULTIPLAYER_ACTIONS)) {
+    delete MULTIPLAYER_ACTIONS[k];
+  }
+}

@@ -8,10 +8,11 @@ import {AppState} from '../../reducers/StateTypes';
 import MultiplayerClient, {DispatchProps, Props, StateProps} from './MultiplayerClient';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
+  const elem = (state.quest && state.quest.node && state.quest.node.elem);
   return {
     conn: getMultiplayerClient(),
     multiplayer: state.multiplayer,
-    quest: state.quest,
+    line: (elem && parseInt(elem.attr('data-line'), 10)),
     commitID: state.commitID,
     settings: state.settings,
   };

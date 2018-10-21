@@ -9,7 +9,7 @@ const STATUS_DEBOUNCE_MS = 1000;
 export interface StateProps {
   conn: Connection;
   commitID: number;
-  quest: QuestState;
+  line: number;
   multiplayer: MultiplayerState;
   settings: SettingsType;
 }
@@ -42,12 +42,11 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
       return;
     }
 
-    const elem = (this.props.quest && this.props.quest.node && this.props.quest.node.elem);
     const selfStatus = (this.props.multiplayer && this.props.multiplayer.clientStatus && this.props.multiplayer.clientStatus[this.props.conn.getClientKey()]);
     let event: StatusEvent = {
       connected: true,
       lastEventID: this.props.commitID,
-      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      line: this.props.line,
       numPlayers: (this.props.settings && this.props.settings.numPlayers) || 1,
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
@@ -70,14 +69,14 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
     this.lastStatusMs = now;
   }
 
-  public handleEvent(e: MultiplayerEvent) {
+  public handleEvent(e: MultiplayerEvent): Promise<void>|null {
     if (e.id && e.id !== (this.props.commitID + 1)) {
       // We should ignore actions that we don't expect, and instead let the server
       // know we're behind so we can fast-forward appropriately.
       // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
       console.log('Ignoring #' + e.id + ' ' + e.event.type + ' (counter at #' + this.props.commitID + ')');
       this.sendStatus();
-      return;
+      return null;
     }
 
     const body = e.event;
@@ -91,7 +90,7 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
       case 'ACTION':
         // Actions must have IDs.
         if (e.id === null) {
-          return;
+          return null;
         }
 
         // If the server is describing an event and we have a similar ID in-flight,
@@ -109,13 +108,13 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
           } else {
             this.props.conn.rejectedEvent(e.id, 'Multiplayer ACTION matching inflight');
           }
-          return;
+          return null;
         }
 
         const a = getMultiplayerAction(body.name);
         if (!a) {
           console.error('Received unknown remote action ' + body.name);
-          return;
+          return null;
         }
 
         console.log('WS: Inbound #' + e.id + ': ' + body.name + '(' + body.args + ')');
@@ -171,6 +170,8 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
         chain = chain.then((_: any) => {
           this.props.onMultiEventComplete();
         });
+        this.props.conn.publish(e);
+        return chain;
         break;
       case 'ERROR':
         console.error(JSON.stringify(body));
@@ -181,7 +182,6 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
           this.props.conn.committedEvent(e.id);
         }
     }
-
     this.props.conn.publish(e);
   }
 

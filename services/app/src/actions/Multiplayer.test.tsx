@@ -1,5 +1,5 @@
 import {Action} from '../Testing';
-import {loadMultiplayer, multiplayerNewSession, setMultiplayerStatus, multiplayerConnect} from './Multiplayer';
+import {syncMultiplayer, loadMultiplayer, multiplayerNewSession, setMultiplayerStatus, multiplayerConnect} from './Multiplayer';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 
 // Need to polyfill headers in jest environment
@@ -122,6 +122,16 @@ describe('Multiplayer actions', () => {
     })
     test('dispatches status', () => {
       expect(actions[0]).toEqual(jasmine.objectContaining({status: s}));
+    });
+  });
+
+  describe('syncMultiplayer', () => {
+    const fakeClient = {
+      sync: jasmine.createSpy('sync'),
+    };
+    test('syncs the client', () => {
+      Action(syncMultiplayer, {}).execute(fakeClient);
+      expect(fakeClient.sync).toHaveBeenCalledTimes(1);
     });
   });
 });

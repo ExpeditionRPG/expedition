@@ -131,11 +131,11 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient())
   };
 }
 
-export function syncMultiplayer() {
+export function syncMultiplayer(c = getMultiplayerClient()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'CLEAR_HISTORY'});
     dispatch({type: 'MULTIPLAYER_SYNC'});
-    getMultiplayerClient().sync();
+    c.sync();
     dispatch(openSnackbar(new Error('Was there a bug?'), true));
   };
 }
