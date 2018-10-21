@@ -217,7 +217,6 @@ export interface MultiplayerState {
   syncing: boolean;
   multiEvent: boolean;
   syncID: number;
-  clientStatus: {[client: string]: StatusEvent};
 }
 
 // AppStateBase is what's stored in AppState._history.
@@ -229,11 +228,8 @@ export interface AppStateBase {
   audio: AudioState;
   card: CardState;
   checkout: CheckoutState;
-  commitID: number;
   dialog: DialogState;
   quest: QuestState;
-  search: SearchState;
-  serverstatus: ServerStatusState;
 }
 
 export interface AppState extends AppStateBase {
@@ -243,6 +239,7 @@ export interface AppState extends AppStateBase {
   search: SearchState;
   settings: SettingsType;
   user: UserState;
+  serverstatus: ServerStatusState;
   snackbar: SnackbarState;
   commitID: number;
   userQuests: UserQuestsState;
