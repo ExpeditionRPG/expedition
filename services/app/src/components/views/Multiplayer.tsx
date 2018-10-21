@@ -79,8 +79,8 @@ function renderLobby(props: Props): JSX.Element {
         <div><strong>Session created!</strong> Tell your friends to connect with the following code:</div>
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
         <p>The bottom bar indicates that you are in an online multiplayer session:</p>
-        <p>
-          <table>
+        <table>
+          <tbody>
             <tr><td><img className="inline_icon" src="images/adventurer_small.svg" /></td><td>
               <span>Connected adventurers</span>
               <span>(each device has a different color)</span>
@@ -92,8 +92,8 @@ function renderLobby(props: Props): JSX.Element {
               <span>Exit multiplayer</span>
               <span>(others may continue to play)</span>
             </td></tr>
-          </table>
-        </p>
+          </tbody>
+        </table>
         <p>Click the connected adventurers or connection state for more information.</p>
         <p>Once everyone is connected, click Start:</p>
         <Button id="1" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>

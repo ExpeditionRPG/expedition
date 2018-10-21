@@ -118,7 +118,9 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
 
 export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient()) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    c.sendStatus(ev);
+    if (c.sendStatus) {
+      c.sendStatus(ev);
+    }
     dispatch({
       client: c.getID(),
       instance: c.getInstance(),
@@ -126,5 +128,14 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient())
       type: 'MULTIPLAYER_CLIENT_STATUS',
     } as MultiplayerClientStatus);
     return null;
+  };
+}
+
+export function syncMultiplayer(c = getMultiplayerClient()) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch({type: 'CLEAR_HISTORY'});
+    dispatch({type: 'MULTIPLAYER_SYNC'});
+    c.sync();
+    dispatch(openSnackbar(new Error('Was there a bug?'), true));
   };
 }

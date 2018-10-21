@@ -47,9 +47,9 @@ describe('events', () => {
       .then((db) => getOrderedEventsAfter(db, e.basic.session, 2))
       .then((results: EventInstance[]) => {
         expect(results.length).toEqual(2);
-        // Descending order of time
-        expect(new Event(results[0].dataValues).id).toEqual(4);
-        expect(new Event(results[1].dataValues).id).toEqual(3);
+        // Ascending order of time
+        expect(new Event(results[0].dataValues).id).toEqual(3);
+        expect(new Event(results[1].dataValues).id).toEqual(4);
         done();
       })
       .catch(done.fail);

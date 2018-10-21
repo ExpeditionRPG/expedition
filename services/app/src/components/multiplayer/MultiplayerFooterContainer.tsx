@@ -1,6 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setDialog} from '../../actions/Dialog';
+import {syncMultiplayer} from '../../actions/Multiplayer';
 import {getMultiplayerClient} from '../../Multiplayer';
 import {AppState, DialogIDType} from '../../reducers/StateTypes';
 import MultiplayerFooter, {DispatchProps, Props, StateProps} from './MultiplayerFooter';
@@ -19,6 +20,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     setDialog: (name: DialogIDType) => {
       dispatch(setDialog(name));
+    },
+    onSync: () => {
+      dispatch(syncMultiplayer());
     },
   };
 };

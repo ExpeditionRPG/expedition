@@ -230,6 +230,8 @@ body {
     .group {
       padding-left: size(base);
       padding-right: size(base);
+      display: flex;
+      flex-direction: row;
     }
 
     svg {
@@ -286,6 +288,8 @@ body {
   background: black;
   position: fixed;
   z-index: 1000;
+  left: 0;
+  top: 0;
 
   > div {
     color: $font_color_dark_primary;

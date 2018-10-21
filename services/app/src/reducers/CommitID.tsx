@@ -1,17 +1,18 @@
 import Redux from 'redux';
-import {InflightCommitAction} from '../actions/ActionTypes';
+import {MultiplayerCommitAction} from '../actions/ActionTypes';
 import {getMultiplayerClient} from '../Multiplayer';
 import {AppStateWithHistory} from './StateTypes';
 
-export function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
+function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
   const newState = {...state};
   delete newState._committed;
   delete newState.settings;
   delete newState.multiplayer;
+  delete newState.commitID;
   return newState;
 }
 
-export function inflight(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {
+export function commitID(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {
   if (!state) {
     return state;
   }
@@ -21,14 +22,19 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
   }
 
   switch (action.type) {
+    case 'MULTIPLAYER_SYNC':
     case 'MULTIPLAYER_SESSION':
       // Initialize committed state
-      return {...state, _committed: stripMultiplayerStateAndSettings(state), commitID: 0};
-    case 'INFLIGHT_COMMIT':
+      return {
+        ...state,
+        _committed: stripMultiplayerStateAndSettings(state),
+        commitID: 0,
+      };
+    case 'MULTIPLAYER_COMMIT':
       // When no actions are in flight, we're at the correct state.
       // This should almost always happen within a couple actions.
       // TODO: error/alert if this takes too long
-      const id = (action as InflightCommitAction).id;
+      const id = (action as MultiplayerCommitAction).id;
       if (getMultiplayerClient().getInFlightAtOrBelow(id).length === 0) {
         return {
           ...state,
@@ -36,16 +42,22 @@ export function inflight(state: AppStateWithHistory, action: Redux.Action, combi
           commitID: id,
         } as AppStateWithHistory;
       }
-      console.warn('Skipping commit; inflight at or below #' + id);
+      console.warn('Skipping commit; commitID at or below #' + id);
       return state;
-    case 'INFLIGHT_COMPACT':
-      console.log('INFLIGHT COMPACT');
+    case 'MULTIPLAYER_REJECT':
+      // Restore previous known good state.
+      console.log('MULTIPLAYER REJECT');
       return {
         ...state,
         ...stripMultiplayerStateAndSettings({...state._committed}),
+        commitID: state.commitID,
       };
     case 'MULTIPLAYER_DISCONNECT':
-      return {...state, _committed: undefined, commitID: 0};
+      return {
+        ...state,
+        _committed: undefined,
+        commitID: 0,
+      };
     default:
       if ((action as any)._inflight === 'remote') {
         return {

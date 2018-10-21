@@ -28,6 +28,25 @@ describe('Multiplayer', () => {
       });
     });
 
+    describe('on actions returning promise', () => {
+      const store = newMockStore();
+      let actions = 0;
+      const asyncAction = (args: {n: number}) => {
+        return {
+          promise: new Promise((a, r) => {
+            setTimeout(() => a(5), 100);
+          }),
+        };
+      };
+
+      test('propagates promise', () => {
+        spyOn(store.multiplayerClient, 'sendEvent');
+        store.dispatch(["asyncAction", asyncAction, {n: 1}]).then((result) => {
+          expect(result).toEqual(5);
+        })
+      });
+    });
+
     describe('on actions of type ["name", args]', () => {
       const store = newMockStore();
       const client = store.multiplayerClient;
@@ -72,15 +91,5 @@ describe('Multiplayer', () => {
     test.skip('backs off with random exponential offset', () => { /* TODO */ });
     test.skip('publishes client status when reconnected', () => { /* TODO */ });
     test.skip('requests missed state and dispatches fast-forward actions', () => { /* TODO */ });
-  });
-
-  describe('routeEvent', () => {
-    test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
-    test.skip('resolves and dispatches ACTION events', () => { /* TODO */ });
-    test.skip('shows a snackbar on ERROR events', () => { /* TODO */ });
-    test.skip('safely handles unknown events', () => { /* TODO */ });
-    test.skip('rejects COMMIT when no matching inflight action', () => { /* TODO */ });
-    test.skip('rejects REJECT when no matching inflight action', () => { /* TODO */ });
-    test.skip('rejects ACTIONs when id is not an increment', () => { /* TODO */ });
   });
 });
