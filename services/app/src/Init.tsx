@@ -13,12 +13,12 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 
-import {fetchAnnouncements, setAnnouncement} from './actions/Announcement';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
 import {setDialog} from './actions/Dialog';
 import {listSavedQuests} from './actions/SavedQuests';
 import {searchAndPlay} from './actions/Search';
+import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
 import {silentLogin} from './actions/User';
@@ -270,9 +270,14 @@ export function init() {
 
   // Wait to process settings & dispatch additional UI until render complete
   if (UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)) {
-    getStore().dispatch(setAnnouncement(true, 'Unknown browser. Please use a standard browser like Chrome or Firefox for the best experience.'));
+    getStore().dispatch(setServerStatus({
+      announcement: {
+        open: true,
+        message: 'Unknown browser. Please use a standard browser like Chrome or Firefox for the best experience.',
+      },
+    }));
   } else {
-    getStore().dispatch(fetchAnnouncements());
+    getStore().dispatch(fetchServerStatus());
   }
 
   setupSettings(getStore().getState().settings);

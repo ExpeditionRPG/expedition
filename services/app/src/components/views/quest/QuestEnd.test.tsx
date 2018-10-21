@@ -1,9 +1,9 @@
 import * as React from 'react';
 import QuestEnd, {Props} from './QuestEnd';
-import {TUTORIAL_QUESTS} from '../../../Constants';
-import {initialSettings} from '../../../reducers/Settings';
-import {initialState as initialCheckout} from '../../../reducers/Checkout';
-import {loggedOutUser} from '../../../reducers/User';
+import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialSettings} from 'app/reducers/Settings';
+import {initialState as initialCheckout} from 'app/reducers/Checkout';
+import {loggedOutUser} from 'app/reducers/User';
 import {mountRoot} from 'app/Testing';
 
 const GOOD_FORM_SUBSTR = 'Glad you liked it';
@@ -32,7 +32,6 @@ describe('QuestEnd', () => {
     if (rating !== undefined) {
       root.find('StarRating').prop('onChange')(rating);
       root.update();
-      console.log('after update', root.find('.nofeedbackform'));
     }
     return {props, e: root.childAt(0)};
   }

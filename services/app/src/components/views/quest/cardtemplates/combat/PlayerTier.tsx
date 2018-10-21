@@ -9,6 +9,7 @@ import {CombatPhase, CombatState} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
+  adventurers: number;
   combat: CombatState;
   maxTier: number;
   numAliveAdventurers: number;
@@ -38,7 +39,7 @@ export default function playerTier(props: Props): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
-  const injured = props.numAliveAdventurers < props.settings.numPlayers;
+  const injured = props.numAliveAdventurers < props.adventurers;
 
   if (props.settings.showHelp) {
     helpText = (

@@ -6,7 +6,7 @@ import {getStore} from '../../Store';
 import MultiTouchTrigger from './MultiTouchTrigger';
 
 interface Props extends React.Props<any> {
-  numPlayers: number;
+  numLocalPlayers: number;
   secondaryText?: string;
   tertiaryText?: string;
   icon?: string;
@@ -33,7 +33,7 @@ export default class TimerCard extends React.Component<Props, {}> {
       return;
     }
 
-    if (numFingers === this.props.numPlayers) {
+    if (numFingers === this.props.numLocalPlayers) {
       clearInterval(this.interval);
       this.interval = null;
       this.props.onTimerStop(Date.now() - this.state.startTimeMillis);

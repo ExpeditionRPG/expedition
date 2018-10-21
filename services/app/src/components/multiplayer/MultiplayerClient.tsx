@@ -47,7 +47,7 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
       connected: true,
       lastEventID: this.props.commitID,
       line: this.props.line,
-      numPlayers: (this.props.settings && this.props.settings.numPlayers) || 1,
+      numLocalPlayers: (this.props.settings && this.props.settings.numLocalPlayers) || 1,
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
     };

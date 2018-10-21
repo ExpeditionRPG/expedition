@@ -13,11 +13,11 @@ import {
   MultiplayerPeersDialogProps,
   MultiplayerPeersDialog
 } from './Dialogs';
-import {loggedOutUser} from '../../reducers/User';
-import {initialSettings} from '../../reducers/Settings';
-import {initialMultiplayer} from '../../reducers/Multiplayer';
-import {initialMultiplayerCounters} from '../../Multiplayer';
-import {TUTORIAL_QUESTS} from '../../Constants';
+import {loggedOutUser} from 'app/reducers/User';
+import {initialSettings} from 'app/reducers/Settings';
+import {TUTORIAL_QUESTS} from 'app/Constants';
+import {initialMultiplayer} from 'app/reducers/Multiplayer';
+import {initialMultiplayerCounters} from 'app/Multiplayer';
 import {Quest} from 'shared/schema/Quests';
 import {mount, unmountAll} from 'app/Testing';
 
@@ -147,8 +147,8 @@ describe('Dialogs', () => {
     test('shows peers & player count', () => {
       const {e} = setup({
         multiplayer: {...initialMultiplayer, clientStatus: {
-          "a": {numPlayers: 3},
-          "b": {numPlayers: 2},
+          "a": {numLocalPlayers: 3},
+          "b": {numLocalPlayers: 2},
         }},
       });
       const text = e.find('DialogContent').render().text();
@@ -227,7 +227,7 @@ describe('Dialogs', () => {
       expect(props.onMultitouchChange).toHaveBeenCalledWith(false);
     });
     test('shows requirement if player count is outside of quest num players range and disables play', () => {
-      const {props, e} = setup({settings: {...initialSettings, numPlayers: 7}});
+      const {props, e} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
       expect(e.find('DialogContent').render().text()).toContain('Quest requires');
       expect(e.find('#play').hostNodes().prop('disabled')).toEqual(true);
     });

@@ -2,12 +2,15 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
+import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
+
+const pluralize = require('pluralize');
 
 export interface StateProps {
   params: SearchParams;
@@ -16,7 +19,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onSearch: (search: SearchParams, settings: SettingsType) => void;
+  onSearch: (search: SearchParams) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -37,22 +40,31 @@ export class SearchSettings extends React.Component<Props, {}> {
     if (e) {
       e.preventDefault();
     }
-    this.props.onSearch(this.state, this.props.settings);
+    this.props.onSearch(this.state);
   }
 
   // TODO remove the clutter here / move to Theme.tsx
   public render() {
+    const players = numPlayers(this.props.settings);
     const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <option key={index} value={minutes}>{`${minutes} min`}</option>;
     });
-    // TODO Once we have 3 romance quests, change code to just display genre list
+    // TODO Once we have 3 romance & SciFi quests, change code to just display genre list
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
+    const horror = this.props.settings.contentSets.horror;
+    const future = this.props.settings.contentSets.future;
+    let content = 'the base game';
+    if (future && horror) {
+      content = 'The Future & The Horror';
+    } else if (horror) {
+      content = 'The Horror';
+    }
     return (
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
-            For {this.props.settings.numPlayers} adventurer{this.props.settings.numPlayers > 1 ? 's' : ''} with {this.props.settings.contentSets.horror ? 'The Horror' : 'the base game'} (based on settings)
+            For {players} {pluralize('players', players)} with {content} (based on settings)
           </div>
           <FormControl fullWidth={true}>
             <TextField

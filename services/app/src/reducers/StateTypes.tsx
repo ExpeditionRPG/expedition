@@ -10,7 +10,12 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 export interface AnnouncementState {
   open: boolean;
   message: string;
-  link: string;
+  link?: string;
+}
+
+export interface ServerStatusState {
+  announcement: AnnouncementState;
+  isLatestAppVersion: boolean;
 }
 
 export type AudioLoadingType = 'UNLOADED' | 'LOADING' | 'ERROR' | 'LOADED';
@@ -86,6 +91,7 @@ export interface ContentSetsType {
 }
 
 export interface SettingsType {
+  [index: string]: any;
   audioEnabled: boolean;
   autoRoll: boolean;
   contentSets: ContentSetsType;
@@ -93,7 +99,7 @@ export interface SettingsType {
   experimental: boolean;
   fontSize: FontSizeType;
   multitouch: boolean;
-  numPlayers: number;
+  numLocalPlayers: number;
   showHelp: boolean;
   simulator: boolean;
   timerSeconds: number;
@@ -162,7 +168,7 @@ export interface SavedQuestState {
 
 export interface SearchState {
   params: SearchParams;
-  results: Quest[];
+  results: Quest[]|null;
   searching: boolean;
 }
 
@@ -205,8 +211,9 @@ export interface MultiplayerSessionMeta {
 }
 
 export interface MultiplayerState {
-  session: MultiplayerSessionType|null;
+  clientStatus: {[client: string]: StatusEvent};
   history: MultiplayerSessionMeta[];
+  session: MultiplayerSessionType|null;
   syncing: boolean;
   multiEvent: boolean;
   syncID: number;
@@ -219,24 +226,26 @@ export interface MultiplayerState {
 // the UI. Notably, it excludes "permanent" attributes
 // such as settings.
 export interface AppStateBase {
-  announcement: AnnouncementState;
   audio: AudioState;
   card: CardState;
   checkout: CheckoutState;
+  commitID: number;
   dialog: DialogState;
   quest: QuestState;
   search: SearchState;
+  serverstatus: ServerStatusState;
 }
 
 export interface AppState extends AppStateBase {
-  settings: SettingsType;
-  multiplayer: MultiplayerState;
-  userQuests: UserQuestsState;
-  saved: SavedQuestState;
   audioData: AudioDataState;
+  multiplayer: MultiplayerState;
+  saved: SavedQuestState;
+  search: SearchState;
+  settings: SettingsType;
   user: UserState;
   snackbar: SnackbarState;
   commitID: number;
+  userQuests: UserQuestsState;
 }
 
 export interface AppStateWithHistory extends AppState {

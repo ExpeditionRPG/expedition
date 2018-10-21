@@ -14,6 +14,7 @@ import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
 import {initQuest} from './Quest';
 import {userQuestsDelta} from './QuestHistory';
+import {numPlayers} from './Settings';
 import {openSnackbar} from './Snackbar';
 import {ensureLogin} from './User';
 
@@ -94,7 +95,7 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
         email: state.user.email,
         name: state.user.name,
         platform: getDevicePlatform(),
-        players: state.settings.numPlayers,
+        players: numPlayers(state.settings, state.multiplayer),
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
@@ -160,7 +161,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       partition: a.quest.details.partition,
       platform: getDevicePlatform(),
       platformDump: getPlatformDump(),
-      players: a.settings.numPlayers,
+      players: a.settings.numLocalPlayers,
       questid: a.quest.details.id,
       rating: a.rating,
       text: a.text,

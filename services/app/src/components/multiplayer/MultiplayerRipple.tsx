@@ -1,9 +1,9 @@
 import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
+import {playerOrder} from 'app/actions/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {InteractionEvent} from 'shared/multiplayer/Events';
-import {playerOrder} from '../views/quest/cardtemplates/PlayerCount';
 import MultiplayerAffector from './MultiplayerAffector';
 
 // MultiplayerRipple is copied with modifications from
