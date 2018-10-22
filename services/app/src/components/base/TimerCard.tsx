@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {getMultiplayerClient} from '../../Multiplayer';
+import {getMultiplayerConnection} from '../../multiplayer/Connection';
 import {CardThemeType} from '../../reducers/StateTypes';
 import {MultiplayerState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
@@ -52,7 +52,7 @@ export default class TimerCard extends React.Component<Props, {}> {
     let unheldClientCount = 0;
     let timerHeld = false;
     if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
-      const rpClientID = getMultiplayerClient().getClientKey();
+      const rpClientID = getMultiplayerConnection().getClientKey();
       for (const client of Object.keys(this.props.multiplayerState.clientStatus)) {
         const clientStatus = this.props.multiplayerState.clientStatus[client];
         if (!clientStatus.connected) {

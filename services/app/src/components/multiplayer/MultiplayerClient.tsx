@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
 import {getMultiplayerAction} from '../../actions/ActionTypes';
-import {Connection} from '../../Multiplayer';
+import {Connection} from '../../multiplayer/Connection';
 import {MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 
 const STATUS_DEBOUNCE_MS = 1000;

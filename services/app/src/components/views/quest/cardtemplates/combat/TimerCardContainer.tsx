@@ -1,4 +1,4 @@
-import {getMultiplayerClient} from 'app/Multiplayer';
+import {getMultiplayerConnection} from 'app/multiplayer/Connection';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
@@ -30,7 +30,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => {
-      const multiplayerConnected = getMultiplayerClient().isConnected();
+      const multiplayerConnected = getMultiplayerConnection().isConnected();
 
       // We don't want to **stop** the timer if we're connected to remote
       // play. Rather, we want to wait until everyone's timer is stopped
