@@ -154,7 +154,6 @@ export type TransitionClassType = 'next' | 'prev' | 'instant' | 'nav';
 export interface QuestState {
   details: Quest;
   node: ParserNode;
-  seed: string;
   // Additional details populated depending on from where
   // the user approaches the quest
   lastPlayed: Date|null;

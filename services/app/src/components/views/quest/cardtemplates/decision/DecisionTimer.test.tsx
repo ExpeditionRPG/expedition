@@ -43,14 +43,14 @@ function setup(overrides: Partial<Props>) {
 describe('DecisionTimer', () => {
   afterEach(unmountAll);
 
-  test('Shows the skill and num successes needed', () => {
+  test('shows the skill and num successes needed', () => {
     const {e} = setup({});
     const result = e.find('.secondary').text();
     expect(result).toMatch(/1 \w+ athletics/);
     expect(result).toMatch(/2 \w+ charisma/);
     expect(result).toMatch(/3 \w+ knowledge/);
   });
-  test('Either shows persona or difficulty, not both', () => {
+  test('either shows persona or difficulty, not both', () => {
     const {e} = setup({});
     const result = e.find('.secondary').childAt(0).text();
     expect(result).toMatch(/^\d \w+ (charisma|athletics|knowledge)$/);

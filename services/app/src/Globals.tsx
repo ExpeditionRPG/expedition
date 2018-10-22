@@ -54,7 +54,9 @@ const refs = {
 export function getDevicePlatform(): 'android' | 'ios' | 'web' {
   const p = (getDevice() || {}).platform;
   const platform = (p || window.navigator.appVersion || '').toLowerCase();
-  if (/android/.test(platform)) {
+  if (!window.cordova) {
+    return 'web';
+  } else if (/android/.test(platform)) {
     return 'android';
   } else if (/iphone|ipad|ipod|ios/.test(platform)) {
     return 'ios';
@@ -74,7 +76,8 @@ export function setDocument(d: ReactDocument) {
   refs.document = d;
 }
 
-export function setDevice(d: any) {
+export function setDeviceForTest(d: any) {
+  window.cordova = window.cordova || (true as any);
   refs.device = d;
 }
 
