@@ -1,6 +1,3 @@
-import {newMockStore} from './Testing';
-import {Connection} from './Connection';
-
 describe('Connection', () => {
   describe('reconnection behavior', () => {
     test.skip('is triggered on connection failure', () => { /* TODO */ });

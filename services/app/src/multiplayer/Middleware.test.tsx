@@ -1,4 +1,4 @@
-import {newMockStore} from './Testing';
+import {newMockStore} from '../Testing';
 
 describe('middleware behavior', () => {
   const testArgs = {arg1: 'foo', arg2: 'bar'};
