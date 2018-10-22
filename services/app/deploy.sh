@@ -22,7 +22,15 @@ betabuild() {
   prebuild
   export NODE_ENV='dev'
   export API_HOST='http://betaapi.expeditiongame.com'
-  npm run build-all
+  read -p "Also build the Android & iOS apps? (Y/n) " -n 1
+  echo
+  if [[ $REPLY =~ ^(y| ) ]] || [[ -z $REPLY ]]; then
+    echo "BUILD ALL"
+    npm run build-all
+  else
+    echo "NOPE"
+    npm run build
+  fi
 }
 
 beta() {
@@ -32,8 +40,6 @@ beta() {
 
 prodbuild() {
   prebuild
-  printf "\nEnter android keystore passphrase: "
-  read -s androidkeystorepassphrase
 
   # Read current version (as a string) from package.json
   key="version"
@@ -47,19 +53,33 @@ prodbuild() {
   export NODE_ENV='production'
   export API_HOST='https://api.expeditiongame.com'
   export OAUTH2_CLIENT_ID='545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com'
-  webpack --config ./webpack.dist.config.js
 
-  # Android: build the signed prod app
-  cordova build --release android
-  # Signing the release APK
-  jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../android-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk expedition_android
-  # Verification:
-  jarsigner -verify -verbose -certs platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
-  # Aligning memory blocks (takes less RAM on app)
-  ./zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/expedition.apk
+  read -p "Also build the Android & iOS apps? (Y/n) " -n 1
+  echo
+  if [[ $REPLY =~ ^(y| ) ]] || [[ -z $REPLY ]]; then
+    printf "\nEnter android keystore passphrase: "
+    read -s androidkeystorepassphrase
 
-  # iOS
-  cordova build ios
+    # build the web app
+    webpack --config ./webpack.dist.config.js
+
+    # Android: build the signed prod app
+    cordova build --release android
+    # Signing the release APK
+    jarsigner -storepass $androidkeystorepassphrase -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../android-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk expedition_android
+    # Verification:
+    jarsigner -verify -verbose -certs platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+    # Aligning memory blocks (takes less RAM on app)
+    ./zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/expedition.apk
+
+    # iOS
+    cordova build ios
+  else
+    echo "Skipping building Cordova apps"
+
+    # build the web app
+    webpack --config ./webpack.dist.config.js
+  fi
 }
 
 prod() {
