@@ -4,7 +4,8 @@ import * as React from 'react';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
-import {Connection} from './Multiplayer';
+import {Connection} from './multiplayer/Connection';
+import {createMiddleware} from './multiplayer/Middleware';
 import combinedReducers from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
 import {loggedOutUser} from './reducers/User';
@@ -23,7 +24,7 @@ interface MockStore extends Redux.Store {
 export function newMockStore(state: object): MockStore {
   const client = new Connection();
   // Since this is a testing function, we play it a bit loose with the state type.
-  const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(state as any as AppStateWithHistory);
+  const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(state as any as AppStateWithHistory);
   (store as any).multiplayerClient = client;
   return store;
 }
@@ -38,7 +39,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
 
   function internalReducerCommands(initialState: object) {
     const client = new Connection();
-    const store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(defaultGlobalState);
+    const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(defaultGlobalState);
     return {
       execute: (action: A) => {
         store.dispatch(action);
@@ -80,7 +81,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
 export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
   const client = new Connection();
   client.sendEvent = jasmine.createSpy('sendEvent');
-  let store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
+  let store = configureStore<AppStateWithHistory>([createMiddleware(client)])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
 
   function internalActionCommands() {
     return {
@@ -118,7 +119,7 @@ export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: obj
 
   return {
     withState(storeState: object) {
-      store = configureStore<AppStateWithHistory>([client.createActionMiddleware()])(storeState as AppStateWithHistory);
+      store = configureStore<AppStateWithHistory>([createMiddleware(client)])(storeState as AppStateWithHistory);
       return internalActionCommands();
     },
     ...internalActionCommands(),

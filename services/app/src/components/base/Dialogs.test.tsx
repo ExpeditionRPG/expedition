@@ -17,7 +17,7 @@ import {loggedOutUser} from 'app/reducers/User';
 import {initialSettings} from 'app/reducers/Settings';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {initialMultiplayerCounters} from 'app/Multiplayer';
+import {initialMultiplayerCounters} from 'app/multiplayer/Connection';
 import {Quest} from 'shared/schema/Quests';
 import {mount, unmountAll} from 'app/Testing';
 

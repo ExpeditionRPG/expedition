@@ -1,6 +1,7 @@
 import Redux, {applyMiddleware, createStore} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
-import {getMultiplayerClient} from './Multiplayer';
+import {getMultiplayerConnection} from './multiplayer/Connection';
+import {createMiddleware} from './multiplayer/Middleware';
 import expeditionApp from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
 
@@ -14,7 +15,7 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
 }
 
 function createAppStore() {
-  const middleware = [getMultiplayerClient().createActionMiddleware()];
+  const middleware = [createMiddleware(getMultiplayerConnection())];
   const composeEnhancers = composeWithDevTools({
     actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS'],
   });

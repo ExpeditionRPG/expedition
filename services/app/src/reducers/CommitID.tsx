@@ -1,6 +1,6 @@
 import Redux from 'redux';
 import {MultiplayerCommitAction} from '../actions/ActionTypes';
-import {getMultiplayerClient} from '../Multiplayer';
+import {getMultiplayerConnection} from '../multiplayer/Connection';
 import {AppStateWithHistory} from './StateTypes';
 
 function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
@@ -35,7 +35,7 @@ export function commitID(state: AppStateWithHistory, action: Redux.Action, combi
       // This should almost always happen within a couple actions.
       // TODO: error/alert if this takes too long
       const id = (action as MultiplayerCommitAction).id;
-      if (getMultiplayerClient().getInFlightAtOrBelow(id).length === 0) {
+      if (getMultiplayerConnection().getInFlightAtOrBelow(id).length === 0) {
         return {
           ...state,
           _committed: stripMultiplayerStateAndSettings(state),
