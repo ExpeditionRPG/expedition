@@ -1,10 +1,8 @@
-import Redux from 'redux';
 import {ClientBase} from 'shared/multiplayer/Client';
-import {ActionEvent, MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
+import {MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
 import {toClientKey} from 'shared/multiplayer/Session';
-import {local} from './actions/Multiplayer';
-import {MULTIPLAYER_SETTINGS} from './Constants';
-import {getStore} from './Store';
+import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {getStore} from '../Store';
 
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
@@ -51,17 +49,16 @@ export class Connection extends ClientBase {
 
   // TODO(scott): Lock this down after migrating action/combat code
   public sendStatus: (partialStatus?: StatusEvent) => void;
+  // Counter used for sending new events (we can have multiple in-flight).
+  public localEventCounter: number;
+  public stats: MultiplayerCounters;
 
   private session: WebSocket;
   private reconnectAttempts: number;
   private sessionID: string;
   private secret: string;
-  private stats: MultiplayerCounters;
   private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
   private lastStatusMs: number;
-
-  // Counter used for sending new events (we can have multiple in-flight).
-  private localEventCounter: number;
 
   constructor() {
     super();
@@ -280,94 +277,11 @@ export class Connection extends ClientBase {
       this.messageBuffer.push({id: event.id, msg, retries: 0, ts: Date.now()});
     }
   }
-
-  public createActionMiddleware(): Redux.Middleware {
-    return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
-      const dispatchLocal = (a: Redux.Action) => dispatch(local(a));
-
-      if (!action) {
-        next(action);
-        return;
-      }
-
-      let inflight: number = (action as any)._inflight;
-      const localOnly = (action.type === 'LOCAL');
-
-      if (localOnly) {
-        // Unwrap local actions, passing through inflight data.
-        action = action.action;
-      }
-
-      if (action && action.type) {
-        switch (action.type) {
-          case 'MULTIPLAYER_REJECT':
-            this.stats.failedTransactions++;
-            break;
-          case 'MULTIPLAYER_COMMIT':
-            this.stats.successfulTransactions++;
-            break;
-          case 'MULTIPLAYER_COMPACT':
-            this.stats.compactionEvents++;
-            break;
-          default:
-            break;
-        }
-      }
-
-      if (action instanceof Array) {
-        const [name, fn, args] = action;
-        if (this.isConnected() && !localOnly && !inflight) {
-          inflight = this.localEventCounter + 1;
-        }
-
-        // TODO: Handle txn mismatch when remoteArgs is null
-        const remoteArgs = fn(args, (a: Redux.Action) => {
-          // Assign an inflight transaction ID to be consumed by the inflight() reducer
-          if (inflight) {
-            (a as any)._inflight = inflight;
-          }
-          return dispatchLocal(a);
-        }, getState);
-
-        // Extract any promises made in the remotified function to allow for us to block to completion.
-        const result = (remoteArgs !== null && remoteArgs !== undefined && remoteArgs.promise) ? remoteArgs.promise : null;
-
-        if (remoteArgs !== null && remoteArgs !== undefined && !localOnly) {
-          // Remove any promises made for completion tracking
-          delete remoteArgs.promise;
-          const argstr = JSON.stringify(remoteArgs);
-          console.log('WS: outbound #' + inflight + ': ' + name + '(' + argstr + ')');
-          this.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
-        }
-        return result;
-      } else if (typeof(action) === 'function') {
-        if (inflight !== undefined) {
-          return action((a: Redux.Action) => {
-            (a as any)._inflight = inflight;
-            return dispatchLocal(a);
-          }, getState);
-        } else {
-          // Dispatch async actions
-          return action(dispatchLocal, getState);
-        }
-      } else {
-        // Pass through regular action objects
-        next(action);
-      }
-
-      // MULTIPLAYER_COMPACT actions happen after inconsistent state is discovered
-      // between the server and client and the client state has just been thrown out.
-      // Send a status ping to the server to inform it of our new state.
-      if (action.type === 'MULTIPLAYER_COMPACT') {
-        this.sendStatus();
-      }
-    };
-  }
 }
 
 // TODO: Proper device ID
 let client: Connection|null = null;
-export function getMultiplayerClient(): Connection {
+export function getMultiplayerConnection(): Connection {
   if (client !== null) {
     return client;
   }

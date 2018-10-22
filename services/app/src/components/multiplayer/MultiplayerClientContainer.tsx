@@ -3,14 +3,14 @@ import Redux from 'redux';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {MultiplayerMultiEventStartAction} from '../../actions/ActionTypes';
 import {local} from '../../actions/Multiplayer';
-import {getMultiplayerClient} from '../../Multiplayer';
+import {getMultiplayerConnection} from '../../multiplayer/Connection';
 import {AppState} from '../../reducers/StateTypes';
 import MultiplayerClient, {DispatchProps, Props, StateProps} from './MultiplayerClient';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
   const elem = (state.quest && state.quest.node && state.quest.node.elem);
   return {
-    conn: getMultiplayerClient(),
+    conn: getMultiplayerConnection(),
     multiplayer: state.multiplayer,
     line: (elem && parseInt(elem.attr('data-line'), 10)),
     commitID: state.commitID,

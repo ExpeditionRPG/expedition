@@ -4,7 +4,7 @@ import {handleFetchErrors} from 'shared/requests';
 import {openSnackbar} from '../actions/Snackbar';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
-import {getMultiplayerClient} from '../Multiplayer';
+import {getMultiplayerConnection} from '../multiplayer/Connection';
 import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
 import {LocalAction, MultiplayerClientStatus} from './ActionTypes';
 import {toCard} from './Card';
@@ -15,11 +15,11 @@ export function local(a: Redux.Action): LocalAction {
 }
 
 export function multiplayerDisconnect() {
-  getMultiplayerClient().disconnect();
+  getMultiplayerConnection().disconnect();
   return {type: 'MULTIPLAYER_DISCONNECT'};
 }
 
-function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c= getMultiplayerClient(), fetch: any = window.fetch) {
+function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c= getMultiplayerConnection(), fetch: any = window.fetch) {
   let sessionID = '';
   const clientID = user.id.toString();
   const instanceID = Date.now().toString();
@@ -53,7 +53,7 @@ function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any
   });
 }
 
-export function multiplayerNewSession(user: UserState, c= getMultiplayerClient(), fetch: any = window.fetch) {
+export function multiplayerNewSession(user: UserState, c= getMultiplayerConnection(), fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
       credentials: 'include',
@@ -79,7 +79,7 @@ export function multiplayerNewSession(user: UserState, c= getMultiplayerClient()
   };
 }
 
-export function multiplayerConnect(user: UserState, secret: string, c= getMultiplayerClient(), fetch: any = window.fetch) {
+export function multiplayerConnect(user: UserState, secret: string, c= getMultiplayerConnection(), fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return doConnect(user, secret, dispatch, c, fetch)
       .catch((error: Error) => {
@@ -116,7 +116,7 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
   };
 }
 
-export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient()) {
+export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (c.sendStatus) {
       c.sendStatus(ev);
@@ -131,7 +131,7 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerClient())
   };
 }
 
-export function syncMultiplayer(c = getMultiplayerClient()) {
+export function syncMultiplayer(c = getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'CLEAR_HISTORY'});
     dispatch({type: 'MULTIPLAYER_SYNC'});
