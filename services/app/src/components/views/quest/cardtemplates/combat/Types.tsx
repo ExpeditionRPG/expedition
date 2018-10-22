@@ -58,11 +58,12 @@ export interface StateProps {
 }
 
 export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+  const node = ownProps.node || state.quest.node;
   return {
-    node: ownProps.node || state.quest.node,
+    node,
     players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
-    seed: state.quest.seed,
+    seed: (node && node.ctx.seed) || '',
     theme: getCardTemplateTheme(state.card),
   };
 }

@@ -34,6 +34,9 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   a.node = a.node.clone();
   const settings = getState().settings;
   const leveledChecks = parseDecisionChecks(numAdventurers(settings, a.rp), a.node);
+  if (leveledChecks.length === 0) {
+    throw new Error('No valid choices for skill check');
+  }
   a.node.ctx.templates.decision = {
     leveledChecks,
     selected: null,
@@ -48,6 +51,40 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
 export function computeSuccesses(rolls: number[], selected: LeveledSkillCheck): number {
   const successThreshold = SUCCESS_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   return rolls.reduce((acc, r) => (r >= successThreshold) ? acc + 1 : acc, 0);
+}
+
+// Credit: https://stackoverflow.com/questions/11935175/sampling-a-random-subset-from-an-array
+function getRandomSubarray<T>(arr: T[], size: number, rng: () => number) {
+    const shuffled = arr.slice(0);
+    let i = arr.length;
+    const min = i - size;
+    while (i-- > min) {
+        const index = Math.floor((i + 1) * rng());
+        const temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(min);
+}
+
+const MAX_SHOWN_CHECKS = 3;
+export function selectChecks(cs: LeveledSkillCheck[], rng: () => number): LeveledSkillCheck[] {
+  const mapped: {[k: string]: LeveledSkillCheck[]} = {};
+  for (const c of cs) {
+    const k = `${c.persona} ${c.skill}`;
+    if (!mapped[k]) {
+      mapped[k] = [];
+    }
+    mapped[k].push(c);
+  }
+
+  let keys = Object.keys(mapped);
+  if (keys.length > MAX_SHOWN_CHECKS) {
+    keys = getRandomSubarray(Object.keys(mapped), MAX_SHOWN_CHECKS, rng);
+  }
+  return keys.map((k) => {
+      return mapped[k][Math.floor(rng() * mapped[k].length)];
+    });
 }
 
 export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, rp: MultiplayerState): (keyof typeof Outcome)|null {

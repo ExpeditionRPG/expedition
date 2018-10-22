@@ -29,7 +29,7 @@ describe('Fetch ServerStatus', () => {
         }),
       }));
       done();
-    });
+    }).catch(done.fail);
   });
 
   test('Shows update version prompt with platform-specific link if outdated version', (done) => {
@@ -49,19 +49,25 @@ describe('Fetch ServerStatus', () => {
         }),
       }));
       done();
-    });
+    }).catch(done.fail);
   });
 
-  test('Does nothing if latest version and no announcement', (done) => {
+  test('Updates version status if latest version and no announcement', (done) => {
     fetchMock.get('*', {
       link: '',
       message: '',
       versions: {android: '0.0.0', ios: '0.0.0', web: '0.0.0'},
     });
     Action(fetchServerStatus, {}).execute().then((actions) => {
-      expect(actions.length).toEqual(0);
+      expect(actions.length).toEqual(1);
+      expect(actions[0]).toEqual(jasmine.objectContaining({
+        type: 'SERVER_STATUS_SET',
+        delta: jasmine.objectContaining({
+          isLatestAppVersion: true,
+        }),
+      }));
       done();
-    });
+    }).catch(done.fail);
   });
 
   test('Silently logs error events', (done) => {
@@ -71,6 +77,6 @@ describe('Fetch ServerStatus', () => {
       expect(actions.length).toEqual(0);
       expect(log).toHaveBeenCalled();
       done();
-    });
+    }).catch(done.fail);
   });
 });

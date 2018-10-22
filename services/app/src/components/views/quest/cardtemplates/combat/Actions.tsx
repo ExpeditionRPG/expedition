@@ -82,16 +82,19 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
 
 interface InitCustomCombatArgs {
   rp?: MultiplayerState;
+  seed?: string;
 }
 export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
   if (!a.rp) {
     a.rp = getState().multiplayer;
   }
-  dispatch(initCombat({
-    custom: true,
-    node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
-  }));
-  return {};
+  // Set seed if we got one from multiplayer
+  const node = new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext(), undefined, a.seed);
+  dispatch(initCombat({custom: true, node}));
+  if (!a.seed) {
+    a.seed = node.ctx.seed;
+  }
+  return {seed: a.seed};
 });
 
 function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
@@ -304,7 +307,6 @@ interface HandleCombatTimerStartArgs {
   settings?: SettingsType;
 }
 export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(a: HandleCombatTimerStartArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
-  console.log('handling combat timer start');
   if (!a.settings) {
     a.settings = getState().settings;
   }

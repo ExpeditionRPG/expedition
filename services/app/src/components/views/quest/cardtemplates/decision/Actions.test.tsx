@@ -7,10 +7,11 @@ import {
   skillTimeMillis,
   handleDecisionRoll,
   toDecisionCard,
+  selectChecks,
 } from './Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {EMPTY_DECISION_STATE} from './Types';
+import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
 import {Action, newMockStore} from 'app/Testing';
 import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
@@ -82,6 +83,17 @@ describe('Decision actions', () => {
     });
     test('respects difficulty', () => {
       expect(computeSuccesses([16, 15, 10, 14], {difficulty: 'hard'})).toEqual(0);
+    });
+  });
+  describe('selectChecks', () => {
+    test.only('selects a subset if there are more than 3 decisions', () => {
+      const cs: LeveldSkillCheck[] = [];
+      for (const skill of ['athletics', 'knowledge', 'charisma']) {
+        for (const persona of ['light', 'dark']) {
+          cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill});
+        }
+      }
+      expect(selectChecks(cs, seedrandom.alea('1234')).length).toEqual(3);
     });
   });
   describe('computeOutcome', () => {

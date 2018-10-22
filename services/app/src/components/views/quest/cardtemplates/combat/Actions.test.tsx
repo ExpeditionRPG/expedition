@@ -108,17 +108,26 @@ describe('Combat actions', () => {
   });
 
   describe('initCustomCombat', () => {
-    const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
-
     test('has custom=true', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: true,
       }));
     });
 
     test('identifies as a combat element', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
       expect(actions[1].node.getTag()).toEqual('combat');
     });
+
+    test('passes seed to multiplayer', () => {
+      Action(initCustomCombat, {settings: TEST_SETTINGS}).expect({seed: 'testseed'}).toSendMultiplayer({seed: 'testseed'});
+    });
+
+    test('uses passed seed', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({seed: 'testseed'});
+      expect(actions[1].node.ctx.seed).toEqual('testseed');
+    })
   });
 
   describe('isSurgeNextRound', () => {
