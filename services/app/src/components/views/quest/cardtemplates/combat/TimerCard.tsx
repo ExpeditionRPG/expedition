@@ -14,7 +14,7 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string, multiplayer: MultiplayerState) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -48,6 +48,6 @@ export default function timerCard(props: Props): JSX.Element {
       numLocalPlayers={(props.settings.multitouch && props.settings.numLocalPlayers > 1) ? props.numAliveAdventurers : 1}
       roundTimeTotalMillis={roundTimeMillis(props.settings, props.multiplayerState)}
       multiplayerState={props.multiplayerState}
-      onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed)} />
+      onTimerStop={(ms: number) => props.onTimerStop(props.node, props.settings, ms, surge, props.seed, props.multiplayer)} />
   );
 }

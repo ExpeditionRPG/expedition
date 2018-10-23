@@ -1,14 +1,17 @@
 import Redux from 'redux';
-import {MultiplayerClientStatus, MultiplayerHistoryAction, MultiplayerMultiEventStartAction, MultiplayerSessionAction} from '../actions/ActionTypes';
+import {MultiplayerClientStatus, MultiplayerConnectedAction, MultiplayerHistoryAction, MultiplayerMultiEventStartAction, MultiplayerSessionAction} from '../actions/ActionTypes';
 import {MultiplayerState} from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
   clientStatus: {},
+  client: '', // TODO populate
+  instance: '', // TODO populate
   history: [],
   session: null,
   syncing: false,
   multiEvent: false,
   syncID: 0,
+  connected: false,
 };
 
 export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
@@ -32,6 +35,8 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
       const k = rpcs.client + '|' + rpcs.instance;
       newClientStatus[k] = {...newClientStatus[k], ...rpcs.status};
       return {...state, clientStatus: newClientStatus};
+    case 'MULTIPLAYER_CONNECTED':
+      return {...state, connected: (action as MultiplayerConnectedAction).connected};
     case 'MULTIPLAYER_DISCONNECT':
       return initialMultiplayer;
     default:

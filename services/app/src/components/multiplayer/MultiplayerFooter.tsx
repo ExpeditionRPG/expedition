@@ -13,7 +13,6 @@ export interface StateProps {
   multiplayer: MultiplayerState;
   cardTheme: CardThemeType;
   questTheme: string;
-  connected: boolean;
 }
 
 export interface DispatchProps {
@@ -47,7 +46,7 @@ const MultiplayerFooter = (props: Props): JSX.Element => {
   // TODO Icon colors here and in IconButton below
   const statusIcon = (
     <IconButton onClick={() => {props.setDialog('MULTIPLAYER_STATUS'); }}>
-      {(props.connected) ? <NetworkWifi className="yesWifi" nativeColor={color} /> : <SignalWifiOff className="noWifi" nativeColor={color} />}
+      {(props.multiplayer.connected) ? <NetworkWifi className="yesWifi" nativeColor={color} /> : <SignalWifiOff className="noWifi" nativeColor={color} />}
     </IconButton>
   );
 

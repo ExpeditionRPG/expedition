@@ -20,7 +20,6 @@ describe('Multiplayer', () => {
       getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
       committedEvent: jasmine.createSpy('committedEvent'),
       rejectedEvent: jasmine.createSpy('rejectedEvent'),
-      removeFromQueue: jasmine.createSpy('removeFromQueue'),
       publish: jasmine.createSpy('publish'),
     };
   }

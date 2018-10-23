@@ -11,22 +11,15 @@ import {changeSettings} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
 import {fetchQuestXML, logMultiplayerStats, submitUserFeedback} from '../../actions/Web';
 import {MIN_FEEDBACK_LENGTH} from '../../Constants';
-import {getMultiplayerConnection, initialMultiplayerCounters, MultiplayerCounters} from '../../multiplayer/Connection';
+import {getCounters, MultiplayerCounters} from '../../multiplayer/Counters';
 import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
 const mapStateToProps = (state: AppState): StateProps => {
-  let multiplayerStats: MultiplayerCounters;
-  if (state.dialog && state.dialog.open === 'MULTIPLAYER_STATUS') {
-    multiplayerStats = getMultiplayerConnection().getStats();
-  } else {
-    multiplayerStats = initialMultiplayerCounters;
-  }
-
   return {
     dialog: state.dialog,
     multiplayer: state.multiplayer,
-    multiplayerStats,
+    multiplayerStats: getCounters(),
     quest: state.quest || {details: {}} as any,
     selectedSave: (state.quest && state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
     settings: state.settings,

@@ -1,12 +1,12 @@
 import Redux from 'redux';
-import {StatusEvent} from 'shared/multiplayer/Events';
+import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
 import {handleFetchErrors} from 'shared/requests';
 import {openSnackbar} from '../actions/Snackbar';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
-import {getMultiplayerConnection} from '../multiplayer/Connection';
-import {MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
-import {LocalAction, MultiplayerClientStatus} from './ActionTypes';
+import {ConnectionHandler, getMultiplayerConnection} from '../multiplayer/Connection';
+import {AppStateWithHistory, MultiplayerSessionMeta, UserState} from '../reducers/StateTypes';
+import {LocalAction, MultiplayerClientStatus, MultiplayerConnectedAction} from './ActionTypes';
 import {toCard} from './Card';
 
 export function local(a: Redux.Action): LocalAction {
@@ -14,8 +14,8 @@ export function local(a: Redux.Action): LocalAction {
   return {type: 'LOCAL', action: a, _inflight: inflight} as any as LocalAction;
 }
 
-export function multiplayerDisconnect() {
-  getMultiplayerConnection().disconnect();
+export function multiplayerDisconnect(c= getMultiplayerConnection()) {
+  c.disconnect();
   return {type: 'MULTIPLAYER_DISCONNECT'};
 }
 
@@ -131,6 +131,10 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnectio
   };
 }
 
+export function setMultiplayerConnected(connected: boolean): MultiplayerConnectedAction {
+  return {type: 'MULTIPLAYER_CONNECTED', connected};
+}
+
 export function syncMultiplayer(c = getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'CLEAR_HISTORY'});
@@ -138,4 +142,57 @@ export function syncMultiplayer(c = getMultiplayerConnection()) {
     c.sync();
     dispatch(openSnackbar(new Error('Was there a bug?'), true));
   };
+}
+
+export function sendStatus(client?: string, instance?: string, partialStatus?: StatusEvent, c= getMultiplayerConnection()) {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
+    const {multiplayer, settings, commitID, quest} = getState();
+    const elem = (quest && quest.node && quest.node.elem);
+    const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[multiplayer.client]);
+    let event: StatusEvent = {
+      connected: true,
+      lastEventID: commitID,
+      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
+      type: 'STATUS',
+      waitingOn: (selfStatus && selfStatus.waitingOn),
+    };
+    if (partialStatus) {
+      event = {...event, ...partialStatus};
+    }
+    client = client || multiplayer.client;
+    instance = instance || multiplayer.instance;
+
+    // Send remote if we're the origin
+    if (client === multiplayer.client && instance === multiplayer.instance) {
+      c.sendEvent(event, commitID);
+    }
+
+    // Dispatch locally (and publish to event subscribers)
+    dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: event});
+    c.publish({id: null, client, instance, event});
+  };
+}
+
+export function sendEvent(event: MultiplayerEventBody, commitID?: number, c= getMultiplayerConnection()) {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
+    commitID = commitID || getState().commitID;
+    c.sendEvent(event, commitID);
+  };
+}
+
+export function subscribeToEvents(handler: (e: MultiplayerEvent) => void, c= getMultiplayerConnection()) {
+  c.subscribe(handler);
+}
+
+export function unsubscribeFromEvents(handler: (e: MultiplayerEvent) => void, c= getMultiplayerConnection()) {
+  c.unsubscribe(handler);
+}
+
+export function publish(e: MultiplayerEvent, c= getMultiplayerConnection()) {
+  c.publish(e);
+}
+
+export function registerHandler(handler: ConnectionHandler, c= getMultiplayerConnection()) {
+  c.registerHandler(handler);
 }

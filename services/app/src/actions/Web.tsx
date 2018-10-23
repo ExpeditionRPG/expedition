@@ -8,7 +8,7 @@ import {AUTH_SETTINGS, VERSION} from '../Constants';
 import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {logEvent} from '../Logging';
 import {getLogBuffer} from '../Logging';
-import {MultiplayerCounters} from '../multiplayer/Connection';
+import {MultiplayerCounters} from '../multiplayer/Counters';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
 import {remoteify, UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';

@@ -1,8 +1,7 @@
 import {ClientBase} from 'shared/multiplayer/Client';
-import {MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
-import {toClientKey} from 'shared/multiplayer/Session';
+import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
-import {getStore} from '../Store';
+import {counterAdd, resetCounters} from './Counters';
 
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
@@ -14,44 +13,20 @@ const RECONNECT_MAX_SLOT_IDX = 10;
 const RECONNECT_SLOT_DELAY_MS = 10;
 const RECONNECT_DELAY_BASE_MS = 200;
 
-export interface MultiplayerCounters {
-  [field: string]: number;
-  compactionEvents: number;
-  disconnectCount: number;
-  errorEvents: number;
-  failedTransactions: number;
-  receivedEvents: number;
-  reconnectCount: number;
-  sessionCount: number;
-  successfulTransactions: number;
-  syncs: number;
-}
-
-export const initialMultiplayerCounters = {
-  compactionEvents: 0,
-  disconnectCount: 0,
-  errorEvents: 0,
-  failedTransactions: 0,
-  receivedEvents: 0,
-  reconnectCount: 0,
-  sessionCount: 0,
-  successfulTransactions: 0,
-  syncs: 0,
-};
-
-function getCommitID(): number {
-  return getStore().getState().commitID;
+export interface ConnectionHandler {
+  onConnectionChange: (connected: boolean) => void;
+  onEvent: (e: MultiplayerEvent, buffered: boolean) => Promise<void>;
+  onStatus: () => void;
+  onCommit: (n: number) => void;
+  onReject: (n: number, error: string) => void;
 }
 
 // This is the base layer of the multiplayer network framework
 export class Connection extends ClientBase {
-  private routeEvent: (e: MultiplayerEvent) => void;
+  private handler: ConnectionHandler;
 
   // TODO(scott): Lock this down after migrating action/combat code
   public sendStatus: (partialStatus?: StatusEvent) => void;
-  // Counter used for sending new events (we can have multiple in-flight).
-  public localEventCounter: number;
-  public stats: MultiplayerCounters;
 
   private session: WebSocket;
   private reconnectAttempts: number;
@@ -66,44 +41,39 @@ export class Connection extends ClientBase {
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
   }
 
-  public registerEventRouter(routeEvent: (e: MultiplayerEvent) => void, sendStatus: () => void) {
-    this.routeEvent = routeEvent;
-    this.sendStatus = sendStatus;
+  public registerHandler(handler: ConnectionHandler) {
+    this.handler = handler;
   }
 
   public sync() {
-    this.localEventCounter = 0;
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
     this.lastStatusMs = 0;
-    this.stats.syncs++;
-    this.sendStatus();
+    counterAdd('syncs', 1);
+    this.handler.onStatus();
   }
 
   public resetState() {
     super.resetState();
-    this.localEventCounter = 0;
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
     this.lastStatusMs = 0;
-    this.stats = {...initialMultiplayerCounters};
+    resetCounters();
   }
 
-  public getClientAndInstance(): [string, string] {
-    return [this.id, this.instance];
+  public getMaxBufferID(): number|null {
+    if (this.messageBuffer.length === 0) {
+      return null;
+    }
+    return this.messageBuffer.reduce((accum, curr) => Math.max(accum, curr.id), 0);
   }
 
-  public hasInFlight(id: number): boolean {
-    const filtered = this.messageBuffer.filter((b) => b.id === id);
-    return (filtered.length > 0);
-  }
-
-  public getInFlightAtOrBelow(id: number): number[] {
-    return this.messageBuffer.filter((b) => {
+  public bufferedAtOrbelow(id: number): boolean {
+    return (this.messageBuffer.filter((b) => {
       return (b.id <= id);
     }).map((b) => {
       return b.id;
-    });
+    })).length > 0;
   }
 
   private connectionLoop() {
@@ -118,7 +88,7 @@ export class Connection extends ClientBase {
         if (b.retries >= MAX_RETRIES) {
           // Publish a local rejection if the server hasn't seen the message after many retries.
           this.messageBuffer.splice(i, 1);
-          this.rejectedEvent(b.id, 'Too many retries');
+          this.handler.onReject(b.id, 'Too many retries');
         } else {
           this.session.send(b.msg);
           b.retries++;
@@ -131,11 +101,11 @@ export class Connection extends ClientBase {
     // We send a periodic status to the server to keep it advised
     // of our connection and event ID state.
     if (now - this.lastStatusMs > STATUS_MS) {
-      this.sendStatus();
+      this.handler.onStatus();
     }
   }
 
-  public removeFromQueue(id: number) {
+  private removeFromQueue(id: number) {
     for (let i = 0; i < this.messageBuffer.length; i++) {
       if (id === this.messageBuffer[i].id) {
         this.messageBuffer.splice(i, 1);
@@ -144,37 +114,11 @@ export class Connection extends ClientBase {
     }
   }
 
-  // When transactions are committed/rejected, we may need to to amend the
-  // counter to get back on track.
-  public committedEvent(n: number) {
-    console.log('MULTIPLAYER_COMMIT #' + n);
-    this.localEventCounter = Math.max(this.localEventCounter, n);
-    getStore().dispatch({type: 'MULTIPLAYER_COMMIT', id: n});
-  }
-
-  public rejectedEvent(n: number, error: string) {
-    console.log('MULTIPLAYER_REJECT #' + n + ': ' + error);
-    this.localEventCounter = Math.min(this.localEventCounter, Math.max(getCommitID(), n - 1));
-    getStore().dispatch({
-      error,
-      id: n,
-      type: 'MULTIPLAYER_REJECT',
-    });
-  }
-
-  public getStats(): MultiplayerCounters {
-    return this.stats;
-  }
-
-  public getClientKey(): string {
-    return toClientKey(this.id, this.instance);
-  }
-
   public reconnect() {
     if (this.session) {
       this.session.close();
     }
-    this.stats.reconnectCount++;
+    counterAdd('reconnectCount', 1);
 
     // Random exponential backoff reconnect
     // https://en.wikipedia.org/wiki/Exponential_backoff
@@ -190,65 +134,69 @@ export class Connection extends ClientBase {
   }
 
   public connect(sessionID: string, secret: string): void {
-    // Save these for reconnect
     this.sessionID = sessionID;
     this.secret = secret;
-
     if (this.isConnected()) {
       this.disconnect();
     }
-
     this.session = new WebSocket(`${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
+    this.session.onmessage = this.onMessage.bind(this);
+    this.session.onerror = console.error;
+    this.session.onclose = this.onClose.bind(this);
+    this.session.onopen = this.onOpen.bind(this);
+  }
 
-    this.session.onmessage = (ev: MessageEvent) => {
-      const e = this.parseEvent(ev.data);
-      // Update stats
-      this.stats.receivedEvents++;
-      if (e.event.type === 'ERROR') {
-        this.stats.errorEvents++;
+  private onMessage(ev: MessageEvent) {
+    const e = this.parseEvent(ev.data);
+    // Update stats
+    counterAdd('receivedEvents', 1);
+    if (e.event.type === 'ERROR') {
+      counterAdd('errorEvents', 1);
+    }
+    const buffered = (this.messageBuffer.filter((b) => b.id === e.id)).length > 0;
+    this.handler.onEvent(e, buffered).then(() => {
+      if (e.id !== null) {
+        this.removeFromQueue(e.id);
       }
-      this.routeEvent(e);
-    };
+    });
+  }
 
-    this.session.onerror = (ev: ErrorEvent) => {
-      console.error(ev);
-    };
+  private onOpen() {
+    counterAdd('sessionCount', 1);
+    this.handler.onConnectionChange(true);
+    console.log('WS: open');
+    this.connected = true;
+    this.handler.onStatus();
+  }
 
-    this.session.onclose = (ev: CloseEvent) => {
-      this.stats.disconnectCount++;
-      switch (ev.code) {
-        case 1000:  // CLOSE_NORMAL
-          if (this.connected === false) {
-            console.log('WS: closed normally');
-          } else {
-            console.warn('WS: closed by server');
-            this.reconnect();
-          }
-          break;
-        default:  // Abnormal closure
-          console.error('WS: abnormal closure');
+  private onClose(ev: CloseEvent) {
+    counterAdd('disconnectCount', 1);
+    this.handler.onConnectionChange(false);
+    switch (ev.code) {
+      case 1000:  // CLOSE_NORMAL
+        if (this.connected === false) {
+          console.log('WS: closed normally');
+        } else {
+          console.warn('WS: closed by server');
           this.reconnect();
-          break;
-      }
+        }
+        break;
+      default:  // Abnormal closure
+        console.error('WS: abnormal closure');
+        this.reconnect();
+        break;
+    }
 
-      // Notify local listeners that we've disconnected
-      this.publish({
-        client: this.id,
-        event: {
-          connected: false,
-          type: 'STATUS',
-        },
-        id: null,
-        instance: this.instance,
-      });
-    };
-
-    this.session.onopen = () => {
-      this.stats.sessionCount++;
-      console.log('WS: open');
-      this.connected = true;
-      this.sendStatus();
-    };
+    // Notify local listeners that we've disconnected
+    this.publish({
+      client: this.id,
+      event: {
+        connected: false,
+        type: 'STATUS',
+      },
+      id: null,
+      instance: this.instance,
+    });
   }
 
   public disconnect() {
@@ -256,11 +204,20 @@ export class Connection extends ClientBase {
     this.session.close(1000);
   }
 
-  public sendFinalizedEvent(event: MultiplayerEvent): void {
-    if (event.event.type === 'ACTION') {
-      this.localEventCounter++;
-      event.id = this.localEventCounter;
+  public sendEvent(event: MultiplayerEventBody, commitID: number): void {
+    if (!this.isConnected()) {
+      return;
     }
+    const id = (event.type === 'ACTION') ? (this.getMaxBufferID() || commitID) + 1 : null;
+    this.sendFinalizedEvent({
+      id,
+      client: this.id,
+      instance: this.instance,
+      event,
+    });
+  }
+
+  private sendFinalizedEvent(event: MultiplayerEvent): void {
     const msg = JSON.stringify(event);
     try {
       this.session.send(msg);

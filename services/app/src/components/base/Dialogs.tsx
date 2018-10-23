@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {openWindow} from '../../Globals';
-import {MultiplayerCounters} from '../../multiplayer/Connection';
+import {MultiplayerCounters} from '../../multiplayer/Counters';
 import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Checkbox from './Checkbox';
 import Picker from './Picker';

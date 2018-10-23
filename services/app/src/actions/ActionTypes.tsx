@@ -210,6 +210,11 @@ export interface MultiplayerClientStatus extends Redux.Action {
   status: StatusEvent;
 }
 
+export interface MultiplayerConnectedAction extends Redux.Action {
+  type: 'MULTIPLAYER_CONNECTED';
+  connected: boolean;
+}
+
 // LocalActions wrap an existing action; this is so that inbound
 // actions to the redux dispatch middleware that were created from
 // another client's interaction are not re-broadcast in an endless loop
