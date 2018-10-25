@@ -5,7 +5,6 @@ import {counterAdd, resetCounters} from './Counters';
 
 const CONNECTION_LOOP_MS = 200;
 const RETRY_DELAY_MS = 2000;
-const STATUS_MS = 5000;
 const MAX_RETRIES = 2;
 
 // Max reconnect time is slot_time * 2^(slotIdx) + base = 10440 ms
@@ -15,10 +14,8 @@ const RECONNECT_DELAY_BASE_MS = 200;
 
 export interface ConnectionHandler {
   onConnectionChange: (connected: boolean) => void;
-  onEvent: (e: MultiplayerEvent, buffered: boolean) => Promise<void>;
-  onStatus: () => void;
-  onCommit: (n: number) => void;
   onReject: (n: number, error: string) => void;
+  onEvent: (e: MultiplayerEvent, buffered: boolean) => Promise<void>;
 }
 
 // This is the base layer of the multiplayer network framework
@@ -33,7 +30,6 @@ export class Connection extends ClientBase {
   private sessionID: string;
   private secret: string;
   private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
-  private lastStatusMs: number;
 
   constructor() {
     super();
@@ -48,16 +44,13 @@ export class Connection extends ClientBase {
   public sync() {
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
-    this.lastStatusMs = 0;
     counterAdd('syncs', 1);
-    this.handler.onStatus();
   }
 
   public resetState() {
     super.resetState();
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
-    this.lastStatusMs = 0;
     resetCounters();
   }
 
@@ -96,12 +89,6 @@ export class Connection extends ClientBase {
           console.warn('Retrying msg ' + b.id);
         }
       }
-    }
-
-    // We send a periodic status to the server to keep it advised
-    // of our connection and event ID state.
-    if (now - this.lastStatusMs > STATUS_MS) {
-      this.handler.onStatus();
     }
   }
 
@@ -166,7 +153,6 @@ export class Connection extends ClientBase {
     this.handler.onConnectionChange(true);
     console.log('WS: open');
     this.connected = true;
-    this.handler.onStatus();
   }
 
   private onClose(ev: CloseEvent) {

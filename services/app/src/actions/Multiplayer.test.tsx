@@ -134,4 +134,139 @@ describe('Multiplayer actions', () => {
       expect(fakeClient.sync).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('handleEvent', () => {
+
+    function fakeConnection() {
+      return {
+        registerEventRouter: jasmine.createSpy('registerEventRouter'),
+        getClientKey: jasmine.createSpy('getClientKey'),
+        sendEvent: jasmine.createSpy('sendEvent'),
+        hasInFlight: jasmine.createSpy('hasInFlight'),
+        getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
+        committedEvent: jasmine.createSpy('committedEvent'),
+        rejectedEvent: jasmine.createSpy('rejectedEvent'),
+        publish: jasmine.createSpy('publish'),
+      };
+    }
+
+    function setup(overrides: Partial<Props> = {}): Env {
+      const store = newMockStore();
+      const props: Props = {
+        conn: fakeConnection(),
+        commitID: 0,
+        line: 0,
+        multiplayer: initialMultiplayer,
+        settings: initialSettings,
+        onMultiEventStart: jasmine.createSpy('onMultiEventStart'),
+        onMultiEventComplete: jasmine.createSpy('onMultiEventComplete'),
+        onStatus: jasmine.createSpy('onStatus'),
+        onAction: (a) => {return store.dispatch(local(a));},
+        disableAudio: jasmine.createSpy('disableAudio'),
+        onLoadChange: jasmine.createSpy('onLoadChange'),
+        loadAudio: jasmine.createSpy('loadAudio'),
+        timestamp: 0,
+        ...overrides,
+      };
+      return {store, props, a: shallow(<MultiplayerClient {...(props as any as Props)} />, undefined)};
+    }
+
+    afterEach(() => {
+      clearMultiplayerActions();
+    });
+
+    test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
+    test.skip('logs ERROR events', () => { /* TODO */ });
+    test.skip('safely handles unknown events', () => { /* TODO */ });
+    test('resolves and dispatches ACTION events', () => {
+      let called = false;
+      const testAction = remoteify(function testAction(args: {n: number}) {
+        called = true;
+      });
+      const {a} = setup();
+      a.instance().handleEvent({
+        id: 1,
+        event: {
+          type: 'ACTION',
+          name: 'testAction',
+          args: JSON.stringify({n: 1})
+        },
+      } as MultiplayerEvent);
+      expect(called).toEqual(true);
+    });
+    test('rejects ACTIONs when id is not an increment', () => {
+      let called = false;
+      const testAction = remoteify(function testAction(args: {n: number}) {
+        called = true;
+      });
+      const {a} = setup();
+      a.instance().handleEvent({
+        id: 2,
+        event: {
+          type: 'ACTION',
+          name: 'testAction',
+          args: JSON.stringify({n: 1})
+        },
+      } as MultiplayerEvent);
+      expect(called).toEqual(false);
+    });
+    test('handles MULTI_EVENT', (done) => {
+      // Update the commit ID when the action is executed
+      const {props, a} = setup();
+      const testAction = remoteify(function testAction(args: {n: number}) {
+        a.setProps({commitID: args.n});
+      });
+      a.instance().handleEvent({
+        id: 1,
+        event: {
+          type: 'MULTI_EVENT',
+          lastId: 3,
+          events: [
+            JSON.stringify({id: 1, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 1})}}),
+            JSON.stringify({id: 2, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 2})}}),
+            JSON.stringify({id: 3, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 3})}}),
+          ],
+        } as MultiEvent,
+      } as MultiplayerEvent).then(() => {
+        expect(props.onMultiEventStart).toHaveBeenCalled();
+        expect(props.onMultiEventComplete).toHaveBeenCalled();
+        expect(props.conn.committedEvent.calls.mostRecent().args).toEqual([3]);
+        done();
+      }).catch(done.fail);
+    });
+    test('handles MULTI_EVENT with async events', (done) => {
+      // Update the commit ID when the action is executed
+      const {props, a} = setup();
+      let actions = 0;
+      const asyncAction = remoteify(function asyncAction(args: {n: number}) {
+        return {
+          promise: new Promise((f, r) => {
+            setTimeout(() => {
+              actions++;
+              a.setProps({commitID: args.n});
+              f();
+            }, 200);
+          }),
+        };
+      });
+      a.instance().handleEvent({
+        id: 1,
+        event: {
+          type: 'MULTI_EVENT',
+          lastId: 3,
+          events: [
+            JSON.stringify({id: 1, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 1})}}),
+            JSON.stringify({id: 2, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 2})}}),
+            JSON.stringify({id: 3, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 3})}}),
+          ],
+        } as MultiEvent,
+      } as MultiplayerEvent).then(() => {
+        expect(actions).toEqual(3);
+        setTimeout(() => {
+          done();
+        }, 500);
+
+      }).catch(done.fail);
+    });
+  });
 });
