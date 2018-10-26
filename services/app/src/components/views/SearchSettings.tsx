@@ -33,7 +33,14 @@ export class SearchSettings extends React.Component<Props, {}> {
   }
 
   public onChange(attrib: string, value: any) {
-    this.setState({[attrib]: value});
+    // 10/26/18 bugfix: have to use 'null' string instead of raw undefined
+    // as select value, otherwise HTML auto-populates the value as the display
+    // string, which breaks the API (i.e. passing "Any length" instead no value)
+    if (value === 'null') {
+      this.setState({[attrib]: undefined});
+    } else {
+      this.setState({[attrib]: value});
+    }
   }
 
   public submit(e: React.FormEvent | React.MouseEvent | undefined) {
@@ -97,7 +104,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('mintimeminutes', e.target.value)}
               value={this.state.mintimeminutes}
             >
-              <option value={undefined}>Any length</option>
+              <option value={'null'}>Any length</option>
               {timeBuckets}
             </NativeSelect>
           </FormControl>
@@ -108,7 +115,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('maxtimeminutes', e.target.value)}
               value={this.state.maxtimeminutes}
             >
-              <option value={undefined}>Any length</option>
+              <option value={'null'}>Any length</option>
               {timeBuckets}
             </NativeSelect>
           </FormControl>
@@ -119,7 +126,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('age', e.target.value)}
               value={this.state.age}
             >
-              <option value={undefined}>All time</option>
+              <option value={'null'}>All time</option>
               <option value={31536000}>Published this year</option>
               <option value={2592000}>Published this month</option>
               <option value={604800}>Published this week</option>
@@ -142,7 +149,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('genre', e.target.value)}
               value={this.state.genre}
             >
-              <option value={undefined}>All genres</option>
+              <option value={'null'}>All genres</option>
               {visibleGenres.map((genre: string, i: number) => <option key={i} value={genre}>{genre}</option>)}
             </NativeSelect>
           </FormControl>
@@ -153,7 +160,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('contentrating', e.target.value)}
               value={this.state.contentrating}
             >
-              <option value={undefined}>All ratings</option>
+              <option value={'null'}>All ratings</option>
               <option value="Kid-friendly">Kid-friendly</option>
               <option value="Teen">Teen</option>
               <option value="Adult">Adult</option>
@@ -166,7 +173,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('requirespenpaper', e.target.value)}
               value={this.state.requirespenpaper}
             >
-              <option value={undefined}>No Preference</option>
+              <option value={'null'}>No Preference</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </NativeSelect>
