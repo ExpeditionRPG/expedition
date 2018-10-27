@@ -35,6 +35,7 @@ export let initialState: FiltersState = {
     options: ['Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
       'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ',
       'The Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM',
+      'Expedition+Horror+Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM,1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ,11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
       'Custom',
     ],
   },
