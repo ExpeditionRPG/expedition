@@ -141,11 +141,10 @@ export class Connection extends ClientBase {
       counterAdd('errorEvents', 1);
     }
     const buffered = (this.messageBuffer.filter((b) => b.id === e.id)).length > 0;
-    this.handler.onEvent(e, buffered).then(() => {
-      if (e.id !== null) {
-        this.removeFromQueue(e.id);
-      }
-    });
+    if (e.id !== null) {
+      this.removeFromQueue(e.id);
+    }
+    this.handler.onEvent(e, buffered);
   }
 
   private onOpen() {

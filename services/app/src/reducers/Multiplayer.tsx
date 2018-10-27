@@ -18,7 +18,12 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
   switch (action.type) {
     case 'MULTIPLAYER_SESSION':
       const rpsa = (action as any) as MultiplayerSessionAction;
-      return {...state, session: rpsa.session};
+      return {
+        ...state,
+        session: rpsa.session,
+        client: rpsa.client,
+        instance: rpsa.instance,
+      };
     case 'MULTIPLAYER_HISTORY':
       const rph = (action as any) as MultiplayerHistoryAction;
       return {...state, history: rph.history || []};

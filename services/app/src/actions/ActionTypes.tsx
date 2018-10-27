@@ -184,6 +184,8 @@ export interface SavedQuestSelectAction {
 export interface MultiplayerSessionAction extends Redux.Action {
   type: 'MULTIPLAYER_SESSION';
   session: {id: number, secret: string};
+  client: string;
+  instance: string;
 }
 
 export interface MultiplayerSyncAction extends Redux.Action {

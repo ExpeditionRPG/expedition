@@ -22,10 +22,10 @@ export function multiplayerDisconnect(c= getMultiplayerConnection()) {
 
 function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c= getMultiplayerConnection(), fetch: any = window.fetch) {
   let sessionID = '';
-  const clientID = user.id.toString();
-  const instanceID = Date.now().toString();
+  const client = user.id.toString();
+  const instance = Date.now().toString();
   return fetch(MULTIPLAYER_SETTINGS.connectURI, {
-    body: JSON.stringify({instance: instanceID, secret}),
+    body: JSON.stringify({instance, secret}),
     credentials: 'include',
     headers: new Headers({
       Accept: 'application/json',
@@ -45,11 +45,11 @@ function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any
     // Dispatch navigation and settings **before** opening the client connection.
     // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
     // to fast-forward to the current state.
-    dispatch({type: 'MULTIPLAYER_SESSION', session: {secret, id: sessionID}});
+    dispatch({type: 'MULTIPLAYER_SESSION', session: {secret, id: sessionID}, client, instance});
     return dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
   })
   .then(() => {
-    c.configure(clientID, instanceID);
+    c.configure(client, instance);
     return c.connect(sessionID, secret);
   });
 }
@@ -119,9 +119,7 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
 
 export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    if (c.sendStatus) {
-      c.sendStatus(ev);
-    }
+    sendStatus(undefined, undefined, ev, c);
     dispatch({
       client: c.getID(),
       instance: c.getInstance(),
@@ -147,7 +145,7 @@ export function syncMultiplayer(c = getMultiplayerConnection()) {
 }
 
 export function sendStatus(client?: string, instance?: string, partialStatus?: StatusEvent, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
     const {multiplayer, settings, commitID, quest} = getState();
     const elem = (quest && quest.node && quest.node.elem);
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[multiplayer.client]);
@@ -173,6 +171,7 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     // Dispatch locally (and publish to event subscribers)
     dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: event});
     c.publish({id: null, client, instance, event});
+    return Promise.resolve();
   };
 }
 
@@ -225,7 +224,10 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
-        return dispatch(sendStatus(e.client, e.instance, body));
+        if (e.client !== multiplayer.client && e.instance !== multiplayer.instance) {
+          return dispatch(sendStatus(e.client, e.instance, body));
+        }
+        break;
       case 'INTERACTION':
         // Interaction events are not dispatched; UI element subscribers pick up the event on publish().
         break;
