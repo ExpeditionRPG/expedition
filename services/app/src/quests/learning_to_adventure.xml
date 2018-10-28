@@ -3,31 +3,31 @@
     <instruction if="_.numAdventurers() &gt; 1">
       <p>One player should read this page out loud, then pass the device to the next player.</p>
     </instruction>
-    <p>"So, you want to go on an adventure?" the grizzly town guardsman asks with a smile.</p>
-    <p>You, the trouble-making children of the town, nod eagerly.</p>
-    <p>"Alrighty, then! Just don't tell your parents it was me!"</p>
+    <p>"Alright, recruits, everyone line up!" The grizzled town guardsman marches up and down the line, inspecting the uniforms and proper posture of the new guards.</p>
+    <p>You and your friends steal glances between one another as the old guardsman approaches you, standing as tall as you can to mask the first-day jitters.</p>
+    <p>"Alright, then! Follow me!" He gestures towards the guardhouse, striding quickly to its entrance.</p>
     <instruction>
       <p>This is an instruction. You'll see these throughout quests, providing helpful tips and instructions for you to follow.</p>
     </instruction>
   </roleplay>
   <roleplay icon="adventurer" title="Adventuring" data-line="14">
-    <p>"Now, just remember - the most important rules when adventuring are to have fun and work together!"</p>
+    <p>"I've split you into two groups," the guardsman announces. He reads off a list of names and you're relieved to find that you and your friends have luckily ended up in the same group.</p>
     <instruction>
       <p>Expedition is a lightweight game. It is focused on having fun instead of memorizing rules. For example, during a round of combat, you can resolve abilities in any order. You can even change the order of abilities after they've been played.</p>
     </instruction>
   </roleplay>
   <roleplay icon="adventurer" title="The Quest" data-line="20">
-    <p>"Now, you've got a decision to make! Would you rather help clean up the guardhouse, or deal with some rowdy fairy folk?"</p>
+    <p>"First group!" he gestures in your general direction. "Since you were the least disheveled and embarrassing of your peers, you will choose your task for the day. You can either clean up the guardhouse or help quell the rowdy fairy folk in the village."</p>
     <instruction>
       <p>At this point, your party should decide which option you'd like to pick. Your choices will affect your adventure, so choose wisely!</p>
     </instruction>
     <instruction>
       <p>There's no single way to win - each quest has its own goals and missions that will be revealed as you play.</p>
     </instruction>
-    <choice text="Ooh! Fae folk!">
+    <choice text="We'll take on the fae folk!">
       <roleplay icon="fae" title="A Fairly Big Problem" data-line="30">
-        <p>"Alright, knew that one would excite you. Here's the deal: a wisp and a mushroom are causing a commotion at the market. As honorary members of the town watch, you may use whatever force is necessary to bring peace to the town!"</p>
-        <p>"Here, take this to help you." the guardsman hands you some loot from the guard supplies.</p>
+        <p>"Figured you'd try to play the hero on day one. Here's the deal: a wisp and a mushroom are causing a commotion at the market. As members of the town watch, you may use whatever force is necessary to bring peace to the town!"</p>
+        <p>"Here, take this to help you." the guardsman hands you some equipment from the guard supplies.</p>
         <instruction>
           <p>:loot: Draw two tier 1 loot cards face-up, and distribute them to party members as you see fit. You can give loot to other party members at any time.</p>
         </instruction>
@@ -47,8 +47,8 @@
         <choice text="Try to intimidate the fairies" if="intimidated == 0">
           <roleplay icon="fae" title="Intimidation Tactics" data-line="58">
             <p>{{intimidated = 1}}</p>
-            <p>You march up to them, waving your wooden swords.</p>
-            <p>"As honorary members of the town watch, we demand you stop disturbing the peace!"</p>
+            <p>You march up to them, a hand on the hilt of your newly acquired sword.</p>
+            <p>"As guardsmen of the town watch, we demand you stop disturbing the peace!"</p>
             <p>...</p>
             <p>They ignore you. You try again. "STOP!" you yell as loud as you can.</p>
             <p>Nothing. You'll have to try a different strategy.</p>
@@ -130,27 +130,27 @@
       <roleplay title="Victory" data-line="158">
         <p>With a final hit, the wisp and mushroom collapse to the ground, exhausted.</p>
         <p>"Alright, you win! We give up!"</p>
-        <p>You handcuff them and drag them to the town guard.</p>
+        <p>You handcuff them and drag them to the town jail, confident that this will deter any future commotion in the market.</p>
       </roleplay>
       <roleplay icon="loot" title="A Just Reward" data-line="166">
         <p>"Ah! I'm impressed, nice work!" says the guardsman, "Now, for your reward...."</p>
-        <p>He laughs and smiles, reaching down to tousle your hair.</p>
-        <p>"I won't tell your parents what you were up to! Now, you better get back home before it gets dark!"</p>
-        <p>You head home, excited for your next adventure.</p>
+        <p>Your eyes brighten - will it be new weapons? a bonus? fame and fortune?</p>
+        <p>"Your reward is that you get to come back here tomorrow and do this all again!" The old guardsman laughs derisively at your fallen faces. "You weren't expecting praise for doing your job in such a manner, were you?"</p>
+        <p>You head home, disappointed but determined to impress the head guardsman tomorrow. One day, they'll sing of your adventures in every town of the kingdom....</p>
       </roleplay>
       <trigger data-line="176">goto end</trigger>
     </event>
     <event on="lose">
       <roleplay title="Defeat" data-line="180">
-        <p>The magical duo were simply too powerful - your wooden swords were no match.</p>
-        <p>The Wisp, seeing you on the verge of collapsing, lets you off easy, "They're just kids - not bad for such young 'uns. Let's go terrorize a different town!"</p>
-        <p>The Wisp and Mushroom float down main street, knocking over a final merchant's stall with a giggle on their way out.</p>
+        <p>The magical duo were simply too powerful - your novice swordsmen skills were no match.</p>
+        <p>The Wisp, seeing you on the verge of collapsing, lets you off easy, "Now they know that we're in charge here. Let's go terrorize the next market!"</p>
+        <p>The Wisp and Mushroom float down the main street, knocking over a final merchant's stall with a giggle on their way out.</p>
       </roleplay>
       <roleplay title="Back to the Guard" data-line="188">
-        <p>You return to the guard house, bruised and dejected.</p>
+        <p>You return to the guardhouse, bruised and dejected.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle in surprise.</p>
-        <p>"Ah! Looks like you had quite an adventure!"</p>
-        <p>Seeing the lack of prisoners, he adds "don't worry about those two - there'll be plenty more adventures to come!"</p>
+        <p>"Back so soon? And here I was thinking it would take you all day to subdue those two!"</p>
+        <p>Seeing the lack of prisoners, he adds "Don't worry about them - they do this to all the new recruits. You'll get plenty more chances to best them, I'm sure."</p>
       </roleplay>
       <trigger data-line="198">goto end</trigger>
     </event>
@@ -176,11 +176,11 @@
     <e>Spider</e>
     <event on="win" loot="false" xp="false">
       <roleplay icon="loot" title="Victory" data-line="218">
-        <p>You triumphantly crush the spider with the broom, shouting with glee.</p>
-        <p>Hearing your victory, the guardsman peeks out from the door behind you.</p>
+        <p>You victoriously crush the spider with the broom, shouting with triumph.</p>
+        <p>Hearing your success, the guardsman peeks out from the door behind you.</p>
         <p>"Ah, thank goodness!" he sighs with relief.</p>
         <p>He coughs, and puts back on his tough face.</p>
-        <p>"I mean, good work cleaning the guardhouse. Run along home now, before it gets dark, and I'll tell your parents what a good help you've been!"</p>
+        <p>"I mean, good work cleaning the guardhouse. Back to the barracks, now! I'll see you back here an hour before first light tomorrow morning!"</p>
         <p>You head home, excited for your next adventure.</p>
       </roleplay>
       <trigger data-line="232">goto end</trigger>
@@ -190,7 +190,7 @@
         <p>You've never seen a spider so big!</p>
         <p>Now you understand why the guardsman was scared. Just before the spider actually touches you, you run out of the room, letting loose a scream.</p>
         <p>The grizzly guardsman looks up from his crossword puzzle and smiles.</p>
-        <p>"Not as easy as it looks, is it?" he says, "Now, run along home now, before it gets dark. Don't worry, not every adventure has spiders!"</p>
+        <p>"Not as easy as it looks, is it?" he says, "Don't worry, you'll just have to try again tomorrow! And maybe I won't tell your peers that you were bested by a few little spiders," he adds with a wink.</p>
       </roleplay>
       <trigger data-line="246">goto end</trigger>
     </event>
