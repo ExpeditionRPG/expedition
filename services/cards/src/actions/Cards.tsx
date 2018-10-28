@@ -9,8 +9,8 @@ declare var require: any;
 const Tabletop = require('tabletop');
 
 interface ResultType {
-  cards: CardType[];
-  translations: TranslationsType;
+  cards?: CardType[];
+  translations?: TranslationsType;
 }
 
 export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
@@ -21,9 +21,9 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
     const keys = store.getState().filters.source.current.split(':')[1].split(',');
 
     Promise.all(keys.map(downloadAndProcessSpreadsheet))
-      .then((results: any[]) => {
+      .then((results: ResultType[]) => {
         const cards = results.reduce((acc: CardType[], obj: ResultType) => {
-          return [...acc, ...obj.cards];
+          return [...acc, ...(obj.cards || [])];
         }, []).sort((a: CardType, b: CardType) => {
           if (a.sheet < b.sheet) {
             return -1;
@@ -38,11 +38,11 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
         });
 
         const translations = results.reduce((acc: TranslationsType, obj: ResultType) => {
-          return {...acc, ...obj.translations};
+          return {...acc, ...(obj.translations || {})};
         }, {});
 
         if (Object.keys(translations).length > 0) {
-          dispatch(translationsUpdate(translations));
+          dispatch(translationsUpdate({AdjectiveAfterNoun: false, ...translations}));
         }
         dispatch(cardsUpdate(cards));
         dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
