@@ -4,7 +4,7 @@
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
   "scripts": {
-    "start": "webpack-dev-server --progress --hot",
+    "start": "webpack-dev-server --progress",
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
   },
