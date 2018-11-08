@@ -135,6 +135,36 @@ describe('Multiplayer actions', () => {
     });
   });
 
+  describe('sendStatus', () => {
+    test.skip('sends line number, commit id, and other state vars', () => { /* TODO */ });
+    test.skip('overrides defaults when partial status passed', () => { /* TODO */ });
+    test.skip('dispatches status', () => { /* TODO */ });
+    test.skip('publishes locally', () => { /* TODO */ });
+    test.skip('sends to remote clients if self-status', () => { /* TODO */ });
+    test.skip('does not send to remote clients if not self status', () => { /* TODO */ });
+  });
+
+  describe('sendEvent', () => {
+    test.skip('uses state commitID if not passed', () => { /* TODO */ });
+    test.skip('sends event via remote client', () => { /* TODO */ });
+  });
+
+  describe('subscribeToEvents', () => {
+    test.skip('subscribes handler to remote events', () => { /* TODO */ });
+  });
+
+  describe('unsubscribeFromEvents', () => {
+    test.skip('unsubscribes handler from remote events', () => { /* TODO */ });
+  });
+
+  describe('registerHandler', () => {
+    test.skip('registers a connection handler', () => { /* TODO */ });
+  });
+
+  describe('rejectEvent', () => {
+    test.skip('dispatches the rejection', () => { /* TODO */ });
+  })
+
   describe('handleEvent', () => {
 
     function fakeConnection() {
