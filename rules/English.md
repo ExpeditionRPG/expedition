@@ -4,7 +4,7 @@ These rules are meant for playing without a device and with one player acting as
 
 If you want to play the latest and greatest version of Expedition, including dozens of built-in adventures that don't require a GM, you can use the Web, Android or iOS app available at [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*This document is based on Expedition App v1.13.8. You can view the app's current version by going to Tools and looking for the version number on the bottom of the screen.*
+*This document is based on Expedition App v1.13.8. You can view the app's current version at the bottom of the settings page.*
 
 ## Prerequisites
 
