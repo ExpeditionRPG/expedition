@@ -118,11 +118,13 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
 }
 
 export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>): any => {
-    sendStatus(undefined, undefined, ev, c);
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
+    const {multiplayer} = getState();
+    dispatch(sendStatus(undefined, undefined, ev, c));
+    // TODO(scott): Remove reliance on getID and getInstance
     dispatch({
-      client: c.getID(),
-      instance: c.getInstance(),
+      client: multiplayer.client,
+      instance: multiplayer.instance,
       status: ev,
       type: 'MULTIPLAYER_CLIENT_STATUS',
     } as MultiplayerClientStatus);
@@ -139,7 +141,7 @@ export function syncMultiplayer(c = getMultiplayerConnection()) {
     dispatch({type: 'CLEAR_HISTORY'});
     dispatch({type: 'MULTIPLAYER_SYNC'});
     c.sync();
-    sendStatus(undefined, undefined, undefined, c);
+    dispatch(sendStatus(undefined, undefined, undefined, c));
     dispatch(openSnackbar(new Error('Was there a bug?'), true));
   };
 }
@@ -211,21 +213,21 @@ export function rejectEvent(n: number, error: string) {
 }
 
 export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
+  return (dispatch: Redux.Dispatch<any>): Promise<void> => {
     if (e.id && e.id !== (commitID + 1)) {
       // We should ignore actions that we don't expect, and instead let the server
       // know we're behind so we can fast-forward appropriately.
       // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
       console.log('Ignoring #' + e.id + ' ' + e.event.type + ' (counter at #' + commitID + ')');
-      sendStatus();
-      return Promise.resolve();
+      dispatch(sendStatus(undefined, undefined, undefined, c));
+      return Promise.reject('BAD_COMMIT_ID');
     }
 
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
         if (e.client !== multiplayer.client && e.instance !== multiplayer.instance) {
-          return dispatch(sendStatus(e.client, e.instance, body));
+          return dispatch(sendStatus(e.client, e.instance, body, c));
         }
         break;
       case 'INTERACTION':
@@ -265,7 +267,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
 
         let result: any;
         try {
-          result = dispatch(local(action));
+          result = dispatch(action);
         } finally {
           if (e.id !== null) {
             commit(e.id);
@@ -279,9 +281,11 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
         }
 
         let chain = Promise.resolve().then(() => {
-          dispatch(local({type: 'MULTIPLAYER_MULTI_EVENT_START', syncID: body.lastId} as MultiplayerMultiEventStartAction));
+          dispatch({type: 'MULTIPLAYER_MULTI_EVENT_START', syncID: body.lastId} as MultiplayerMultiEventStartAction);
         });
-        for (const event of body.events) {
+
+        for (let i = 0; i < body.events.length; i++) {
+          const event = body.events[i];
           let parsed: MultiplayerEvent;
           try {
             parsed = JSON.parse(event);
@@ -301,7 +305,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
           chain = chain.then((_: any) => {
             return new Promise<void>((fulfill, reject) => {
               setTimeout(() => {
-                const route: any = dispatch(handleEvent(parsed, false, commitID, multiplayer)); // TODO: should buffered be set?
+                const route: any = dispatch(handleEvent(parsed, false, commitID + i, multiplayer)); // TODO: should buffered be set?
                 if (route && typeof(route) === 'object' && route.then) {
                   fulfill(route);
                 }
@@ -312,7 +316,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
         }
 
         chain = chain.then((_: any) => {
-          dispatch(local({type: 'MULTIPLAYER_MULTI_EVENT'}));
+          dispatch({type: 'MULTIPLAYER_MULTI_EVENT'});
         });
         c.publish(e);
         return chain;

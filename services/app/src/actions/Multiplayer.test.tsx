@@ -1,5 +1,8 @@
-import {Action} from '../Testing';
-import {syncMultiplayer, loadMultiplayer, multiplayerNewSession, setMultiplayerStatus, multiplayerConnect} from './Multiplayer';
+import {Action, newMockStore} from '../Testing';
+import {remoteify, clearMultiplayerActions} from '../multiplayer/Remoteify';
+import {initialMultiplayer} from '../reducers/Multiplayer';
+import {initialSettings} from '../reducers/Settings';
+import {syncMultiplayer, loadMultiplayer, multiplayerNewSession, setMultiplayerStatus, multiplayerConnect, handleEvent} from './Multiplayer';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 
 // Need to polyfill headers in jest environment
@@ -16,6 +19,30 @@ const mockResponse = (status, statusText, response) => {
     json: () => response,
   };
 };
+
+function fakeConnection() {
+  return {
+    registerEventRouter: jasmine.createSpy('registerEventRouter'),
+    getClientKey: jasmine.createSpy('getClientKey'),
+    sendEvent: jasmine.createSpy('sendEvent'),
+    hasInFlight: jasmine.createSpy('hasInFlight'),
+    getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
+    committedEvent: jasmine.createSpy('committedEvent'),
+    rejectedEvent: jasmine.createSpy('rejectedEvent'),
+    publish: jasmine.createSpy('publish'),
+    sync: jasmine.createSpy('sync'),
+  };
+}
+
+// Fake "connected" multiplayer state
+const multiplayer = {
+  ...initialMultiplayer,
+  connected: true,
+  client: "abc",
+  instance: "def",
+};
+
+
 
 describe('Multiplayer actions', () => {
   let oldFetch: any;
@@ -46,7 +73,7 @@ describe('Multiplayer actions', () => {
         configure: jasmine.createSpy('configure');
         connect: jasmine.createSpy('connect');
       };
-      Action(multiplayerNewSession, {}).execute({id: 'asdf'}, fakeClient, handlers).then((actions) => {
+      Action(multiplayerNewSession, {multiplayer}).execute({id: 'asdf'}, fakeClient, handlers).then((actions) => {
         expect(fakeClient.connect).toHaveBeenCalledWith('testsession', '1234');
         done();
       }).catch(done.fail);
@@ -54,7 +81,7 @@ describe('Multiplayer actions', () => {
     });
     test('catches and logs web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(multiplayerNewSession, {}).execute({id: 'asdf'}, null, handler).then((actions) => {
+      Action(multiplayerNewSession, {multiplayer}).execute({id: 'asdf'}, null, handler).then((actions) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({type: 'SNACKBAR_OPEN'}));
         done();
       }).catch(done.fail);
@@ -68,14 +95,14 @@ describe('Multiplayer actions', () => {
         connect: jasmine.createSpy('connect');
       };
       const handler = () => Promise.resolve(mockResponse(200, null, {session: 'testsession'}));
-      Action(multiplayerConnect, {}).execute({id: 'asdf'}, '1234', fakeClient, handler).then((actions) => {
+      Action(multiplayerConnect, {multiplayer}).execute({id: 'asdf'}, '1234', fakeClient, handler).then((actions) => {
         expect(fakeClient.connect).toHaveBeenCalledWith('testsession', '1234');
         done();
       }).catch(done.fail);
     });
     test('catches and indicates web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(multiplayerConnect, {}).execute({id: 'asdf'}, '1234', null, handler).then((actions) => {
+      Action(multiplayerConnect, {multiplayer}).execute({id: 'asdf'}, '1234', null, handler).then((actions) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({type: 'SNACKBAR_OPEN'}));
         done();
       }).catch(done.fail);
@@ -94,14 +121,14 @@ describe('Multiplayer actions', () => {
         },
       ];
       const handler = () => Promise.resolve(mockResponse(200, null, {history: testHistory}));
-      Action(loadMultiplayer, {}).execute({id: 'asdf'}, handler).then((actions) => {
+      Action(loadMultiplayer, {multiplayer}).execute({id: 'asdf'}, handler).then((actions) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({history: testHistory}));
         done();
       }).catch(done.fail);
     });
     test('ignores web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(loadMultiplayer, {}).execute({id: 'asdf'}, handler).then((actions) => {
+      Action(loadMultiplayer, {multiplayer}).execute({id: 'asdf'}, handler).then((actions) => {
         expect(actions[1]).toEqual(jasmine.objectContaining({type: 'NAVIGATE'}));
         done();
       }).catch(done.fail);
@@ -109,29 +136,23 @@ describe('Multiplayer actions', () => {
   });
 
   describe('setMultiplayerStatus', () => {
-    const fakeClient = {
-      sendStatus: jasmine.createSpy('sendStatus'),
-      getID: () => '123',
-      getInstance: () => '456',
-    };
+    const c = fakeConnection();
     const s = {type: 'STATUS', line: 5};
-    const actions = Action(setMultiplayerStatus, {}).execute(s, fakeClient);
+    const actions = Action(setMultiplayerStatus, {multiplayer}).execute(s, c);
 
     test('sends socket status', () => {
-      expect(fakeClient.sendStatus).toHaveBeenCalledWith(s);
+      expect(c.sendEvent).toHaveBeenCalledTimes(1);
     })
     test('dispatches status', () => {
-      expect(actions[0]).toEqual(jasmine.objectContaining({status: s}));
+      expect(actions[0]).toEqual(jasmine.objectContaining({status: jasmine.objectContaining(s)}));
     });
   });
 
   describe('syncMultiplayer', () => {
-    const fakeClient = {
-      sync: jasmine.createSpy('sync'),
-    };
     test('syncs the client', () => {
-      Action(syncMultiplayer, {}).execute(fakeClient);
-      expect(fakeClient.sync).toHaveBeenCalledTimes(1);
+      const c = fakeConnection();
+      Action(syncMultiplayer, {multiplayer}).execute(c);
+      expect(c.sync).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -167,19 +188,9 @@ describe('Multiplayer actions', () => {
 
   describe('handleEvent', () => {
 
-    function fakeConnection() {
-      return {
-        registerEventRouter: jasmine.createSpy('registerEventRouter'),
-        getClientKey: jasmine.createSpy('getClientKey'),
-        sendEvent: jasmine.createSpy('sendEvent'),
-        hasInFlight: jasmine.createSpy('hasInFlight'),
-        getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
-        committedEvent: jasmine.createSpy('committedEvent'),
-        rejectedEvent: jasmine.createSpy('rejectedEvent'),
-        publish: jasmine.createSpy('publish'),
-      };
-    }
 
+
+    /*
     function setup(overrides: Partial<Props> = {}): Env {
       const store = newMockStore();
       const props: Props = {
@@ -200,6 +211,7 @@ describe('Multiplayer actions', () => {
       };
       return {store, props, a: shallow(<MultiplayerClient {...(props as any as Props)} />, undefined)};
     }
+    */
 
     afterEach(() => {
       clearMultiplayerActions();
@@ -208,45 +220,42 @@ describe('Multiplayer actions', () => {
     test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
     test.skip('logs ERROR events', () => { /* TODO */ });
     test.skip('safely handles unknown events', () => { /* TODO */ });
+
     test('resolves and dispatches ACTION events', () => {
       let called = false;
-      const testAction = remoteify(function testAction(args: {n: number}) {
-        called = true;
-      });
-      const {a} = setup();
-      a.instance().handleEvent({
+      function testAction(args: {n: number}) {called = true;}
+      remoteify(testAction);
+      const result = Action(handleEvent, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'ACTION',
           name: 'testAction',
           args: JSON.stringify({n: 1})
         },
-      } as MultiplayerEvent);
+      }, false, 0, multiplayer, fakeConnection());
       expect(called).toEqual(true);
     });
-    test('rejects ACTIONs when id is not an increment', () => {
-      let called = false;
-      const testAction = remoteify(function testAction(args: {n: number}) {
-        called = true;
-      });
-      const {a} = setup();
-      a.instance().handleEvent({
+    test('rejects ACTIONs and sends status when id is not an increment', (done) => {
+      const c = fakeConnection();
+      Action(handleEvent, {multiplayer}).execute({
         id: 2,
         event: {
           type: 'ACTION',
           name: 'testAction',
           args: JSON.stringify({n: 1})
         },
-      } as MultiplayerEvent);
-      expect(called).toEqual(false);
+      }, false, 0, multiplayer, c).then((result) => {
+        done.fail('did not fail');
+      }).catch(() => {
+        expect(c.publish).toHaveBeenCalledWith(jasmine.objectContaining({event: jasmine.objectContaining({type: "STATUS"})}));
+        done();
+      });
     });
     test('handles MULTI_EVENT', (done) => {
       // Update the commit ID when the action is executed
-      const {props, a} = setup();
-      const testAction = remoteify(function testAction(args: {n: number}) {
-        a.setProps({commitID: args.n});
-      });
-      a.instance().handleEvent({
+      let calls = 0;
+      const testAction = remoteify(function testAction(args: {n: number}) {calls++;});
+      Action(handleEvent, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'MULTI_EVENT',
@@ -257,29 +266,27 @@ describe('Multiplayer actions', () => {
             JSON.stringify({id: 3, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 3})}}),
           ],
         } as MultiEvent,
-      } as MultiplayerEvent).then(() => {
-        expect(props.onMultiEventStart).toHaveBeenCalled();
-        expect(props.onMultiEventComplete).toHaveBeenCalled();
-        expect(props.conn.committedEvent.calls.mostRecent().args).toEqual([3]);
+      }, false, 0, multiplayer, fakeConnection()).then((results) => {
+        expect(results[0].type).toEqual("MULTIPLAYER_MULTI_EVENT_START");
+        expect(calls).toEqual(3);
+        expect(results[results.length-1].type).toEqual("MULTIPLAYER_MULTI_EVENT");
         done();
       }).catch(done.fail);
     });
     test('handles MULTI_EVENT with async events', (done) => {
       // Update the commit ID when the action is executed
-      const {props, a} = setup();
       let actions = 0;
       const asyncAction = remoteify(function asyncAction(args: {n: number}) {
         return {
           promise: new Promise((f, r) => {
             setTimeout(() => {
               actions++;
-              a.setProps({commitID: args.n});
               f();
             }, 200);
           }),
         };
       });
-      a.instance().handleEvent({
+      Action(handleEvent, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'MULTI_EVENT',
@@ -290,12 +297,9 @@ describe('Multiplayer actions', () => {
             JSON.stringify({id: 3, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 3})}}),
           ],
         } as MultiEvent,
-      } as MultiplayerEvent).then(() => {
+      }, false, 0, multiplayer, fakeConnection()).then(() => {
         expect(actions).toEqual(3);
-        setTimeout(() => {
-          done();
-        }, 500);
-
+        done();
       }).catch(done.fail);
     });
   });
