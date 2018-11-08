@@ -230,3 +230,7 @@ export function getMultiplayerConnection(): Connection {
   client = new Connection();
   return client;
 }
+
+export function setMultiplayerConnection(c: Connection) {
+  client = c;
+}

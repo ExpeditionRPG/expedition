@@ -13,6 +13,7 @@ export const testMultiplayer: MultiplayerState = {
   history: [],
   session: null,
   syncing: false,
+  connected: true,
 };
 
 describe('MultiplayerFooter', () => {
@@ -29,11 +30,11 @@ describe('MultiplayerFooter', () => {
   }
 
   test('shows connected peers', () => {
-    const {e} = setup({multiplayer: testMultiplayer, connected: true});
+    const {e} = setup({multiplayer: testMultiplayer});
     expect(e.find('.peers svg').length).toEqual(5);
   });
   test('shows adventurers with different styles (i.e colors) grouped by peer', () => {
-    const {e} = setup({multiplayer: testMultiplayer, connected: true});
+    const {e} = setup({multiplayer: testMultiplayer});
     const icons = e.find('.peers svg');
     const classes: {[string]: number} = {};
     for (let i =  0; i < icons.length; i++) {
@@ -43,11 +44,11 @@ describe('MultiplayerFooter', () => {
     expect(Object.values(classes).sort()).toEqual([2,3]);
   });
   test('indicates when disconnected', () => {
-    const {e} = setup({connected: false});
+    const {e} = setup({multiplayer: {...testMultiplayer, connected: false}});
     expect(e.find('.noWifi').length).toEqual(1);
   });
   test('indicates when connected', () => {
-    const {e} = setup({connected: true});
+    const {e} = setup({multiplayer: {...testMultiplayer, connected: true}});
     expect(e.find('.yesWifi').length).toEqual(1);
   });
 });

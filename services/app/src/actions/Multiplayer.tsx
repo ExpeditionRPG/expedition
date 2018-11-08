@@ -162,8 +162,8 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     if (partialStatus) {
       event = {...event, ...partialStatus};
     }
-    client = client || multiplayer.client;
-    instance = instance || multiplayer.instance;
+    client = client || multiplayer.client || '';
+    instance = instance || multiplayer.instance || '';
 
     // Send remote if we're the origin
     if (client === multiplayer.client && instance === multiplayer.instance) {

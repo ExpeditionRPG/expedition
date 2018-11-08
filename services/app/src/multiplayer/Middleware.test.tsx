@@ -43,7 +43,7 @@ describe('middleware behavior', () => {
     });
   });
 
-  describe('on actions of type ["name", args]', () => {
+  describe('on actions of type ["name", fn, args]', () => {
     const store = newMockStore();
     const client = store.multiplayerClient;
     client.sendEvent = jasmine.createSpy('sendEvent');
@@ -58,7 +58,7 @@ describe('middleware behavior', () => {
         type: 'ACTION',
         name: 'testActionFn',
         args: JSON.stringify({arg1: 'footated', arg2: 'bartered'})
-      });
+      }, undefined);
     });
   });
 

@@ -40,7 +40,7 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
     if (action instanceof Array) {
       const [name, fn, args] = action;
       const {commitID, multiplayer} = getState();
-      if (multiplayer.connected && !localOnly && !inflight) {
+      if (multiplayer && multiplayer.connected && !localOnly && !inflight) {
         inflight = (conn.getMaxBufferID() || commitID) + 1;
       }
 
