@@ -18,8 +18,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onStatus: (client?: string, instance?: string, status?: StatusEvent) => {
       dispatch(sendStatus(client, instance, status));
     },
-    onEvent: (e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState): Promise<void> => {
-      return dispatch(handleEvent(e, buffered, commitID, multiplayer));
+    onEvent: (e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState) => {
+      dispatch(handleEvent(e, buffered, commitID, multiplayer));
     },
     onReject(n: number, error: string) {
       dispatch(rejectEvent(n, error));

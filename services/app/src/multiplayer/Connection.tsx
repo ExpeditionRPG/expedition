@@ -15,7 +15,7 @@ const RECONNECT_DELAY_BASE_MS = 200;
 export interface ConnectionHandler {
   onConnectionChange: (connected: boolean) => void;
   onReject: (n: number, error: string) => void;
-  onEvent: (e: MultiplayerEvent, buffered: boolean) => Promise<void>;
+  onEvent: (e: MultiplayerEvent, buffered: boolean) => void;
 }
 
 // This is the base layer of the multiplayer network framework

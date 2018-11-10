@@ -223,7 +223,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
-        if (e.client !== multiplayer.client && e.instance !== multiplayer.instance) {
+        if (e.client !== multiplayer.client || e.instance !== multiplayer.instance) {
           return dispatch(sendStatus(e.client, e.instance, body, c));
         }
         break;

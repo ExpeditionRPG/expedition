@@ -251,7 +251,24 @@ describe('Multiplayer actions', () => {
     afterEach(() => {
       clearMultiplayerActions();
     });
-
+    test('handles status events from other clients', (done) => {
+      let called = false;
+      const store = newMockStore({multiplayer});
+      store.dispatch(handleEvent({
+        client: "abc", // same client
+        instance: "mmm", // different instance
+        id: 1,
+        event: {
+          type: 'STATUS',
+          id: 2,
+          event: "TOUCH_END",
+          positions: {},
+        },
+      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+        expect(store.getActions()).toContainEqual(jasmine.objectContaining({client: 'abc', instance: 'mmm'}));
+        done();
+      }).catch(done.fail);
+    });
     test('does not dispatch INTERACTION events', (done) => {
       let called = false;
       const store = newMockStore({multiplayer});

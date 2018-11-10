@@ -12,7 +12,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onStatus: (client?: string, instance?: string, status?: StatusEvent) => void;
-  onEvent: (e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState) => Promise<void>;
+  onEvent: (e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState) => void;
   onReject: (n: number, error: string) => any;
   onConnectionChange: (connected: boolean) => void;
   onRegisterHandler: (handler: ConnectionHandler) => void;
@@ -40,8 +40,8 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
     this.props.onReject(n, error);
   }
 
-  public onEvent(e: MultiplayerEvent, buffered: boolean): Promise<void> {
-    return this.props.onEvent(e, buffered, this.props.commitID, this.props.multiplayer);
+  public onEvent(e: MultiplayerEvent, buffered: boolean) {
+    this.props.onEvent(e, buffered, this.props.commitID, this.props.multiplayer);
   }
 
   public onConnectionChange(connected: boolean) {
