@@ -1,3 +1,3 @@
-describe('Encounters', () => {
+describe('Counters', () => {
   test('None', () => { /* super simple */ });
 });

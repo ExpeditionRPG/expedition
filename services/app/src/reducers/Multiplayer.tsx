@@ -4,8 +4,8 @@ import {MultiplayerState} from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
   clientStatus: {},
-  client: '', // TODO populate
-  instance: '', // TODO populate
+  client: '',
+  instance: '',
   history: [],
   session: null,
   syncing: false,

@@ -120,7 +120,7 @@ describe('Combat actions', () => {
       expect(actions[1].node.getTag()).toEqual('combat');
     });
 
-    test.only('passes seed to multiplayer', () => {
+    test('passes seed to multiplayer', () => {
       const store = newMockStore({settings: TEST_SETTINGS, multiplayer: {...initialMultiplayer, connected: true, client: "abc", instance: "def", commitID: 0});
       (store as any).multiplayerClient.sendEvent = jasmine.createSpy('sendEvent');
       store.dispatch(initCustomCombat({seed: 'testseed'}));

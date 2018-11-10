@@ -121,7 +121,6 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnectio
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
     const {multiplayer} = getState();
     dispatch(sendStatus(undefined, undefined, ev, c));
-    // TODO(scott): Remove reliance on getID and getInstance
     dispatch({
       client: multiplayer.client,
       instance: multiplayer.instance,
