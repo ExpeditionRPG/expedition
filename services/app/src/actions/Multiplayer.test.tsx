@@ -2,8 +2,23 @@ import {Action, newMockStore} from '../Testing';
 import {remoteify, clearMultiplayerActions} from '../multiplayer/Remoteify';
 import {initialMultiplayer} from '../reducers/Multiplayer';
 import {initialSettings} from '../reducers/Settings';
-import {syncMultiplayer, loadMultiplayer, multiplayerNewSession, setMultiplayerStatus, multiplayerConnect, handleEvent} from './Multiplayer';
+import {
+  syncMultiplayer,
+  loadMultiplayer,
+  multiplayerNewSession,
+  setMultiplayerStatus,
+  multiplayerConnect,
+  handleEvent,
+  sendStatus,
+  sendEvent,
+  subscribeToEvents,
+  unsubscribeFromEvents
+} from './Multiplayer';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+
+var cheerio = require('cheerio');
 
 // Need to polyfill headers in jest environment
 global.Headers = ()=>{}
@@ -31,6 +46,8 @@ function fakeConnection() {
     rejectedEvent: jasmine.createSpy('rejectedEvent'),
     publish: jasmine.createSpy('publish'),
     sync: jasmine.createSpy('sync'),
+    subscribe: jasmine.createSpy('subscribe'),
+    unsubscribe: jasmine.createSpy('unsubscribe'),
   };
 }
 
@@ -54,7 +71,7 @@ describe('Multiplayer actions', () => {
   });
 
   describe('multiplayerDisconnect', () => {
-    test.skip('empty', () => { /* Simple enough, no tests needed */});
+    test('empty', () => { /* Simple enough, no tests needed */});
   });
 
   describe('multiplayerNewSession', () => {
@@ -136,14 +153,20 @@ describe('Multiplayer actions', () => {
   });
 
   describe('setMultiplayerStatus', () => {
-    const c = fakeConnection();
-    const s = {type: 'STATUS', line: 5};
-    const actions = Action(setMultiplayerStatus, {multiplayer}).execute(s, c);
+    const doTest = () => {
+      const c = fakeConnection();
+      const s = {type: 'STATUS', line: 5};
+      const actions = Action(setMultiplayerStatus, {multiplayer}).execute(s, c);
+      return {c, s, actions};
+    }
 
     test('sends socket status', () => {
+      const {c} = doTest();
       expect(c.sendEvent).toHaveBeenCalledTimes(1);
-    })
+    });
+
     test('dispatches status', () => {
+      const {s, actions} = doTest();
       expect(actions[0]).toEqual(jasmine.objectContaining({status: jasmine.objectContaining(s)}));
     });
   });
@@ -157,69 +180,106 @@ describe('Multiplayer actions', () => {
   });
 
   describe('sendStatus', () => {
-    test.skip('sends line number, commit id, and other state vars', () => { /* TODO */ });
-    test.skip('overrides defaults when partial status passed', () => { /* TODO */ });
-    test.skip('dispatches status', () => { /* TODO */ });
-    test.skip('publishes locally', () => { /* TODO */ });
-    test.skip('sends to remote clients if self-status', () => { /* TODO */ });
-    test.skip('does not send to remote clients if not self status', () => { /* TODO */ });
+    const node = new ParserNode(cheerio.load('<roleplay data-line="123"></roleplay>')('roleplay'), defaultContext());
+    const cid = 2;
+
+    const doTest = (client?: string, instance?: string, extras?: any) => {
+      const c = fakeConnection();
+      const store = newMockStore({multiplayer, quest: {node}, commitID: cid});
+      const result = store.dispatch(sendStatus(client, instance, extras, c));
+      return {c, actions: store.getActions()};
+    }
+
+    test('sends line number, commit id, and other state vars', () => {
+      const {c} = doTest();
+      expect(c.sendEvent).toHaveBeenCalledWith({
+        connected: true,
+        lastEventID: cid,
+        line: 123,
+        numLocalPlayers: 1,
+        type: 'STATUS',
+        waitingOn: undefined
+      }, cid);
+    });
+    test('overrides defaults when partial status passed', () => {
+      const {c} = doTest(undefined, undefined, {waitingOn: 'herp'});
+      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({waitingOn: 'herp'}), cid);
+    });
+    test('dispatches status', () => {
+      const {c, actions} = doTest();
+      expect(actions).toContainEqual(jasmine.objectContaining({type: 'MULTIPLAYER_CLIENT_STATUS'}));
+    });
+    test('publishes locally', () => {
+      const {c, actions} = doTest();
+      expect(c.publish).toHaveBeenCalledTimes(1);
+    });
+    test('sends to remote clients if self-status', () => {
+      const {c, actions} = doTest();
+      expect(c.sendEvent).toHaveBeenCalledTimes(1);
+    });
+    test('does not send to remote clients if not self status', () => {
+      const {c, actions} = doTest("nnn", "mmm");
+      expect(c.sendEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('sendEvent', () => {
-    test.skip('uses state commitID if not passed', () => { /* TODO */ });
-    test.skip('sends event via remote client', () => { /* TODO */ });
+    const e = {};
+    test('sends event via remote client', () => {
+      const c = fakeConnection();
+      const store = newMockStore();
+      store.dispatch(sendEvent(e, 0, c));
+      expect(c.sendEvent).toHaveBeenCalledTimes(1);
+    });
+    test('uses state commitID if not passed', () => {
+      const c = fakeConnection();
+      const store = newMockStore({commitID: 2});
+      store.dispatch(sendEvent(e, undefined, c));
+      expect(c.sendEvent).toHaveBeenCalledWith(e, 2);
+    });
   });
 
-  describe('subscribeToEvents', () => {
-    test.skip('subscribes handler to remote events', () => { /* TODO */ });
-  });
-
-  describe('unsubscribeFromEvents', () => {
-    test.skip('unsubscribes handler from remote events', () => { /* TODO */ });
-  });
-
-  describe('registerHandler', () => {
-    test.skip('registers a connection handler', () => { /* TODO */ });
+  describe('subscribeToEvents/unsubscribeFromEvents/registerHandler', () => {
+    test('empty', () => { /* Passthrough functions - nothing needed to test. */ });
   });
 
   describe('rejectEvent', () => {
-    test.skip('dispatches the rejection', () => { /* TODO */ });
+    test('empty', () => { /* Simple - no need to test. */ });
   })
 
   describe('handleEvent', () => {
-
-
-
-    /*
-    function setup(overrides: Partial<Props> = {}): Env {
-      const store = newMockStore();
-      const props: Props = {
-        conn: fakeConnection(),
-        commitID: 0,
-        line: 0,
-        multiplayer: initialMultiplayer,
-        settings: initialSettings,
-        onMultiEventStart: jasmine.createSpy('onMultiEventStart'),
-        onMultiEventComplete: jasmine.createSpy('onMultiEventComplete'),
-        onStatus: jasmine.createSpy('onStatus'),
-        onAction: (a) => {return store.dispatch(local(a));},
-        disableAudio: jasmine.createSpy('disableAudio'),
-        onLoadChange: jasmine.createSpy('onLoadChange'),
-        loadAudio: jasmine.createSpy('loadAudio'),
-        timestamp: 0,
-        ...overrides,
-      };
-      return {store, props, a: shallow(<MultiplayerClient {...(props as any as Props)} />, undefined)};
-    }
-    */
-
     afterEach(() => {
       clearMultiplayerActions();
     });
 
-    test.skip('does not dispatch INTERACTION events', () => { /* TODO */ });
-    test.skip('logs ERROR events', () => { /* TODO */ });
-    test.skip('safely handles unknown events', () => { /* TODO */ });
+    test('does not dispatch INTERACTION events', (done) => {
+      let called = false;
+      const store = newMockStore({multiplayer});
+      store.dispatch(handleEvent({
+        id: 1,
+        event: {
+          type: 'INTERACTION',
+          id: 2,
+          event: "TOUCH_END",
+          positions: {},
+        },
+      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+        expect(store.getActions()).toEqual([]);
+        done();
+      }).catch(done.fail);
+    });
+
+    test('safely handles unknown events', (done) => {
+      let called = false;
+      const store = newMockStore({multiplayer});
+      store.dispatch(handleEvent({
+        id: 1,
+        event: {type: 'BAD'},
+      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+        expect(store.getActions()).toContainEqual(jasmine.objectContaining({type: 'MULTIPLAYER_COMMIT'}));
+        done();
+      }).catch(done.fail);
+    });
 
     test('resolves and dispatches ACTION events', () => {
       let called = false;

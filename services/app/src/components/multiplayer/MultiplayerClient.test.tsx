@@ -9,41 +9,28 @@ import Adapter from 'enzyme-adapter-react-16';
 import {initialSettings} from '../../reducers/Settings';
 configure({ adapter: new Adapter() });
 
-describe('MultiplayerClient', () => {
+jest.useFakeTimers();
 
-  function fakeConnection() {
-    return {
-      registerEventRouter: jasmine.createSpy('registerEventRouter'),
-      getClientKey: jasmine.createSpy('getClientKey'),
-      sendEvent: jasmine.createSpy('sendEvent'),
-      hasInFlight: jasmine.createSpy('hasInFlight'),
-      getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
-      committedEvent: jasmine.createSpy('committedEvent'),
-      rejectedEvent: jasmine.createSpy('rejectedEvent'),
-      publish: jasmine.createSpy('publish'),
-    };
-  }
+describe('MultiplayerClient', () => {
 
   function setup(overrides: Partial<Props> = {}): Env {
     const store = newMockStore();
     const props: Props = {
-      conn: fakeConnection(),
       commitID: 0,
-      line: 0,
-      multiplayer: initialMultiplayer,
-      settings: initialSettings,
-      onMultiEventStart: jasmine.createSpy('onMultiEventStart'),
-      onMultiEventComplete: jasmine.createSpy('onMultiEventComplete'),
+      multiplayer: {...initialMultiplayer, connected: true},
       onStatus: jasmine.createSpy('onStatus'),
-      onAction: (a) => {return store.dispatch(local(a));},
-      disableAudio: jasmine.createSpy('disableAudio'),
-      onLoadChange: jasmine.createSpy('onLoadChange'),
-      loadAudio: jasmine.createSpy('loadAudio'),
-      timestamp: 0,
+      onEvent: jasmine.createSpy('onEvent'),
+      onReject: jasmine.createSpy('onReject'),
+      onConnectionChange: jasmine.createSpy('onConnectionChange'),
+      onRegisterHandler: jasmine.createSpy('onRegisterHandler'),
       ...overrides,
     };
     return {store, props, a: shallow(<MultiplayerClient {...(props as any as Props)} />, undefined)};
   }
 
-  test.skip('periodically sends status', () => {/* TODO */});
+  test('periodically sends status', () => {
+    const {a, props} = setup();
+    jest.runOnlyPendingTimers();
+    expect(props.onStatus).toHaveBeenCalled();
+  });
 });

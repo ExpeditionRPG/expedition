@@ -202,13 +202,11 @@ function commit(id: number) {
 }
 
 export function rejectEvent(n: number, error: string) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) => {
-    console.log('MULTIPLAYER_REJECT #' + n + ': ' + error);
-    dispatch({
-      type: 'MULTIPLAYER_REJECT',
-      id: n,
-      error,
-    });
+  console.log('MULTIPLAYER_REJECT #' + n + ': ' + error);
+  return {
+    type: 'MULTIPLAYER_REJECT',
+    id: n,
+    error,
   };
 }
 
