@@ -1,7 +1,8 @@
-import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {endQuest, loadNode} from 'app/actions/Quest';
+import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {findCombatParent, handleCombatEnd} from '../combat/Actions';

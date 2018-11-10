@@ -1,5 +1,5 @@
 import * as Redux from 'redux';
-import {remoteify} from './actions/ActionTypes';
+import {remoteify, clearMultiplayerActions, getMultiplayerConnection} from './multiplayer/Remoteify';
 import {Action, Reducer} from './Testing';
 
 function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {
@@ -10,6 +10,9 @@ function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {
 }
 
 describe('Test Environment', () => {
+
+  afterEach(clearMultiplayerActions);
+
   describe('Reducer', () => {
     test('supports general execution', () => {
       const result = Reducer(testReducer).withState({}).execute({type: 'TEST_ACTION', b: 5} as Redux.Action);
@@ -33,19 +36,6 @@ describe('Test Environment', () => {
         dispatch({type: 'ACTION2'});
       })).execute({b: 5});
       expect(result).toEqual([{type: 'ACTION1'}, {type: 'ACTION2'}]);
-    });
-    test('supports expect.toSendMultiplayer', () => {
-      const action = remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {
-        dispatch({type: 'ACTION1'});
-        dispatch({type: 'ACTION2'});
-        return {b: 1};
-      });
-      Action(action).expect({b: 5}).toSendMultiplayer();
-      Action(action).expect({b: 5}).toSendMultiplayer({b: 1});
-    });
-    test('supports expect.toNotSendMultiplayer', () => {
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => null)).expect({b: 5}).toNotSendMultiplayer();
-      Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => ({b: 5}))).expect({b: 5}).toNotSendMultiplayer({b: 1});
     });
     test('supports expect.toDispatch', () => {
       Action(remoteify((a: {b: number}, dispatch: Redux.Dispatch<any>) => {

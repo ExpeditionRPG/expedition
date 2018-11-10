@@ -1,7 +1,8 @@
 import * as Redux from 'redux';
 import {ActionEvent} from 'shared/multiplayer/Events';
-import {local} from '../actions/Multiplayer';
+import {local, sendEvent, sendStatus} from '../actions/Multiplayer';
 import {Connection} from './Connection';
+import {counterAdd} from './Counters';
 
 export function createMiddleware(conn: Connection): Redux.Middleware {
   return ({dispatch, getState}: Redux.MiddlewareAPI<any>) => (next: Redux.Dispatch<any>) => (action: any) => {
@@ -23,13 +24,13 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
     if (action && action.type) {
       switch (action.type) {
         case 'MULTIPLAYER_REJECT':
-          conn.stats.failedTransactions++;
+          counterAdd('failedTransactions', 1);
           break;
         case 'MULTIPLAYER_COMMIT':
-          conn.stats.successfulTransactions++;
+          counterAdd('successfulTransactions', 1);
           break;
         case 'MULTIPLAYER_COMPACT':
-          conn.stats.compactionEvents++;
+          counterAdd('compactionEvents', 1);
           break;
         default:
           break;
@@ -38,8 +39,9 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
 
     if (action instanceof Array) {
       const [name, fn, args] = action;
-      if (conn.isConnected() && !localOnly && !inflight) {
-        inflight = conn.localEventCounter + 1;
+      const {commitID, multiplayer} = getState();
+      if (multiplayer && multiplayer.connected && !localOnly && !inflight) {
+        inflight = (conn.getMaxBufferID() || commitID) + 1;
       }
 
       // TODO: Handle txn mismatch when remoteArgs is null
@@ -59,7 +61,7 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
         delete remoteArgs.promise;
         const argstr = JSON.stringify(remoteArgs);
         console.log('WS: outbound #' + inflight + ': ' + name + '(' + argstr + ')');
-        conn.sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent);
+        dispatch(sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent, commitID));
       }
       return result;
     } else if (typeof(action) === 'function') {
@@ -81,7 +83,7 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
     // between the server and client and the client state has just been thrown out.
     // Send a status ping to the server to inform it of our new state.
     if (action.type === 'MULTIPLAYER_COMPACT') {
-      conn.sendStatus();
+      dispatch(sendStatus());
     }
   };
 }

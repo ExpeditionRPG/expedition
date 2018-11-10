@@ -121,7 +121,10 @@ describe('Combat actions', () => {
     });
 
     test('passes seed to multiplayer', () => {
-      Action(initCustomCombat, {settings: TEST_SETTINGS}).expect({seed: 'testseed'}).toSendMultiplayer({seed: 'testseed'});
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: {...initialMultiplayer, connected: true, client: "abc", instance: "def", commitID: 0});
+      (store as any).multiplayerClient.sendEvent = jasmine.createSpy('sendEvent');
+      store.dispatch(initCustomCombat({seed: 'testseed'}));
+      expect((store as any).multiplayerClient.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({args: JSON.stringify({seed: 'testseed'})}), undefined);
     });
 
     test('uses passed seed', () => {
@@ -133,7 +136,7 @@ describe('Combat actions', () => {
   describe('isSurgeNextRound', () => {
     test('surges according to the period', () => {
       // "Play" until surge
-      const store = newMockStore({settings: TEST_SETTINGS});
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: initialMultiplayer});
       let node = newCombatNode();
       for (let i = 0; i < 10 && (!node || !isSurgeNextRound(node.ctx.templates.combat)); i++) {
         store.clearActions();
@@ -168,7 +171,7 @@ describe('Combat actions', () => {
 
   describe('handleCombatTimerStop', () => {
     const newStore = (overrides: any) => {
-      const store = newMockStore({});
+      const store = newMockStore({multiplayer: initialMultiplayer});
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
         node: newCombatNode(),

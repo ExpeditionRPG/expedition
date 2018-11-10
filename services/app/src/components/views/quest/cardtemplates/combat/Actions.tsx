@@ -1,4 +1,4 @@
-import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
@@ -10,6 +10,7 @@ import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} fro
 import {getStore} from 'app/Store';
 import Redux from 'redux';
 const seedrandom = require('seedrandom');
+import {remoteify} from 'app/multiplayer/Remoteify';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
 import {defaultContext} from '../Template';

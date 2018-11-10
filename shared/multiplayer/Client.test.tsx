@@ -17,10 +17,6 @@ export class TestClient extends ClientBase {
     this.connected = connected;
   }
 
-  public sendFinalizedEvent(e: MultiplayerEvent) {
-    this.events.push(e);
-  }
-
   public disconnect() {
     // Mock not needed for now
   }
@@ -53,20 +49,5 @@ describe('Client', () => {
   test('can subscribe & callback handlers', () => {
     const c = new TestClient();
     expect(c.doParseEvent(JSON.stringify(basicEvent))).toEqual(basicEvent);
-  });
-
-  test('does not try to send if not connected', () => {
-    const c = new TestClient();
-    c.setConnectState(false);
-    c.sendEvent(basicEventBody);
-    expect(c.events).toEqual([]);
-  });
-
-  test('finalizes and sends messages', () => {
-    const c = new TestClient();
-    c.configure('testclient', 'testinstance');
-    c.setConnectState(true);
-    c.sendEvent(basicEventBody);
-    expect(c.events).toEqual([basicEvent]);
   });
 });
