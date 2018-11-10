@@ -305,11 +305,9 @@ describe('Multiplayer actions', () => {
           args: JSON.stringify({n: 1})
         },
       }, false, 0, multiplayer, c).then((result) => {
-        done.fail('did not fail');
-      }).catch(() => {
         expect(c.publish).toHaveBeenCalledWith(jasmine.objectContaining({event: jasmine.objectContaining({type: "STATUS"})}));
         done();
-      });
+      }).catch(done.fail);
     });
     test('handles MULTI_EVENT', (done) => {
       // Update the commit ID when the action is executed

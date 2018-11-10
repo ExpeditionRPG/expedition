@@ -217,7 +217,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
       // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
       console.log('Ignoring #' + e.id + ' ' + e.event.type + ' (counter at #' + commitID + ')');
       dispatch(sendStatus(undefined, undefined, undefined, c));
-      return Promise.reject('BAD_COMMIT_ID');
+      return Promise.resolve();
     }
 
     const body = e.event;
@@ -267,7 +267,7 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
           result = dispatch(action);
         } finally {
           if (e.id !== null) {
-            commit(e.id);
+            dispatch(commit(e.id));
           }
         }
         return result;
