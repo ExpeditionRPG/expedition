@@ -32,9 +32,5 @@
   "dependencies": {
     "cordova-android": "^7.1.1",
     "cordova-ios": "^4.5.5"
-  },
-  "devDependencies": {
-    "webpack-cli": "^3.1.2",
-    "webpack-command": "^0.4.1"
   }
 }
