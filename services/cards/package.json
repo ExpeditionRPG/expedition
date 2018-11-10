@@ -5,6 +5,6 @@
   "homepage": "http://cards.expeditiongame.com",
   "scripts": {
     "build": "webpack --config ./webpack.dist.config.js --display-error-details --verbose --progress",
-    "start": "webpack-dev-server --progress --hot"
+    "start": "webpack-dev-server --progress"
   }
 }
