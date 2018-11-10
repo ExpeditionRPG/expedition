@@ -70,6 +70,7 @@ const options = {
     quiet: false,
     noInfo: false,
     historyApiFallback: true,
+    watchContentBase: true,
     watchOptions: ((process.env.WATCH_POLL) ? {aggregateTimeout: 300, poll: 1000} : {}),
   },
 };
