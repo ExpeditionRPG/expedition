@@ -1,3 +1,6 @@
+declare var require: any;
+declare var module: any;
+
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -7,7 +10,6 @@ import * as Redux from 'redux';
 import theme from 'shared/Theme';
 import {downloadCards} from './actions/Cards';
 import {loadFiltersFromUrl} from './actions/Filters';
-import MainContainer from './components/MainContainer';
 import {getStore} from './Store';
 
 // This is necessary to prevent compiler errors until/unless we fix the rest of
@@ -48,7 +50,18 @@ window.addEventListener('keydown', (event: any) => {
   }
 });
 
+const setupHotReload = () => {
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.accept('./components/Main', () => {
+      setTimeout(() => {render(); });
+    });
+  }
+};
+
 const render = () => {
+  // Require is done INSIDE this function to reload app changes.
+  const MainContainer = require('./components/MainContainer').default;
   const base = document.getElementById('app');
   if (!base) {
     throw new Error('Could not find react-app element');
@@ -63,4 +76,6 @@ const render = () => {
     base
   );
 };
+
+setupHotReload();
 render();

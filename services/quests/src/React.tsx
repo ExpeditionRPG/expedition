@@ -1,6 +1,9 @@
+declare var require: any;
+declare var module: any;
+
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import * as React from 'react';
-import {render} from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import theme from 'shared/Theme';
@@ -9,7 +12,6 @@ import {renderAndPlay} from './actions/Editor';
 import {questLoading, saveQuest} from './actions/Quest';
 import {setSnackbar} from './actions/Snackbar';
 import {loginUser} from './actions/User';
-import MainContainer from './components/MainContainer';
 import {VERSION} from './Constants';
 import {store} from './Store';
 
@@ -183,11 +185,32 @@ $.ajaxSetup({
   },
 });
 
-render(
-  <MuiThemeProvider theme={theme}>
-    <Provider store={store}>
-      <MainContainer></MainContainer>
-    </Provider>
-  </MuiThemeProvider>,
-  document.getElementById('react-app')
-);
+const setupHotReload = () => {
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.accept('./components/Main', () => {
+      setTimeout(() => {render(); });
+    });
+  }
+};
+
+const render = () => {
+  // Require is done INSIDE this function to reload app changes.
+  const MainContainer = require('./components/MainContainer').default;
+  const base = document.getElementById('react-app');
+  if (!base) {
+    throw new Error('Could not find react-app element');
+  }
+  ReactDOM.unmountComponentAtNode(base);
+  ReactDOM.render(
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MainContainer />
+      </Provider>
+    </MuiThemeProvider>,
+    base
+  );
+};
+
+setupHotReload();
+render();
