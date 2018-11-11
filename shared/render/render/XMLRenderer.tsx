@@ -153,7 +153,7 @@ export const XMLRenderer: Renderer = {
         return;
       }
       if (rendered.find('#' + m[1]).length === 0) {
-        log.err('goto "' + m[1] + '" without matching ID (check your spelling)', '426', parseInt(c.attribs['data-line'], 10) || 0);
+        log.err('goto "' + m[1] + '" does not match any card IDs (check your spelling)', '426', parseInt(c.attribs['data-line'], 10) || 0);
       }
     });
     return [];

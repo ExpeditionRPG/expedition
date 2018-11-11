@@ -1,5 +1,5 @@
 export const NUMBER = 426;
-export const NAME = `goto \"bad\" without matching ID (check your spelling)`;
+export const NAME = `goto \"bad\" does not match any card IDs (check your spelling)`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
