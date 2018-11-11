@@ -11,23 +11,17 @@ import {changeSettings} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
 import {fetchQuestXML, logMultiplayerStats, submitUserFeedback} from '../../actions/Web';
 import {MIN_FEEDBACK_LENGTH} from '../../Constants';
-import {getMultiplayerClient, initialMultiplayerCounters, MultiplayerCounters} from '../../Multiplayer';
+import {getCounters, MultiplayerCounters} from '../../multiplayer/Counters';
 import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
 const mapStateToProps = (state: AppState): StateProps => {
-  let multiplayerStats: MultiplayerCounters;
-  if (state.dialog && state.dialog.open === 'MULTIPLAYER_STATUS') {
-    multiplayerStats = getMultiplayerClient().getStats();
-  } else {
-    multiplayerStats = initialMultiplayerCounters;
-  }
-
   return {
     dialog: state.dialog,
-    multiplayerStats,
+    multiplayer: state.multiplayer,
+    multiplayerStats: getCounters(),
     quest: state.quest || {details: {}} as any,
-    selectedSave: (state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
+    selectedSave: (state.quest && state.quest.savedTS) ? {details: state.quest.details, ts: state.quest.savedTS} : null,
     settings: state.settings,
     user: state.user,
   };
@@ -70,12 +64,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onMultitouchChange: (v: boolean) => {
       dispatch(changeSettings({multitouch: v}));
     },
-    onPlayerDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 0 || numPlayers > 6) {
+    onPlayerDelta: (numLocalPlayers: number, delta: number) => {
+      numLocalPlayers += delta;
+      if (numLocalPlayers <= 0 || numLocalPlayers > 6) {
         return;
       }
-      dispatch(changeSettings({numPlayers}));
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onSendMultiplayerReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => {
       logMultiplayerStats(user, quest, stats)
@@ -84,9 +78,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
           dispatch(setDialog(null));
         });
     },
-    playQuest: (quest: Quest) => {
+    playQuest: (details: Quest) => {
       dispatch(setDialog(null));
-      dispatch(fetchQuestXML(quest));
+      dispatch(fetchQuestXML({details}));
     },
   };
 };

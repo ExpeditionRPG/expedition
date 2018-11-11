@@ -44,8 +44,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       if (rating && rating > 0) {
         dispatch(submitUserFeedback({quest, settings, user, anonymous, text, rating, type: 'rating'}));
       }
+      dispatch(toPrevious({skip: [{name: 'QUEST_CARD'}, {name: 'QUEST_SETUP'}]}));
       dispatch(exitQuest({}));
-      dispatch(toPrevious({name: 'FEATURED_QUESTS'}));
     },
     onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
       logEvent('navigate', 'tip_start', {value: amount, action: quest.details.title, label: quest.details.id});

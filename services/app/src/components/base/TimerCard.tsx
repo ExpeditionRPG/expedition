@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {getMultiplayerClient} from '../../Multiplayer';
+import {toClientKey} from 'shared/multiplayer/Session';
 import {CardThemeType} from '../../reducers/StateTypes';
 import {MultiplayerState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 import MultiTouchTrigger from './MultiTouchTrigger';
 
 interface Props extends React.Props<any> {
-  numPlayers: number;
+  numLocalPlayers: number;
   secondaryText?: string;
   tertiaryText?: string;
   icon?: string;
@@ -33,7 +33,7 @@ export default class TimerCard extends React.Component<Props, {}> {
       return;
     }
 
-    if (numFingers === this.props.numPlayers) {
+    if (numFingers === this.props.numLocalPlayers) {
       clearInterval(this.interval);
       this.interval = null;
       this.props.onTimerStop(Date.now() - this.state.startTimeMillis);
@@ -52,7 +52,6 @@ export default class TimerCard extends React.Component<Props, {}> {
     let unheldClientCount = 0;
     let timerHeld = false;
     if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
-      const rpClientID = getMultiplayerClient().getClientKey();
       for (const client of Object.keys(this.props.multiplayerState.clientStatus)) {
         const clientStatus = this.props.multiplayerState.clientStatus[client];
         if (!clientStatus.connected) {
@@ -60,7 +59,7 @@ export default class TimerCard extends React.Component<Props, {}> {
         }
         const waitingOn = clientStatus.waitingOn;
         const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER') || false;
-        if (client === rpClientID) {
+        if (client === toClientKey(this.props.multiplayerState.client, this.props.multiplayerState.instance)) {
           timerHeld = waitingOnTimer;
         } else if (!waitingOnTimer) {
           unheldClientCount++;

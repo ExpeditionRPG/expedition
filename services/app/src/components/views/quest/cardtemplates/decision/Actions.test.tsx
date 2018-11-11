@@ -7,10 +7,11 @@ import {
   skillTimeMillis,
   handleDecisionRoll,
   toDecisionCard,
+  selectChecks,
 } from './Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {EMPTY_DECISION_STATE} from './Types';
+import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
 import {Action, newMockStore} from 'app/Testing';
 import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
@@ -84,6 +85,17 @@ describe('Decision actions', () => {
       expect(computeSuccesses([16, 15, 10, 14], {difficulty: 'hard'})).toEqual(0);
     });
   });
+  describe('selectChecks', () => {
+    test('selects a subset if there are more than 3 decisions', () => {
+      const cs: LeveldSkillCheck[] = [];
+      for (const skill of ['athletics', 'knowledge', 'charisma']) {
+        for (const persona of ['light', 'dark']) {
+          cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill});
+        }
+      }
+      expect(selectChecks(cs, seedrandom.alea('1234')).length).toEqual(3);
+    });
+  });
   describe('computeOutcome', () => {
     const selected = {difficulty: 'medium', requiredSuccesses: 5};
 
@@ -121,9 +133,9 @@ describe('Decision actions', () => {
   describe('skillTimeMillis', () => {
     test('gives multiple players less time than single player', () => {
       expect(
-        skillTimeMillis({...s.basic, numPlayers: 2}, m.basic)
+        skillTimeMillis({...s.basic, numLocalPlayers: 2}, m.basic)
       ).toBeLessThan(
-        skillTimeMillis({...s.basic, numPlayers: 1}, m.basic)
+        skillTimeMillis({...s.basic, numLocalPlayers: 1}, m.basic)
       );
     });
     test.skip('respects settings', () => { /* TODO */});

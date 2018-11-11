@@ -3,6 +3,14 @@ const cheerio: any = require('cheerio');
 
 declare var window: any;
 
+// https://stackoverflow.com/a/9229821/1332186
+function arrayUniques(array) {
+  let seen = {};
+  return array.filter((num) => {
+    return seen.hasOwnProperty(num) ? false : (seen[num] = true);
+  }
+}
+
 describe('Context', () => {
   beforeEach(() => {
     spyOn(window, 'onerror');
@@ -32,6 +40,15 @@ describe('Context', () => {
     });
     test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', defaultContext())).toEqual(null);
+    });
+    test('generates varied random numbers', () => {
+      const ctx = {...defaultContext()};
+      const rng = () => Math.random();
+      const output = [];
+      for (let i = 0; i < 50; i++) {
+        output.push(evaluateOp('random()', ctx, rng));
+      }
+      expect(arrayUniques(output).length).toBeGreaterThan(20);
     });
     test('has repeatable random() behavior based on seed', () => {
       const ctx = {...defaultContext()};
@@ -79,6 +96,14 @@ describe('Context', () => {
       const ctx = defaultContext();
       const result = evaluateContentOps('{{random()}}\n{{random()}}', ctx).split('\n');
       expect(result[1]).not.toEqual(result[2]);
+    });
+
+    test('changes random result for different contexts', () => {
+      let ctx = defaultContext();
+      const r1 = evaluateContentOps('{{random()}}', ctx);
+      ctx = defaultContext();
+      const r2 = evaluateContentOps('{{random()}}', ctx);
+      expect(r1).not.toEqual(r2);
     });
   });
 

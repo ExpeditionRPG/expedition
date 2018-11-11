@@ -10,7 +10,12 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 export interface AnnouncementState {
   open: boolean;
   message: string;
-  link: string;
+  link?: string;
+}
+
+export interface ServerStatusState {
+  announcement: AnnouncementState;
+  isLatestAppVersion: boolean;
 }
 
 export type AudioLoadingType = 'UNLOADED' | 'LOADING' | 'ERROR' | 'LOADED';
@@ -37,7 +42,17 @@ export interface CheckoutState {
   stripe: stripe.Stripe|null;
 }
 
-export type DialogIDType = null | 'EXIT_QUEST' | 'EXPANSION_SELECT' | 'EXIT_REMOTE_PLAY' | 'FEEDBACK' | 'REPORT_ERROR' | 'REPORT_QUEST' | 'MULTIPLAYER_STATUS' | 'SET_PLAYER_COUNT' | 'DELETE_SAVED_QUEST';
+export type DialogIDType = null
+  | 'EXIT_QUEST'
+  | 'EXPANSION_SELECT'
+  | 'EXIT_REMOTE_PLAY'
+  | 'FEEDBACK'
+  | 'REPORT_ERROR'
+  | 'REPORT_QUEST'
+  | 'MULTIPLAYER_STATUS'
+  | 'MULTIPLAYER_PEERS'
+  | 'SET_PLAYER_COUNT'
+  | 'DELETE_SAVED_QUEST';
 export interface DialogState {
   open: DialogIDType;
   message?: string;
@@ -49,9 +64,7 @@ export interface EndSettings {
   text: string;
 }
 
-export type SearchPhase = 'DISCLAIMER' | 'SETTINGS' | 'SEARCH' | 'PRIVATE';
-
-export interface SearchSettings {
+export interface SearchParams {
   [index: string]: any;
   id?: string;
   text?: string;
@@ -78,6 +91,7 @@ export interface ContentSetsType {
 }
 
 export interface SettingsType {
+  [index: string]: any;
   audioEnabled: boolean;
   autoRoll: boolean;
   contentSets: ContentSetsType;
@@ -85,7 +99,7 @@ export interface SettingsType {
   experimental: boolean;
   fontSize: FontSizeType;
   multitouch: boolean;
-  numPlayers: number;
+  numLocalPlayers: number;
   showHelp: boolean;
   simulator: boolean;
   timerSeconds: number;
@@ -117,13 +131,15 @@ export type CardName =
   'QUEST_SETUP' |
   'QUEST_END' |
   'QUEST_CARD' |
-  'FEATURED_QUESTS' |
+  'TUTORIAL_QUESTS' |
+  'GM_CARD' |
   'SPLASH_CARD' |
+  'SEARCH_DISCLAIMER' |
   'SEARCH_CARD' |
+  'SEARCH_SETTINGS' |
   'SETTINGS' |
-  'ADVANCED' |
   'REMOTE_PLAY';
-export type CardPhase = TemplatePhase | SearchPhase | MultiplayerPhase | CheckoutPhase;
+export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
 export interface CardState {
   questId: string;
   name: CardName;
@@ -133,12 +149,11 @@ export interface CardState {
   overrideDebounce?: boolean;
 }
 
-export type TransitionClassType = 'next' | 'prev' | 'instant';
+export type TransitionClassType = 'next' | 'prev' | 'instant' | 'nav';
 
 export interface QuestState {
   details: Quest;
   node: ParserNode;
-  seed: string;
   // Additional details populated depending on from where
   // the user approaches the quest
   lastPlayed: Date|null;
@@ -151,8 +166,8 @@ export interface SavedQuestState {
 }
 
 export interface SearchState {
-  search: SearchSettings;
-  results: Quest[];
+  params: SearchParams;
+  results: Quest[]|null;
   searching: boolean;
 }
 
@@ -171,10 +186,12 @@ export interface UserState {
   name: string;
   image: string;
   email: string;
+  lastLogin: Date;
+  loginCount: number;
 }
 
-export interface UserQuestHistory {
-  list: UserQuestsType;
+export interface UserQuestsState {
+  history: UserQuestsType;
 }
 
 export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
@@ -193,36 +210,41 @@ export interface MultiplayerSessionMeta {
 }
 
 export interface MultiplayerState {
-  session: MultiplayerSessionType|null;
-  history: MultiplayerSessionMeta[];
-  syncing: boolean;
   clientStatus: {[client: string]: StatusEvent};
+  client: string;
+  instance: string;
+  history: MultiplayerSessionMeta[];
+  session: MultiplayerSessionType|null;
+  syncing: boolean;
+  multiEvent: boolean;
+  syncID: number;
+  connected: boolean;
 }
 
 // AppStateBase is what's stored in AppState._history.
 // It contains all the reduced state that should be restored
 // to the redux main state when the "<" button is pressed in
-// the UI. Notably, it does NOT include non-undoable attributes
+// the UI. Notably, it excludes "permanent" attributes
 // such as settings.
 export interface AppStateBase {
-  announcement: AnnouncementState;
   audio: AudioState;
   card: CardState;
   checkout: CheckoutState;
   dialog: DialogState;
   quest: QuestState;
-  search: SearchState;
-  snackbar: SnackbarState;
-  commitID: number;
 }
 
 export interface AppState extends AppStateBase {
-  settings: SettingsType;
-  multiplayer: MultiplayerState;
-  questHistory: UserQuestHistory;
-  saved: SavedQuestState;
   audioData: AudioDataState;
+  multiplayer: MultiplayerState;
+  saved: SavedQuestState;
+  search: SearchState;
+  settings: SettingsType;
   user: UserState;
+  serverstatus: ServerStatusState;
+  snackbar: SnackbarState;
+  commitID: number;
+  userQuests: UserQuestsState;
 }
 
 export interface AppStateWithHistory extends AppState {

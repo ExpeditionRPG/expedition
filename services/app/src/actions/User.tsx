@@ -54,23 +54,29 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
   })
   .then(handleFetchErrors)
   .then((response: Response) => response.text())
-  .then((userResult: string) => {
-    let id = '';
+  .then((response: string) => {
+    let userResult = {} as any;
     try {
-      id = JSON.parse(userResult).id || userResult;
+      userResult = {
+        id: response,
+        ...JSON.parse(response),
+      };
     } catch (err) {
-      id = userResult;
+      userResult.id = response;
     }
+
     if (getGA()) {
-      getGA().set({ userId: id });
+      getGA().set({ userId: userResult.id });
     }
-    Raven.setUserContext({id});
+    Raven.setUserContext({id: userResult.id});
     return {
       email: user.email,
-      id,
+      id: userResult.id,
       image: user.image,
       loggedIn: true,
       name: user.name,
+      lastLogin: new Date(userResult.lastLogin),
+      loginCount: userResult.loginCount,
     };
   }).catch((error: Error) => {
     console.log('Request failed', error);

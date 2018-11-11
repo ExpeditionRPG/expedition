@@ -7,13 +7,14 @@ import Picker from '../base/Picker';
 import TextDivider from '../base/TextDivider';
 
 export interface StateProps {
+  isLatestAppVersion: boolean;
   multitouch: boolean;
-  numPlayers: number;
+  numLocalPlayers: number;
   user: UserState;
 }
 
 export interface DispatchProps {
-  onDelta: (numPlayers: number, delta: number) => void;
+  onDelta: (numLocalPlayers: number, delta: number) => void;
   onLocalSelect: () => void;
   onMultiplayerSelect: (user: UserState) => void;
   onMultitouchChange: (change: boolean) => void;
@@ -24,8 +25,8 @@ interface Props extends StateProps, DispatchProps {}
 const ModeSelect = (props: Props): JSX.Element => {
   return (
     <Card title="Game Setup">
-      <Picker label="Adventurers" onDelta={(i: number) => props.onDelta(props.numPlayers, i)} value={props.numPlayers}>
-        Set this to the number of players.
+      <Picker label="Players" onDelta={(i: number) => props.onDelta(props.numLocalPlayers, i)} value={props.numLocalPlayers}>
+      {(props.numLocalPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       </Picker>
       <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
         {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
@@ -39,12 +40,18 @@ const ModeSelect = (props: Props): JSX.Element => {
           </div>
         </div>
       </Button>
-      <Button id="selectOnlineMultiplayer" onClick={() => props.onMultiplayerSelect(props.user)}>
+      <Button id="selectOnlineMultiplayer"
+        disabled={!props.isLatestAppVersion}
+        onClick={() => props.onMultiplayerSelect(props.user)}
+      >
         <div className="questButtonWithIcon">
-          <div className="title">Online Multiplayer - Beta</div>
-          <div className="summary">
+          <div className="title">Online Multiplayer</div>
+          {props.isLatestAppVersion && <div className="summary">
             {(!props.user || !props.user.loggedIn) ? 'Login and sync' : 'Sync'} your app with friends on another device.
-          </div>
+          </div>}
+          {!props.isLatestAppVersion && <div className="summary">
+            Disabled: Please update your app to the latest version or use the web app at app.expeditiongame.com.
+          </div>}
         </div>
       </Button>
     </Card>

@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {SessionID} from 'shared/multiplayer/Session';
-import {toCard} from '../../actions/Card';
+import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
@@ -25,9 +25,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
-    onContinue: () => {
+    onStart: () => {
       logEvent('multiplayer', 'session_start', {});
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+      dispatch(toNavCard({}));
+
+      // Prevent us from going back
+      dispatch({type: 'CLEAR_HISTORY'});
     },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(multiplayerNewSession(user));

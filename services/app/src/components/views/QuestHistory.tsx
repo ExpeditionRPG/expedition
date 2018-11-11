@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {UserQuestInstance, UserQuestsType} from '../../reducers/StateTypes';
-import Button from '../base/Button';
 import Card from '../base/Card';
+import QuestButtonContainer from '../base/QuestButtonContainer';
 
 const Moment = require('moment');
 
@@ -11,7 +11,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onSelect: (selected: UserQuestInstance) => void;
-  onReturn: () => any;
+  onReturn: () => void;
 }
 
 interface Props extends StateProps, DispatchProps {}
@@ -21,26 +21,23 @@ const QuestHistory = (props: Props): JSX.Element => {
     return (
       <Card title="Quest History">
         <p>You haven't played any quests yet.</p>
+        <p>Once you've signed in and played a few quests, they will appear here.</p>
       </Card>
     );
   }
 
   const items: JSX.Element[] = Object.keys(props.played)
-    .map((k: string, index: number): JSX.Element => {
-      const i = props.played[k];
-      console.log(i);
+    .map((k: string, i: number): JSX.Element => {
+      const h = props.played[k];
       return (
-        <Button onClick={() => props.onSelect(i)} key={index} id={'quest' + index.toString()}>
-          <div className="questButton">
-            <div className="title">{i.details.title}</div>
-            <div className="summary">{Moment(i.lastPlayed).fromNow()}</div>
-          </div>
-        </Button>
+        <QuestButtonContainer key={i} id={`quest${i}`} quest={h.details} onClick={() => props.onSelect(h)}>
+          <span className="details">{Moment(h.lastPlayed).fromNow()}</span>
+        </QuestButtonContainer>
       );
     });
 
   return (
-    <Card title="Quest History">
+    <Card title="Quest History" icon="hourglass" onReturn={props.onReturn}>
       {items}
     </Card>
   );

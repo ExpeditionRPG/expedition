@@ -137,8 +137,8 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
         multitouch: false,
-        numPlayers: quest.minplayers,
-        showHelp: false,
+        numLocalPlayers: quest.minplayers,
+        showHelp: true,
         simulator: true,
         timerSeconds: 10,
         vibration: false,
@@ -155,6 +155,8 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         theme: quest.theme || 'base',
         title: quest.title || '',
         partition: 'expedition-private',
+        expansionhorror: quest.expansionhorror,
+        expansionfuture: quest.expansionfuture,
       })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {

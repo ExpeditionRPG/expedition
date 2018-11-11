@@ -1,18 +1,26 @@
 import * as React from 'react';
-import {InteractionEvent, MultiplayerEvent} from 'shared/multiplayer/Events';
-import {getMultiplayerClient} from '../../Multiplayer';
+import {InteractionEvent, MultiplayerEvent, MultiplayerEventBody} from 'shared/multiplayer/Events';
+
+export interface StateProps {
+  id?: string;
+  abortOnScroll?: boolean;
+  children: any;
+  className?: string;
+  includeLocalInteractions?: boolean;
+  onInteraction?: (client: string, event: InteractionEvent) => any;
+}
+
+export interface DispatchProps {
+  onEvent: (e: MultiplayerEventBody) => void;
+  onSubscribe: (handler: (e: MultiplayerEvent) => void) => void;
+  onUnsubscribe: (handler: (e: MultiplayerEvent) => void) => void;
+}
+
+export interface Props extends StateProps, DispatchProps {}
 
 // Listens to multiplayer client published events and forwards InteractionEvents
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
-export interface Props {
-  abortOnScroll?: boolean;
-  children: any;
-  className?: string;
-  id?: string;
-  includeLocalInteractions?: boolean;
-  onInteraction?: (client: string, event: InteractionEvent) => any;
-}
 export default class MultiplayerAffector extends React.Component<Props, {}> {
   private listeners: {[k: string]: (e: any) => any};
   private ignoreNextMouseDown: boolean;
@@ -30,7 +38,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     this.ignoreNextMouseDown = false;
     this.mouseDown = false;
     this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
-    getMultiplayerClient().subscribe(this.boundHandleMultiplayerEvent);
+    this.props.onSubscribe(this.boundHandleMultiplayerEvent);
     this.listeners = {
       mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
       mousemove: (e: MouseEvent) => this.mouseMoveEvent(e),
@@ -46,7 +54,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       return;
     }
     if (this.props.onInteraction) {
-      this.props.onInteraction(e.client, e.event);
+      this.props.onInteraction(e.client + '|' + e.instance, e.event);
     }
   }
 
@@ -102,7 +110,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     // Don't send move events over multiplayer.
     // Our implementation does not allow high-frequency value updates.
     if (type !== 'touchmove') {
-      getMultiplayerClient().sendEvent(e);
+      this.props.onEvent(e);
     }
 
     if (this.props.includeLocalInteractions && this.props.onInteraction) {
@@ -124,7 +132,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
   }
 
   public componentWillUnmount() {
-    getMultiplayerClient().unsubscribe(this.boundHandleMultiplayerEvent);
+    this.props.onUnsubscribe(this.boundHandleMultiplayerEvent);
 
     if (!this.ref) {
       return;

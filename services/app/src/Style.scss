@@ -60,6 +60,19 @@
   transition: transform 300ms ease-in-out;
 }
 
+.nav-enter {
+  opacity: 1;
+}
+.nav-enter.nav-enter-active {
+  opacity: 1;
+}
+.nav-exit {
+  opacity: 1;
+}
+.nav-exit.nav-exit-active {
+  opacity: 0.01;
+  transition: opacity 250ms ease-out;
+}
 
 .fade-enter {
   opacity: 0.01;
@@ -96,6 +109,7 @@ $sizemap: (
   inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
   input: 32px, /* size of input icon-style buttons */
   watermark: 36vh, /* height-specific */
+  navfooterbtn: 19vw,
   huge: 12vmin,
   large: 6vmin,
   icon: 4.5vmin,
@@ -142,7 +156,7 @@ html {
 }
 
 body {
-  background-color: $bg_inactive;
+  background-color: $bg_primary;
   overflow: hidden;
   width: 100%;
   height: 100%;
@@ -174,27 +188,15 @@ body {
   }
 }
 
-.remote_footer {
+.remote_footer, .nav_footer {
   position: absolute;
   bottom: 0;
-  height: size(remotefooter);
   width: 100%;
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  padding-top: size(remotefooter) / 10;
   background-color: $bg_primary;
   border-top: $border_accent;
-
-  .peers {
-    flex: 8;
-    text-align: center;
-
-    svg {
-      vertical-align: middle;
-      padding: 0 size(base);
-    }
-  }
 
   &.quest_theme_horror {
     background-color: $bg_primary_faded;
@@ -204,6 +206,76 @@ body {
     background-color: $bg_dark_primary;
     color: $font_color_dark_primary;
   }
+}
+
+.nav_footer {
+  button .navlabel {
+    font-family: Cinzel, serif;
+  }
+
+  button {
+    min-width: size(large) !important;
+    max-width: size(navfooterbtn) !important;
+  }
+}
+
+.remote_footer {
+  padding-top: size(remotefooter) / 10;
+  height: size(remotefooter);
+
+  .peers {
+    flex: 8;
+    text-align: center;
+
+    .group {
+      padding-left: size(base);
+      padding-right: size(base);
+      display: flex;
+      flex-direction: row;
+    }
+
+    svg {
+      vertical-align: middle;
+      padding: 0 size(base);
+    }
+  }
+}
+
+.player1 {
+  fill: $magic_red;
+}
+.player2 {
+  fill: $melee_blue;
+}
+.player3 {
+  fill: $music_purple;
+}
+.player4 {
+  fill: $ranged_green;
+}
+.player5 {
+  fill: $influence_purple;
+}
+.player6 {
+  fill: $tech_grey;
+}
+.ripplep1 {
+  background-color: $magic_red !important;
+}
+.ripplep2 {
+  background-color: $melee_blue !important;
+}
+.ripplep3 {
+  background-color: $music_purple !important;
+}
+.ripplep4 {
+  background-color: $ranged_green !important;
+}
+.ripplep5 {
+  background-color: $influence_purple !important;
+}
+.ripplep6 {
+  background-color: $tech_grey !important;
 }
 
 .remote-affector {
@@ -216,6 +288,8 @@ body {
   background: black;
   position: fixed;
   z-index: 1000;
+  left: 0;
+  top: 0;
 
   > div {
     color: $font_color_dark_primary;
@@ -469,6 +543,11 @@ body.android .dialog .textfield:focus-within {
         color: $font_color_primary !important;
       }
     }
+    .base_button.mediumbutton button span {
+      font-size: 130% !important;
+      text-align: center !important;
+      font-family: Cinzel, serif;
+    }
     .base_button.bigbutton button span {
       font-size: 200% !important;
       text-align: center !important;
@@ -527,6 +606,12 @@ body.android .dialog .textfield:focus-within {
       .child_wrapper {
         margin: size(base);
       }
+
+      .filter_button {
+        float: right;
+        text-align: center;
+        font-size: fontsize(title);
+      }
     }
 
     .title_container {
@@ -578,9 +663,6 @@ body.android .dialog .textfield:focus-within {
         width: 100%;
         max-width: $absmaxdimension;
         margin: auto;
-        .filter_button {
-          float: right;
-        }
         .searchResultInfo {
           float: left;
           .inline_icon {
@@ -985,7 +1067,7 @@ body.android .dialog .textfield:focus-within {
       width: 90%;
       left: 50%;
       margin-left: -45%;
-      margin-top: -10%;
+      margin-top: -20%;
       position: absolute;
       top: 50%;
       text-align: center;
@@ -1071,6 +1153,11 @@ body.android .dialog .textfield:focus-within {
         line-height: $lineheight !important;
         text-shadow: $white_on_red_text_shadow;
       }
+      .inline_icon {
+        padding-left: 0.2em;
+        height: 0.8em;
+        margin-bottom: 0;
+      }
     }
     .splashTips {
       font-size: fontsize(flavor);
@@ -1105,6 +1192,25 @@ body.android .dialog .textfield:focus-within {
           color: red;
         }
       }
+    }
+
+    table {
+      td {
+        padding: size(small);
+
+        span {
+          display: inline-block;
+        }
+      }
+
+      td:first-child {
+        min-width: 17vmin;
+        text-align: center;
+        border-right: $border_accent;
+      }
+
+      padding: size(small);
+      border-collapse: collapse;
     }
 
     input {
@@ -1150,7 +1256,7 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  .questButtonWithIcon, .questButton, .searchResult {
+  .questButtonWithIcon, .questButton {
     padding-left: size(base);
     padding-right: size(base);
     &.played {
@@ -1176,6 +1282,7 @@ body.android .dialog .textfield:focus-within {
     .inline_icon {
       margin-bottom: -1 * size(tiny);
       padding-right: size(small);
+      padding-top: size(small);
     }
     .timing {
       opacity: 0.65;
@@ -1191,7 +1298,7 @@ body.android .dialog .textfield:focus-within {
       opacity: 0.65;
       float: left;
     }
-    .searchOrderDetail {
+    .details {
       opacity: 0.65;
       font-size: fontsize(flavor);
       display: inline-block;
@@ -1239,11 +1346,18 @@ body.android .dialog .textfield:focus-within {
         width: auto;
         .inline_icon {
           padding-right: 0;
-          padding-left: size(base);
-        }
-        svg {
+          padding-left: size(small);
+          margin-top: size(tiny);
+          margin-bottom: -2 * size(tiny);
           height: fontsize(flavor) !important;
           width: fontsize(flavor) !important;
+        }
+        .badge {
+          background: $font_color_faded;
+          color: $bg_primary;
+          padding: 4px 6px 0px 6px;
+          border-radius: 4px;
+          display: inline-block;
         }
       }
     }
@@ -1370,13 +1484,13 @@ body.android .dialog .textfield:focus-within {
   }
 
   .multiplayer_ripple {
-    height: '100%';
-    width: '100%';
-    position: 'absolute';
+    height: 100%;
+    width: 100%;
+    position: absolute;
     top: 0;
     left: 0;
-    overflow: 'hidden';
-    pointer-events: 'none';
+    overflow: hidden;
+    pointer-events: none;
     z-index: 1; /* This is also needed so that ripples do not bleed past a parent border radius.*/
   }
 
@@ -1442,7 +1556,7 @@ body.android .dialog .textfield:focus-within {
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #bg_dark_titlebar;
+      background: $bg_dark_titlebar;
       animation-timing-function: cubic-bezier(0, 1, 1, 0);
     }
     div:nth-child(1) {
@@ -1525,11 +1639,9 @@ $fontsizemap: (
   .base_checkbox .icon {
     top: size(tiny);
   }
-}
 
-@media screen and (max-height: 600px) {
   .splashMultitouchInstruction, .splashMultitouchPlayerCount {
-    margin-top: 0 !important;
+    margin-top: -5% !important;
   }
 }
 

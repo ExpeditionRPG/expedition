@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../actions/Card';
+import {toNavCard} from '../../actions/Card';
 import {loadMultiplayer} from '../../actions/Multiplayer';
 import {changeSettings} from '../../actions/Settings';
 import {ensureLogin} from '../../actions/User';
@@ -9,24 +9,25 @@ import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
+    isLatestAppVersion: state.serverstatus.isLatestAppVersion,
     multitouch: state.settings.multitouch,
-    numPlayers: state.settings.numPlayers,
+    numLocalPlayers: state.settings.numLocalPlayers,
     user: state.user,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 1 || numPlayers > 6) {
+    onDelta: (numLocalPlayers: number, delta: number) => {
+      numLocalPlayers += delta;
+      if (numLocalPlayers < 1 || numLocalPlayers > 6) {
         return;
       }
-      dispatch(changeSettings({numPlayers}));
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onLocalSelect: () => {
       dispatch(changeSettings({multitouch: false}));
-      dispatch(toCard({name: 'FEATURED_QUESTS'}));
+      dispatch(toNavCard({}));
     },
     onMultiplayerSelect(user: UserState): void {
       dispatch(ensureLogin())

@@ -28,7 +28,7 @@ const TEST_SETTINGS = {
   experimental: false,
   fontSize: 'NORMAL' as FontSizeType,
   multitouch: true,
-  numPlayers: 3,
+  numLocalPlayers: 3,
   showHelp: true,
   simulator: false,
   timerSeconds: 10,
@@ -40,12 +40,12 @@ const TEST_RP = {
   clientStatus: {
     1: {
       connected: true,
-      numPlayers: 3,
+      numLocalPlayers: 3,
       type: 'STATUS',
     },
     2: {
       connected: true,
-      numPlayers: 2,
+      numLocalPlayers: 2,
       type: 'STATUS',
     },
   },
@@ -61,11 +61,11 @@ describe('Combat actions', () => {
 
   describe('roundTimeMillis', () => {
     test('Set timer to 10s with two+ players', () => {
-      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 2});
+      const result = roundTimeMillis({...TEST_SETTINGS, numLocalPlayers: 2});
       expect(result).toEqual(10000);
     });
     test('Set timer to 20s with one player', () => {
-      const result = roundTimeMillis({...TEST_SETTINGS, numPlayers: 1});
+      const result = roundTimeMillis({...TEST_SETTINGS, numLocalPlayers: 1});
       expect(result).toEqual(20000);
     });
     test.skip('Accounts for remote play', () => { /* TODO */ }); // TODO
@@ -108,23 +108,35 @@ describe('Combat actions', () => {
   });
 
   describe('initCustomCombat', () => {
-    const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
-
     test('has custom=true', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         custom: true,
       }));
     });
 
     test('identifies as a combat element', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({});
       expect(actions[1].node.getTag()).toEqual('combat');
     });
+
+    test('passes seed to multiplayer', () => {
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: {...initialMultiplayer, connected: true, client: "abc", instance: "def", commitID: 0});
+      (store as any).multiplayerClient.sendEvent = jasmine.createSpy('sendEvent');
+      store.dispatch(initCustomCombat({seed: 'testseed'}));
+      expect((store as any).multiplayerClient.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({args: JSON.stringify({seed: 'testseed'})}), undefined);
+    });
+
+    test('uses passed seed', () => {
+      const actions = Action(initCustomCombat, {settings: TEST_SETTINGS}).execute({seed: 'testseed'});
+      expect(actions[1].node.ctx.seed).toEqual('testseed');
+    })
   });
 
   describe('isSurgeNextRound', () => {
     test('surges according to the period', () => {
       // "Play" until surge
-      const store = newMockStore({settings: TEST_SETTINGS});
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: initialMultiplayer});
       let node = newCombatNode();
       for (let i = 0; i < 10 && (!node || !isSurgeNextRound(node.ctx.templates.combat)); i++) {
         store.clearActions();
@@ -159,7 +171,7 @@ describe('Combat actions', () => {
 
   describe('handleCombatTimerStop', () => {
     const newStore = (overrides: any) => {
-      const store = newMockStore({});
+      const store = newMockStore({multiplayer: initialMultiplayer});
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
         node: newCombatNode(),
@@ -291,8 +303,8 @@ describe('Combat actions', () => {
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
     });
     test('does not go above player count', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numPlayers, delta: 1})[0].node;
-      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numPlayers);
+      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: TEST_SETTINGS.numLocalPlayers, delta: 1})[0].node;
+      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(TEST_SETTINGS.numLocalPlayers);
     });
     test('does not go below 0', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 1, delta: -2})[0].node;

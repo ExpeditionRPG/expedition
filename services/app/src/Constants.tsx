@@ -23,7 +23,70 @@ export const MULTIPLAYER_SETTINGS = {
   websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
-export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
+const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped
+export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
+  new Quest({
+    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Oust Albanus',
+    summary: 'Your party encounters a smelly situation.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/oust_albanus.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 40,
+    genre: 'Comedy',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Dungeon Crawl',
+    summary: 'How deep can you delve?',
+    author: 'Todd Medema',
+    publishedurl: 'quests/dungeon_crawl.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 20,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+  new Quest({
+    id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Mistress Malaise',
+    summary: 'Mystery, Misfortune, and a Mistress.',
+    author: 'Scott Martin',
+    publishedurl: 'quests/mistress_malaise.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 30,
+    maxtimeminutes: 60,
+    genre: 'Drama',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
+  }),
+];
+export const GM_QUESTS: Quest[] = [
+  // TODO - actually put GM quests here after stretch goal achieved.
+];
+export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
   new Quest({
     id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE',
     partition: 'expedition-public',
@@ -40,6 +103,8 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }),
   new Quest({
     id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
@@ -58,6 +123,8 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     contentrating: 'Kid-friendly',
     language: 'English',
     expansionhorror: true,
+    created: EPOCH,
+    published: EPOCH,
   }),
   new Quest({
     id: '1kWPBHWA6L9bViU1SqLd6WOw6hNMvtedI',
@@ -77,64 +144,15 @@ export const FEATURED_QUESTS: Quest[] = [ // Featured quest ids generated from p
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
-  }),
-  new Quest({
-    id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Oust Albanus',
-    summary: 'Your party encounters a smelly situation.',
-    author: 'Scott Martin',
-    publishedurl: 'quests/oust_albanus.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 40,
-    genre: 'Comedy',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-  }),
-  new Quest({
-    id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Mistress Malaise',
-    summary: 'Mystery, Misfortune, and a Mistress.',
-    author: 'Scott Martin',
-    publishedurl: 'quests/mistress_malaise.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 30,
-    maxtimeminutes: 60,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-  }),
-  new Quest({
-    id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
-    partition: 'expedition-public',
-    theme: 'base',
-    official: true,
-    title: 'Dungeon Crawl',
-    summary: 'How deep can you delve?',
-    author: 'Todd Medema',
-    publishedurl: 'quests/dungeon_crawl.xml',
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 60,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }),
 ];
 
-if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
-  FEATURED_QUESTS.unshift(new Quest({
-    id: '1',
-    partition: 'expedition-public',
+if (NODE_ENV === 'dev') {
+  TUTORIAL_QUESTS.unshift(new Quest({
+    id: '0B7K9abSH1xEOV3M2bTVMdWc4NVk',
+    partition: 'expedition-private',
     title: 'Test quest',
     summary: 'DEV',
     author: 'DEV',
@@ -148,9 +166,12 @@ if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2
     genre: 'Drama',
     contentrating: 'Kid-friendly',
     language: 'English',
+    created: EPOCH,
+    published: EPOCH,
   }));
 }
 
+export const MAX_ADVENTURERS = 6;
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;
 
@@ -228,7 +249,7 @@ export const COMBAT_DIFFICULTY: {[key: string]: any} = {
 /* tslint:enable:object-literal-sort-keys */
 
 export const SPLASH_SCREEN_TIPS = [
-  `Tip: You can change which expansions you're playing with in settings.`,
+  `Tip: Change which expansions you're playing with in settings.`,
   `Tip: Enemies deal more damage over time, so try to win quickly!`,
   `Make sure to rate quests after you play them!`,
   `You can submit feedback at any time from the top right menu.`,
@@ -238,7 +259,7 @@ export const SPLASH_SCREEN_TIPS = [
   `Did you know you can use the back of enemy cards as custom enemies?`,
   `To avoid untimely interruptions, make sure you have a phone charger handy!`,
   `Expedition has online multiplayer built into the app!`,
-  `You can save your progress in a quest via the top right menu. Saved games are available offline!`,
+  `Save your progress in a quest via the top right menu. Saved games are available offline!`,
 ];
 
 // A slight variation on the cubehelix pattern. This contains 6 categories,
@@ -295,3 +316,6 @@ export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}
 };
 
 export const MUSIC_FADE_SECONDS = 1.5;
+
+export const NAV_CARDS = ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY'];
+export const NAV_CARD_STORAGE_KEY = 'nav_card';

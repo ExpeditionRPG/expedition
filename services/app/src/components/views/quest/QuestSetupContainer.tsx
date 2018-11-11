@@ -1,11 +1,14 @@
+import {toCard} from 'app/actions/Card';
+import {numAdventurers, numPlayers} from 'app/actions/Settings';
+import {AppState} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../../actions/Card';
-import {AppState} from '../../../reducers/StateTypes';
 import QuestSetup, {DispatchProps, StateProps} from './QuestSetup';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
+    adventurers: numAdventurers(state.settings, state.multiplayer),
+    players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
   };
 };

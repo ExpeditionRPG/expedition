@@ -1,10 +1,12 @@
+import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {SettingsType} from '../../../reducers/StateTypes';
 import Button from '../../base/Button';
 import Callout from '../../base/Callout';
 import Card from '../../base/Card';
 
 export interface StateProps {
+  adventurers: number;
+  players: number;
   settings: SettingsType;
 }
 
@@ -15,9 +17,9 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 const QuestSetup = (props: Props): JSX.Element => {
-  const singlePlayer = (props.settings.numPlayers === 1);
-  const twoAdventurer = (props.settings.numPlayers === 1 || props.settings.numPlayers === 2);
-  const multiPlayer = (props.settings.numPlayers > 1);
+  const twoAdventurer = props.adventurers === 2;
+  const singlePlayer = props.players === 1;
+  const multiPlayer = props.players > 1;
   const theHorror = (props.settings.contentSets.horror === true);
   return (
     <Card title="Setup">
@@ -33,7 +35,7 @@ const QuestSetup = (props: Props): JSX.Element => {
 
       <h2>Abilities</h2>
       <p><strong>Draw</strong> the starting abilities listed on your adventurer.</p>
-      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> Draft pick each ability (for each ability: draw three, keep one, return the other two to the bottom of the deck).</Callout>}
+      {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players & returning players:</strong> Draft pick abilities (for each ability: draw three, keep one, return the other two to the bottom of the deck).</Callout>}
       {theHorror && <Callout icon="horror"><strong>The Horror:</strong> Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).</Callout>}
       <p><strong>Read</strong> through your abilities. You may mulligan (redraw all) once if desired.</p>
       <p><strong>Shuffle</strong> them into a stack face-down in front of you.</p>

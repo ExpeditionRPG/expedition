@@ -68,7 +68,7 @@ $large-icon-width: 0.195in;
 
     li {
       line-height: 1;
-      padding-bottom: 4.3pt;
+      padding-bottom: 4.8pt;
     }
   }
 
@@ -437,6 +437,15 @@ $large-icon-width: 0.195in;
         top: -1pt;
         right: 0.51in;
       }
+
+      .artist {
+        position: absolute;
+        bottom: 0.09in;
+        right: 0.125in;
+        text-align: right;
+        font-size: 50%;
+        opacity: 0.75;
+      }
     }
 
     &.Loot.tracker {
@@ -546,6 +555,17 @@ $large-icon-width: 0.195in;
           font-weight: bold;
         }
       }
+
+      .typeIcon {
+        position: absolute;
+        left: -0.15in;
+        top: 0;
+      }
+      .scaleIcon {
+        position: absolute;
+        right: -0.15in;
+        top: 0;
+      }
     }
   }
 
@@ -639,6 +659,9 @@ $large-icon-width: 0.195in;
     &.title-Horror:before {
       background-image: url(../../../../shared/images/cards/back-TitleCardHorror.jpg) !important;
     }
+    &.title-Future:before {
+      background-image: url(../../../../shared/images/cards/back-TitleCardFuture.jpg) !important;
+    }
   }
 
   .card.front.-Title {
@@ -654,6 +677,9 @@ $large-icon-width: 0.195in;
     }
     &.title-Horror:before {
       background-image: url(../../../../shared/images/cards/front-TitleCardHorror.jpg) !important;
+    }
+    &.title-Future:before {
+      background-image: url(../../../../shared/images/cards/front-TitleCardFuture.jpg) !important;
     }
   }
 

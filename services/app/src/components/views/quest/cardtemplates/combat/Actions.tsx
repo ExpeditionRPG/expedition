@@ -1,18 +1,18 @@
-import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
-import {PLAYER_DAMAGE_MULT} from 'app/Constants';
-import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_TIME_MULT} from 'app/Constants';
+import {numAdventurers, numLocalAdventurers, numPlayers} from 'app/actions/Settings';
+import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_DAMAGE_MULT, PLAYER_TIME_MULT} from 'app/Constants';
 import {ENCOUNTERS} from 'app/Encounters';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import Redux from 'redux';
 const seedrandom = require('seedrandom');
+import {remoteify} from 'app/multiplayer/Remoteify';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
-import {numAdventurers, numPlayers} from '../PlayerCount';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
@@ -83,16 +83,19 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
 
 interface InitCustomCombatArgs {
   rp?: MultiplayerState;
+  seed?: string;
 }
 export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
   if (!a.rp) {
     a.rp = getState().multiplayer;
   }
-  dispatch(initCombat({
-    custom: true,
-    node: new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext()),
-  }));
-  return {};
+  // Set seed if we got one from multiplayer
+  const node = new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext(), undefined, a.seed);
+  dispatch(initCombat({custom: true, node}));
+  if (!a.seed) {
+    a.seed = node.ctx.seed;
+  }
+  return {seed: a.seed};
 });
 
 function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
@@ -305,7 +308,6 @@ interface HandleCombatTimerStartArgs {
   settings?: SettingsType;
 }
 export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(a: HandleCombatTimerStartArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
-  console.log('handling combat timer start');
   if (!a.settings) {
     a.settings = getState().settings;
   }
@@ -357,7 +359,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     a.node.ctx.templates.combat = combat;
   }
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, a.rp, a.elapsedMillis, arng);
-  combat.mostRecentRolls = generateRolls(a.settings.numPlayers, arng);
+  combat.mostRecentRolls = generateRolls(numLocalAdventurers(a.settings), arng);
   combat.roundCount++;
 
   // This is parsed when loading a saved quest, so that "on round" nodes

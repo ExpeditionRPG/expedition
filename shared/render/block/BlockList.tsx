@@ -94,7 +94,8 @@ export class BlockList {
     let prevEmpty = false;
     let currBlock: Block|null = null;
     for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
-      const line = split[lineNumber];
+      // Remove all whitespace
+      const line = split[lineNumber].replace(/\s+$/, '');
       let indent = 0;
       while (line[indent] === ' ') {
         indent++;

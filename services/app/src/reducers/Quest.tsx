@@ -5,16 +5,6 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {QuestState} from './StateTypes';
 
 const cheerio = require('cheerio') as CheerioAPI;
-const seedrandom = require('seedrandom');
-
-function autoseed(): string {
-  let seed = '';
-  seedrandom(undefined, { pass(p: seedrandom.prng, s: string): seedrandom.prng {
-    seed = s;
-    return p;
-  }});
-  return seed;
-}
 
 export const initialQuestState: QuestState = {
   details: new Quest({
@@ -34,7 +24,6 @@ export const initialQuestState: QuestState = {
   }),
   lastPlayed: null,
   savedTS: null,
-  seed: autoseed(),
 };
 
 export function quest(state: QuestState = initialQuestState, action: Redux.Action): QuestState {
@@ -47,7 +36,6 @@ export function quest(state: QuestState = initialQuestState, action: Redux.Actio
       return {...state,
         details: (action as QuestNodeAction).details || state.details,
         node: (action as QuestNodeAction).node,
-        seed: autoseed(),
       };
     case 'PREVIEW_QUEST':
       const pqa = action as PreviewQuestAction;
@@ -56,7 +44,6 @@ export function quest(state: QuestState = initialQuestState, action: Redux.Actio
         details: pqa.quest,
         lastPlayed: pqa.lastPlayed || null,
         savedTS: pqa.savedTS || null,
-        seed: autoseed(),
       };
     default:
       return state;

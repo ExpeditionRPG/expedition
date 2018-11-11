@@ -16,7 +16,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="typeicon">{card.typeicon}</div>
                 <div className="name">{card.name}</div>
                 <div className="classicon">
-                  <div className="icon">{icon((card.classicon || card.class).toLowerCase() + '_small')}</div>
+                  <div className="icon">{icon((card.classicon || card.class || '').toLowerCase() + '_small')}</div>
                 </div>
               </header>
               <article>
@@ -135,6 +135,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 </footer>
                 {healthCounter(card.health)}
                 {card.expansion && <div className="expansionIcon">{icon(card.expansion)}</div>}
+                {card.artist && <div className="artist">Art by {card.artist}</div>}
               </div>
             </div>
           </div>
@@ -208,8 +209,10 @@ export default class CardFront extends React.Component<CardType, {}> {
           <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
             <div className="contents">
               <header>
+                {card.typeicon && <div className="typeIcon">{icon((card.typeicon).toLowerCase() + '_small')}</div>}
                 <div className="name">{card.name}</div>
                 <div className="class">Type: {card.class}</div>
+                {card.scaleicon && <div className="scaleIcon">{icon((card.scaleicon).toLowerCase() + '_small')}</div>}
               </header>
               <article>
                 <div className="discard"><strong>Single use:</strong> {card.discard}</div>

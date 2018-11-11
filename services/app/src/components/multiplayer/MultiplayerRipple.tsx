@@ -1,29 +1,29 @@
+import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
+import {playerOrder} from 'app/actions/Settings';
+import {MultiplayerState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {TransitionGroup} from 'react-transition-group';
 import {InteractionEvent} from 'shared/multiplayer/Events';
-import MultiplayerAffector from './MultiplayerAffector';
-import Ripple from './Ripple';
-
-// Remove the first element of the array
-const shift = ([, ...newArray]) => newArray;
+import MultiplayerAffectorContainer from './MultiplayerAffectorContainer';
 
 // MultiplayerRipple is copied with modifications from
 // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
 export interface Props {
   opacity?: number;
-  children: JSX.Element;
+  children?: JSX.Element;
+  multiplayer: MultiplayerState;
   id?: string;
   className?: string;
 }
 
 export interface State {
-  hasRipples: boolean;
+  hasRipple: boolean;
   nextKey: number;
-  ripples: JSX.Element[];
+  activePlayer: number;
 }
 
 export default class MultiplayerRipple extends React.Component<Props, State> {
+  private ripple: any;
 
   constructor(props: Props) {
     super(props);
@@ -31,20 +31,30 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     this.state = {
       // This prop allows us to only render the ReactTransitionGroup
       // on the first click of the component, making the inital render faster.
-      hasRipples: false,
+      hasRipple: false,
       nextKey: 0,
-      ripples: [],
+      activePlayer: 1,
     };
   }
 
   public handle(client: string, e: InteractionEvent) {
     // TODO keep start/end hashed by client, apply client color
+
+    let activePlayer = 1;
+    const order = playerOrder(this.props.multiplayer.session && this.props.multiplayer.session.secret || '');
+    const clients = Object.keys(this.props.multiplayer.clientStatus).sort();
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i] === client) {
+        activePlayer = order[i];
+        break;
+      }
+    }
     if (this.props.id === null || e.event === 'touchmove' || e.id !== this.props.id) {
       return;
     }
     switch (e.event) {
       case 'touchstart':
-        return this.start(e.positions[0][0], e.positions[0][1], 'red');
+        return this.start(e.positions[0][0], e.positions[0][1], activePlayer);
       case 'touchend':
         return this.end();
       default:
@@ -57,72 +67,43 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     console.info(info);
   }
 
-  public start(posX: number, posY: number, color: string) {
+  public start(posX: number, posY: number, activePlayer: number) {
     const el = ReactDOM.findDOMNode(this);
     const elHeight = (el as any).offsetHeight;
     const elWidth = (el as any).offsetWidth;
     const realX = elWidth * (posX / 1000);
     const realY = elHeight * (posY / 1000);
-    const topLeftDiag = this.calcDiag(realX, realY);
-    const topRightDiag = this.calcDiag(elWidth - realX, realY);
-    const botRightDiag = this.calcDiag(elWidth - realX, elHeight - realY);
-    const botLeftDiag = this.calcDiag(realX, elHeight - realY);
-    const rippleRadius = Math.sqrt(Math.max(
-      topLeftDiag, topRightDiag, botRightDiag, botLeftDiag
-    ));
-
-    const ripple: JSX.Element = (
-      <Ripple
-        key={this.state.nextKey}
-        rippleX={realX}
-        rippleY={realY}
-        rippleSize={rippleRadius * 2}
-        classes={{
-          ripple: {
-            color,
-            opacity: (this.props.opacity || 1.0),
-          },
-        }}
-      />
-    );
-
-    // Add a ripple to the ripples array
-    this.setState({
-      hasRipples: true,
-      nextKey: this.state.nextKey + 1,
-      ripples: [...this.state.ripples, ripple],
-    });
+    const rect = (el && (el as any).getBoundingClientRect) ? (el as any).getBoundingClientRect() : {top: 0, left: 0};
+    // Set the ripple
+    if (!this.ripple) {
+      return;
+    }
+    const event = {
+      type: 'touchstart',
+      clientX: rect.left + realX,
+      clientY: rect.top + realY,
+    };
+    this.setState({activePlayer});
+    this.ripple.start(event);
   }
 
   public end() {
-    const currentRipples = this.state.ripples;
-    this.setState({
-      ripples: shift(currentRipples),
-    });
+    this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
   }
 
-  public calcDiag(a: any, b: any) {
-    return (a * a) + (b * b);
+  public onRippleRef(node: any) {
+    this.ripple = node;
   }
 
   public render() {
-    let rippleGroup: JSX.Element|null = null;
-    if (this.state.hasRipples) {
-      rippleGroup = (
-        <TransitionGroup component="span" className="multiplayer_ripple">
-          {this.state.ripples}
-        </TransitionGroup>
-      );
-    }
-
     return (
-      <MultiplayerAffector
+      <MultiplayerAffectorContainer
         id={this.props.id}
         className={this.props.className}
         onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i); }}>
-        {rippleGroup}
+        <TouchRipple innerRef={(ref) => this.onRippleRef(ref)} children={null} component="span" classes={{child: `ripplep${this.state.activePlayer}`}} />
         {this.props.children}
-      </MultiplayerAffector>
+      </MultiplayerAffectorContainer>
     );
   }
 }

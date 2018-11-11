@@ -18,19 +18,20 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   return {
     isDirectLinked: state._history.length <= 1,
     quest: state.quest.details,
-    lastPlayed: (state.questHistory.list[(state.quest.details || {id: '-1'}).id] || {}).lastPlayed,
+    lastPlayed: (state.userQuests.history[(state.quest.details || {id: '-1'}).id] || {}).lastPlayed,
     savedInstances,
     settings: state.settings,
+    lastLogin: state.user.lastLogin,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onPlay: (quest: Quest, isDirectLinked: boolean) => {
+    onPlay: (details: Quest, isDirectLinked: boolean) => {
       if (isDirectLinked) {
         dispatch(setDialog('SET_PLAYER_COUNT'));
       } else {
-        dispatch(fetchQuestXML(quest));
+        dispatch(fetchQuestXML({details}));
       }
     },
     onPlaySaved(id: string, ts: number): void {

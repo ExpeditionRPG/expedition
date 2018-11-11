@@ -228,7 +228,13 @@ _combat_
 
 * {{_.currentCombatRound() % 2 == 1}} on round
 
-  This happens on rounds 1, 3, 5, etc. (The first round is round 1)
+  This happens on every two rounds, starting with 1 (i.e. rounds 1, 3, 5, etc.).
+  
+  The first round is round 1.
+
+* {{_.currentCombatRound() == 4}} on round
+
+  This happens once, on the 4th round.
 ```
 
 Or show additional instruction during a surge:

@@ -58,8 +58,10 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       <div className="playerCounterContainer">
         <div className={'splashMultitouchInstruction ' + (showInstruction ? 'visible' : '')}>
           <h2>To Begin:</h2>
-          <p>All players hold one finger on the screen.<br/>
-          Or, double tap to manually set player count.</p>
+          <p>All players hold one finger on the screen.</p>
+          <br/>
+          <h2>Multiplayer & More:</h2>
+          <p>Double tap the screen.</p>
         </div>
         {!showInstruction && <div className="splashMultitouchPlayerCount">
           <h1>{this.state.touchCount}</h1>
@@ -77,7 +79,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onAnnouncementTap: (announcement: AnnouncementState) => void;
-  onPlayerCountSelect: (numPlayers: number) => void;
+  onPlayerCountSelect: (numLocalPlayers: number) => void;
   onPlayerManualSelect: () => any;
 }
 
@@ -90,7 +92,7 @@ const SplashScreen = (props: Props): JSX.Element => {
     <div className={splashClass}>
       {announcementVisible &&
         <Button className="announcement" onClick={() => props.onAnnouncementTap(props.announcement)}>
-          {props.announcement.message}
+          {props.announcement.message} {props.announcement.link && <img className="inline_icon" src="/images/new_window_white.svg" />}
         </Button>
       }
       <div className="logo">

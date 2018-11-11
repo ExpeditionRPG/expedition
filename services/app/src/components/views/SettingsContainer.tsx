@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {setDialog} from '../../actions/Dialog';
 import {changeSettings} from '../../actions/Settings';
+import {MAX_ADVENTURERS} from '../../Constants';
 import {logEvent} from '../../Logging';
 import {AppState, DifficultyType} from '../../reducers/StateTypes';
 import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
@@ -61,12 +62,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onMultitouchChange: (v: boolean) => {
       dispatch(changeSettings({multitouch: v}));
     },
-    onPlayerDelta: (numPlayers: number, delta: number) => {
-      numPlayers += delta;
-      if (numPlayers <= 0 || numPlayers > 6) {
+    onPlayerDelta: (numLocalPlayers: number, delta: number) => {
+      numLocalPlayers += delta;
+      if (numLocalPlayers <= 0 || numLocalPlayers > MAX_ADVENTURERS) {
         return;
       }
-      dispatch(changeSettings({numPlayers}));
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onShowHelpChange: (v: boolean) => {
       dispatch(changeSettings({showHelp: v}));

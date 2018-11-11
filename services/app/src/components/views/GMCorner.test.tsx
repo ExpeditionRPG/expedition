@@ -1,0 +1,3 @@
+describe('GMCorner', () => {
+  test('None', () => {});
+});

@@ -1,4 +1,5 @@
-import {getMultiplayerClient} from 'app/Multiplayer';
+import {getMultiplayerConnection} from 'app/multiplayer/Connection';
+import {createMiddleware} from 'app/multiplayer/Middleware';
 import {installStore as installAppStore} from 'app/Store';
 import Redux, {applyMiddleware, compose, createStore} from 'redux';
 import thunk from 'redux-thunk';
@@ -13,7 +14,7 @@ export let store: Redux.Store<any>;
 
 // This code re-routes the getState() method passed to the app's redux middleware,
 // correctly scoping it only to the ".preview" param where it expects the app's state to live.
-const appMiddleware = getMultiplayerClient().createActionMiddleware();
+const appMiddleware = createMiddleware(getMultiplayerConnection());
 const adjustedAppMiddleware = ({dispatch}: Redux.MiddlewareAPI<any>) => {
   return appMiddleware({
     dispatch,

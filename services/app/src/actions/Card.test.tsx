@@ -1,6 +1,11 @@
 import {setNavigator} from '../Globals';
 import {Action} from '../Testing';
-import {toCard, toPrevious} from './Card';
+import {toCard, toPrevious, toNavCard} from './Card';
+import {NAV_CARD_STORAGE_KEY, AUTH_SETTINGS} from '../Constants';
+import {setStorageKeyValue} from '../LocalStorage';
+import {initialSettings} from '../reducers/Settings';
+
+const fetchMock = require('fetch-mock');
 
 describe('Card action', () => {
   describe('toCard', () => {
@@ -29,4 +34,23 @@ describe('Card action', () => {
       Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
     });
   });
+
+  describe('toNavCard', () => {
+    afterEach(() => {
+      fetchMock.restore();
+    });
+    test('when specified, navigates to that card', () => {
+      Action(toNavCard).expect({name: 'TUTORIAL_QUESTS'}).toDispatch(jasmine.objectContaining({
+        type: 'NAVIGATE',
+        to: jasmine.objectContaining({name: 'TUTORIAL_QUESTS'})
+      }));
+    });
+    test('if not specified, loads most recent nav card from local storage', () => {
+      setStorageKeyValue(NAV_CARD_STORAGE_KEY, 'OFFLINE_QUESTS');
+      Action(toNavCard).expect({}).toDispatch(jasmine.objectContaining({
+        type: 'NAVIGATE',
+        to: jasmine.objectContaining({name: 'OFFLINE_QUESTS'})
+      }));
+    });
+  })
 });

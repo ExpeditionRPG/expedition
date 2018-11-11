@@ -1,12 +1,10 @@
-import {configure, mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-configure({ adapter: new Adapter() });
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import PrepareDecision, {Props} from './PrepareDecision';
+import {mount, unmountAll} from 'app/Testing';
 
 const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load(`
@@ -30,13 +28,15 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('PrepareDecision', () => {
+  afterEach(unmountAll);
+
   test('Shows the prelude', () => {
     const {e} = setup({});
     expect(e.text()).toContain('prelude text');
   });
   test('triggers onStartTimer when start button clicked', () => {
     const {props, e} = setup({});
-    e.find('button').at(2).simulate('click');
+    e.find('Button').simulate('click');
     expect(props.onStartTimer).toHaveBeenCalled();
   });
 });

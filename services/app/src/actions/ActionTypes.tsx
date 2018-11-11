@@ -3,7 +3,6 @@ import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
 import {Quest} from 'shared/schema/Quests';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {
-  AppState,
   AudioDataState,
   AudioState,
   CardName,
@@ -13,14 +12,15 @@ import {
   DialogIDType,
   MultiplayerSessionMeta,
   SavedQuestMeta,
-  SearchSettings,
+  SearchParams,
+  ServerStatusState,
   SettingsType,
   UserQuestInstance,
   UserQuestsType,
   UserState,
 } from '../reducers/StateTypes';
 
-export interface FetchAnnouncementResponse {
+export interface FetchServerStatusResponse {
   message: string;
   link: string;
   versions: {
@@ -34,11 +34,13 @@ export interface PushHistoryAction extends Redux.Action {
   type: 'PUSH_HISTORY';
 }
 
-export interface AnnouncementSetAction extends Redux.Action {
-  type: 'ANNOUNCEMENT_SET';
-  open: boolean;
-  message?: string;
-  link?: string;
+export interface ClearHistoryAction extends Redux.Action {
+  type: 'CLEAR_HISTORY';
+}
+
+export interface ServerStatusSetAction extends Redux.Action {
+  type: 'SERVER_STATUS_SET';
+  delta: Partial<ServerStatusState>;
 }
 
 export interface AudioSetAction extends Redux.Action {
@@ -92,13 +94,18 @@ export interface QuestNodeAction extends Redux.Action {
 
 export interface ChangeSettingsAction extends Redux.Action {
   type: 'CHANGE_SETTINGS';
-  settings: any;
+  settings: Partial<SettingsType>;
 }
 
 export interface CombatTimerStopAction extends Redux.Action {
   type: 'COMBAT_TIMER_STOP';
   elapsedMillis: number;
   settings: SettingsType;
+}
+
+export interface SearchChangeParamsAction extends Redux.Action {
+  type: 'SEARCH_CHANGE_PARAMS';
+  params: Partial<SearchParams>;
 }
 
 export interface SearchRequestAction extends Redux.Action {
@@ -108,7 +115,7 @@ export interface SearchRequestAction extends Redux.Action {
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
   quests: Quest[];
-  search: SearchSettings;
+  params: SearchParams;
   error: string;
 }
 
@@ -177,6 +184,12 @@ export interface SavedQuestSelectAction {
 export interface MultiplayerSessionAction extends Redux.Action {
   type: 'MULTIPLAYER_SESSION';
   session: {id: number, secret: string};
+  client: string;
+  instance: string;
+}
+
+export interface MultiplayerSyncAction extends Redux.Action {
+  type: 'MULTIPLAYER_SYNC';
 }
 
 // History of multiplayer sessions, as reported from the API server.
@@ -198,6 +211,11 @@ export interface MultiplayerClientStatus extends Redux.Action {
   status: StatusEvent;
 }
 
+export interface MultiplayerConnectedAction extends Redux.Action {
+  type: 'MULTIPLAYER_CONNECTED';
+  connected: boolean;
+}
+
 // LocalActions wrap an existing action; this is so that inbound
 // actions to the redux dispatch middleware that were created from
 // another client's interaction are not re-broadcast in an endless loop
@@ -208,32 +226,24 @@ export interface LocalAction extends Redux.Action {
 }
 
 // Commits an in-flight action transaction (multiplayer)
-export interface InflightCommitAction extends Redux.Action {
-  type: 'INFLIGHT_COMMIT';
+export interface MultiplayerCommitAction extends Redux.Action {
+  type: 'MULTIPLAYER_COMMIT';
   id: number;
 }
 
 // Rejects an in-flight action transaction (multiplayer)
-export interface InflightRejectAction extends Redux.Action {
-  type: 'INFLIGHT_REJECT';
+export interface MultiplayerRejectAction extends Redux.Action {
+  type: 'MULTIPLAYER_REJECT';
   id: number;
   error: string;
 }
 
-// Returns a generator of an "executable array" of the original action.
-// This array can be passed to the generated Multiplayer redux middleware
-// which invokes it and packages it to send to other multiplayer clients.
-const MULTIPLAYER_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {};
-export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: () => AppState) => any) {
-  const remoted = (args: A) => {
-    return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
-  };
-  if (MULTIPLAYER_ACTIONS[a.name]) {
-    console.error('ERROR: Multiplayer action ' + a.name + ' already registered elsewhere! This will break multiplayer!');
-  }
-  MULTIPLAYER_ACTIONS[a.name] = remoted;
-  return remoted;
+// Indicates a multi_event completed
+export interface MultiplayerMultiEventAction extends Redux.Action {
+  type: 'MULTIPLAYER_MULTI_EVENT';
 }
-export function getMultiplayerAction(name: string) {
-  return MULTIPLAYER_ACTIONS[name];
+
+export interface MultiplayerMultiEventStartAction extends Redux.Action {
+  type: 'MULTIPLAYER_MULTI_EVENT_START';
+  syncID: number;
 }

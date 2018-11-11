@@ -1,6 +1,6 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {SettingsType} from 'app/reducers/StateTypes';
+import {MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound} from './Actions';
@@ -11,7 +11,7 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string) => void;
+  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string, multiplayer: MultiplayerState) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -19,11 +19,12 @@ export interface Props extends StateProps, DispatchProps {}
 export default function noTimer(props: Props): JSX.Element {
   // Note: similar help text in renderPrepareTimer()
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
+  const solo = props.players === 1;
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {solo && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <ol>
           <li>
             <strong>Shuffle</strong> your ability draw pile.
@@ -44,8 +45,7 @@ export default function noTimer(props: Props): JSX.Element {
       {helpText}
       <Button
         className="bigbutton"
-        onClick={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed)}
-      >
+        onClick={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed, props.multiplayer)}>
         Next
       </Button>
     </Card>

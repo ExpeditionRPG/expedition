@@ -2,13 +2,13 @@ import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {remoteify} from '../multiplayer/Remoteify';
 import {AppStateWithHistory} from '../reducers/StateTypes';
 import {
   PreviewQuestAction,
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
-  remoteify,
 } from './ActionTypes';
 import {toCard} from './Card';
 import {logQuestPlay} from './Web';
@@ -26,8 +26,8 @@ export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateConte
   };
 }
 
-export const exitQuest = remoteify(function exitQuest(): QuestExitAction {
-  return {type: 'QUEST_EXIT'};
+export const exitQuest = remoteify(function exitQuest(a: any, dispatch: Redux.Dispatch<any>) {
+  dispatch({type: 'QUEST_EXIT'} as QuestExitAction);
 });
 
 interface EndQuestArgs {}

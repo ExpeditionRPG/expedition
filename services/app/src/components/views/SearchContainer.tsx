@@ -1,56 +1,42 @@
+import {numPlayers} from 'app/actions/Settings';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
 import {search} from '../../actions/Search';
-import {ensureLogin} from '../../actions/User';
-import {subscribe} from '../../actions/Web';
-import {AppStateWithHistory, SearchSettings, SettingsType, UserState} from '../../reducers/StateTypes';
+import {NAV_CARDS} from '../../Constants';
+import {AppStateWithHistory, CardName, SearchParams, SettingsType} from '../../reducers/StateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
-  const offlineQuests: {[id: string]: boolean} = {};
-  for (const s of state.saved.list) {
-    if (s.pathLen === 0) {
-      offlineQuests[s.details.id] = true;
-    }
-  }
-
   return {
-    isDirectLinked: state._history.length <= 1,
-    results: [], // Default in case search results are not defined
     ...state.search,
-    phase: ownProps.phase || 'SEARCH',
+    players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
     user: state.user,
-    questHistory: state.questHistory,
-    offlineQuests,
   };
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onFilter: () => {
-      dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
+    onSearch: (params: SearchParams, players: number, settings: SettingsType) => {
+      // 10/14/18 Timeout prevents bug with CSSTransition when dispatching
+      // DOM change as part of componentDidMount
+      setTimeout(() => {
+        dispatch(search({params, players, settings}));
+      }, 1);
     },
-    onLoginRequest: (sub: boolean) => {
-      dispatch(ensureLogin())
-        .then((user: UserState) => {
-          if (sub && user.email && user.email !== '') {
-            dispatch(subscribe({email: user.email}));
-          }
-          return dispatch(toCard({name: 'SEARCH_CARD', phase: 'SETTINGS'}));
-        });
+    toCard: (name: CardName) => {
+      dispatch(toCard({name}));
     },
     onQuest: (quest: Quest) => {
       dispatch(previewQuest({quest}));
     },
-    onReturn: () => {
-      dispatch(toPrevious({}));
-    },
-    onSearch: (s: SearchSettings, settings: SettingsType) => {
-      dispatch(search({search: s, settings}));
+    onReturn(): void {
+      dispatch(toPrevious({
+        skip: NAV_CARDS.map((c) => ({name: c as CardName})),
+      }));
     },
   };
 };

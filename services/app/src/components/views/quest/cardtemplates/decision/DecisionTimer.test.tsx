@@ -1,7 +1,5 @@
-import {configure, mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
-configure({ adapter: new Adapter() });
+import {mount, unmountAll} from 'app/Testing';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {defaultContext} from '../Template';
@@ -43,22 +41,24 @@ function setup(overrides: Partial<Props>) {
 }
 
 describe('DecisionTimer', () => {
-  test('Shows the skill and num successes needed', () => {
+  afterEach(unmountAll);
+
+  test('shows the skill and num successes needed', () => {
     const {e} = setup({});
     const result = e.find('.secondary').text();
     expect(result).toMatch(/1 \w+ athletics/);
     expect(result).toMatch(/2 \w+ charisma/);
     expect(result).toMatch(/3 \w+ knowledge/);
   });
-  test('Either shows persona or difficulty, not both', () => {
+  test('either shows persona or difficulty, not both', () => {
     const {e} = setup({});
     const result = e.find('.secondary').childAt(0).text();
-    expect(result).toMatch(/^2 \w+ charisma$/);
+    expect(result).toMatch(/^\d \w+ (charisma|athletics|knowledge)$/);
   });
   test('triggers onSelect when a decision is selected', () => {
     const {props, e} = setup({});
     e.find('button').at(0).simulate('click');
-    expect(props.onSelect).toHaveBeenCalledWith(props.node, TEST_LEVELED_CHECKS[1], jasmine.any(Number));
+    expect(props.onSelect).toHaveBeenCalledWith(props.node, TEST_LEVELED_CHECKS[0], jasmine.any(Number));
   });
   test('picks unique leveled checks', () => {
     const node = TEST_NODE.clone();

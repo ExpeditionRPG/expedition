@@ -531,6 +531,8 @@ body .olark-launch-button { /*must be more specifc than olark styles */
   }
 
   .bottomPanel {
+    background-color: #212121;
+
     .header {
       border-bottom: $border;
       height: $hBarThickness - 2; // Subtract to account for border size

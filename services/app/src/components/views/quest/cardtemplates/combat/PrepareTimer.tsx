@@ -1,3 +1,4 @@
+import {numPlayers} from 'app/actions/Settings';
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import * as React from 'react';
@@ -12,11 +13,12 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function prepareTimer(props: Props): JSX.Element {
   // Note: similar help text in renderNoTimer()
+  const solo = numPlayers(props.settings) === 1;
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {props.settings.numPlayers === 1 && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {solo && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <h2>Shuffle & Draw <img className="inline_icon" src={'images/' + formatImg('cards', props.theme) + '.svg'}></img></h2>
           <p><strong>Shuffle</strong> your ability draw pile.</p>
           <ul>

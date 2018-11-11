@@ -48,6 +48,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         case 'DRIVE_VIEW':
           window.open('https://drive.google.com/drive/search?q=' + quest.title);
           break;
+        case 'APP_VIEW':
+          window.open('https://app.expeditiongame.com/#' + quest.id);
+          break;
         case 'HELP':
           window.open(URLS.DOCUMENTATION, '_blank');
           break;

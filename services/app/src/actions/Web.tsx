@@ -8,12 +8,14 @@ import {AUTH_SETTINGS, VERSION} from '../Constants';
 import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {logEvent} from '../Logging';
 import {getLogBuffer} from '../Logging';
-import {MultiplayerCounters} from '../Multiplayer';
+import {MultiplayerCounters} from '../multiplayer/Counters';
+import {remoteify} from '../multiplayer/Remoteify';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
-import {remoteify, UserQuestsAction} from './ActionTypes';
+import {UserQuestsAction} from './ActionTypes';
 import {toCard} from './Card';
 import {initQuest} from './Quest';
 import {userQuestsDelta} from './QuestHistory';
+import {numPlayers} from './Settings';
 import {openSnackbar} from './Snackbar';
 import {ensureLogin} from './User';
 
@@ -40,16 +42,24 @@ export function fetchUserQuests() {
   };
 }
 
-export const fetchQuestXML = remoteify(function fetchQuestXML(details: Quest, dispatch: Redux.Dispatch<any>) {
-  const promise = fetchLocal(details.publishedurl).then((result: string) => {
+export interface FetchQuestXMLArgs {
+  details: Quest;
+  seed?: string;
+}
+export const fetchQuestXML = remoteify(function fetchQuestXML(a: FetchQuestXMLArgs, dispatch: Redux.Dispatch<any>) {
+  const ctx = defaultContext();
+  const promise = fetchLocal(a.details.publishedurl).then((result: string) => {
     const questNode = cheerio.load(result)('quest');
-    return dispatch(loadQuestXML({details, questNode, ctx: defaultContext()}));
+    if (a.seed) {
+      ctx.seed = a.seed;
+    }
+    return dispatch(loadQuestXML({details: a.details, questNode, ctx}));
   })
   .catch((e: Error) => {
     return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
   });
 
-  return {...details, promise};
+  return {...a, seed: ctx.seed, promise};
 });
 
 // for loading quests in the app - Quest Creator injects directly into initQuest.
@@ -77,13 +87,16 @@ export function logQuestPlay(a: {phase: 'start'|'end'}) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
     try {
       const state = getState();
+      if (!state.quest) {
+        return;
+      }
       const quest = state.quest.details;
       const data = {
         difficulty: state.settings.difficulty,
         email: state.user.email,
         name: state.user.name,
         platform: getDevicePlatform(),
-        players: state.settings.numPlayers,
+        players: numPlayers(state.settings, state.multiplayer),
         questid: quest.id,
         questversion: quest.questversion,
         userid: state.user.id,
@@ -149,7 +162,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       partition: a.quest.details.partition,
       platform: getDevicePlatform(),
       platformDump: getPlatformDump(),
-      players: a.settings.numPlayers,
+      players: a.settings.numLocalPlayers,
       questid: a.quest.details.id,
       rating: a.rating,
       text: a.text,
