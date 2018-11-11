@@ -35,7 +35,7 @@ describe('PlaytestCrawler', () => {
         <roleplay data-line="0"></roleplay>
       </quest>`)('quest > :first-child'));
       expect(msgs.error.length).toEqual(1);
-      expect(msgs.error[0].text).toEqual('An action on this card leads nowhere (invalid goto id or no **end**)');
+      expect(msgs.error[0].text).toEqual('Choice 0 on this card leads nowhere (invalid goto id or no **end**)');
     });
 
     test('logs if a combat node has a custom enemy with unspecified tier', () => {

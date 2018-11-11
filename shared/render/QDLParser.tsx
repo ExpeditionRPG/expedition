@@ -60,7 +60,7 @@ export class QDLParser {
     this.result = this.renderer.finalize(zeroIndentBlockRoots, this.log);
 
     // Validate the result
-    // this.log.extend(this.renderer.validate(this.blockList.at(0).render));
+    this.renderer.validate(this.blockList.at(0).render, this.log);
 
     // Create a reverse lookup of block => root block
     // for use by getResultAt()

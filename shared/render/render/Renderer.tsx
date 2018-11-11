@@ -1,11 +1,13 @@
 import {REGEX} from '../../Regex';
 import {TemplateBodyType, TemplateType} from '../../schema/templates/Templates';
+import {Logger} from '../Logger';
 
 export interface Renderer {
  toTemplate: (type: TemplateType, attribs: {[k: string]: any}, body: TemplateBodyType, line: number) => any;
  toTrigger: (attribs: {[k: string]: any}, line: number) => any;
  toQuest: (attribs: {[k: string]: any}, line: number) => any;
  finalize: (quest: any, inner: any[]) => any;
+ validate: (rendered: any, log?: Logger) => void;
 }
 
 // cleans up styles in the passed string, which is to say:
