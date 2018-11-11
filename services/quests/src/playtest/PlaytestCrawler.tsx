@@ -41,8 +41,8 @@ export class PlaytestCrawler extends StatsCrawler {
     // CrawlerStats entries (e.g. for cycle detection)
 
     // Create gutter errors.
-    for (const l of this.statsByEvent.IMPLICIT_END.lines) {
-      this.logger.err('An action on this card leads nowhere (invalid goto id or no **end**)', '430', l);
+    for (const e of this.statsByEvent.IMPLICIT_END) {
+      this.logger.err(`Choice ${(typeof(e.fromAction) === 'string') ? '\'' + e.fromAction + '\'' : e.fromAction} on this card leads nowhere (invalid goto id or no **end**)`, '430', e.line);
     }
     return [this.queue.size, this.seen.size];
   }

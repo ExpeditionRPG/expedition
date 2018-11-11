@@ -1,4 +1,5 @@
 import {Instruction, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from '../../schema/templates/Templates';
+import {Logger} from '../Logger';
 import {Renderer, sanitizeStyles} from './Renderer';
 
 const Math = require('mathjs');
@@ -131,5 +132,33 @@ export const XMLRenderer: Renderer = {
       quest.append(el);
     }
     return quest;
+  },
+
+  validate(rendered: Cheerio, log?: Logger) {
+    if (!log) {
+      return;
+    }
+    console.log('Validation!');
+    // TODO:
+    // - Ensure there's at least one node that isn't the quest
+    // - Ensure all paths end with an "end" trigger
+    // - Ensure all template attributes are valid (use whitelist)
+    // - Validate roleplay attributes (w/ whitelist)
+    // - Validate choice attributes (w/ whitelist)
+
+    // Ensure no incorrectly named GOTOs
+    rendered.find('trigger').each((i, c) => {
+      const text = cheerio(c).text();
+      console.log(text);
+      const m = text.match(/goto (.*)/);
+      if (m === null) {
+        return;
+      }
+      if (rendered.find('#' + m[1]).length === 0) {
+        console.log(rendered.find('#' + m[1]));
+        log.err('goto "' + m[1] + '" without matching ID (check your spelling)', '426', parseInt(c.attribs['data-line'], 10) || 0);
+      }
+    });
+    return [];
   },
 };
