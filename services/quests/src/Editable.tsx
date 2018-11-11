@@ -6,7 +6,7 @@ class Editable<T> {
 
   constructor(name: string, initialValue: T) {
     this.name = name;
-    this.value = [T];
+    this.value = [initialValue];
   }
 
   public getValue(): T {

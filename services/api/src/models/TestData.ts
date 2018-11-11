@@ -6,6 +6,7 @@ import {Event} from 'shared/schema/multiplayer/Events';
 import {SessionClient} from 'shared/schema/multiplayer/SessionClients';
 import {Session} from 'shared/schema/multiplayer/Sessions';
 import {Quest} from 'shared/schema/Quests';
+import {QuestData} from 'shared/schema/QuestData';
 import {RenderedQuest} from 'shared/schema/RenderedQuests';
 import {PLACEHOLDER_DATE, SchemaBase} from 'shared/schema/SchemaBase';
 import {User} from 'shared/schema/Users';
@@ -98,6 +99,16 @@ export const quests = {
   }),
 };
 
+export const questData = {
+  basic: new QuestData({
+    id: 'questid',
+    userid: 'userid',
+    created: TEST_NOW,
+    data: 'test text',
+    notes: 'test notes',
+  }),
+};
+
 const basicFeedback = new Feedback({
   anonymous: false,
   created: new Date(),
@@ -186,6 +197,7 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
     db.analyticsEvent.sync(),
     db.users.sync(),
     db.quests.sync(),
+    db.questData.sync(),
     db.feedback.sync(),
     db.renderedQuests.sync(),
     db.events.sync(),
@@ -200,6 +212,9 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
     }
     if (entry instanceof Quest) {
       return db.quests.create(prepare(entry)).then(() => null);
+    }
+    if (entry instanceof QuestData) {
+      return db.questData.create(prepare(entry)).then(() => null);
     }
     if (entry instanceof Feedback) {
       return db.feedback.create(prepare(entry)).then(() => null);

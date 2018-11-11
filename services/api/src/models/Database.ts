@@ -6,6 +6,7 @@ import {Event} from 'shared/schema/multiplayer/Events';
 import {SessionClient} from 'shared/schema/multiplayer/SessionClients';
 import {Session} from 'shared/schema/multiplayer/Sessions';
 import {Quest} from 'shared/schema/Quests';
+import {QuestData} from 'shared/schema/QuestData';
 import {RenderedQuest} from 'shared/schema/RenderedQuests';
 import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase';
 import {User} from 'shared/schema/Users';
@@ -19,6 +20,9 @@ export type UserModel = Sequelize.Model<UserInstance, User>;
 
 export interface QuestInstance extends Sequelize.Instance<Partial<Quest>> {dataValues: Quest; }
 export type QuestModel = Sequelize.Model<QuestInstance, Partial<Quest>>;
+
+export interface QuestDataInstance extends Sequelize.Instance<Partial<QuestData>> {dataValues: QuestData; }
+export type QuestDataModel = Sequelize.Model<QuestDataInstance, Partial<QuestData>>;
 
 export interface FeedbackInstance extends Sequelize.Instance<Partial<Feedback>> {dataValues: Feedback; }
 export type FeedbackModel = Sequelize.Model<FeedbackInstance, Partial<Feedback>>;
@@ -43,6 +47,7 @@ export class Database {
   public analyticsEvent: AnalyticsEventModel;
   public users: UserModel;
   public quests: QuestModel;
+  public questData: QuestDataModel;
   public feedback: FeedbackModel;
   public renderedQuests: RenderedQuestModel;
   public events: EventModel;
@@ -91,6 +96,12 @@ export class Database {
           fields: ['published', 'tombstone', 'partition', 'minplayers', 'maxplayers', 'language', 'created'],
         },
       ],
+    });
+
+    const questDataSpec = toSequelize(new QuestData({id: '', userid: '', data: '', notes: ''}));
+    this.questData = this.sequelize.define('questdata', questDataSpec, {
+      ...standardOptions,
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
     });
 
     const feedbackSpec = toSequelize(new Feedback({partition: PUBLIC_PARTITION, questid: '', userid: ''}));

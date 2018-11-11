@@ -349,8 +349,11 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
-    const notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
-    const text: string = quest.mdRealtime.getText() + notesCommented;
+    const data = quest.mdRealtime.getText();
+    const notes = quest.notesRealtime.getText();
+
+    const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
+    const text: string = data + notesCommented;
 
     const xmlResult = renderXML(text);
     dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -380,6 +383,20 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
         });
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
+    });
+
+    return fetch(API_HOST + '/save/quest/' + quest.id, {
+        method: 'POST',
+        mode: 'cors', // no-cors, cors, *same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+        },
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify({text, data}), // body data type must match "Content-Type" header
+    }).then((response) => {
+      console.log(response);
     });
   };
 }
