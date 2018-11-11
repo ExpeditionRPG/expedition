@@ -47,6 +47,15 @@ describe('BlockList', () => {
     });
   });
 
+  test('ignores whitespace characters when determining empty line', () => {
+    const list = new BlockList('# Title\n      \t\t\t\r\r\r\n_block 1_');
+    expect(list.at(0)).toEqual({
+      indent: 0,
+      lines: ['# Title', ''],
+      startLine: 0,
+    });
+  });
+
   test('parses new block on indent', () => {
     const list = new BlockList('* choice\n\n  Choice text');
     expect(list.at(0)).toEqual({
