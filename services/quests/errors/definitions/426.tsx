@@ -1,11 +1,11 @@
 export const NUMBER = 426;
-export const NAME = `goto X without matching ID (check your spelling)`;
+export const NAME = `goto \"bad\" without matching ID (check your spelling)`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
 `_roleplay_
 
-**goto random_id_with_no_destination **`,
+**goto bad**`,
 ];
 
 export const VALID = [
