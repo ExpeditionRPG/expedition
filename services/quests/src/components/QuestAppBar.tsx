@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertError from '@material-ui/icons/Error';
@@ -126,6 +127,14 @@ class QuestAppBar extends React.Component<Props, {}> {
           <Button disabled={this.props.quest.id === null} onClick={(event: any) => this.props.onMenuSelect('DRIVE_VIEW', this.props.quest)}>
             View in Drive
           </Button>
+          {(this.props.quest.published)
+            ? (<Button id="appview" onClick={(event: any) => this.props.onMenuSelect('APP_VIEW', this.props.quest)}>
+                View in App
+              </Button>)
+            : (<Tooltip title="Publish to view in app"><span><Button id="appview" disabled={true}>
+                View in App
+              </Button></span></Tooltip>)
+          }
           <Button onClick={(event: any) => this.props.onMenuSelect('HELP', this.props.quest)}>
             Help
           </Button>
