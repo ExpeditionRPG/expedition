@@ -1639,11 +1639,9 @@ $fontsizemap: (
   .base_checkbox .icon {
     top: size(tiny);
   }
-}
 
-@media screen and (max-height: 600px) {
   .splashMultitouchInstruction, .splashMultitouchPlayerCount {
-    margin-top: 0 !important;
+    margin-top: -5% !important;
   }
 }
 
