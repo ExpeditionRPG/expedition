@@ -8,7 +8,7 @@ export const LOAD_QUEST: string = 'LOAD_QUEST';
 export const SAVE_QUEST: string = 'SAVE_QUEST';
 export const PUBLISH_QUEST: string = 'PUBLISH_QUEST';
 export const UNPUBLISH_QUEST: string = 'UNPUBLISH_QUEST';
-export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'FEEDBACK' | 'HELP';
+export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLISH_QUEST' | 'UNPUBLISH_QUEST' | 'DRIVE_VIEW' | 'APP_VIEW' | 'FEEDBACK' | 'HELP';
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';

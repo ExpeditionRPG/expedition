@@ -11,7 +11,7 @@ import {
 } from '../actions/ActionTypes';
 import {EditorState} from './StateTypes';
 
-const defaultState: EditorState = {
+export const defaultState: EditorState = {
   bottomPanel: null,
   dirty: false,
   dirtyTimeout: null,
