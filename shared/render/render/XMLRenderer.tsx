@@ -138,7 +138,6 @@ export const XMLRenderer: Renderer = {
     if (!log) {
       return;
     }
-    console.log('Validation!');
     // TODO:
     // - Ensure there's at least one node that isn't the quest
     // - Ensure all paths end with an "end" trigger
@@ -149,13 +148,11 @@ export const XMLRenderer: Renderer = {
     // Ensure no incorrectly named GOTOs
     rendered.find('trigger').each((i, c) => {
       const text = cheerio(c).text();
-      console.log(text);
       const m = text.match(/goto (.*)/);
       if (m === null) {
         return;
       }
       if (rendered.find('#' + m[1]).length === 0) {
-        console.log(rendered.find('#' + m[1]));
         log.err('goto "' + m[1] + '" without matching ID (check your spelling)', '426', parseInt(c.attribs['data-line'], 10) || 0);
       }
     });
