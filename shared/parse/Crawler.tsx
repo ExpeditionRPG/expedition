@@ -11,6 +11,7 @@ export interface CrawlEntry<C extends Context> {
   prevId: string;
   prevLine: number;
   prevNodeStr: string;
+  fromAction: string|number;
 }
 
 interface CrawlPriorityQueue<C extends Context> {
@@ -74,6 +75,7 @@ export abstract class CrawlerBase<C extends Context> {
         prevId: 'START',
         prevLine: -1,
         prevNodeStr: 'START',
+        fromAction: 'START',
       });
     }
 
@@ -135,6 +137,7 @@ export abstract class CrawlerBase<C extends Context> {
           prevId: id,
           prevLine: line,
           prevNodeStr: nstr,
+          fromAction: k,
         });
       }
     }

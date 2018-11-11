@@ -149,9 +149,9 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
   }),
 ];
 
-if (NODE_ENV === 'dev') { // http://quests.expeditiongame.com/#0B7K9abSH1xEOV3M2bTVMdWc4NVk
+if (NODE_ENV === 'dev') {
   TUTORIAL_QUESTS.unshift(new Quest({
-    id: '1',
+    id: '0B7K9abSH1xEOV3M2bTVMdWc4NVk',
     partition: 'expedition-private',
     title: 'Test quest',
     summary: 'DEV',
@@ -249,7 +249,7 @@ export const COMBAT_DIFFICULTY: {[key: string]: any} = {
 /* tslint:enable:object-literal-sort-keys */
 
 export const SPLASH_SCREEN_TIPS = [
-  `Tip: You can change which expansions you're playing with in settings.`,
+  `Tip: Change which expansions you're playing with in settings.`,
   `Tip: Enemies deal more damage over time, so try to win quickly!`,
   `Make sure to rate quests after you play them!`,
   `You can submit feedback at any time from the top right menu.`,
@@ -259,7 +259,7 @@ export const SPLASH_SCREEN_TIPS = [
   `Did you know you can use the back of enemy cards as custom enemies?`,
   `To avoid untimely interruptions, make sure you have a phone charger handy!`,
   `Expedition has online multiplayer built into the app!`,
-  `You can save your progress in a quest via the top right menu. Saved games are available offline!`,
+  `Save your progress in a quest via the top right menu. Saved games are available offline!`,
 ];
 
 // A slight variation on the cubehelix pattern. This contains 6 categories,

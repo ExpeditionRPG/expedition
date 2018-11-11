@@ -211,11 +211,14 @@ export interface MultiplayerSessionMeta {
 
 export interface MultiplayerState {
   clientStatus: {[client: string]: StatusEvent};
+  client: string;
+  instance: string;
   history: MultiplayerSessionMeta[];
   session: MultiplayerSessionType|null;
   syncing: boolean;
   multiEvent: boolean;
   syncID: number;
+  connected: boolean;
 }
 
 // AppStateBase is what's stored in AppState._history.

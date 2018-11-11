@@ -86,7 +86,7 @@ describe('Decision actions', () => {
     });
   });
   describe('selectChecks', () => {
-    test.only('selects a subset if there are more than 3 decisions', () => {
+    test('selects a subset if there are more than 3 decisions', () => {
       const cs: LeveldSkillCheck[] = [];
       for (const skill of ['athletics', 'knowledge', 'charisma']) {
         for (const persona of ['light', 'dark']) {

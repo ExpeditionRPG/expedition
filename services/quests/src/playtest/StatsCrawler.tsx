@@ -14,7 +14,7 @@ export type StatsCrawlEntry = CrawlEntry<Context>;
 export class StatsCrawler extends CrawlerBase<Context> {
   protected statsById: {[id: string]: CrawlerStats};
   protected statsByLine: {[line: number]: CrawlerStats};
-  protected statsByEvent: {[event: string]: {lines: number[], ids: string[]}};
+  protected statsByEvent: {[event: string]: Array<{line: number, id: string, fromAction: string|number}>};
 
   constructor() {
     super();
@@ -27,9 +27,9 @@ export class StatsCrawler extends CrawlerBase<Context> {
       '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
     };
     this.statsByEvent = {
-      END: {lines: [], ids: []},
-      IMPLICIT_END: {lines: [], ids: []},
-      INVALID: {lines: [], ids: []},
+      END: [],
+      IMPLICIT_END: [],
+      INVALID: [],
     };
   }
 
@@ -68,8 +68,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
     }
     this.statsById[q.prevId].outputs.add(e);
     this.statsByLine[q.prevLine].outputs.add(e);
-    this.statsByEvent[e].lines.push(q.prevLine);
-    this.statsByEvent[e].ids.push(q.prevId);
+    this.statsByEvent[e].push({line: q.prevLine, id: q.prevId, fromAction: q.fromAction});
   }
 
   protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {

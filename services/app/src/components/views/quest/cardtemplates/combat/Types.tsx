@@ -1,6 +1,6 @@
 import {numPlayers} from 'app/actions/Settings';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
-import {AppStateWithHistory, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {DecisionPhase} from '../decision/Types';
 import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';
@@ -55,6 +55,7 @@ export interface StateProps {
   settings: SettingsType;
   seed: string;
   theme: CardThemeType;
+  multiplayer: MultiplayerState;
 }
 
 export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
@@ -65,5 +66,6 @@ export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<St
     settings: state.settings,
     seed: (node && node.ctx.seed) || '',
     theme: getCardTemplateTheme(state.card),
+    multiplayer: state.multiplayer,
   };
 }

@@ -2,13 +2,13 @@ import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {remoteify} from '../multiplayer/Remoteify';
 import {AppStateWithHistory} from '../reducers/StateTypes';
 import {
   PreviewQuestAction,
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
-  remoteify,
 } from './ActionTypes';
 import {toCard} from './Card';
 import {logQuestPlay} from './Web';

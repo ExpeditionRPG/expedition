@@ -4,7 +4,7 @@ import {MultiplayerState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {InteractionEvent} from 'shared/multiplayer/Events';
-import MultiplayerAffector from './MultiplayerAffector';
+import MultiplayerAffectorContainer from './MultiplayerAffectorContainer';
 
 // MultiplayerRipple is copied with modifications from
 // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
@@ -97,13 +97,13 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
 
   public render() {
     return (
-      <MultiplayerAffector
+      <MultiplayerAffectorContainer
         id={this.props.id}
         className={this.props.className}
         onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i); }}>
         <TouchRipple innerRef={(ref) => this.onRippleRef(ref)} children={null} component="span" classes={{child: `ripplep${this.state.activePlayer}`}} />
         {this.props.children}
-      </MultiplayerAffector>
+      </MultiplayerAffectorContainer>
     );
   }
 }
