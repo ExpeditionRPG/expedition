@@ -23,6 +23,7 @@ describe('quest', () => {
         .catch(done.fail);
     });
   });
+
   describe('saveQuestData', () => {
     const new1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 23*60*60*1000)}); // <24h
     const old1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 25*60*60*1000)});
@@ -89,6 +90,21 @@ describe('quest', () => {
       })
       .catch(done.fail);
     });
+  });
 
+  describe.only('getNewestQuestData', () => {
+    test('gets newest quest data', (done) => {
+      const new1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 23*60*60*1000)}); // <24h
+      const old1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 25*60*60*1000)});
+      let db = null;
+      testingDBWithState([new1, old1]).then((tdb) => {
+        return getNewestQuestData(tdb, qd.basic.id, qd.basic.userid);
+      })
+      .then((result) => {
+        expect(result.created).toEqual(new1.created);
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 });

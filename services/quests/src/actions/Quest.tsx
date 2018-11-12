@@ -388,14 +388,14 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
     });
     return fetch(API_HOST + '/save/quest/' + quest.id, {
         method: 'POST',
-        mode: 'no-cors', // no-cors, cors, *same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        mode: 'no-cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
         },
-        referrer: 'no-referrer', // no-referrer, *client
-        body: JSON.stringify({data, notes}), // body data type must match "Content-Type" header
+        referrer: 'no-referrer',
+        body: JSON.stringify({data, notes}),
     }).then((response) => {
       console.log(response);
     });

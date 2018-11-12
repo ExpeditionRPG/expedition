@@ -9,7 +9,7 @@ export function saveQuestData(db: Database, data: QuestData, now: number = Date.
     .then(() => {
       return db.questData.findAll({
         where: {id: data.id, userid: data.userid},
-        order: [['created', 'DESC']]
+        order: [['created', 'DESC']],
       });
     }).then((value: QuestDataInstance[]) => {
       if (value.length <= 2) {
@@ -30,8 +30,10 @@ export function saveQuestData(db: Database, data: QuestData, now: number = Date.
 }
 
 export function getNewestQuestData(db: Database, id: string, userid: string): Bluebird<QuestData> {
-  return db.questData.findOne({where: {id, userid}})
-    .then((result: QuestDataInstance|null) => {
-      return new QuestData((result) ? result.dataValues : {});
-    });
+  return db.questData.findOne({
+    where: {id, userid},
+    order: [['created', 'DESC']],
+  }).then((result: QuestDataInstance|null) => {
+    return new QuestData((result) ? result.dataValues : {});
+  });
 }

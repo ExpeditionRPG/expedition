@@ -1,3 +1,6 @@
+// This is an interface that mimics Google Realtime API
+// (deprecated and turning down in Jan 2019).
+// TODO(scott): Finish
 
 class Editable<T> {
   private hook: (v: T) => void;
