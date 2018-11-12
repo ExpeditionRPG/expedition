@@ -6,7 +6,7 @@ class Editable<T> {
 
   constructor(name: string, initialValue: T) {
     this.name = name;
-    this.value = [initialValue];
+    this.value = initialValue;
   }
 
   public getValue(): T {
@@ -26,7 +26,7 @@ class Editable<T> {
   // addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
 }
 
-class EditableString extends Editable<string> {
+export class EditableString extends Editable<string> {
   public setText(text: string) {
     return this.setValue(text);
   }
@@ -35,30 +35,30 @@ class EditableString extends Editable<string> {
   }
 }
 
-class EditableMap<T> extends Editable<{[k: string]: T}> {
+export class EditableMap<T> extends Editable<{[k: string]: T}> {
   public set(key: string, value: T) {
     return this.setValue({...this.getValue(), [key]: value});
   }
 }
 
-class EditableModel {
+export class EditableModel {
   public canUndo = true;
   public canRedo = true;
 
-  private history: {[k: string]: any}[];
-  private position: number;
+  private history: Array<{[k: string]: any}>;
+  // private position: number;
 
-  constructor(editables: Editable[]) {
-    this.position = 0;
+  constructor(editables: Array<Editable<any>>) {
+    // this.position = 0;
     for (const e of editables) {
       e.setModelHook((v: any) => this.onSetValue(e.name, v));
     }
   }
 
   public onSetValue(k: string, v: any) {
-    const newModel = {...this.history[this.history.length-1], [k]: v};
+    const newModel = {...this.history[this.history.length - 1], [k]: v};
     this.history.push(newModel);
-    this.position = this.history.length-1;
+    // this.position = this.history.length-1;
     // TODO enforce max history size
   }
 

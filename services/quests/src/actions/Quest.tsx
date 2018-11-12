@@ -1,15 +1,4 @@
 import Redux from 'redux';
-import {QuestType, UserState} from '../reducers/StateTypes';
-import {
-  QuestLoadingAction,
-  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
-  ReceiveQuestPublishAction,
-  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
-  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
-  RequestQuestSaveAction, RequestQuestUnpublishAction,
-} from './ActionTypes';
-import {setSnackbar} from './Snackbar';
-
 import {renderXML} from 'shared/render/QDLParser';
 import {realtimeUtils} from '../Auth';
 import {
@@ -19,8 +8,19 @@ import {
   PARTITIONS,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
+// import {EditableMap, EditableModel, EditableString} from '../Editable';
+import {QuestType, UserState} from '../reducers/StateTypes';
+import {
+  QuestLoadingAction,
+  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
+  RequestQuestSaveAction, RequestQuestUnpublishAction,
+} from './ActionTypes';
 import {pushError, pushHTTPError} from './Dialogs';
 import {startPlaytestWorker} from './Editor';
+import {setSnackbar} from './Snackbar';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
@@ -215,10 +215,12 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     }
 
     const text: string = md.getText();
-    const mdRealtime = new EditableString(text);
-    const metadataRealtime = new EditableMap(metadata);
-    const notesRealtime = new EditableString(notes);
+    /*
+    const mdRealtime = new EditableString('text', text);
+    const metadataRealtime = new EditableMap('metadata', metadata);
+    const notesRealtime = new EditableString('notes', notes);
     const realtimeModel = new EditableModel([mdRealtime, metadataRealtime, notesRealtime]);
+    */
     getPublishedQuestMeta(docid, (quest: QuestType) => {
       const xmlResult = renderXML(text);
       quest = Object.assign(quest || {}, {
@@ -232,10 +234,10 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         language: metadata.get('language') || 'English',
         maxplayers: +metadata.get('maxplayers'),
         maxtimeminutes: +metadata.get('maxtimeminutes'),
-        mdRealtime,
-        metadataRealtime,
-        notesRealtime,
-        realtimeModel,
+        mdRealtime: md,
+        metadataRealtime: metadata,
+        notesRealtime: notes,
+        realtimeModel: doc.getModel(),
         minplayers: +metadata.get('minplayers'),
         mintimeminutes: +metadata.get('mintimeminutes'),
         requirespenpaper: metadata.get('requirespenpaper') || false,
@@ -384,17 +386,16 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
     });
-
     return fetch(API_HOST + '/save/quest/' + quest.id, {
         method: 'POST',
-        mode: 'cors', // no-cors, cors, *same-origin
+        mode: 'no-cors', // no-cors, cors, *same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
         },
         referrer: 'no-referrer', // no-referrer, *client
-        body: JSON.stringify({text, data}), // body data type must match "Content-Type" header
+        body: JSON.stringify({data, notes}), // body data type must match "Content-Type" header
     }).then((response) => {
       console.log(response);
     });

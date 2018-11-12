@@ -14,6 +14,7 @@ import {MailService} from './Mail';
 import {Database, QuestInstance, RenderedQuestInstance} from './models/Database';
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
+import {saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getUserQuests, UserQuestsType} from './models/Users';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
@@ -209,11 +210,12 @@ export function saveQuestData(db: Database, req: express.Request, res: express.R
   } catch (e) {
     return res.status(500).end('Error reading request.');
   }
-  return db.questData.create(new QuestData({
+  return innerSaveQuestData(db, new QuestData({
     id: req.params.id,
     userid: res.locals.id,
     data: parsed.data,
     notes: parsed.notes,
+    created: new Date(),
   })).then(() => {
     res.status(200).end('ok');
   }).catch((e: Error) => {
