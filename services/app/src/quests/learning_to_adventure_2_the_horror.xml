@@ -27,9 +27,9 @@
     </instruction>
   </roleplay>
   <roleplay icon="adventurer" title="Your adventure begins" data-line="24">
-    <p>"So, yer back for another adventure?" the grizzly town guardsman asks.</p>
-    <p>You, the adventurous children of the town and honorary members of the guard, nod solemnly.</p>
-    <p>It's been only a few months since your first adventure, yet the guardsman appears to have aged years. Times have been tough for the town. Perhaps the trouble started after your first adventure, or perhaps your adventures have made you more aware of the world. But the town needs your help again, and who are you to say no?</p>
+    <p>"Now that you are fully-trained and mildly-experienced guards, your first major assignment begins today," the grizzled town guardsman states solemnly.</p>
+    <p>Your exhaustion immediately turns to excitement - your first real adventure! Though the expression on the head guardsman's face is concerning...</p>
+    <p>It's been only a few months since your first day with the town guard, yet the guardsman appears to have aged years. Times have been tough for the town. Perhaps the trouble started after you were recruited, or perhaps your recruitment has made you more aware of the world. But the town needs your help again, and who are you to refuse your duties?</p>
     <instruction>
       <p>Which path did you take in the first Learning to Adventure quest?</p>
     </instruction>
@@ -37,27 +37,27 @@
       <roleplay icon="fae" title="The Fae" data-line="36">
         <p>The guardsman clears his throat and begins, "While you were helping us clear out the guardhouse, the Fae made quite a mess in the market.</p>
         <p>"Since then, the town has struggled to recover. Sensing our weakness, the Fae have laid siege to the town, attempting to capture it for their own purposes.</p>
-        <p>"For the past month, the guard has valiantly held them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"For the past month, a team of experienced guards has valiantly held them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
         <p>"Some of these horrors have managed to get inside of the town. We need you to stop them."</p>
       </roleplay>
     </choice>
     <choice text="Fought the Wisp and Mushroom in the market">
       <roleplay icon="fae" title="The Fae" data-line="48">
         <p>The guardsman clears his throat and begins, "After you so bravely fought off the Fae causing a commotion in the market, the town was quiet... for a while.</p>
-        <p>"But little did we know, they were gathering forces to get revenge on us. For the past month, the guard has had our hands full fighting them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"But little did we know, they were gathering forces to get revenge on us. For the past month, a team of experienced guards has had their hands full fighting them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
         <p>"Some of these horrors have managed to get inside of the town, but we can't spare anyone from the wall. We need you to stop them."</p>
       </roleplay>
     </choice>
     <choice text="I don't remember">
       <roleplay icon="fae" title="The Fae" data-line="58">
         <p>"The Fae have decided to besiege our small town. What they want is anyone's guess." the guardsman explains.</p>
-        <p>"For the past month, the guard has valiantly held them off. But their most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
+        <p>"For the past month, a team of experienced guards has valiantly held them off. But the most recent attacks have been more than we can handle. Frustrated at their lack of progress, they brought in allies of unspeakable horror.</p>
         <p>"Some of these horrors have managed to get inside of the town, but we can't spare anyone from the wall. We need you to stop them."</p>
       </roleplay>
     </choice>
   </roleplay>
   <roleplay title="Preparations" data-line="66">
-    <p>The guardsman's speech lifts your spirits and prepares you for the fight ahead.</p>
+    <p>The guardsman's grave speech reawakens your desire to be the town's heroes and prepares you for the fight ahead.</p>
     <instruction>
       <p>All adventurers gain 1 persona (slide your clip up to the upwards arrow).</p>
     </instruction>
@@ -78,7 +78,7 @@
     <event on="win" loot="false" xp="false">
       <roleplay title="Victory" data-line="96">
         <p>With an oddly melodic sound, the hound's bones collapse onto each other.</p>
-        <p>Though tired from the battle, you run back to the guardhouse, knowing that that he'll be excited about your success.</p>
+        <p>Though tired from the battle, you quickly march back to the guardhouse, knowing that that he'll be glad to hear of your success.</p>
       </roleplay>
     </event>
     <event on="lose">
@@ -90,7 +90,7 @@
     </event>
   </combat>
   <roleplay title="The Guardhouse" data-line="112">
-    <p>You shove open the heavy, wooden door and stumble into the dark interior. Behind you, the door slams into the wall, the noise echoing through the room as your eyes adjust.</p>
+    <p>You shove open the heavy, wooden door and stumble into the dark interior. Behind you, the door slams shut, the noise echoing through the room as your eyes adjust.</p>
     <p>You look around, but the room is empty.</p>
     <p>"Hello?" you call out.</p>
     <p>Silence.</p>
@@ -101,7 +101,7 @@
     <p>
       <i>I'm sorry for unleashing the horror. I tried to alter the future... but instead I scarred these lands - Peter</i>
     </p>
-    <p>To be continued with the next expansion, coming 2018.</p>
+    <p>To be continued with the next expansion, The Future!</p>
     <instruction>
       <p>:horror: And you're now ready to adventure with The Horror!</p>
     </instruction>

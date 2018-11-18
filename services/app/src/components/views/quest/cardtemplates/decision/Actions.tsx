@@ -1,8 +1,9 @@
-import {QuestNodeAction, remoteify} from 'app/actions/ActionTypes';
+import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {numAdventurers, numPlayers} from 'app/actions/Settings';
 import {PLAYER_TIME_MULT} from 'app/Constants';
+import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';

@@ -1,4 +1,4 @@
-import {ClientID, InstanceID, MultiplayerEvent, MultiplayerEventBody} from './Events';
+import {ClientID, InstanceID, MultiplayerEvent} from './Events';
 
 declare type EventHandler = (e: MultiplayerEvent) => any;
 
@@ -34,20 +34,11 @@ export abstract class ClientBase {
     this.connected = false;
   }
 
-  public abstract sendFinalizedEvent(e: MultiplayerEvent): void;
   public abstract disconnect(): void;
 
   public configure(id: string, instance: string): void {
     this.id = id;
     this.instance = instance;
-  }
-
-  public sendEvent(event: MultiplayerEventBody): void {
-    if (!this.isConnected()) {
-      return;
-    }
-    // ID is set in sendFinalizedEvent
-    this.sendFinalizedEvent({id: null, client: this.id, instance: this.instance, event});
   }
 
   protected parseEvent(s: string): MultiplayerEvent {

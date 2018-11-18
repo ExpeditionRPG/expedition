@@ -35,7 +35,7 @@ export function commitID(state: AppStateWithHistory, action: Redux.Action, combi
       // This should almost always happen within a couple actions.
       // TODO: error/alert if this takes too long
       const id = (action as MultiplayerCommitAction).id;
-      if (getMultiplayerConnection().getInFlightAtOrBelow(id).length === 0) {
+      if (!getMultiplayerConnection().bufferedAtOrbelow(id)) {
         return {
           ...state,
           _committed: stripMultiplayerStateAndSettings(state),

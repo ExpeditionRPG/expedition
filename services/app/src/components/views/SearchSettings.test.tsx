@@ -36,4 +36,18 @@ describe('SearchSettings', () => {
     e.find('form').prop('onSubmit')();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
+
+  test('params default to initial search params when submitted', () => {
+    const {props, e} = setup();
+    e.find('form').prop('onSubmit')();
+    expect(props.onSearch).toHaveBeenCalledWith(initialSearch.params);
+  });
+
+  test('changing a value then clearing it results in no value being sent as expected', () => {
+    const {props, e} = setup();
+    e.find('NativeSelect#contentrating').prop('onChange')({ target: { value: 'Teen' } });
+    e.find('NativeSelect#contentrating').prop('onChange')({ target: { value: undefined } });
+    e.find('form').prop('onSubmit')();
+    expect(props.onSearch).toHaveBeenCalledWith(initialSearch.params);
+  });
 });

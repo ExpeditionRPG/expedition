@@ -16,7 +16,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                 <div className="typeicon">{card.typeicon}</div>
                 <div className="name">{card.name}</div>
                 <div className="classicon">
-                  <div className="icon">{icon((card.classicon || card.class).toLowerCase() + '_small')}</div>
+                  <div className="icon">{icon((card.classicon || card.class || '').toLowerCase() + '_small')}</div>
                 </div>
               </header>
               <article>

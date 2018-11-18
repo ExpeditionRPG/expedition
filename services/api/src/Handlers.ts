@@ -7,11 +7,13 @@ import * as request from 'request-promise';
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
 import {PRIVATE_PARTITION, PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Feedback} from 'shared/schema/Feedback';
+import {QuestData} from 'shared/schema/QuestData';
 import {Quest} from 'shared/schema/Quests';
 import Config from './config';
 import {MailService} from './Mail';
 import {Database, QuestInstance, RenderedQuestInstance} from './models/Database';
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
+import {saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
 import {getUserQuests, UserQuestsType} from './models/Users';
 
@@ -196,6 +198,27 @@ export function questXMLHandler(db: Database, req: express.Request, res: express
     res.status(200).end(instance.get('xml'));
   })
   .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
+  });
+}
+
+export function saveQuestData(db: Database, req: express.Request, res: express.Response) {
+  let parsed: {data: string, notes: string} = {data: '', notes: ''};
+  try {
+    parsed = JSON.parse(req.body);
+  } catch (e) {
+    return res.status(500).end('Error reading request.');
+  }
+  return innerSaveQuestData(db, new QuestData({
+    id: req.params.id,
+    userid: res.locals.id,
+    data: parsed.data,
+    notes: parsed.notes,
+    created: new Date(),
+  })).then(() => {
+    res.status(200).end('ok');
+  }).catch((e: Error) => {
     console.error(e);
     return res.status(500).end(GENERIC_ERROR_MESSAGE);
   });

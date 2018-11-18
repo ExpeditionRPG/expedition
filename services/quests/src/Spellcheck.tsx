@@ -12,7 +12,6 @@ const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID
 export default class Spellcheck {
   private contentsModified = true;
   private dictionary: any;
-  private markersPresent: any[] = [];
   private session: any;
   private spellchecking = false;
 
@@ -67,10 +66,9 @@ export default class Spellcheck {
 
     try {
       // remove existing spellcheck markers
-      for (const i of this.markersPresent) {
-        this.session.removeMarker(this.markersPresent[i]);
+      for (const k of Object.keys(this.session.getMarkers(true))) {
+        this.session.removeMarker(k);
       }
-      this.markersPresent = [];
       for (let i = this.session.getDocument().getLength() - 1; i >= 0; i--) {
         this.session.removeGutterDecoration(i, 'misspelled');
       }
@@ -92,10 +90,12 @@ export default class Spellcheck {
         // Before we check for misspellings, remove elements we don't want to check
         line = line.replace(elementRegexes, '');
         let match = misspellingsRegex.exec(line);
-        if (match && match[0] !== '') { this.session.addGutterDecoration(i, 'misspelled'); }
+        if (match && match[0] !== '') {
+          this.session.addGutterDecoration(i, 'misspelled');
+        }
         while (match && match[0] !== '') {
           const range = new Range(i, match.index, i, match.index + match[0].length);
-          this.markersPresent[this.markersPresent.length] = this.session.addMarker(range, 'misspelled', 'typo', true);
+          this.session.addMarker(range, 'misspelled', 'typo', true);
           match = misspellingsRegex.exec(line);
         }
       });

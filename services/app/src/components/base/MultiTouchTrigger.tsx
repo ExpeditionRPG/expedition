@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {InteractionEvent} from 'shared/multiplayer/Events';
-import MultiplayerAffector from '../multiplayer/MultiplayerAffector';
+import MultiplayerAffectorContainer from '../multiplayer/MultiplayerAffectorContainer';
 import TouchIndicator from './TouchIndicator';
 
 interface Props extends React.Props<any> {
@@ -47,13 +47,13 @@ export default class MultiTouchTrigger extends React.Component<Props, State> {
 
   public render() {
     return (
-      <MultiplayerAffector
+      <MultiplayerAffectorContainer
         id={this.props.id}
         className="base_multi_touch_remote_affector"
         includeLocalInteractions={true}
         onInteraction={(c: string, i: InteractionEvent) => {this.remoteEvent(c, i); }}>
         <TouchIndicator clientInputs={this.state.clientInputs} />
-      </MultiplayerAffector>
+      </MultiplayerAffectorContainer>
     );
   }
 }

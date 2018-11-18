@@ -165,14 +165,8 @@ export class BlockRenderer {
     blocks[0].render = this.renderer.toTrigger(extracted, blocks[0].startLine);
   }
 
-  public validate(): any {
-    // TODO:
-    // - Ensure there's at least one node that isn't the quest
-    // - Ensure all paths end with an "end" trigger
-    // - Ensure all template attributes are valid (use whitelist)
-    // - Validate roleplay attributes (w/ whitelist)
-    // - Validate choice attributes (w/ whitelist)
-    return [];
+  public validate(rendered: any, log?: Logger): void {
+    this.renderer.validate(rendered, log);
   }
 
   public toMeta(block: Block, log?: Logger): {[k: string]: any} {

@@ -1,4 +1,5 @@
 import {XMLRenderer} from './XMLRenderer';
+import {Logger} from '../Logger';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -109,6 +110,25 @@ describe('XMLRenderer', () => {
 
       expect(XMLRenderer.finalize(quest, [r, t]).toString())
         .toEqual('<quest data-line="0"><roleplay data-line="1"><p>test</p></roleplay><trigger data-line="2">end</trigger></quest>');
+    });
+  });
+
+  describe('validate', () => {
+    test('checks for gotos with missing target', () => {
+      const q = cheerio.load('<quest><trigger data-line="123">goto bad</trigger></quest>')('quest');
+      const l = new Logger();
+      XMLRenderer.validate(q, l);
+      expect(l.finalize()).toContainEqual(jasmine.objectContaining({
+        line: 123,
+        type: "error",
+      }));
+    });
+
+    test('passes valid gotos', () => {
+      const q = cheerio.load('<quest><trigger data-line="123">goto good</trigger><roleplay id="good"></roleplay></quest>')('quest');
+      const l = new Logger();
+      XMLRenderer.validate(q, l);
+      expect(l.finalize()).toEqual([]);
     });
   });
 });

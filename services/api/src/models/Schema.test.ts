@@ -54,7 +54,7 @@ describe('Schema', () => {
           type: Sequelize.DATE,
         },
         nowDate: {
-          defaultValue: '_now',
+          defaultValue: Sequelize.NOW,
           type: Sequelize.DATE,
         },
         remappedNumber: {

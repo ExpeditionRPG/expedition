@@ -156,7 +156,8 @@ export function submitRating(db: Database, mail: MailService, feedback: Feedback
       const quest = new Quest(questInstance.dataValues);
       if (quest.ratingcount === 1) {
         mailFirstRating(mail, feedback, quest);
-      } else if (feedback.text && feedback.text.length > 0) {
+      } else if (feedback.text && feedback.text.length > 0 && !feedback.text.endsWith('Details: --')) {
+        // New high quest ratings end with "Details: --" when no details are given.
         mailNewRating(mail, feedback, quest);
       }
     });

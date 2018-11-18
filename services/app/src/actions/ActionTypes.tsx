@@ -3,7 +3,6 @@ import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
 import {Quest} from 'shared/schema/Quests';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {
-  AppState,
   AudioDataState,
   AudioState,
   CardName,
@@ -185,6 +184,8 @@ export interface SavedQuestSelectAction {
 export interface MultiplayerSessionAction extends Redux.Action {
   type: 'MULTIPLAYER_SESSION';
   session: {id: number, secret: string};
+  client: string;
+  instance: string;
 }
 
 export interface MultiplayerSyncAction extends Redux.Action {
@@ -208,6 +209,11 @@ export interface MultiplayerClientStatus extends Redux.Action {
   client: ClientID;
   instance: InstanceID;
   status: StatusEvent;
+}
+
+export interface MultiplayerConnectedAction extends Redux.Action {
+  type: 'MULTIPLAYER_CONNECTED';
+  connected: boolean;
 }
 
 // LocalActions wrap an existing action; this is so that inbound
@@ -240,27 +246,4 @@ export interface MultiplayerMultiEventAction extends Redux.Action {
 export interface MultiplayerMultiEventStartAction extends Redux.Action {
   type: 'MULTIPLAYER_MULTI_EVENT_START';
   syncID: number;
-}
-
-// Returns a generator of an "executable array" of the original action.
-// This array can be passed to the generated Multiplayer redux middleware
-// which invokes it and packages it to send to other multiplayer clients.
-const MULTIPLAYER_ACTIONS: {[action: string]: (args: any) => Redux.Action} = {};
-export function remoteify<A>(a: (args: A, dispatch?: Redux.Dispatch<any>, getState?: () => AppState) => any) {
-  const remoted = (args: A) => {
-    return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
-  };
-  if (MULTIPLAYER_ACTIONS[a.name]) {
-    console.error('ERROR: Multiplayer action ' + a.name + ' already registered elsewhere! This will break multiplayer!');
-  }
-  MULTIPLAYER_ACTIONS[a.name] = remoted;
-  return remoted;
-}
-export function getMultiplayerAction(name: string) {
-  return MULTIPLAYER_ACTIONS[name];
-}
-export function clearMultiplayerActions() {
-  for (const k of Object.keys(MULTIPLAYER_ACTIONS)) {
-    delete MULTIPLAYER_ACTIONS[k];
-  }
 }

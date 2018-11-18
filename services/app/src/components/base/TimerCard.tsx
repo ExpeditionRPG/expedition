@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {getMultiplayerConnection} from '../../multiplayer/Connection';
+import {toClientKey} from 'shared/multiplayer/Session';
 import {CardThemeType} from '../../reducers/StateTypes';
 import {MultiplayerState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
@@ -52,7 +52,6 @@ export default class TimerCard extends React.Component<Props, {}> {
     let unheldClientCount = 0;
     let timerHeld = false;
     if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
-      const rpClientID = getMultiplayerConnection().getClientKey();
       for (const client of Object.keys(this.props.multiplayerState.clientStatus)) {
         const clientStatus = this.props.multiplayerState.clientStatus[client];
         if (!clientStatus.connected) {
@@ -60,7 +59,7 @@ export default class TimerCard extends React.Component<Props, {}> {
         }
         const waitingOn = clientStatus.waitingOn;
         const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER') || false;
-        if (client === rpClientID) {
+        if (client === toClientKey(this.props.multiplayerState.client, this.props.multiplayerState.instance)) {
           timerHeld = waitingOnTimer;
         } else if (!waitingOnTimer) {
           unheldClientCount++;

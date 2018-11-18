@@ -49,7 +49,7 @@ export function toSequelize(s: SchemaBase) {
       r.allowNull = m.allowNull;
     }
     if (m.default !== undefined) {
-      if (m.type === 'Date') {
+      if (type === Sequelize.DATE) {
         if (m.default === PLACEHOLDER_DATE) {
           r.defaultValue = null;
         } else if (m.default === NOW) {
