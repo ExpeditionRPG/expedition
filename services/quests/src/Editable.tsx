@@ -60,7 +60,7 @@ export class EditableMap<T> extends Editable<{[k: string]: T}> {
     return this.getValue()[key];
   }
 
-  public empty(): boolean {
+  public isEmpty(): boolean {
     return Object.keys(this.getValue()).length === 0;
   }
 }

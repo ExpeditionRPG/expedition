@@ -212,7 +212,7 @@ export function loadQuest(user: UserState, docid?: string, fromRealtime: any = l
         const notes = new EditableString('notes', result.notes);
         const metadata = new EditableMap('metadata', result.metadata);
 
-        if (metadata.empty()) { // Create metadata if it's an old quest w/o metadata attribute
+        if (metadata.isEmpty()) { // Create metadata if it's an old quest w/o metadata attribute
           // Default to any metadata set in the markdown metadata
           try {
             const defaults = {

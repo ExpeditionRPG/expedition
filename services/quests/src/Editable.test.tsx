@@ -17,11 +17,11 @@ describe('Editable', () => {
       expect(e.get('a')).toEqual(3);
     });
 
-    test('empty is true when no entries, false otherwise', () => {
+    test('isEmpty is true when no entries, false otherwise', () => {
       const e = new EditableMap('test', {});
-      expect(e.empty()).toEqual(true);
+      expect(e.isEmpty()).toEqual(true);
       e.set('a', 5);
-      expect(e.empty()).toEqual(false);
+      expect(e.isEmpty()).toEqual(false);
     })
   });
 });
