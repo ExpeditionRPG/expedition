@@ -17,9 +17,9 @@ class Editable<T> {
     return this.value;
   }
 
-  public setValue(v: T) {
+  public setValue(v: T, useHook?: boolean = true) {
     this.value = v;
-    this.hook(this.value);
+    useHook && this.hook(this.value);
   }
 
   public setModelHook(hook: (v: T) => void) {
@@ -64,14 +64,20 @@ export class EditableMap<T> extends Editable<{[k: string]: T}> {
 }
 
 export class EditableModel {
+  public static readonly MAX_HISTORY = 500;
   public canUndo = true;
   public canRedo = true;
 
   private history: Array<{[k: string]: any}>;
+  private undos: Array<{[k: string]: any}>;
+  private editables: Array<Editable<any>>;
 
   constructor(editables: Array<Editable<any>>) {
+    this.editables = editables;
     const curr: {[k: string]: Editable<any>} = {};
     this.history = [curr];
+    this.undos = [];
+
     for (const e of editables) {
       e.setModelHook((v: any) => this.onSetValue(e.name, v));
       curr[e.name] = e.getValue();
@@ -82,15 +88,33 @@ export class EditableModel {
   public onSetValue(k: string, v: any) {
     const newModel = {...this.history[this.history.length - 1], [k]: v};
     this.history.push(newModel);
-    // TODO enforce max history size
+    this.undos = [];
+
+    // Enforce max size
+    while (this.history.length > EditableModel.MAX_HISTORY) {
+      this.history.shift();
+    }
   }
 
   public redo() {
-    return;
+    if (this.undos.length > 0) {
+      const h = this.undos.pop();
+      this.history.push(h);
+      for (const e of this.editables) {
+        e.setValue(h[e.name], false);
+      }
+    }
   }
 
   public undo() {
-    return;
+    if (this.history.length > 1) {
+      const h = this.history.pop();
+      this.undos.push(h);
+      const curr = this.history[this.history.length - 1];
+      for (const e of this.editables) {
+        e.setValue(curr[e.name], false);
+      }
+    }
   }
 
   public beginCompoundOperation(s: string, b: boolean) {
