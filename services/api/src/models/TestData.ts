@@ -105,13 +105,14 @@ const basicQuestData = new QuestData({
   created: TEST_NOW,
   data: 'test text',
   notes: 'test notes',
+  metadata: JSON.stringify({test: 'meta'}),
 });
 
 export const questData = {
   basic: basicQuestData,
   older: new QuestData({
     ...basicQuestData,
-    created: new Date(TEST_NOW.getTime() - 24*60*60*1000),
+    created: new Date(TEST_NOW.getTime() - 24 * 60 * 60 * 1000),
   }),
 };
 

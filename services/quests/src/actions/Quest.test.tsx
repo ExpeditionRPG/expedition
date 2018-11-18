@@ -1,46 +1,96 @@
-describe('questAction', () => {
+import {loadQuest} from './Quest';
+import {API_HOST} from '../Constants';
+import {loggedOutUser} from '../reducers/User';
+import {Action} from '../Testing';
 
-  test.skip('prompts to save on dirty new', () => { /* TODO */ });
+const fetchMock = require('fetch-mock');
+const nodeFetch = require('node-fetch');
+nodeFetch.default = fetchMock;
 
-  test.skip('prompts to save on dirty load', () => { /* TODO */ });
+describe('quest actions', () => {
+  window.gapi = {
+    client: {
+      load: jasmine.createSpy('gapi.client.load'),
+    },
+  };
 
-  test.skip('saves if not dirty', () => { /* TODO */ });
+  afterEach(() => {
+    fetchMock.restore();
+  });
 
-  test.skip('news if not dirty', () => { /* TODO */ });
+  describe('saveQuest', () => {
+    test.skip('converts md to xml', () => { /* TODO */ });
 
-  test.skip('saves if forced+dirty', () => { /* TODO */ });
+    test.skip('passes xml through', () => { /* TODO */ });
 
-  test.skip('news if forced+dirty', () => { /* TODO */ });
+    test.skip('dispatches on request', () => { /* TODO */ });
 
-  test.skip('deletes', () => { /* TODO */ });
+    test.skip('dispatches on response', () => { /* TODO */ });
 
-  test.skip('publishes', () => { /* TODO */ });
+    test.skip('runs cb() after successful save', () => { /* TODO */ });
 
-  test.skip('downloads', () => { /* TODO */ });
+    test.skip('does not run cb() if save failed', () => { /* TODO */ });
+
+    test.skip('sends data, notes, and metadata to API server', () => { /* TODO */ });
+  });
+
+  describe('loadQuest', () => {
+    const LOAD_RESULT = {data: 'quest data', notes: 'quest notes', metadata: {genre: 'DRAMA'}};
+
+    function validateReceiveQuestLoad(results: any[]) {
+      expect(results).toContainEqual(jasmine.objectContaining({
+        type: 'RECEIVE_QUEST_LOAD',
+      }));
+      for (const r of results) {
+        if (r.type !== 'RECEIVE_QUEST_LOAD') {
+          continue;
+        }
+        expect(r.quest).toEqual(jasmine.objectContaining({
+          genre: 'DRAMA',
+        }));
+        expect(r.quest.mdRealtime.getValue()).toEqual(LOAD_RESULT.data);
+        expect(r.quest.notesRealtime.getValue()).toEqual(LOAD_RESULT.notes);
+        expect(r.quest.metadataRealtime.getValue()).toEqual(LOAD_RESULT.metadata);
+      }
+    }
+
+    test('loads from API first', (done) => {
+      const qid = 'testquestid';
+      const matcher = API_HOST + '/qdl/' + qid;
+      fetchMock.get(matcher, JSON.stringify(LOAD_RESULT));
+      fetchMock.post(/.*/, {});
+      Action(loadQuest, {}).execute(loggedOutUser, qid).then((results) => {
+        expect(fetchMock.called(matcher)).toEqual(true);
+        validateReceiveQuestLoad(results);
+        done();
+      }).catch(done.fail);
+    });
+
+    test('loads from realtime if API fails', (done) => {
+      const qid = 'testquestid';
+      const matcher = API_HOST + '/qdl/' + qid;
+      fetchMock.get(matcher, 404);
+      fetchMock.post(/.*/, {});
+      const lqfr = jasmine.createSpy('loadQuestFromRealtime').and.returnValue(LOAD_RESULT);
+      Action(loadQuest, {}).execute(loggedOutUser, qid, lqfr).then((results) => {
+        expect(fetchMock.called(matcher)).toEqual(true);
+        expect(lqfr).toHaveBeenCalledTimes(1);
+        validateReceiveQuestLoad(results);
+        done();
+      }).catch(done.fail);
+    });
+  });
+
+  describe('publishQuest', () => {
+    test.skip('throws error(s) with default metadata', () => { /* TODO */ });
+
+    test.skip('does not throw errors with changed metadata', () => { /* TODO */ });
+  });
+
+  describe('questMetadataChange', () => {
+    test.skip('updates realtime object', () => { /* TODO */ });
+
+    test.skip('creates action / updates store', () => { /* TODO */ });
+  });
 });
 
-describe('saveQuest', () => {
-  test.skip('converts md to xml', () => { /* TODO */ });
-
-  test.skip('passes xml through', () => { /* TODO */ });
-
-  test.skip('dispatches on request', () => { /* TODO */ });
-
-  test.skip('dispatches on response', () => { /* TODO */ });
-
-  test.skip('Runs cb() after successful save', () => { /* TODO */ });
-
-  test.skip('Does not run cb() if save failed', () => { /* TODO */ });
-});
-
-describe('publishQuest', () => {
-  test.skip('throws error(s) with default metadata', () => { /* TODO */ });
-
-  test.skip('does not throw errors with changed metadata', () => { /* TODO */ });
-});
-
-describe('questMetadataChange', () => {
-  test.skip('updates realtime object', () => { /* TODO */ });
-
-  test.skip('creates action / updates store', () => { /* TODO */ });
-});

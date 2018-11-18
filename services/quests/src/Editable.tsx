@@ -10,6 +10,7 @@ class Editable<T> {
   constructor(name: string, initialValue: T) {
     this.name = name;
     this.value = initialValue;
+    this.hook = (v: T) => { /* Do nothing */ };
   }
 
   public getValue(): T {
@@ -27,11 +28,14 @@ class Editable<T> {
   }
 
   public removeAllEventListeners() {
+    // We don't yet handle multi-session editing,
+    // so nothing to do here.
     return;
   }
 
   public addEventListener() {
-    console.warn('addEventListener not implemented');
+    // We don't yet handle multi-session editing,
+    // so nothing to do here.
     return;
   }
 }
@@ -70,7 +74,7 @@ export class EditableModel {
     this.history = [curr];
     for (const e of editables) {
       e.setModelHook((v: any) => this.onSetValue(e.name, v));
-      curr[e.name, e.getValue()];
+      curr[e.name] = e.getValue();
     }
 
   }

@@ -281,7 +281,7 @@ describe('handlers', () => {
         .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id}}), res))
         .then(() => {
           expect(res.status.calledWith(200)).toEqual(true);
-          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes});
+          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata)});
           done();
         })
         .catch(done.fail);

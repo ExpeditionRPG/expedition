@@ -11,7 +11,7 @@ import {QuestData} from 'shared/schema/QuestData';
 import {Quest} from 'shared/schema/Quests';
 import Config from './config';
 import {MailService} from './Mail';
-import {Database, QuestInstance, RenderedQuestInstance, QuestDataInstance} from './models/Database';
+import {Database, QuestDataInstance, QuestInstance, RenderedQuestInstance} from './models/Database';
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
 import {saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
@@ -209,7 +209,7 @@ export function loadQuestData(db: Database, req: express.Request, res: express.R
       if (!instance) {
         return res.status(404).end('not found');
       }
-      console.log("Returning stringified response for ", req.params.quest);
+      console.log('Returning stringified response for ', req.params.quest);
       return res.status(200).end(JSON.stringify({
         data: instance.get('data'),
         notes: instance.get('notes'),
