@@ -8,7 +8,6 @@ import {
   PARTITIONS,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
-// import {EditableMap, EditableModel, EditableString} from '../Editable';
 import {QuestType, UserState} from '../reducers/StateTypes';
 import {
   QuestLoadingAction,
@@ -215,12 +214,6 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
     }
 
     const text: string = md.getText();
-    /*
-    const mdRealtime = new EditableString('text', text);
-    const metadataRealtime = new EditableMap('metadata', metadata);
-    const notesRealtime = new EditableString('notes', notes);
-    const realtimeModel = new EditableModel([mdRealtime, metadataRealtime, notesRealtime]);
-    */
     getPublishedQuestMeta(docid, (quest: QuestType) => {
       const xmlResult = renderXML(text);
       quest = Object.assign(quest || {}, {

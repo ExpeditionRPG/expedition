@@ -25,8 +25,6 @@ class Editable<T> {
     this.hook = hook;
     this.hook(this.value);
   }
-
-  // addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, (event: any) => { this.onTextInserted(event); });
 }
 
 export class EditableString extends Editable<string> {
@@ -49,10 +47,8 @@ export class EditableModel {
   public canRedo = true;
 
   private history: Array<{[k: string]: any}>;
-  // private position: number;
 
   constructor(editables: Array<Editable<any>>) {
-    // this.position = 0;
     for (const e of editables) {
       e.setModelHook((v: any) => this.onSetValue(e.name, v));
     }
@@ -61,13 +57,22 @@ export class EditableModel {
   public onSetValue(k: string, v: any) {
     const newModel = {...this.history[this.history.length - 1], [k]: v};
     this.history.push(newModel);
-    // this.position = this.history.length-1;
     // TODO enforce max history size
   }
 
-  public redo() {}
-  public undo() {}
+  public redo() {
+    return;
+  }
 
-  public beginCompoundOperation(s: string, b: boolean) {}
-  public endCompoundOperation() {}
+  public undo() {
+    return;
+  }
+
+  public beginCompoundOperation(s: string, b: boolean) {
+    return;
+  }
+
+  public endCompoundOperation() {
+    return;
+  }
 }

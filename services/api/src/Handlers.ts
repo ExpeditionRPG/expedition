@@ -7,14 +7,14 @@ import * as request from 'request-promise';
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
 import {PRIVATE_PARTITION, PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Feedback} from 'shared/schema/Feedback';
-import {Quest} from 'shared/schema/Quests';
 import {QuestData} from 'shared/schema/QuestData';
+import {Quest} from 'shared/schema/Quests';
 import Config from './config';
 import {MailService} from './Mail';
 import {Database, QuestInstance, RenderedQuestInstance} from './models/Database';
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
-import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
 import {saveQuestData as innerSaveQuestData} from './models/QuestData';
+import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
 import {getUserQuests, UserQuestsType} from './models/Users';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';

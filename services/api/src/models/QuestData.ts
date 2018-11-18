@@ -16,10 +16,10 @@ export function saveQuestData(db: Database, data: QuestData, now: number = Date.
         return;
       }
 
-      const oldest = value[value.length-1];
+      const oldest = value[value.length - 1];
       const nextNewest = value[1];
 
-      if (new Date(nextNewest.dataValues['created']) < new Date(now - 24*60*60*1000)) {
+      if (new Date(nextNewest.dataValues.created) < new Date(now - 24 * 60 * 60 * 1000)) {
         // Prev newest older than 24h? remove the oldest row.
         return oldest.destroy();
       } else {
