@@ -49,7 +49,7 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(db, req, res); });
   router.post('/quests', limitCors, (req, res) => {Handlers.search(db, req, res); });
   router.post('/save/quest/:id', limitCors, (req, res) => {Handlers.saveQuestData(db, req, res); });
-
+  router.get('/qdl/:quest', limitCors, (req, res) => {Handlers.loadQuestData(db, req, res); });
   router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(db, req, res); });
   router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(db, Mail, req, res); });
   router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(db, req, res); });

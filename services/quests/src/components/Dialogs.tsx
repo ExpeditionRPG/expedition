@@ -37,11 +37,9 @@ export class ErrorDialog extends React.Component<ErrorDialogProps, {}> {
       >
         <DialogTitle className="dialogTitle dialogError">{(errors.length > 1) ? 'Errors Occurred' : 'Error Occurred'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <ul>
-              {errors}
-            </ul>
-          </DialogContentText>
+          <ul>
+            {errors}
+          </ul>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={() => this.props.onClose()}>OK</Button>
