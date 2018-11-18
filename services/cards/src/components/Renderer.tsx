@@ -95,9 +95,14 @@ class Renderer extends React.Component<StateProps, {}> {
       return <div key={i + frontPages.length} className="page backs">{cardPage}</div>;
     });
     const pages = [];
-    while (frontPages.length > 0) {
-      pages.push(frontPages.shift());
-      pages.push(backPages.shift());
+    while ((renderSettings.showFronts && frontPages.length > 0) ||
+      (renderSettings.showBacks && backPages.length > 0)) {
+      if (renderSettings.showFronts) {
+        pages.push(frontPages.shift());
+      }
+      if (renderSettings.showBacks) {
+        pages.push(backPages.shift());
+      }
     }
     // Timeout pushes it to the back of the stack so that it's run after the new contents
     // have been rendered to the page
