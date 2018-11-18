@@ -11,7 +11,7 @@ import {QuestData} from 'shared/schema/QuestData';
 import {Quest} from 'shared/schema/Quests';
 import Config from './config';
 import {MailService} from './Mail';
-import {Database, QuestInstance, RenderedQuestInstance} from './models/Database';
+import {Database, QuestInstance, RenderedQuestInstance, QuestDataInstance} from './models/Database';
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
 import {saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
@@ -203,8 +203,26 @@ export function questXMLHandler(db: Database, req: express.Request, res: express
   });
 }
 
+export function loadQuestData(db: Database, req: express.Request, res: express.Response) {
+  return db.questData.findOne({where: {id: req.params.quest, userid: res.locals.id, tombstone: null}, order: [['created', 'DESC']]})
+    .then((instance: QuestDataInstance|null) => {
+      if (!instance) {
+        return res.status(404).end('not found');
+      }
+      console.log("Returning stringified response for ", req.params.quest);
+      return res.status(200).end(JSON.stringify({
+        data: instance.get('data'),
+        notes: instance.get('notes'),
+        metadata: JSON.parse(instance.get('metadata')),
+      }));
+    }).catch((e: Error) => {
+      console.error(e);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
+    });
+}
+
 export function saveQuestData(db: Database, req: express.Request, res: express.Response) {
-  let parsed: {data: string, notes: string} = {data: '', notes: ''};
+  let parsed: {data: string, notes: string, metadata: string} = {data: '', notes: '', metadata: ''};
   try {
     parsed = JSON.parse(req.body);
   } catch (e) {
@@ -215,6 +233,7 @@ export function saveQuestData(db: Database, req: express.Request, res: express.R
     userid: res.locals.id,
     data: parsed.data,
     notes: parsed.notes,
+    metadata: JSON.stringify(parsed.metadata || {}),
     created: new Date(),
   })).then(() => {
     res.status(200).end('ok');

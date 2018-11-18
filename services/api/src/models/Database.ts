@@ -98,11 +98,12 @@ export class Database {
       ],
     });
 
-    const questDataSpec = toSequelize(new QuestData({id: '', userid: '', data: '', notes: ''}));
+    const questDataSpec = toSequelize(new QuestData({id: '', userid: '', data: '', notes: '', metadata: ''}));
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
     });
+    this.questData.sync();
 
     const feedbackSpec = toSequelize(new Feedback({partition: PUBLIC_PARTITION, questid: '', userid: ''}));
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {

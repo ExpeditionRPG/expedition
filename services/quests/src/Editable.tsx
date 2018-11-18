@@ -25,6 +25,15 @@ class Editable<T> {
     this.hook = hook;
     this.hook(this.value);
   }
+
+  public removeAllEventListeners() {
+    return;
+  }
+
+  public addEventListener() {
+    console.warn('addEventListener not implemented');
+    return;
+  }
 }
 
 export class EditableString extends Editable<string> {
@@ -40,6 +49,14 @@ export class EditableMap<T> extends Editable<{[k: string]: T}> {
   public set(key: string, value: T) {
     return this.setValue({...this.getValue(), [key]: value});
   }
+
+  public get(key: string): T|undefined {
+    return this.getValue()[key];
+  }
+
+  public empty(): boolean {
+    return Object.keys(this.getValue()).length === 0;
+  }
 }
 
 export class EditableModel {
@@ -49,9 +66,13 @@ export class EditableModel {
   private history: Array<{[k: string]: any}>;
 
   constructor(editables: Array<Editable<any>>) {
+    const curr: {[k: string]: Editable<any>} = {};
+    this.history = [curr];
     for (const e of editables) {
       e.setModelHook((v: any) => this.onSetValue(e.name, v));
+      curr[e.name, e.getValue()];
     }
+
   }
 
   public onSetValue(k: string, v: any) {

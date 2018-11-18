@@ -8,6 +8,7 @@ import {
   PARTITIONS,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
+import {EditableMap, EditableModel, EditableString} from '../Editable';
 import {QuestType, UserState} from '../reducers/StateTypes';
 import {
   QuestLoadingAction,
@@ -169,93 +170,155 @@ function createDocMetadata(model: any, defaults: any) {
   return map;
 }
 
+function loadQuestFromAPI(user: UserState, dispatch: any, docid: string): Promise<{md: any, notes: any, metadata: any, model: any}|null> {
+  return fetch(API_HOST + '/qdl/' + docid, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        method: 'GET',
+    }).then((response) => {
+      console.log(response);
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    }).then((json: any) => {
+      const md = new EditableString('md', json.data);
+      const notes = new EditableString('notes', json.notes);
+      const metadata = new EditableMap('metadata', json.metadata);
+
+      if (metadata.empty()) { // Create metadata if it's an old quest w/o metadata attribute
+        // Default to any metadata set in the markdown metadata
+        try {
+          const defaults = {
+            ...METADATA_DEFAULTS,
+            author: user.displayName,
+            email: user.email,
+            language: 'English',
+            maxplayers: 6,
+            minplayers: 1,
+            summary: '',
+          };
+          metadata.setValue(defaults);
+        } catch (err) {
+          dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
+          ReactGA.event({
+            action: 'Error parsing metadata',
+            category: 'Error',
+            label: docid,
+          });
+        }
+      }
+      const model = new EditableModel([md, notes, metadata]);
+      return {md, notes, metadata, model};
+    }).catch((error) => {
+      console.error(error);
+      return null;
+    });
+}
+
 export function loadQuest(user: UserState, dispatch: any, docid?: string) {
   if (docid === undefined) {
     return dispatch(newQuest(user));
   }
-  realtimeUtils.load(docid, (doc: any) => {
-    window.location.hash = docid;
-    doc.addEventListener('collaborator_joined', (e: any) => {
-      ReactGA.event({
-        action: 'COLLABORATOR_JOINED',
-        category: 'Background',
-        label: docid,
+  return loadQuestFromAPI(user, dispatch, docid)
+    .then((result) => {
+      if (result) {
+        console.log('using result', result);
+      }
+      return result || loadQuestFromRealtime(user, dispatch, docid);
+    })
+    .then((result) => {
+      const text: string = result.md.getText();
+      getPublishedQuestMeta(docid, (quest: QuestType) => {
+        const xmlResult = renderXML(text);
+        quest = Object.assign(quest || {}, {
+          author: result.metadata.get('author'),
+          contentrating: result.metadata.get('contentrating'),
+          email: result.metadata.get('email'),
+          expansionhorror: result.metadata.get('expansionhorror') || false,
+          expansionfuture: result.metadata.get('expansionfuture') || false,
+          genre: result.metadata.get('genre'),
+          id: docid,
+          language: result.metadata.get('language') || 'English',
+          maxplayers: +result.metadata.get('maxplayers'),
+          maxtimeminutes: +result.metadata.get('maxtimeminutes'),
+          mdRealtime: result.md,
+          metadataRealtime: result.metadata,
+          notesRealtime: result.notes,
+          realtimeModel: result.model,
+          minplayers: +result.metadata.get('minplayers'),
+          mintimeminutes: +result.metadata.get('mintimeminutes'),
+          requirespenpaper: result.metadata.get('requirespenpaper') || false,
+          summary: result.metadata.get('summary'),
+          theme: result.metadata.get('theme') || 'base',
+          title: xmlResult.getMeta().title,
+        });
+        dispatch(receiveQuestLoad(quest));
+        dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
+        // Kick off a playtest after allowing the main thread to re-paint
+        setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
+          expansionhorror: Boolean(quest.expansionhorror),
+          expansionfuture: Boolean(quest.expansionfuture),
+        })), 0);
       });
     });
-    const md = doc.getModel().getRoot().get('markdown');
-    let notes = doc.getModel().getRoot().get('notes');
-    let metadata = doc.getModel().getRoot().get('metadata');
+}
 
-    if (!notes) { // Create notes if it's an old quest w/o notes attribute
-      notes = createDocNotes(doc.getModel());
-    }
-
-    if (!metadata) { // Create metadata if it's an old quest w/o metadata attribute
-      // Default to any metadata set in the markdown metadata (migrate from the old format)
-      try {
-        const defaults = {
-          ...METADATA_DEFAULTS,
-          author: user.displayName,
-          email: user.email,
-          language: 'English',
-          maxplayers: 6,
-          minplayers: 1,
-          summary: '',
-        };
-        metadata = createDocMetadata(doc.getModel(), defaults);
-      } catch (err) {
-        dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
+export function loadQuestFromRealtime(user: UserState, dispatch: any, docid: string): Promise<{md: any, notes: any, metadata: any, model: any}> {
+  return new Promise((resolve, reject) => {
+    realtimeUtils.load(docid, (doc: any) => {
+      window.location.hash = docid;
+      doc.addEventListener('collaborator_joined', (e: any) => {
         ReactGA.event({
-          action: 'Error parsing metadata',
-          category: 'Error',
+          action: 'COLLABORATOR_JOINED',
+          category: 'Background',
           label: docid,
         });
-      }
-    }
-
-    const text: string = md.getText();
-    getPublishedQuestMeta(docid, (quest: QuestType) => {
-      const xmlResult = renderXML(text);
-      quest = Object.assign(quest || {}, {
-        author: metadata.get('author'),
-        contentrating: metadata.get('contentrating'),
-        email: metadata.get('email'),
-        expansionhorror: metadata.get('expansionhorror') || false,
-        expansionfuture: metadata.get('expansionfuture') || false,
-        genre: metadata.get('genre'),
-        id: docid,
-        language: metadata.get('language') || 'English',
-        maxplayers: +metadata.get('maxplayers'),
-        maxtimeminutes: +metadata.get('maxtimeminutes'),
-        mdRealtime: md,
-        metadataRealtime: metadata,
-        notesRealtime: notes,
-        realtimeModel: doc.getModel(),
-        minplayers: +metadata.get('minplayers'),
-        mintimeminutes: +metadata.get('mintimeminutes'),
-        requirespenpaper: metadata.get('requirespenpaper') || false,
-        summary: metadata.get('summary'),
-        theme: metadata.get('theme') || 'base',
-        title: xmlResult.getMeta().title,
       });
-      dispatch(receiveQuestLoad(quest));
-      dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
-      // Kick off a playtest after allowing the main thread to re-paint
-      setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
-        expansionhorror: Boolean(quest.expansionhorror),
-        expansionfuture: Boolean(quest.expansionfuture),
-      })), 0);
+      const md = doc.getModel().getRoot().get('markdown');
+      let notes = doc.getModel().getRoot().get('notes');
+      let metadata = doc.getModel().getRoot().get('metadata');
+
+      if (!notes) { // Create notes if it's an old quest w/o notes attribute
+        notes = createDocNotes(doc.getModel());
+      }
+
+      if (!metadata) { // Create metadata if it's an old quest w/o metadata attribute
+        // Default to any metadata set in the markdown metadata (migrate from the old format)
+        try {
+          const defaults = {
+            ...METADATA_DEFAULTS,
+            author: user.displayName,
+            email: user.email,
+            language: 'English',
+            maxplayers: 6,
+            minplayers: 1,
+            summary: '',
+          };
+          metadata = createDocMetadata(doc.getModel(), defaults);
+        } catch (err) {
+          dispatch(pushError(new Error('Error parsing metadata. Please check your quest for validation errors, then try reloading the page. If this error persists, please contact support: Expedition@Fabricate.io')));
+          ReactGA.event({
+            action: 'Error parsing metadata',
+            category: 'Error',
+            label: docid,
+          });
+        }
+      }
+      resolve({md, notes, metadata, model: doc.getModel()});
+    },
+    (model: any) => {
+      const str = model.createString();
+      // Don't allow user undo, since it would revert everything back to a blank page.
+      // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
+      model.beginCompoundOperation('', false);
+      str.setText(NEW_QUEST_TEMPLATE);
+      model.endCompoundOperation();
+      model.getRoot().set('markdown', str);
+      createDocNotes(model);
     });
-  },
-  (model: any) => {
-    const str = model.createString();
-    // Don't allow user undo, since it would revert everything back to a blank page.
-    // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
-    model.beginCompoundOperation('', false);
-    str.setText(NEW_QUEST_TEMPLATE);
-    model.endCompoundOperation();
-    model.getRoot().set('markdown', str);
-    createDocNotes(model);
   });
 }
 
