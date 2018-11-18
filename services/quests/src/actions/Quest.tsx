@@ -1,15 +1,4 @@
 import Redux from 'redux';
-import {QuestType, UserState} from '../reducers/StateTypes';
-import {
-  QuestLoadingAction,
-  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
-  ReceiveQuestPublishAction,
-  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
-  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
-  RequestQuestSaveAction, RequestQuestUnpublishAction,
-} from './ActionTypes';
-import {setSnackbar} from './Snackbar';
-
 import {renderXML} from 'shared/render/QDLParser';
 import {realtimeUtils} from '../Auth';
 import {
@@ -19,8 +8,18 @@ import {
   PARTITIONS,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
+import {QuestType, UserState} from '../reducers/StateTypes';
+import {
+  QuestLoadingAction,
+  QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
+  ReceiveQuestPublishAction,
+  ReceiveQuestSaveAction, ReceiveQuestSaveErrAction,
+  ReceiveQuestUnpublishAction, RequestQuestPublishAction,
+  RequestQuestSaveAction, RequestQuestUnpublishAction,
+} from './ActionTypes';
 import {pushError, pushHTTPError} from './Dialogs';
 import {startPlaytestWorker} from './Editor';
+import {setSnackbar} from './Snackbar';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
@@ -230,10 +229,10 @@ export function loadQuest(user: UserState, dispatch: any, docid?: string) {
         maxtimeminutes: +metadata.get('maxtimeminutes'),
         mdRealtime: md,
         metadataRealtime: metadata,
-        minplayers: +metadata.get('minplayers'),
-        mintimeminutes: +metadata.get('mintimeminutes'),
         notesRealtime: notes,
         realtimeModel: doc.getModel(),
+        minplayers: +metadata.get('minplayers'),
+        mintimeminutes: +metadata.get('mintimeminutes'),
         requirespenpaper: metadata.get('requirespenpaper') || false,
         summary: metadata.get('summary'),
         theme: metadata.get('theme') || 'base',
@@ -345,8 +344,11 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
 
-    const notesCommented = '\n\n// QUEST NOTES\n// ' + quest.notesRealtime.getText().replace(/\n/g, '\n// ');
-    const text: string = quest.mdRealtime.getText() + notesCommented;
+    const data = quest.mdRealtime.getText();
+    const notes = quest.notesRealtime.getText();
+
+    const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
+    const text: string = data + notesCommented;
 
     const xmlResult = renderXML(text);
     dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -376,6 +378,19 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
         });
         dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
       }
+    });
+    return fetch(API_HOST + '/save/quest/' + quest.id, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+        },
+        referrer: 'no-referrer',
+        body: JSON.stringify({data, notes}),
+    }).then((response) => {
+      console.log(response);
     });
   };
 }
