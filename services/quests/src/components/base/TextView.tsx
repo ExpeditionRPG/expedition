@@ -8,7 +8,6 @@ import 'brace/theme/twilight';
 import {QDLMode} from './QDLMode';
 import {AnnotationType} from '../../reducers/StateTypes';
 import Spellcheck from '../../Spellcheck';
-import RealtimeUndoManager from './RealtimeUndoManager';
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:
 /*
@@ -104,10 +103,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // adjusting the vertical height of Ace.
       ref.editor.resize();
       const session = ref.editor.getSession();
-
-      if (this.props.realtimeModel) {
-        this.ace.editor.getSession().setUndoManager(new RealtimeUndoManager(this.props.realtimeModel));
-      }
 
       // Once dictionary ready & document loaded, spellcheck!
       if (!this.spellchecker && window.dictionary && this.ace.editor.session.getDocument().getLength() > 1) {

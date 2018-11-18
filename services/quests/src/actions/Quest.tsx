@@ -152,13 +152,13 @@ function getPublishedQuestMeta(publishedId: string): Promise<QuestType|null> {
   })
   .then((response) => {
     if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
+      return null;
     }
     return response.json();
   })
   .then((result) => {
-    if (result.error) {
-      throw new Error(result.error);
+    if (!result || result.error) {
+      return null;
     }
     return result && result.quests && result.quests[0] as QuestType;
   });
