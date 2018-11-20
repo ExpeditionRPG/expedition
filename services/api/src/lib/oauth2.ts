@@ -6,6 +6,7 @@ import {
   incrementLoginCount,
   subscribeToCreatorsList
 } from '../models/Users';
+import { limitCors } from './cors';
 
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
@@ -77,7 +78,7 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
   // then they will be redirected to that URL when the flow is finished.
   // This also fetches their info from the DB and returns that (if available).
   // [START authorize]
-  router.post('/auth/google', // LOGIN
+  router.post('/auth/google', limitCors, // LOGIN
     (req: express.Request, res: express.Response, next: express.NextFunction) => {
       // TODO: Lock down origin
       try {

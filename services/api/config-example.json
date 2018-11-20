@@ -1,5 +1,6 @@
 {
   "DATABASE_URL": "",
+  "SEQUELIZE_SSL": false,
   "OAUTH2_CLIENT_ID": "",
   "OAUTH2_CLIENT_SECRET": "",
   "SESSION_SECRET": "",

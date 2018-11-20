@@ -10,6 +10,7 @@ nconf.argv()
   // Quest storage config settings
   'DATABASE_URL', // URL of postgres database storing quest metadata, user data, feedback, etc.
   'SEQUELIZE_LOGGING', // Enable console logging of sequelize SQL queries
+  'SEQUELIZE_SSL',
 
   // Feedback email sender config settings
   'MAIL_EMAIL',
@@ -64,6 +65,7 @@ nconf.argv()
   PORT: 8081,
   SEQUELIZE_LOGGING: true,
   SUPER_USER_IDS: [],
+  SEQUELIZE_SSL: true,
 });
 
 export default nconf;
