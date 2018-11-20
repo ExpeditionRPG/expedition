@@ -4,7 +4,7 @@ import {Quest} from 'shared/schema/Quests';
 import {openSnackbar} from '../actions/Snackbar';
 import {AUTH_SETTINGS, TUTORIAL_QUESTS} from '../Constants';
 import {remoteify} from '../multiplayer/Remoteify';
-import {ExpansionsType, SearchParams, SettingsType} from '../reducers/StateTypes';
+import {SearchParams, SettingsType} from '../reducers/StateTypes';
 import {SearchChangeParamsAction, SearchResponseAction} from './ActionTypes';
 import {} from './ActionTypes';
 import {toCard} from './Card';
@@ -23,7 +23,6 @@ export const search = remoteify(function search(a: {params: SearchParams, player
     }
   });
   params.players = a.players;
-  params.expansions = Object.keys(a.settings.contentSets).filter( (key) => a.settings.contentSets[key] ) as ExpansionsType[],
   dispatch(getSearchResults(params, (response: QuestSearchResponse) => {
     dispatch({
       quests: response.quests,
