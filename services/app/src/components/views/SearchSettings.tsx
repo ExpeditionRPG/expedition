@@ -1,4 +1,5 @@
 import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
@@ -9,6 +10,7 @@ import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
+import ExpansionCheckbox from './ExpansionCheckbox';
 
 const pluralize = require('pluralize');
 
@@ -59,20 +61,20 @@ export class SearchSettings extends React.Component<Props, {}> {
     });
     // TODO Once we have 3 romance & SciFi quests, change code to just display genre list
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
-    const horror = this.props.settings.contentSets.horror;
-    const future = this.props.settings.contentSets.future;
-    let content = 'the base game';
-    if (future && horror) {
-      content = 'The Future & The Horror';
-    } else if (horror) {
-      content = 'The Horror';
-    }
     return (
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
           <div className="searchDescription">
-            For {players} {pluralize('players', players)} with {content} (based on settings)
+            For {players} {pluralize('players', players)}
           </div>
+          <FormControl fullWidth={true}>
+            <FormLabel htmlFor="expansion">Expansion</FormLabel>
+            <ExpansionCheckbox
+              onChange={(values) => this.onChange('expansions', values)}
+              contentSets={this.props.settings.contentSets}
+              value={this.state.expansions}
+            />
+          </FormControl>
           <FormControl fullWidth={true}>
             <TextField
               id="text"
