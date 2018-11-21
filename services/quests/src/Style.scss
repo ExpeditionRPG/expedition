@@ -17,6 +17,7 @@ $mapSize: 400px;
 $borderColor: #606060;
 $border: 1px $borderColor solid;
 $fontFamilyHeader: 'Cinzel', sans-serif;
+$fontFamilyButton: Roboto, sans-serif !important;
 $fontSizeBase: 20px;
 $fontSizeImportant: 28px;
 $fontSizeHeader: 45px;
@@ -426,7 +427,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     }
 
     button {
-      font-family: Roboto, sans-serif !important;
+      font-family: $fontFamilyButton;
       margin: 4px 0 !important;
       min-width: 60px !important;
       span {
@@ -476,7 +477,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
     }
 
     .play-from-cursor-tutorial {
-      font-family: Roboto, sans-serif;
+      font-family: $fontFamilyButton;
       z-index: 9;
       color: white;
       text-align: center;
@@ -546,7 +547,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
       }
 
       button {
-        font-family: Roboto, sans-serif !important;
+        font-family: $fontFamilyButton;
         min-width: 60px !important;
         span {
           font-size: $fontSizeSmall !important;
@@ -587,7 +588,7 @@ body .olark-launch-button { /*must be more specifc than olark styles */
         svg {
           position: absolute;
           top: 50%;
-          margin-top: -$padBase/2;
+          margin-top: -$fontSizeSmall;
           left: $padBase*0.75;
         }
       }
@@ -612,9 +613,13 @@ body .olark-launch-button { /*must be more specifc than olark styles */
 
       .preview {
         width: $previewPanelWidth;
+        background: $bgInteractive;
+
         button {
           min-height: 2.2em !important;
           line-height: 1.1em !important;
+          font-family: $fontFamilyButton;
+          justify-content: left;
         }
       }
 

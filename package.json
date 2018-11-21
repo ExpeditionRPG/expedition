@@ -20,7 +20,8 @@
     "app-local": "API_HOST='http://localhost:8081' npm run app & npm run api",
     "cards": "cd services/cards && yarn start",
     "quests": "cd services/quests && yarn start",
-    "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api"
+    "quests-local": "API_HOST='http://localhost:8081' npm run quests & npm run api",
+    "format": "prettier --write \"**/*.+(js,ts,md,css,json,yaml,yml,sass)\""
   },
   "dependencies": {
     "@material-ui/core": "^1.2.1",
@@ -86,7 +87,7 @@
     "react-ga": "^2.3.6",
     "react-hot-loader": "~4.3.0",
     "react-redux": "^5.0.7",
-    "react-split-pane": "0.1.77",
+    "react-split-pane": "0.1.84",
     "react-transition-group": "^2.5.0",
     "react-truncate": "^2.3.0",
     "redux": "^4.0.0",
@@ -175,11 +176,15 @@
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-plugin-x-socialsharing": "^5.4.0",
     "fetch-mock": "^6.5.0",
+    "husky": "^1.1.4",
     "jasmine": "^3.2.0",
     "jasmine-core": "^3.2.1",
     "jasmine-expect": "^3.8.4",
     "jest-localstorage-mock": "^2.2.0",
+    "lint-staged": "^8.0.5",
     "pluralize": "^7.0.0",
+    "prettier": "1.15.2",
+    "tslint-config-prettier": "^1.16.0",
     "tslint-loader": "^3.6.0"
   },
   "engines": {

@@ -20,7 +20,7 @@ function setupDB() {
   }
   return new Database(new Sequelize(Config.get('DATABASE_URL'), {
     dialectOptions: {
-      ssl: true,
+      ssl: Config.get('SEQUELIZE_SSL'),
     },
     logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
   }));

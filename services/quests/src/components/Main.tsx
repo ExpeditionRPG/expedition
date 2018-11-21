@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
+import SplitPane from 'react-split-pane';
 import {EditorState, PanelType, QuestType, SnackbarState} from '../reducers/StateTypes';
 import ContextEditorContainer from './ContextEditorContainer';
 import DialogsContainer from './DialogsContainer';
@@ -10,7 +11,6 @@ import QuestIDEContainer from './QuestIDEContainer';
 import SplashContainer from './SplashContainer';
 
 const numeral = require('numeral');
-const SplitPane = require('react-split-pane');
 
 export interface StateProps {
   editor: EditorState;
