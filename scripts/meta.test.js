@@ -4,17 +4,25 @@ const expect = require('expect');
 const path = require('path');
 
 const FILES = [
-  ...walkDir(path.join(__dirname, '../services')).filter((path) => path.match(/.*\.(tsx|ts|js)/)),
-  ...walkDir(path.join(__dirname, '../shared')).filter((path) => path.match(/.*\.(tsx|ts|js)/)),
+  ...walkDir(path.join(__dirname, '../services')).filter(pathEle =>
+    pathEle.match(/.*\.(tsx|ts|js)/),
+  ),
+  ...walkDir(path.join(__dirname, '../shared')).filter(pathEle =>
+    pathEle.match(/.*\.(tsx|ts|js)/),
+  ),
 ];
 
 function walkDir(root) {
   const stat = fs.statSync(root);
   if (stat.isDirectory()) {
-    const dirs = fs.readdirSync(root).filter(item =>
-      !item.startsWith('.') &&
-      !item.startsWith('dist') &&
-      !item.startsWith('node_modules'));
+    const dirs = fs
+      .readdirSync(root)
+      .filter(
+        item =>
+          !item.startsWith('.') &&
+          !item.startsWith('dist') &&
+          !item.startsWith('node_modules'),
+      );
     let results = dirs.map(sub => walkDir(`${root}/${sub}`));
     return [].concat(...results);
   } else {
@@ -25,7 +33,8 @@ function walkDir(root) {
 describe('Dependencies', () => {
   test('are actually used', () => {
     const packageJSON = require('../package.json');
-    const packageUsage = JSON.stringify(packageJSON.scripts) + JSON.stringify(packageJSON.cordova);
+    const packageUsage =
+      JSON.stringify(packageJSON.scripts) + JSON.stringify(packageJSON.cordova);
     const WHITELIST = [
       // Needed to build app
       'cordova-android',
@@ -53,6 +62,11 @@ describe('Dependencies', () => {
       'jasmine-core',
       'jest-localstorage-mock',
 
+      //Need for prettifying before commiting
+      'husky',
+      'lint-staged',
+      'tslint-config-prettier',
+
       // Needed for storage layer
       'pg',
 
@@ -63,8 +77,11 @@ describe('Dependencies', () => {
     ];
 
     let depstrs = Object.keys(packageJSON.dependencies || {});
-    Array.prototype.push.apply(depstrs, Object.keys(packageJSON.devDependencies || {}));
-    depstrs = depstrs.filter((dep) => {
+    Array.prototype.push.apply(
+      depstrs,
+      Object.keys(packageJSON.devDependencies || {}),
+    );
+    depstrs = depstrs.filter(dep => {
       for (let w of WHITELIST) {
         if (dep.match(w)) {
           return false;
@@ -73,11 +90,11 @@ describe('Dependencies', () => {
       return true;
     });
 
-    const unused_deps = [];
+    const unusedDeps = [];
     for (let dep of depstrs) {
       let found = false;
-      for (let path of FILES) {
-        if (fs.readFileSync(path, 'utf8').match("[/\"\'!]" + dep)) {
+      for (let pathEle of FILES) {
+        if (fs.readFileSync(pathEle, 'utf8').match('[/"\'!]' + dep)) {
           found = true;
           break;
         }
@@ -89,11 +106,14 @@ describe('Dependencies', () => {
       }
 
       if (!found) {
-        unused_deps.push(dep);
+        unusedDeps.push(dep);
       }
     }
-    console.log('Found ' + depstrs.length + ' deps (' + unused_deps.length + ' unused)');
-    expect(unused_deps).toEqual([]);
+    // tslint:disable-next-line:no-console
+    console.log(
+      'Found ' + depstrs.length + ' deps (' + unusedDeps.length + ' unused)',
+    );
+    expect(unusedDeps).toEqual([]);
   }, 10000);
 });
 
@@ -118,7 +138,10 @@ describe('Typescript files', () => {
       const name = f.split('.');
       const extension = name.pop();
       if (['tsx', 'ts'].indexOf(extension) !== -1) {
-        const base = (name[0].split('/expedition/')[1] || name[0]).replace('.test', ''); // filename relative to repo
+        const base = (name[0].split('/expedition/')[1] || name[0]).replace(
+          '.test',
+          '',
+        ); // filename relative to repo
         count[base] = (count[base] || 0) + 1;
       }
     }
