@@ -99,13 +99,20 @@ export const quests = {
   }),
 };
 
+const basicQuestData = new QuestData({
+  id: 'questid',
+  userid: 'userid',
+  created: TEST_NOW,
+  data: 'test text',
+  notes: 'test notes',
+  metadata: JSON.stringify({test: 'meta'}),
+});
+
 export const questData = {
-  basic: new QuestData({
-    id: 'questid',
-    userid: 'userid',
-    created: TEST_NOW,
-    data: 'test text',
-    notes: 'test notes',
+  basic: basicQuestData,
+  older: new QuestData({
+    ...basicQuestData,
+    created: new Date(TEST_NOW.getTime() - 24 * 60 * 60 * 1000),
   }),
 };
 

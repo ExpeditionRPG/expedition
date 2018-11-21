@@ -10,20 +10,35 @@ class Editable<T> {
   constructor(name: string, initialValue: T) {
     this.name = name;
     this.value = initialValue;
+    this.hook = (v: T) => { /* Do nothing */ };
   }
 
   public getValue(): T {
     return this.value;
   }
 
-  public setValue(v: T) {
+  public setValue(v: T, useHook: boolean|undefined = true) {
     this.value = v;
-    this.hook(this.value);
+    if (useHook) {
+      this.hook(this.value);
+    }
   }
 
   public setModelHook(hook: (v: T) => void) {
     this.hook = hook;
     this.hook(this.value);
+  }
+
+  public removeAllEventListeners() {
+    // We don't yet handle multi-session editing,
+    // so nothing to do here.
+    return;
+  }
+
+  public addEventListener() {
+    // We don't yet handle multi-session editing,
+    // so nothing to do here.
+    return;
   }
 }
 
@@ -40,31 +55,22 @@ export class EditableMap<T> extends Editable<{[k: string]: T}> {
   public set(key: string, value: T) {
     return this.setValue({...this.getValue(), [key]: value});
   }
+
+  public get(key: string): T|undefined {
+    return this.getValue()[key];
+  }
+
+  public isEmpty(): boolean {
+    return Object.keys(this.getValue()).length === 0;
+  }
 }
 
+// EditableModel largely does nothing, currently. It mirrors Realtime API's
+// use of a single object for management of different editable objects.
 export class EditableModel {
-  public canUndo = true;
-  public canRedo = true;
-
-  private history: Array<{[k: string]: any}>;
-
-  constructor(editables: Array<Editable<any>>) {
-    for (const e of editables) {
-      e.setModelHook((v: any) => this.onSetValue(e.name, v));
-    }
-  }
+  constructor(editables: Array<Editable<any>>) { /* empty */ }
 
   public onSetValue(k: string, v: any) {
-    const newModel = {...this.history[this.history.length - 1], [k]: v};
-    this.history.push(newModel);
-    // TODO enforce max history size
-  }
-
-  public redo() {
-    return;
-  }
-
-  public undo() {
     return;
   }
 

@@ -9,12 +9,14 @@ import {
   subscribe,
   unpublish,
   userQuests,
+  loadQuestData,
 } from './Handlers';
 import {MailService} from './Mail';
 import {AnalyticsEventInstance, Database, QuestInstance} from './models/Database';
 import {
   analyticsEvents as ae,
   quests as q,
+  questData as qd,
   renderedQuests as rq,
   testingDBWithState,
   users as u,
@@ -265,6 +267,35 @@ describe('handlers', () => {
           expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({[ae.questEnd.questID]: jasmine.any(Object)});
           done();
         }).catch(done.fail);
+    });
+  });
+
+  describe('loadQuestData', () => {
+    test('loads most recent quest', (done: DoneFn) => {
+      const res = mockRes();
+      res.locals.id = qd.basic.userid;
+      testingDBWithState([
+        qd.basic,
+        qd.older,
+      ])
+        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id}}), res))
+        .then(() => {
+          expect(res.status.calledWith(200)).toEqual(true);
+          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata)});
+          done();
+        })
+        .catch(done.fail);
+    });
+    test('returns 404 when quest not found', (done: DoneFn) => {
+      const res = mockRes();
+      res.locals.id = qd.basic.userid;
+      testingDBWithState([])
+        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id}}), res))
+        .then(() => {
+          expect(res.status.calledWith(404)).toEqual(true);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 

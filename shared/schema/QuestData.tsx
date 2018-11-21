@@ -37,6 +37,9 @@ export class QuestData extends SchemaBase {
   }) public notes: string;
 
   @field({
+  }) public metadata: string;
+
+  @field({
     allowNull: true,
     default: PLACEHOLDER_DATE,
   }) public tombstone: Date;
