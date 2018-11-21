@@ -12,7 +12,7 @@ import {storeSavedQuest} from '../../actions/SavedQuests';
 import {openSnackbar} from '../../actions/Snackbar';
 import {URLS} from '../../Constants';
 import {getDevicePlatform, openWindow} from '../../Globals';
-import {AppStateWithHistory, CardThemeType, SettingsType} from '../../reducers/StateTypes';
+import {AppStateWithHistory, CardThemeType, SettingsType, UserState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -28,6 +28,7 @@ export interface Props extends React.Props<any> {
   settings?: SettingsType;
   quest?: Quest;
   hasReturn: boolean;
+  user?: UserState;
 }
 
 class Card extends React.Component<Props, {}> {
@@ -65,6 +66,8 @@ class Card extends React.Component<Props, {}> {
           return dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
         }
         return dispatch(setDialog('EXIT_QUEST'));
+      case 'ACCOUNT':
+        return dispatch(toCard({name: 'ACCOUNT'}));
       case 'SAVE':
         const state = getStore().getState();
         dispatch(storeSavedQuest(state.quest.node, state.quest.details, Date.now()));
@@ -128,6 +131,7 @@ class Card extends React.Component<Props, {}> {
               onClose={() => this.handleMenuClose()}>
               <MenuItem id="homeButton" onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
+              {this.props.user && this.props.user.loggedIn && <MenuItem id="accountButton" onClick={() => {this.onMenuSelect('ACCOUNT'); }}>Account</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
@@ -138,8 +142,8 @@ class Card extends React.Component<Props, {}> {
           </span>
           <div className="title">{this.props.title}</div>
         </div>
-        {this.props.header && <div className="header">{this.props.header}</div>}
-        <div className="article">
+    {this.props.header && <div className="header">{this.props.header}</div>}
+    <div className="article">
           <div className="scrollbox">
             <div className="scrollbox_top">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 15.5 1.2">
@@ -194,7 +198,7 @@ class Card extends React.Component<Props, {}> {
           </div>
           {icon}
         </div>
-      </div>
+      </div >
     );
   }
 }
@@ -204,6 +208,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): 
     hasReturn: (state._history && state._history.length > 0),
     quest: state.quest && state.quest.details,
     settings: state.settings,
+    user: state.user,
     ...ownProps,
   };
 };

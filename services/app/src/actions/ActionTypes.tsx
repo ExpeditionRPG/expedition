@@ -10,6 +10,7 @@ import {
   CardState,
   CheckoutState,
   DialogIDType,
+  IUserFeedback,
   MultiplayerSessionMeta,
   SavedQuestMeta,
   SearchParams,
@@ -133,6 +134,11 @@ export interface UserLoginAction extends Redux.Action {
 
 export interface UserLogoutAction extends Redux.Action {
   type: 'USER_LOGOUT';
+}
+
+export interface UserFeedbacksAction extends Redux.Action {
+  type: 'USER_FEEDBACKS';
+  feedbacks: IUserFeedback[];
 }
 
 export interface UserQuestsAction extends Redux.Action {

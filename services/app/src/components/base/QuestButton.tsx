@@ -9,9 +9,10 @@ const Moment = require('moment');
 
 export interface Props {
   lastLogin: Date;
-  isOffline: boolean;
   lastPlayed: Date | null;
+  isOffline: boolean;
   quest: Quest;
+  summary?: string;
   id?: string;
   onClick?: () => void;
 }
@@ -19,6 +20,7 @@ export interface Props {
 export default class QuestButton extends React.Component<Props, {}> {
   public render() {
     const quest = this.props.quest;
+    const summary = this.props.summary || quest.summary;
     const classes = ['questButton'];
     if (this.props.lastPlayed) {
       classes.push('played');
@@ -49,7 +51,7 @@ export default class QuestButton extends React.Component<Props, {}> {
           </table>
           <div className="summary">
             <Truncate lines={3}>
-              {smartTruncateSummary(quest.summary || '')}
+              {smartTruncateSummary(summary || '')}
             </Truncate>
           </div>
           {quest.mintimeminutes !== undefined && quest.maxtimeminutes !== undefined &&
