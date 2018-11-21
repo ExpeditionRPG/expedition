@@ -1,12 +1,16 @@
 import Config from './config';
 const Nodemailer = require('nodemailer');
-import * as Bluebird from 'bluebird';
 
 export interface MailService {
-  send: (to: string[], subject: string, htmlMessage: string) => Bluebird<any>;
+  send: (to: string[], subject: string, htmlMessage: string, sendCopy?: boolean, sendMail?: any) => Promise<any>;
 }
 
-const transporter = Nodemailer.createTransport('smtps://' + Config.get('MAIL_EMAIL') + ':' + Config.get('MAIL_PASSWORD') + '@smtp.gmail.com');
+let transporter: any = null;
+if (Config.get('MAIL_EMAIL') && Config.get('MAIL_PASSWORD')) {
+  transporter = Nodemailer.createTransport('smtps://' + Config.get('MAIL_EMAIL') + ':' + Config.get('MAIL_PASSWORD') + '@smtp.gmail.com');
+} else {
+  console.warn('Mail transport not set up; config details missing');
+}
 const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 
 // TODO add template around message, including opt-out link
@@ -14,10 +18,14 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/igm;
 // Will need an opt-out route
 
 // to: single email string, or array of emails
-export function send(to: string[], subject: string, htmlMessage: string): Bluebird<any> {
+export function send(to: string[], subject: string, htmlMessage: string, sendCopy: boolean = true, sendMail?: any): Promise<any> {
+  sendMail = sendMail || transporter.sendMail;
+  if (!sendMail) {
+    return Promise.reject('transport not set up');
+  }
   // for plaintext version, turn end of paragraphs into double newlines
   const mailOptions = {
-    bcc: 'todd@fabricate.io',
+    bcc: (sendCopy) ? 'todd@fabricate.io' : undefined,
     from: '"Expedition" <expedition@fabricate.io>', // sender address
     html: htmlMessage, // html body
     subject,
@@ -30,10 +38,10 @@ export function send(to: string[], subject: string, htmlMessage: string): Bluebi
     console.log('TO: ' + mailOptions.to);
     console.log('Subject: ' + subject);
     console.log('Text: ' + htmlMessage);
-    return Bluebird.resolve({response: ''});
+    return Promise.resolve({response: ''});
   } else {
-    return new Bluebird((resolve, reject) => {
-      transporter.sendMail(mailOptions, (err: Error, data: any) => {
+    return new Promise((resolve, reject) => {
+      sendMail(mailOptions, (err: Error, data: any) => {
         if (err) {
           reject(err);
         } else {

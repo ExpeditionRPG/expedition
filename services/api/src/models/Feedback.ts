@@ -74,7 +74,8 @@ function mailFeedbackThanksToUser(mail: MailService, feedback: Feedback) {
   <p>The Expedition Team</p>
   <p>expedition@fabricate.io</p>`;
   const to = [feedback.email];
-  return mail.send(to, subject, message);
+  // Don't send a copy to admin email as we send another email instead
+  return mail.send(to, subject, message, false);
 }
 
 export function submitFeedback(db: Database, mail: MailService, type: FeedbackType, feedback: Feedback, platformDump: string, consoleDump: string[]): Promise<any> {
