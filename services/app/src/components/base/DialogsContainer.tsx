@@ -27,7 +27,17 @@ const mapStateToProps = (state: AppState): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+function validateFeedback(text: string): Error|null {
+  if (!text) {
+    return new Error('Please enter a description so that we can help resolve the issue.');
+  }
+  if (text.length < MIN_FEEDBACK_LENGTH) {
+    return new Error('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
+  }
+  return null;
+}
+
+export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onClose: () => {
       dispatch(setDialog(null));
@@ -42,21 +52,23 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(setDialog(null));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
     },
-    onExitQuest: () => {
+    onExitQuest: (quest: QuestState, settings: SettingsType, user: UserState, text: string): Promise<any> => {
       dispatch(setDialog(null));
       dispatch(exitQuest({}));
       dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+      if (text && text.length > 0) {
+        return dispatch(submitUserFeedback({quest, settings, user, text, type: 'feedback', anonymous: false, rating: null})) as any;
+      }
+      return Promise.resolve();
     },
     onExpansionSelect: (contentSets: ContentSetsType) => {
       dispatch(setDialog(null));
       dispatch(changeSettings({contentSets}));
     },
     onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => {
-      if (!text) {
-        return alert('Please enter a description so that we can help resolve the issue.');
-      }
-      if (text.length < MIN_FEEDBACK_LENGTH) {
-        return alert('Issue description must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value.');
+      const err = validateFeedback(text);
+      if (err) {
+        return alert(err.toString());
       }
       dispatch(submitUserFeedback({quest, settings, user, text, type, anonymous: false, rating: null}));
       dispatch(setDialog(null));
