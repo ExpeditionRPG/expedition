@@ -76,6 +76,18 @@ describe('PlaytestCrawler', () => {
   });
 
   describe('warning-level message', () => {
+    test.only('logs if warnings were detected in the parser node logic', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <roleplay data-line="2">
+          <choice if="notavar"><roleplay></roleplay></choice>
+        </roleplay>
+        <trigger>end</trigger>
+      </quest>`)('quest > :first-child'));
+
+      expect(msgs.warning.length).toEqual(1);
+      expect(msgs.warning[0].text).toContain('notavar');
+    });
+
     test.skip('logs if quest length is too varied', () => { /* TODO */ });
 
     test.skip('logs if a node is not visited', () => { /* TODO */ });

@@ -70,6 +70,12 @@ export class PlaytestCrawler extends StatsCrawler {
     }
   }
 
+  protected onWarnings(q: StatsCrawlEntry, warnings: Error[], line: number) {
+    for (const w of warnings) {
+      this.logger.warn(w.toString(), '427', line);
+    }
+  }
+
   private verifyRoleplayArt(roleplayNode: Node<Context>, line: number) {
     roleplayNode.loopChildren((tag, child, orig) => {
       if (tag === 'choice') { // Only validate nodes' direct contents so that formatting is correct
