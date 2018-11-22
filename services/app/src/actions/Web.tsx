@@ -150,7 +150,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
   return (dispatch: Redux.Dispatch<any>) => {
     if (a.rating && a.rating < 3 && (!a.text || a.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
-    } else if (a.text.length > 0 && a.text.length < MIN_FEEDBACK_LENGTH) {
+    } else if (a.rating && a.text.length > 0 && a.text.length < MIN_FEEDBACK_LENGTH) {
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
 
@@ -179,7 +179,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       data.questline = a.quest.node.elem.data('line');
     }
 
-    dispatch(ensureLogin())
+    return dispatch(ensureLogin())
     .then((user: UserState) => {
       data = {...data,
         email: user.email,
@@ -193,7 +193,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
 
 function postUserFeedback(type: string, data: any) {
   return (dispatch: Redux.Dispatch<any>) => {
-    fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
+    return fetch(AUTH_SETTINGS.URL_BASE + '/quest/feedback/' + type, {
       body: JSON.stringify(data),
       method: 'POST',
     })
