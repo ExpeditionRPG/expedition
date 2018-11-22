@@ -65,6 +65,8 @@ export abstract class CrawlerBase<C extends Context> {
 
   protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
 
+  protected abstract onWarnings(q: CrawlEntry<C>, warnings: Error[], line: number): void;
+
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
   private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
@@ -139,6 +141,10 @@ export abstract class CrawlerBase<C extends Context> {
           prevNodeStr: nstr,
           fromAction: k,
         });
+      }
+      const warnings = q.node.getWarnings();
+      if (warnings.length > 0) {
+        this.onWarnings(q, warnings, line);
       }
     }
     return (this.queue.size > 0);
