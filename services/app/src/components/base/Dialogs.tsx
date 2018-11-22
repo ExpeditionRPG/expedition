@@ -271,6 +271,7 @@ interface ExitDialogProps extends BaseDialogProps {
 export class ExitQuestDialog extends TextAreaDialog<ExitDialogProps> {
   constructor(props: ExitDialogProps) {
     super(props);
+    this.action = 'Exit';
     this.title = 'Exit Quest?';
     this.content = <p>You will lose your place in the quest and return to the home screen.</p>;
     this.helperText = 'Do you have any feedback on the quest?';
