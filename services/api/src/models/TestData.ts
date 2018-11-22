@@ -106,6 +106,7 @@ const basicQuestData = new QuestData({
   data: 'test text',
   notes: 'test notes',
   metadata: JSON.stringify({test: 'meta'}),
+  edittime: TEST_NOW,
 });
 
 export const questData = {

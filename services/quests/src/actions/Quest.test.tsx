@@ -56,10 +56,11 @@ describe('quest actions', () => {
 
     test('loads from API first', (done) => {
       const qid = 'testquestid';
-      const matcher = API_HOST + '/qdl/' + qid;
-      fetchMock.get(matcher, JSON.stringify(LOAD_RESULT));
+      const edittime = new Date();
+      const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
+      fetchMock.get(matcher, JSON.stringify({...LOAD_RESULT, edittime}));
       fetchMock.post(/.*/, {});
-      Action(loadQuest, {}).execute(loggedOutUser, qid).then((results) => {
+      Action(loadQuest, {}).execute(loggedOutUser, qid, edittime).then((results) => {
         expect(fetchMock.called(matcher)).toEqual(true);
         validateReceiveQuestLoad(results);
         done();
@@ -68,11 +69,13 @@ describe('quest actions', () => {
 
     test('loads from realtime if API fails', (done) => {
       const qid = 'testquestid';
-      const matcher = API_HOST + '/qdl/' + qid;
+      const edittime = new Date();
+      const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
+      console.log(matcher);
       fetchMock.get(matcher, 404);
       fetchMock.post(/.*/, {});
-      const lqfr = jasmine.createSpy('loadQuestFromRealtime').and.returnValue(LOAD_RESULT);
-      Action(loadQuest, {}).execute(loggedOutUser, qid, lqfr).then((results) => {
+      const lqfr = jasmine.createSpy('loadQuestFromRealtime').and.returnValue({...LOAD_RESULT, edittime});
+      Action(loadQuest, {}).execute(loggedOutUser, qid, edittime, lqfr).then((results) => {
         expect(fetchMock.called(matcher)).toEqual(true);
         expect(lqfr).toHaveBeenCalledTimes(1);
         validateReceiveQuestLoad(results);

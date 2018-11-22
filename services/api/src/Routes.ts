@@ -43,13 +43,21 @@ export function installRoutes(db: Database, router: express.Router) {
     next();
   }
 
+  router.options('/*', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.get('origin'));
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.sendStatus(200);
+  });
+
   router.get('/healthcheck', limitCors, Handlers.healthCheck);
   router.get('/announcements', limitCors, Handlers.announcement);
   router.get('/qc/announcements', limitCors, Handlers.qcAnnouncement);
   router.post('/analytics/:category/:action', limitCors, (req, res) => {Handlers.postAnalyticsEvent(db, req, res); });
   router.post('/quests', limitCors, (req, res) => {Handlers.search(db, req, res); });
   router.post('/save/quest/:id', limitCors, (req, res) => {Handlers.saveQuestData(db, req, res); });
-  router.get('/qdl/:quest', limitCors, (req, res) => {Handlers.loadQuestData(db, req, res); });
+  router.get('/qdl/:quest/:edittime', limitCors, (req, res) => {Handlers.loadQuestData(db, req, res); });
   router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {Handlers.questXMLHandler(db, req, res); });
   router.post('/publish/:id', publishLimiter, limitCors, requireAuth, (req, res) => {Handlers.publish(db, Mail, req, res); });
   router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {Handlers.unpublish(db, req, res); });

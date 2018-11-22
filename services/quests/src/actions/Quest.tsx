@@ -170,8 +170,9 @@ function createDocNotes(model: any) {
   return str;
 }
 
-function loadQuestFromAPI(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any}|null> {
-  return fetch(API_HOST + '/qdl/' + docid, {
+function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<{data: string, notes: string, metadata: any, edittime: Date}|null> {
+  console.log(edittime.getTime());
+  return fetch(`${API_HOST}/qdl/${docid}/${edittime.getTime()}`, {
         credentials: 'include',
         headers: {
           'Content-Type': 'text/plain',
@@ -187,6 +188,7 @@ function loadQuestFromAPI(user: UserState, docid: string): Promise<{data: string
         data: json.data || '',
         notes: json.notes || '',
         metadata: json.metadata || {},
+        edittime: json.edittime || edittime,
       };
     }).catch((error) => {
       console.error(error);
@@ -194,13 +196,14 @@ function loadQuestFromAPI(user: UserState, docid: string): Promise<{data: string
     });
 }
 
-export function loadQuest(user: UserState, docid?: string, fromRealtime: any = loadQuestFromRealtime) {
+export function loadQuest(user: UserState, docid?: string, edittime: Date = new Date(), fromRealtime: any = loadQuestFromRealtime) {
+  console.log(edittime.getTime());
   return (dispatch: Redux.Dispatch<any>): any => {
     if (docid === undefined) {
       console.log('creating new quest');
       return dispatch(newQuest(user));
     }
-    return loadQuestFromAPI(user, docid)
+    return loadQuestFromAPI(user, docid, edittime)
       .then((result) => {
         if (result) {
           console.log('loaded from API', result);
@@ -260,6 +263,7 @@ export function loadQuest(user: UserState, docid?: string, fromRealtime: any = l
             summary: metadata.get('summary'),
             theme: metadata.get('theme') || 'base',
             title: xmlResult.getMeta().title,
+            edittime: result.edittime,
           });
           dispatch(receiveQuestLoad(quest));
           dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
@@ -273,7 +277,8 @@ export function loadQuest(user: UserState, docid?: string, fromRealtime: any = l
   };
 }
 
-export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any}> {
+export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
+  console.log('trying realtime');
   return new Promise((resolve, reject) => {
     realtimeUtils.load(docid, (doc: any) => {
       console.log('Loaded from realtime API');
@@ -309,6 +314,7 @@ export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{
         data: md.getText(),
         notes: notes.getText(),
         metadata: metaRaw,
+        edittime: new Date(),
       });
     },
     (model: any) => {
@@ -427,37 +433,52 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
       title: meta.title + '.quest',
     };
 
-    if (quest.id === undefined) {
+    const id = quest.id;
+    if (id === undefined) {
       throw new Error('Undefined quest ID');
     }
-    updateDriveFile(quest.id, fileMeta, text, (err, result) => {
+    return new Promise((resolve, reject) => {
+      updateDriveFile(id, fileMeta, text, (err: Error|null, result: any) => {
+        if (err) {
+          throw err;
+        }
+        resolve(result);
+      });
+    }).then(() => {
+      const edittime = quest.edittime || new Date();
+      return fetch(`${API_HOST}/save/quest/${id}`, {
+          method: 'POST',
+          cache: 'no-cache',
+          credentials: 'include',
+          headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+          },
+          referrer: 'no-referrer',
+          body: JSON.stringify({data, notes, metadata, edittime: edittime.getTime()}),
+      }).then((response) => {
+        if (!response.ok) {
+          console.log({response});
+          return response.text();
+        }
+        return Promise.resolve(null);
+      });
+    }).then((err: string|null) => {
       if (err) {
-        ReactGA.event({
-          action: 'Error saving quest',
-          category: 'Error',
-          label: quest.id,
-        });
-        dispatch({type: 'RECEIVE_QUEST_SAVE_ERR', err: err.message} as ReceiveQuestSaveErrAction);
-      } else {
-        ReactGA.event({
-          action: 'Quest Save',
-          category: 'Background',
-        });
-        dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
+        console.log(err);
+        throw new Error(err);
       }
-    });
-    return fetch(API_HOST + '/save/quest/' + quest.id, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-        },
-        referrer: 'no-referrer',
-        body: JSON.stringify({data, notes, metadata}),
-    }).then((response) => {
-      console.log(response);
+      ReactGA.event({
+        action: 'Quest Save',
+        category: 'Background',
+      });
+      dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
+    }).catch((error: Error) => {
+      ReactGA.event({
+        action: 'Error saving quest',
+        category: 'Error',
+        label: id,
+      });
+      dispatch({type: 'RECEIVE_QUEST_SAVE_ERR', err: error.toString()} as ReceiveQuestSaveErrAction);
     });
   };
 }

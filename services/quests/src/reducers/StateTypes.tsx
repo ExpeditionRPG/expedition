@@ -79,6 +79,7 @@ export interface QuestType {
   language?: LanguageType;
   theme?: ThemeType;
   requirespenpaper?: boolean;
+  edittime?: Date;
 }
 
 export interface EditorState {

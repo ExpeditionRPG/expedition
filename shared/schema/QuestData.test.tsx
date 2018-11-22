@@ -2,7 +2,7 @@ import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Constants';
 import {QuestData} from './QuestData';
 
 describe('QuestData Schema', () => {
-  const base = {id: '12345', created: new Date(), userid: '8960', data: 'test text', notes: 'test notes', metadata: JSON.stringify({'a': 5})};
+  const base = {id: '12345', created: new Date(), userid: '8960', data: 'test text', notes: 'test notes', metadata: JSON.stringify({'a': 5}), edittime: new Date()};
   test('is invalid when no id', () => {
     expect(QuestData.create({id: ''}) instanceof Error).toEqual(true);
   });
