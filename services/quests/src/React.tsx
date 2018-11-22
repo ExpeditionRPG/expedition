@@ -83,7 +83,7 @@ if (window.gapi) {
 
 // alert user if they try to close the page with unsaved changes
 window.onbeforeunload = () => {
-  if (store.getState().dirty === true) {
+  if (store.getState().editor.dirty === true) {
     return false;
   }
   return null;
