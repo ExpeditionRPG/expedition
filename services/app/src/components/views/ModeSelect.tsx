@@ -21,21 +21,21 @@ export interface DispatchProps {
   onMultitouchChange: (change: boolean) => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const ModeSelect = (props: Props): JSX.Element => {
   const adventurers = numAdventurers(props.settings, props.multiplayer);
   return (
     <Card title="Game Setup">
-      <Picker label="Players" onDelta={(i: number) => props.onDelta(props.settings.numLocalPlayers, i)} value={props.settings.numLocalPlayers}>
+      <Picker id="playerCount" label="Players" onDelta={(i: number) => props.onDelta(props.settings.numLocalPlayers, i)} value={props.settings.numLocalPlayers}>
       {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
       {props.multiplayer && <div>({adventurers} across all clients)</div>}
       </Picker>
-      <Checkbox label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
+      <Checkbox id="multitouch" label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
         {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
       <TextDivider text="Select Mode" />
-      <Button onClick={() => props.onLocalSelect()}>
+      <Button id="selectLocal" onClick={() => props.onLocalSelect()}>
         <div className="questButtonWithIcon">
           <div className="title">Local Game</div>
           <div className="summary">

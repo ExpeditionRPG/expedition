@@ -59,7 +59,7 @@ const Settings = (props: Props): JSX.Element => {
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
       <p className="expansionLabel">Currently playing: <strong>Expedition {props.settings.contentSets.horror ? <span> + Horror</span> : null}{props.settings.contentSets.future ? <span> + Future</span> : null}</strong></p>
 
-      <Picker label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
+      <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
         {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
         {props.multiplayer && <div>({adventurers} across all clients)</div>}
       </Picker>
