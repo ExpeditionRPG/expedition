@@ -126,11 +126,6 @@ describe('Dialogs', () => {
       const {e} = setup({receivedEvents: 500});
       expect(e.find('DialogContent').render().text()).toContain("receivedEvents: 500");
     });
-    test('sends report', () => {
-      const {props, e} = setup();
-      e.find('#sendReportButton').hostNodes().prop('onClick')();
-      expect(props.onSendReport).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('MultiplayerPeersDialog', () => {
