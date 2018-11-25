@@ -61,7 +61,7 @@ const Settings = (props: Props): JSX.Element => {
 
       <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
         {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
-        {props.multiplayer && <div>({adventurers} across all clients)</div>}
+        {props.multiplayer && <div>({adventurers} across all devices)</div>}
       </Picker>
 
       <Checkbox label="Multitouch" value={props.settings.multitouch} onChange={props.settings.onMultitouchChange}>

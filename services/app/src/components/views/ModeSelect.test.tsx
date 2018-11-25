@@ -48,7 +48,7 @@ describe('ModeSelect', () => {
     elem.find('Picker#playerCount').prop('onDelta')(1);
     expect(props.onDelta).toHaveBeenCalledWith(jasmine.any(Number), 1);
   });
-  test('shows count across all clients', () => {
+  test('shows count across all devices', () => {
     const {elem, props} = setup({
       multiplayer: {
         ...initialMultiplayer,
@@ -59,6 +59,6 @@ describe('ModeSelect', () => {
         },
       },
     });
-    expect(elem.find('Picker#playerCount').text()).toContain('5 across all clients');
+    expect(elem.find('Picker#playerCount').text()).toContain('5 across all devices');
   });
 });

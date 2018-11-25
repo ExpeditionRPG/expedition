@@ -31,7 +31,7 @@ describe('Settings', () => {
   test.skip('displays with initial settings', () => { /* TODO */ });
   test.skip('displays with timerSeconds = null', () => { /* TODO */ });
 
-  test('shows count across all clients', () => {
+  test('shows count across all devices', () => {
     const {elem, props} = setup({
       multiplayer: {
         ...initialMultiplayer,
@@ -42,6 +42,6 @@ describe('Settings', () => {
         },
       },
     });
-    expect(elem.find('Picker#playerCount').text()).toContain('5 across all clients');
+    expect(elem.find('Picker#playerCount').text()).toContain('5 across all devices');
   });
 });

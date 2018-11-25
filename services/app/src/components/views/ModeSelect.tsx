@@ -29,7 +29,7 @@ const ModeSelect = (props: Props): JSX.Element => {
     <Card title="Game Setup">
       <Picker id="playerCount" label="Players" onDelta={(i: number) => props.onDelta(props.settings.numLocalPlayers, i)} value={props.settings.numLocalPlayers}>
       {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
-      {props.multiplayer && <div>({adventurers} across all clients)</div>}
+      {props.multiplayer && <div>({adventurers} across all devices)</div>}
       </Picker>
       <Checkbox id="multitouch" label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
         {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
