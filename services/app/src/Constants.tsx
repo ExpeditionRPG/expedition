@@ -192,6 +192,12 @@ export const INIT_DELAY = {
   SILENT_LOGIN_MILLIS: 1000,
 };
 
+export const CONTENT_SET_FULL_NAMES: {[k: string]: string} = {
+  base: 'Expedition',
+  horror: 'The Horror',
+  future: 'The Future',
+};
+
 export const CARD_TRANSITION_ANIMATION_MS = 300;
 export const VIBRATION_SHORT_MS = 30; // for navigation / card changes
 export const VIBRATION_LONG_MS = 400; // for unique events, like start of the timer

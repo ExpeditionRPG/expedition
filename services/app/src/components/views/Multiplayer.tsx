@@ -3,6 +3,7 @@ import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
+import {CONTENT_SET_FULL_NAMES} from '../../Constants';
 import {MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -73,12 +74,37 @@ class MultiplayerConnect extends React.Component<Props, {}> {
   }
 }
 
+// Get the content sets supported by all connected devices.
+function getContentSetIntersection(multiplayer: MultiplayerState): string[] {
+  let result: Set<string>|null = null;
+  const clients = multiplayer.clientStatus;
+  Object.keys(clients).map((k) => {
+    const contentSets = new Set(clients[k].contentSets);
+    if (!result) {
+      result = contentSets;
+      return;
+    }
+    result = new Set([...result].filter((c) => contentSets.has(c)));
+  });
+  return ['base', ...(result || [])];
+}
+
 function renderLobby(props: Props): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
-        <div><strong>Session created!</strong> Tell your friends to connect with the following code:</div>
+        <h2>Multiplayer Session</h2>
+        <div>Tell your friends to connect with the following code:</div>
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
+        <h2>Content Sets</h2>
+        <p>These are the content sets that every device has:</p>
+        <ul>
+          {getContentSetIntersection(props.multiplayer).map((c: string, i) => {
+            const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
+            return <li key={i}>{fullName}</li>;
+          })}
+        </ul>
+        <h2>Quick Tips</h2>
         <p>The bottom bar indicates that you are in an online multiplayer session:</p>
         <table>
           <tbody>
