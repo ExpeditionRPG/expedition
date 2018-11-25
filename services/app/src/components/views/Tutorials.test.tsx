@@ -12,7 +12,7 @@ describe('TutorialsContainer', () => {
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
       quests: TUTORIAL_QUESTS,
-      settings: {...initialSettings, experimental: true},
+      settings: {...initialSettings},
       onQuestSelect: jasmine.createSpy('onQuestSelect'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,

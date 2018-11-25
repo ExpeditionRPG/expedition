@@ -105,7 +105,6 @@ class Card extends React.Component<Props, {}> {
     if (this.props.icon) {
       icon = <img id="bgimg" src={'images/' + this.props.icon + '.svg'}></img>;
     }
-    const isExperimental = this.props.settings && this.props.settings.experimental;
     const cardTheme = this.props.theme || 'light';
     const questTheme = this.props.quest && this.props.quest.theme || 'base';
     const classes = ['base_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
@@ -128,7 +127,7 @@ class Card extends React.Component<Props, {}> {
               classes={{paper: 'menu_popup'}}
               onClose={() => this.handleMenuClose()}>
               <MenuItem id="homeButton" onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
-              {this.props.inQuest && isExperimental && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
+              {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
