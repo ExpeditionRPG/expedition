@@ -1,12 +1,14 @@
 import {MAX_ADVENTURERS} from 'app/Constants';
+import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
 import {MultiplayerState, SettingsType} from '../reducers/StateTypes';
-import {ChangeSettingsAction} from './ActionTypes';
+import {sendStatus} from './Multiplayer';
 
-export function changeSettings(settings: any): ChangeSettingsAction {
-  // TODO: Changing player count in settings should affect
-  // player status
-  return {type: 'CHANGE_SETTINGS', settings};
+export function changeSettings(settings: any) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    dispatch({type: 'CHANGE_SETTINGS', settings});
+    dispatch(sendStatus());
+  };
 }
 
 export function numAdventurers(settings: SettingsType, rp: MultiplayerState): number {

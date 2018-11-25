@@ -1,13 +1,17 @@
 import Button from '@material-ui/core/Button';
+import {numAdventurers} from 'app/actions/Settings';
 import * as React from 'react';
 import {URLS, VERSION} from '../../Constants';
 import {openWindow} from '../../Globals';
-import {DifficultyType, FontSizeType, SettingsType} from '../../reducers/StateTypes';
+import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
 import Picker from '../base/Picker';
 
-export interface StateProps extends SettingsType {}
+export interface StateProps {
+  settings: SettingsType;
+  multiplayer: MultiplayerState;
+}
 
 export interface DispatchProps {
   onAudioChange: (change: boolean) => void;
@@ -46,56 +50,57 @@ const timerText: { [v: string]: any } = [
 export const timerValues: Array<number|null> = [null, 30, 15, 10, 6];
 
 const Settings = (props: Props): JSX.Element => {
-  const difficultyIdx = difficultyValues.indexOf(props.difficulty);
-  const fontSizeIdx = fontSizeValues.indexOf(props.fontSize);
-  const timerIdx = props.timerSeconds ? timerValues.indexOf(props.timerSeconds) : 0;
-
+  const difficultyIdx = difficultyValues.indexOf(props.settings.difficulty);
+  const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
+  const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
+  const adventurers = numAdventurers(props.settings, props.multiplayer);
   return (
     <Card title="Settings">
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
-      <p className="expansionLabel">Currently playing: <strong>Expedition {props.contentSets.horror ? <span> + Horror</span> : null}{props.contentSets.future ? <span> + Future</span> : null}</strong></p>
+      <p className="expansionLabel">Currently playing: <strong>Expedition {props.settings.contentSets.horror ? <span> + Horror</span> : null}{props.settings.contentSets.future ? <span> + Future</span> : null}</strong></p>
 
-      <Picker label="Adventurers" value={props.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.numLocalPlayers, i)}>
-        {(props.numLocalPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
+      <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
+        {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
+        {props.multiplayer && <div>({adventurers} across all devices)</div>}
       </Picker>
 
-      <Checkbox label="Multitouch" value={props.multitouch} onChange={props.onMultitouchChange}>
-        {(props.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
+      <Checkbox label="Multitouch" value={props.settings.multitouch} onChange={props.settings.onMultitouchChange}>
+        {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
 
-      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number) => props.onDifficultyDelta(props.difficulty, i)}>
+      <Picker label="Difficulty" value={difficultyText[difficultyIdx].title} onDelta={(i: number) => props.onDifficultyDelta(props.settings.difficulty, i)}>
         {difficultyText[difficultyIdx].text}
       </Picker>
 
       <Picker label="Timer" value={timerText[timerIdx].title} onDelta={(i: number) => props.onTimerSecondsDelta(timerIdx, i)}>
         <div>
           {timerText[timerIdx].text}
-          {props.numLocalPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
+          {props.settings.numLocalPlayers === 1 ? <span><br/><strong>Solo play:</strong> Timers are doubled.</span> : ''}
         </div>
       </Picker>
 
-      <Checkbox label="Sound" value={props.audioEnabled} onChange={props.onAudioChange}>
-        {(props.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
+      <Checkbox label="Sound" value={props.settings.audioEnabled} onChange={props.settings.onAudioChange}>
+        {(props.settings.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
       </Checkbox>
 
-      <Checkbox label="Show Help" value={props.showHelp} onChange={props.onShowHelpChange}>
-        {(props.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}
+      <Checkbox label="Show Help" value={props.settings.showHelp} onChange={props.settings.onShowHelpChange}>
+        {(props.settings.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}
       </Checkbox>
 
-      <Checkbox label="Vibration" value={props.vibration} onChange={props.onVibrationChange}>
-        {(props.vibration) ? 'Vibrate on touch.' : 'Do not vibrate.'}
+      <Checkbox label="Vibration" value={props.settings.vibration} onChange={props.settings.onVibrationChange}>
+        {(props.settings.vibration) ? 'Vibrate on touch.' : 'Do not vibrate.'}
       </Checkbox>
 
-      <Checkbox label="Auto-Roll" value={props.autoRoll} onChange={props.onAutoRollChange}>
-        {(props.autoRoll) ? 'Automatically roll for the party when resolving combat.' : 'Do not show pre-generated rolls in combat.'}
+      <Checkbox label="Auto-Roll" value={props.settings.autoRoll} onChange={props.settings.onAutoRollChange}>
+        {(props.settings.autoRoll) ? 'Automatically roll for the party when resolving combat.' : 'Do not show pre-generated rolls in combat.'}
       </Checkbox>
 
       <Picker label="Font Size" value={fontSizeValues[fontSizeIdx]} onDelta={(i: number) => props.onFontSizeDelta(fontSizeIdx, i)}>
         Takes effect once you leave settings.
       </Picker>
 
-      <Checkbox label="Experimental" value={props.experimental} onChange={props.onExperimentalChange}>
-        {(props.experimental) ? 'Experimental features are currently enabled.' : 'Experimental features are currently disabled.'}
+      <Checkbox label="Experimental" value={props.settings.experimental} onChange={props.settings.onExperimentalChange}>
+        {(props.settings.experimental) ? 'Experimental features are currently enabled.' : 'Experimental features are currently disabled.'}
       </Checkbox>
 
       <div className="version">Expedition App v{VERSION}</div>

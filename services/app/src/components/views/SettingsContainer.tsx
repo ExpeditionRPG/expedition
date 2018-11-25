@@ -8,7 +8,10 @@ import {AppState, DifficultyType} from '../../reducers/StateTypes';
 import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
 
 const mapStateToProps = (state: AppState): StateProps => {
-  return state.settings;
+  return {
+    settings: state.settings,
+    multiplayer: state.multiplayer,
+  };
 };
 
 /* tslint:disable */
