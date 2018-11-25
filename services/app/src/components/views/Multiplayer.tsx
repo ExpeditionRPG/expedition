@@ -25,7 +25,7 @@ export interface DispatchProps {
   onStart: () => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 class MultiplayerConnect extends React.Component<Props, {}> {
   public state: {secret: string};
@@ -79,6 +79,10 @@ function getContentSetIntersection(multiplayer: MultiplayerState): string[] {
   let result: Set<string>|null = null;
   const clients = multiplayer.clientStatus;
   Object.keys(clients).map((k) => {
+    if (!clients[k].connected) {
+      return;
+    }
+
     const contentSets = new Set(clients[k].contentSets);
     if (!result) {
       result = contentSets;
@@ -89,7 +93,8 @@ function getContentSetIntersection(multiplayer: MultiplayerState): string[] {
   return ['base', ...(result || [])];
 }
 
-function renderLobby(props: Props): JSX.Element {
+// TODO: Put this in a separate file and move the switch statemenet to Compositor
+export function renderLobby(props: Props): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
@@ -98,7 +103,7 @@ function renderLobby(props: Props): JSX.Element {
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
         <h2>Content Sets</h2>
         <p>These are the content sets that every device has:</p>
-        <ul>
+        <ul id='contentsets'>
           {getContentSetIntersection(props.multiplayer).map((c: string, i) => {
             const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
             return <li key={i}>{fullName}</li>;
@@ -123,7 +128,7 @@ function renderLobby(props: Props): JSX.Element {
         </table>
         <p>Click the connected adventurers or connection state for more information.</p>
         <p>Once everyone is connected, click Start:</p>
-        <Button id="1" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
+        <Button id="start" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
       </div>
     </Card>
   );
