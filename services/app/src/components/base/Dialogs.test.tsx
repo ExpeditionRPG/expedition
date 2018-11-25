@@ -147,13 +147,13 @@ describe('Dialogs', () => {
     test('shows peers & player count', () => {
       const {e} = setup({
         multiplayer: {...initialMultiplayer, clientStatus: {
-          "a": {numLocalPlayers: 3},
-          "b": {numLocalPlayers: 2},
+          "a": {numLocalPlayers: 3, name: 'p1'},
+          "b": {numLocalPlayers: 2, name: 'p2'},
         }},
       });
       const text = e.find('DialogContent').render().text();
-      expect(text).toContain("3 Players");
-      expect(text).toContain("2 Players");
+      expect(text).toMatch(/p1.?3 Players/);
+      expect(text).toMatch(/p2.?2 Players/);
     });
   });
 
