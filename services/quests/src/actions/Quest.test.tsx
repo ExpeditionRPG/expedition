@@ -71,7 +71,6 @@ describe('quest actions', () => {
       const qid = 'testquestid';
       const edittime = new Date();
       const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
-      console.log(matcher);
       fetchMock.get(matcher, 404);
       fetchMock.post(/.*/, {});
       const lqfr = jasmine.createSpy('loadQuestFromRealtime').and.returnValue({...LOAD_RESULT, edittime});

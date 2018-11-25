@@ -171,7 +171,6 @@ function createDocNotes(model: any) {
 }
 
 function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<{data: string, notes: string, metadata: any, edittime: Date}|null> {
-  console.log(edittime.getTime());
   return fetch(`${API_HOST}/qdl/${docid}/${edittime.getTime()}`, {
         credentials: 'include',
         headers: {
@@ -197,17 +196,12 @@ function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promi
 }
 
 export function loadQuest(user: UserState, docid?: string, edittime: Date = new Date(), fromRealtime: any = loadQuestFromRealtime) {
-  console.log(edittime.getTime());
   return (dispatch: Redux.Dispatch<any>): any => {
     if (docid === undefined) {
-      console.log('creating new quest');
       return dispatch(newQuest(user));
     }
     return loadQuestFromAPI(user, docid, edittime)
       .then((result) => {
-        if (result) {
-          console.log('loaded from API', result);
-        }
         return result || fromRealtime(user, docid);
       })
       .then((result) => {
@@ -278,10 +272,8 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
 }
 
 export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
-  console.log('trying realtime');
   return new Promise((resolve, reject) => {
     realtimeUtils.load(docid, (doc: any) => {
-      console.log('Loaded from realtime API');
       window.location.hash = docid;
       doc.addEventListener('collaborator_joined', (e: any) => {
         ReactGA.event({
@@ -457,7 +449,6 @@ export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) =>
           body: JSON.stringify({data, notes, metadata, edittime: edittime.getTime()}),
       }).then((response) => {
         if (!response.ok) {
-          console.log({response});
           return response.text();
         }
         return Promise.resolve(null);
