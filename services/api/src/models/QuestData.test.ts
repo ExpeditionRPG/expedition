@@ -1,6 +1,6 @@
 import {QuestData} from 'shared/schema/QuestData';
 import {QuestDataInstance} from './Database';
-import {getNewestQuestData, saveQuestData} from './QuestData';
+import {claimNewestQuestData, saveQuestData} from './QuestData';
 import {
   questData as qd,
   testingDBWithState,
@@ -10,26 +10,27 @@ import {
 const Moment = require('moment');
 
 describe('quest', () => {
-  describe('searchQuests', () => {
-    test('returns matching quest ID and user ID in single case', (done) => {
-      testingDBWithState([qd.basic])
-        .then((tdb) => {
-          return getNewestQuestData(tdb, qd.basic.id, qd.basic.userid);
-        })
-        .then((results) => {
-          expect(results).toEqual(qd.basic);
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
   describe('saveQuestData', () => {
     const new1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 23*60*60*1000)}); // <24h
     const old1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 25*60*60*1000)});
     const old2 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 26*60*60*1000)}); // older
     const otheruser1 = new QuestData({...qd.basic, userid: 'otheruser', created: new Date(TEST_NOW - 15*60*60*1000)});
     const otherquest1 = new QuestData({...qd.basic, id: 'otherquest', created: new Date(TEST_NOW - 15*60*60*1000)});
+
+    test('rejects if edittime is different', (done) => {
+      let db = null;
+      testingDBWithState([old1]).then((tdb) => {
+        db = tdb;
+        return saveQuestData(tdb, {...new1, edittime: new Date(TEST_NOW - 5)}, new1.created.getTime());
+      })
+      .then(() => {
+        done.fail('Error not thrown');
+      })
+      .catch((error: Error) => {
+        expect(error.toString()).toContain('Edit time mismatch');
+        done();
+      })
+    });
 
     test('adds if <2 rows', (done) => {
       let db = null;
@@ -107,16 +108,18 @@ describe('quest', () => {
     });
   });
 
-  describe('getNewestQuestData', () => {
-    test('gets newest quest data', (done) => {
+  describe('claimNewestQuestData', () => {
+    test('claims newest quest data', (done) => {
+      const edittime = new Date(TEST_NOW - 5);
       const new1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 23*60*60*1000)}); // <24h
       const old1 = new QuestData({...qd.basic, created: new Date(TEST_NOW - 25*60*60*1000)});
       let db = null;
       testingDBWithState([new1, old1]).then((tdb) => {
-        return getNewestQuestData(tdb, qd.basic.id, qd.basic.userid);
+        return claimNewestQuestData(tdb, qd.basic.id, qd.basic.userid, edittime);
       })
       .then((result) => {
         expect(result.created).toEqual(new1.created);
+        expect(result.edittime.getTime()).toEqual(edittime.getTime());
         done();
       })
       .catch(done.fail);

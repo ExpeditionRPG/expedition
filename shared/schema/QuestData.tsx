@@ -39,6 +39,11 @@ export class QuestData extends SchemaBase {
   @field({
   }) public metadata: string;
 
+  // Used to determine which of multiple clients is the "master" edit session.
+  @field({
+    allowNull: false,
+  }) public edittime: Date;
+
   @field({
     allowNull: true,
     default: PLACEHOLDER_DATE,

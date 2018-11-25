@@ -98,7 +98,7 @@ export class Database {
       ],
     });
 
-    const questDataSpec = toSequelize(new QuestData({id: '', userid: '', data: '', notes: '', metadata: ''}));
+    const questDataSpec = toSequelize(new QuestData({id: '', userid: '', data: '', notes: '', metadata: '', edittime: new Date(0)}));
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps

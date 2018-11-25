@@ -10,6 +10,7 @@ import {
   unpublish,
   userQuests,
   loadQuestData,
+  saveQuestData,
 } from './Handlers';
 import {MailService} from './Mail';
 import {AnalyticsEventInstance, Database, QuestInstance} from './models/Database';
@@ -28,7 +29,7 @@ describe('handlers', () => {
       const res = mockRes();
       healthCheck(mockReq({body: ''}), res);
       expect(res.end.calledWith(' ')).toEqual(true);
-      expect(res.status.calledWith(200)).toEqual(true);
+      expect(res.status.getCall(0).args[0]).toEqual(200);
     });
   });
 
@@ -106,7 +107,7 @@ describe('handlers', () => {
           return publish(db, ms, mockReq({body: rq.basic.xml, query, params: {id: q.basic.id}}), res);
         })
         .then(() => {
-          expect(res.status.calledWith(200)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(200);
           expect(res.end.calledWith(q.basic.id)).toEqual(true);
           return db.quests.findOne({where: {id: q.basic.id}});
         })
@@ -131,7 +132,7 @@ describe('handlers', () => {
           return unpublish(db, mockReq({body: '', params: {quest: q.basic.id}}), res);
         })
         .then(() => {
-          expect(res.status.calledWith(200)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(200);
           expect(res.end.calledWith('ok')).toEqual(true);
           return db.quests.findOne({where: {id: q.basic.id}});
         })
@@ -170,7 +171,7 @@ describe('handlers', () => {
         })
         .then(() => db.analyticsEvent.findOne({where: {userID: ae.action.userID}}))
         .then((i: AnalyticsEventInstance|null) => {
-          expect(res.status.calledWith(200)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(200);
           expect(i).not.toEqual(null);
           done();
         })
@@ -190,7 +191,7 @@ describe('handlers', () => {
         .then((db) => feedback(db, ms, mockReq({body: '{', params: {type: 'feedback'}}), res))
         .then(done.fail)
         .catch(() => {
-          expect(res.status.calledWith(400)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(400);
           expect(res.end.calledWith('Error reading request.')).toEqual(true);
           done();
         }).catch(done.fail);
@@ -207,7 +208,7 @@ describe('handlers', () => {
         .then((db) => feedback(db, ms, mockReq({body: JSON.stringify(data), params: {type: 'feedback'}}), res))
         .then(done.fail)
         .catch(() => {
-          expect(res.status.calledWith(400)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(400);
           expect(res.end.calledWith('Invalid request.')).toEqual(true);
           done();
         }).catch(done.fail);
@@ -263,7 +264,7 @@ describe('handlers', () => {
       ])
         .then((db) => userQuests(db, mockReq({}), res))
         .then(() => {
-          expect(res.status.calledWith(200)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(200);
           expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({[ae.questEnd.questID]: jasmine.any(Object)});
           done();
         }).catch(done.fail);
@@ -271,28 +272,45 @@ describe('handlers', () => {
   });
 
   describe('loadQuestData', () => {
-    test('loads most recent quest', (done: DoneFn) => {
+    test('loads most recent quest', (done) => {
       const res = mockRes();
       res.locals.id = qd.basic.userid;
       testingDBWithState([
         qd.basic,
         qd.older,
       ])
-        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id}}), res))
+        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id, edittime: qd.basic.edittime}}), res))
         .then(() => {
-          expect(res.status.calledWith(200)).toEqual(true);
-          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata)});
+          expect(res.status.getCall(0).args[0]).toEqual(200);
+          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata), edittime: qd.basic.edittime});
           done();
         })
         .catch(done.fail);
     });
-    test('returns 404 when quest not found', (done: DoneFn) => {
+    test('returns 404 when quest not found', (done) => {
       const res = mockRes();
       res.locals.id = qd.basic.userid;
       testingDBWithState([])
-        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id}}), res))
+        .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id, edittime: qd.basic.edittime}}), res))
         .then(() => {
-          expect(res.status.calledWith(404)).toEqual(true);
+          expect(res.status.getCall(0).args[0]).toEqual(404);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('saveQuestData', () => {
+    test.only('notifies when other client is editing quest', (done) => {
+      const res = mockRes();
+      res.locals.id = qd.basic.userid;
+      testingDBWithState([qd.basic])
+        .then((db) => saveQuestData(db, mockReq({
+          params: {id: qd.basic.id},
+          body: JSON.stringify({data: 'test data', notes: 'test notes', metadata: '{a: 5}', edittime: new Date(qd.basic.edittime.getTime() + 100)}),
+        }), res))
+        .then(() => {
+          expect(res.status.getCall(0).args[0]).toEqual(409);
           done();
         })
         .catch(done.fail);

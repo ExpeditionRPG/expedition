@@ -49,7 +49,9 @@ class QuestAppBar extends React.Component<Props, {}> {
     } else if (this.props.quest.saveError) {
       return (
         <span className="error saveIndicator">
-          <Button disabled={true}><AlertError /> Error: unable to save</Button>
+          <Tooltip title={this.props.quest.saveError}><div>
+            <Button disabled={true}><AlertError /> Error: unable to save</Button>
+          </div></Tooltip>
         </span>
       );
     } else if (!this.props.editor.dirty) {
