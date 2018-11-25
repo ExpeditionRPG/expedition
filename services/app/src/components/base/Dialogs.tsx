@@ -12,6 +12,8 @@ import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState
 import Checkbox from './Checkbox';
 import Picker from './Picker';
 
+const pluralize = require('pluralize');
+
 export interface BaseDialogProps extends React.Props<any> {
   onClose: () => void;
   open: boolean;
@@ -138,7 +140,8 @@ export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDial
       const c = this.props.multiplayer.clientStatus[k];
       return <div key={i}>
         <div><strong>{c.name || 'Player ' + i}</strong></div>
-        <div>{c.numLocalPlayers} Players</div>
+        <div>{c.numLocalPlayers} {pluralize('Player', c.numLocalPlayers)}</div>
+        <br/>
       </div>;
     });
     return (
