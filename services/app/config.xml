@@ -47,6 +47,9 @@
     <gap:config-file parent="/manifest" platform="android">
         <application android:debuggable="true" />
     </gap:config-file>
+    <config-file parent="/manifest/application" target="AndroidManifest.xml">
+        <meta-data android:name="android.max_aspect" android:value="3" />
+    </config-file>
     <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
         <manifest android:installLocation="auto" />
     </edit-config>
