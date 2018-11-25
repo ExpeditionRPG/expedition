@@ -60,6 +60,7 @@ class MultiplayerConnect extends React.Component<Props, {}> {
             <li>Multiple players can play on one device</li>
             <li>Up to 6 players can play in a session</li>
             <li>Each device needs <a href="#" onClick={() => window.open('https://expeditiongame.com/store?utm_source=app', '_blank')}>Expedition</a> to play.</li>
+            <li>If you are using an older device or encounter performance issues, please use a separate device for communication.</li>
           </ul>
           <p>Start a new session, or join an existing one:</p>
           <Button onClick={() => {this.props.onNewSessionRequest(this.props.user); }}>Start a new session</Button>

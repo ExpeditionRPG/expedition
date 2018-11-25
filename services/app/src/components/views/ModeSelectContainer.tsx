@@ -10,9 +10,9 @@ import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 const mapStateToProps = (state: AppState): StateProps => {
   return {
     isLatestAppVersion: state.serverstatus.isLatestAppVersion,
-    multitouch: state.settings.multitouch,
-    numLocalPlayers: state.settings.numLocalPlayers,
+    settings: state.settings,
     user: state.user,
+    multiplayer: state.multiplayer,
   };
 };
 
