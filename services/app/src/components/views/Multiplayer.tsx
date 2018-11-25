@@ -103,7 +103,7 @@ export function renderLobby(props: Props): JSX.Element {
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
         <h2>Content Sets</h2>
         <p>These are the content sets that every device has:</p>
-        <ul id='contentsets'>
+        <ul id="contentsets">
           {getContentSetIntersection(props.multiplayer).map((c: string, i) => {
             const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
             return <li key={i}>{fullName}</li>;
