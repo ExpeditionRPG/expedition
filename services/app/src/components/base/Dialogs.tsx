@@ -45,27 +45,15 @@ export class ConfirmationDialog<T extends BaseDialogProps> extends React.Compone
   }
 }
 
-interface ExitDialogProps extends BaseDialogProps {
+interface ExitMultiplayerDialogProps extends BaseDialogProps {
   onExit: () => void;
 }
 
-export class ExitQuestDialog extends ConfirmationDialog<ExitDialogProps> {
-  constructor(props: ExitDialogProps) {
-    super(props);
-    this.title = 'Exit Quest?';
-    this.content = <p>Tapping exit will lose your place in the quest and return you to the home screen.</p>;
-  }
-
-  public onAction() {
-    this.props.onExit();
-  }
-}
-
-export class ExitMultiplayerDialog extends ConfirmationDialog<ExitDialogProps> {
-  constructor(props: ExitDialogProps) {
+export class ExitMultiplayerDialog extends ConfirmationDialog<ExitMultiplayerDialogProps> {
+  constructor(props: ExitMultiplayerDialogProps) {
     super(props);
     this.title = 'Exit Multiplayer?';
-    this.content = <p>Tapping exit will disconnect you from your peers and return you to the home screen.</p>;
+    this.content = <p>You will be disconnected and returned to the home screen.</p>;
   }
 
   public onAction() {
@@ -197,6 +185,7 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
   protected title: string;
   protected content: JSX.Element;
   protected helperText: string;
+  protected action: string;
 
   public state: {text: string};
 
@@ -229,7 +218,7 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
         </DialogContent>
         <DialogActions>
           <Button id="cancelButton" onClick={() => this.props.onClose()}>Cancel</Button>
-          <Button id="submitButton" className="primary" onClick={() => this.onSubmit()}>Submit</Button>
+          <Button id="submitButton" className="primary" onClick={() => this.onSubmit()}>{this.action || 'Submit'}</Button>
         </DialogActions>
       </Dialog>
     );
@@ -269,6 +258,27 @@ export class ReportErrorDialog extends TextAreaDialog<ReportErrorDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('report_error', this.props.quest, this.props.settings, this.props.user, this.state.text + '... Error: ' + this.props.error);
+  }
+}
+
+interface ExitDialogProps extends BaseDialogProps {
+  quest: QuestState;
+  settings: SettingsType;
+  user: UserState;
+  onExit: (quest: QuestState, settings: SettingsType, user: UserState, text: string) => Promise<any>;
+}
+
+export class ExitQuestDialog extends TextAreaDialog<ExitDialogProps> {
+  constructor(props: ExitDialogProps) {
+    super(props);
+    this.action = 'Exit';
+    this.title = 'Exit Quest?';
+    this.content = <p>You will lose your place in the quest and return to the home screen.</p>;
+    this.helperText = 'Do you have any feedback on the quest?';
+  }
+
+  public onSubmit() {
+    this.props.onExit(this.props.quest, this.props.settings, this.props.user, this.state.text);
   }
 }
 
@@ -365,7 +375,7 @@ export interface DispatchProps {
   onClose: () => void;
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onExitMultiplayer: () => void;
-  onExitQuest: () => void;
+  onExitQuest: (quest: QuestState, settings: SettingsType, user: UserState, text: string) => Promise<any>;
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
@@ -389,6 +399,9 @@ const Dialogs = (props: Props): JSX.Element => {
         open={props.dialog && props.dialog.open === 'EXIT_QUEST'}
         onExit={props.onExitQuest}
         onClose={props.onClose}
+        quest={props.quest}
+        settings={props.settings}
+        user={props.user}
       />
       <ExpansionSelectDialog
         open={props.dialog && props.dialog.open === 'EXPANSION_SELECT'}

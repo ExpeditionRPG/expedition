@@ -30,8 +30,13 @@ export class Node<C extends Context> {
   public ctx: C;
   private renderedChildren: Array<{rendered: Cheerio, original: Cheerio}>;
 
+  // Certain fail-safe events are fine under normal behavior, but we may want to
+  // strictly check them when crawling for errors.
+  private warnings: Error[];
+
   constructor(elem: Cheerio, ctx: C, action?: string|number, seed?: string) {
     this.elem = elem;
+    this.warnings = [];
     this.ctx = this.updateContext(elem, ctx, action);
     // Overwrite seed after updateContext, which generates one otherwise.
     if (seed) {
@@ -51,6 +56,10 @@ export class Node<C extends Context> {
     // Context is deep-copied via updateContext.
     // Random seed is persisted on the copied node.
     return new (this.constructor as any)(this.elem, this.ctx, null, this.ctx.seed);
+  }
+
+  public getWarnings(): Error[] {
+    return this.warnings;
   }
 
   public getTag(): string|null {
@@ -263,6 +272,7 @@ export class Node<C extends Context> {
       // If we fail to evaluate (e.g. symbol not defined), display the element
       // so that the quest is still playable - better too many options
       // than not being able to finish.
+      this.warnings.push(new Error('Failed to evaluate conditional on element: ' + e.toString()));
       return true;
     }
   }

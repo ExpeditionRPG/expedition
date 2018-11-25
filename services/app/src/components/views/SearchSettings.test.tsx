@@ -1,9 +1,9 @@
-import * as React from 'react';
 import {mount} from 'app/Testing';
-import {initialSettings} from '../../reducers/Settings';
-import SearchSettings, {Props} from './SearchSettings';
-import {loggedOutUser} from '../../reducers/User';
+import * as React from 'react';
 import {initialSearch} from '../../reducers/Search';
+import {initialSettings} from '../../reducers/Settings';
+import {loggedOutUser} from '../../reducers/User';
+import SearchSettings, {Props} from './SearchSettings';
 import {Quest} from 'shared/schema/Quests';
 import {TEST_SEARCH} from './Search.test';
 
@@ -19,10 +19,22 @@ describe('SearchSettings', () => {
     return {props, e};
   }
 
+  function getNode(k) {
+    if (k === 'text') {
+      return `TextField#${k}`;
+    }
+    if (k === 'expansions') {
+      return 'ExpansionCheckbox';
+    }
+    return `NativeSelect#${k}`;
+  }
+
   test('propagates user selections when Search is pressed', () => {
     const {props, e} = setup();
     for (const k of Object.keys(TEST_SEARCH)) {
-      e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
+      const node = getNode(k);
+      const onChange = k === 'expansions' ? TEST_SEARCH[k] : { target: { value: TEST_SEARCH[k] } };
+      e.find(node).prop('onChange')(onChange);
     }
     e.find('ExpeditionButton#search').prop('onClick')();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
@@ -31,7 +43,9 @@ describe('SearchSettings', () => {
   test('propagates user selections when form is submitted', () => {
     const {props, e} = setup();
     for (const k of Object.keys(TEST_SEARCH)) {
-      e.find(((k === 'text') ? 'TextField' : 'NativeSelect') + '#'+k).prop('onChange')({ target: { value: TEST_SEARCH[k] } });
+      const node = getNode(k);
+      const onChange = k === 'expansions' ? TEST_SEARCH[k] : { target: { value: TEST_SEARCH[k] } };
+      e.find(node).prop('onChange')(onChange);
     }
     e.find('form').prop('onSubmit')();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);

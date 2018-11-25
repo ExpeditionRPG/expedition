@@ -71,6 +71,10 @@ export class StatsCrawler extends CrawlerBase<Context> {
     this.statsByEvent[e].push({line: q.prevLine, id: q.prevId, fromAction: q.fromAction});
   }
 
+  protected onWarnings(q: StatsCrawlEntry, warnings: Error[], line: number) {
+    // Do nothing, but required as implementation of abstract class.
+  }
+
   protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
     // Create stats for this line/id if they don't already exist
     if (this.statsById[id] === undefined) {

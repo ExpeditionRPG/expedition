@@ -20,6 +20,7 @@ export const TEST_SEARCH: SearchParams = {
   mintimeminutes: 30,
   order: '+title',
   text: 'Test Text',
+  expansions: [],
 };
 
 describe('Search', () => {
