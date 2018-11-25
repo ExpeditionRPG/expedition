@@ -187,6 +187,7 @@ export class Connection extends ClientBase {
   public disconnect() {
     this.connected = false;
     this.session.close(1000);
+    this.resetState();
   }
 
   public sendEvent(event: MultiplayerEventBody, commitID: number): void {
