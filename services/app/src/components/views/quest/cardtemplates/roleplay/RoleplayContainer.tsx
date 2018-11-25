@@ -16,6 +16,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): 
 
   return {
     node: ownProps.node, // Using this instead of state.node prevents weird errors when transitioning to / from combat
+    questID: state.quest.details.id,
     onReturn: ownProps.onReturn,
     prevNode,
     settings: state.settings,

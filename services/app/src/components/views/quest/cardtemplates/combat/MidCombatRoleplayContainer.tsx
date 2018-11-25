@@ -30,6 +30,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
+    questID: state.quest.details.id,
     maxTier,
   };
 };
