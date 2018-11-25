@@ -152,8 +152,8 @@ describe('Dialogs', () => {
         }},
       });
       const text = e.find('DialogContent').render().text();
-      expect(text).toContain("p1 3 Players");
-      expect(text).toContain("p2 2 Players");
+      expect(text).toMatch(/p1.?3 Players/);
+      expect(text).toMatch(/p2.?2 Players/);
     });
   });
 

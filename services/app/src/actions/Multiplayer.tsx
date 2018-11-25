@@ -148,10 +148,16 @@ export function syncMultiplayer(c = getMultiplayerConnection()) {
 export function sendStatus(client?: string, instance?: string, partialStatus?: StatusEvent, c= getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
     const {multiplayer, settings, commitID, quest, user} = getState();
+    const elem = (quest && quest.node && quest.node.elem);
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[multiplayer.client]);
     let event: StatusEvent = {
       connected: true,
+      lastEventID: commitID,
+      line: (elem && parseInt(elem.attr('data-line'), 10)),
+      numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
       type: 'STATUS',
+      waitingOn: (selfStatus && selfStatus.waitingOn),
+      name: user && user.email,
     };
     if (partialStatus) {
       event = {...event, ...partialStatus};
@@ -159,14 +165,8 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     client = client || multiplayer.client || '';
     instance = instance || multiplayer.instance || '';
 
-    // Set local status details and send remote if we're the origin
+    // Send remote if we're the origin
     if (client === multiplayer.client && instance === multiplayer.instance) {
-      event.name = user.email;
-      event.numLocalPlayers = (settings && settings.numLocalPlayers) || 1;
-      event.waitingOn = (selfStatus && selfStatus.waitingOn);
-      event.lastEventID = commitID;
-      const elem = (quest && quest.node && quest.node.elem);
-      event.line = (elem && parseInt(elem.attr('data-line'), 10));
       c.sendEvent(event, commitID);
     }
 
