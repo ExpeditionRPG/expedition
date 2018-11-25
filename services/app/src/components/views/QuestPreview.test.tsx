@@ -25,7 +25,7 @@ describe('QuestPreview', () => {
       lastPlayed: null,
       lastLogin: new Date(),
       quest: new Quest({...TUTORIAL_QUESTS.filter((el) => el.title === questTitle)[0], ...questOverrides}),
-      settings: {...initialSettings, experimental: true},
+      settings: {...initialSettings},
       onPlay: jasmine.createSpy('onPlay'),
       onPlaySaved: jasmine.createSpy('onPlaySaved'),
       onSave: jasmine.createSpy('onSave'),

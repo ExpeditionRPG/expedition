@@ -53,7 +53,7 @@ function renderRequirementsRow(quest: Quest): JSX.Element|null {
 
 function renderSaves(props: Props): JSX.Element|null {
   const saves = props.savedInstances.filter((s) => (s.pathLen || 0) !== 0);
-  if (!props.settings.experimental || saves.length === 0) {
+  if (saves.length === 0) {
     return null;
   }
   const quest = props.quest;
@@ -104,19 +104,17 @@ const QuestPreview = (props: Props): JSX.Element => {
     actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>);
   }
 
-  if (props.settings.experimental) {
-    if (props.savedInstances.length > 0 && lastSaved !== null) {
-      actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="playlastsave">Continue from last save</Button>);
-    }
+  if (props.savedInstances.length > 0 && lastSaved !== null) {
+    actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="playlastsave">Continue from last save</Button>);
+  }
 
-    // Allow us to save non-local quests for offline play
-    if (!quest.publishedurl.startsWith('quests/')) {
-      let offlineButton: JSX.Element|null = <Button key="offlinesave" onClick={(e) => props.onSave(quest)} id="offlinesave">Save for offline play</Button>;
-      if (offlineTS !== null) {
-        offlineButton = <Button key="offlinedelete" onClick={(e) => props.onDeleteOffline(quest.id, offlineTS || 0)} id="offlinedelete">Clear offline state</Button>;
-      }
-      actions.push(offlineButton);
+  // Allow us to save non-local quests for offline play
+  if (!quest.publishedurl.startsWith('quests/')) {
+    let offlineButton: JSX.Element|null = <Button key="offlinesave" onClick={(e) => props.onSave(quest)} id="offlinesave">Save for offline play</Button>;
+    if (offlineTS !== null) {
+      offlineButton = <Button key="offlinedelete" onClick={(e) => props.onDeleteOffline(quest.id, offlineTS || 0)} id="offlinedelete">Clear offline state</Button>;
     }
+    actions.push(offlineButton);
   }
 
   actions.push(<Button key="back" id="searchDetailsBackButton" onClick={(e) => props.onReturn()}>Back</Button>);
