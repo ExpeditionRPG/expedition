@@ -2,6 +2,7 @@ import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
+import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import {SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
@@ -48,7 +49,7 @@ export default function playerTier(props: Props): JSX.Element {
           If you reach zero health, you are knocked out.
           After resolving this turn, you cannot play further cards until you are healed by another adventurer or revived at the end of the encounter.
         </p>}
-        {theHorror && injured && <Callout icon="horror_white"><strong>The Horror:</strong> Upon being knocked out, reset your persona to Base.</Callout>}
+        {theHorror && injured && <Callout icon="horror_white"><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Upon being knocked out, reset your persona to Base.</Callout>}
       </span>
     );
   }

@@ -2,6 +2,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import * as React from 'react';
+import {CONTENT_SET_FULL_NAMES} from '../../Constants';
 import {ContentSetsType} from '../../reducers/StateTypes';
 
 interface IExpansion {
@@ -31,13 +32,13 @@ export class ExpansionCheckbox extends React.Component<IProps, {}> {
       {
         checked: isHorror,
         value: 'horror',
-        label: 'The Horror',
+        label: CONTENT_SET_FULL_NAMES.horror,
         disabled: !isHorror,
       },
       {
         checked: isFuture,
         value: 'future',
-        label: 'The Future',
+        label: CONTENT_SET_FULL_NAMES.future,
         disabled: !isFuture,
       },
     ];

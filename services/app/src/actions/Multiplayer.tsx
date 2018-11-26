@@ -158,6 +158,7 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
       name: user && user.email,
+      contentSets: settings && Object.keys(settings.contentSets).filter((k) => settings.contentSets[k]),
     };
     if (partialStatus) {
       event = {...event, ...partialStatus};
