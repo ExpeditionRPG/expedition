@@ -8,7 +8,7 @@ import {MIN_FEEDBACK_LENGTH} from '../Constants';
 import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {getLogBuffer} from '../Logging';
 import {logEvent} from '../Logging';
-import {getCounters, MultiplayerCounters} from '../multiplayer/Counters';
+import {getCounters} from '../multiplayer/Counters';
 import {remoteify} from '../multiplayer/Remoteify';
 import {AppState, FeedbackType, QuestState, SettingsType, UserQuestsType, UserState} from '../reducers/StateTypes';
 import {UserQuestsAction} from './ActionTypes';
@@ -148,10 +148,6 @@ export function subscribe(a: {email: string}) {
 
 export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType, user: UserState, type: FeedbackType, anonymous: boolean, text: string, rating: number|null}) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
-    const stats = getCounters();
-    if (stats) {
-      logMultiplayerStats(a.user, a.quest.details, stats);
-    }
     if (a.rating && a.rating < 3 && (!a.text || a.text.length < MIN_FEEDBACK_LENGTH)) {
       return alert('Sounds like the quest needs work! Please provide feedback of at least ' + MIN_FEEDBACK_LENGTH + ' characters to help the author improve.');
     } else if (a.rating && a.text.length > 0 && a.text.length < MIN_FEEDBACK_LENGTH) {
@@ -172,6 +168,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       text: a.text,
       userid: a.user.id,
       version: VERSION,
+      stats: JSON.stringify(getCounters()),
     };
 
     // If we're not rating, we're providing other feedback.
@@ -214,31 +211,4 @@ function postUserFeedback(type: string, data: any) {
       dispatch(openSnackbar(Error('Error submitting review: ' + error.toString())));
     });
   };
-}
-
-export function logMultiplayerStats(user: UserState, quest: Quest, stats: MultiplayerCounters) {
-  try {
-    const data = {
-      console: getLogBuffer(),
-      data: stats,
-      email: user.email,
-      name: user.name,
-      platform: getDevicePlatform(),
-      questid: quest.id,
-      questversion: quest.questversion,
-      userid: user.id,
-      version: VERSION,
-    };
-
-    return fetch(AUTH_SETTINGS.URL_BASE + '/analytics/multiplayer/stats', {
-      body: JSON.stringify(data),
-      method: 'POST',
-    })
-    .then(handleFetchErrors)
-    .catch((error: Error) => {
-      logEvent('error', 'analytics_quest_err', { label: error });
-    });
-  } catch (e) {
-    console.error('Failed to log multiplayer stats', e);
-  }
 }

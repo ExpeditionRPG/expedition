@@ -103,7 +103,6 @@ export class Database {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
     });
-    this.questData.sync();
 
     const feedbackSpec = toSequelize(new Feedback({partition: PUBLIC_PARTITION, questid: '', userid: ''}));
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {

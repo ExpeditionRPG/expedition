@@ -56,6 +56,10 @@ export class Feedback extends SchemaBase {
   }) public email: string;
 
   @field({
+    default: '',
+  }) public stats: string;
+
+  @field({
     default: false,
   }) public anonymous: boolean;
 
