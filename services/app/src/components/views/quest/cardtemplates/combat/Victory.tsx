@@ -1,6 +1,6 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {CONTENT_SET_FULL_NAMES, MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters, Loot} from 'app/reducers/QuestTypes';
 import {CardThemeType} from 'app/reducers/StateTypes';
 import * as React from 'react';
@@ -45,7 +45,7 @@ function maybeRenderPersona(props: Props): JSX.Element|null {
 
   return (
     <span>
-      <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} /><strong>The Horror:</strong> Keep your current Persona level.
+      <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} /><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Keep your current Persona level.
     </span>
   );
 }
@@ -85,7 +85,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
             {props.settings.contentSets.horror && <ul>
               <li>
                 <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />
-                <strong>The Horror:</strong> All adventurers may also draw from the Influence deck.
+                <strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> All adventurers may also draw from the Influence deck.
               </li>
             </ul>}
           <li>Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.</li>
