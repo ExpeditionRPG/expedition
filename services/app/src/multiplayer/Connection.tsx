@@ -1,6 +1,7 @@
 import {ClientBase} from 'shared/multiplayer/Client';
 import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {getOnlineState} from '../Globals';
 import {counterAdd, resetCounters} from './Counters';
 
 const CONNECTION_LOOP_MS = 200;
@@ -31,9 +32,12 @@ export class Connection extends ClientBase {
   private secret: string;
   private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
 
-  constructor() {
+  private getOnlineState: () => boolean;
+
+  constructor(onlineState = getOnlineState) {
     super();
     this.resetState();
+    this.getOnlineState = onlineState;
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
   }
 
@@ -70,9 +74,16 @@ export class Connection extends ClientBase {
   }
 
   private connectionLoop() {
+    const isOnline = this.getOnlineState();
+    if (this.sessionID && this.isConnected() !== isOnline) {
+      this.connected = isOnline;
+      this.handler.onConnectionChange(this.connected);
+    }
+
     if (!this.isConnected()) {
       return;
     }
+
     // Retransmit messages that have been ignored for too long.
     const now = Date.now();
     for (let i = 0; i < this.messageBuffer.length; i++) {
@@ -187,6 +198,7 @@ export class Connection extends ClientBase {
   public disconnect() {
     this.connected = false;
     this.session.close(1000);
+    this.resetState();
   }
 
   public sendEvent(event: MultiplayerEventBody, commitID: number): void {

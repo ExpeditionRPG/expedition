@@ -147,7 +147,7 @@ export function syncMultiplayer(c = getMultiplayerConnection()) {
 
 export function sendStatus(client?: string, instance?: string, partialStatus?: StatusEvent, c= getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
-    const {multiplayer, settings, commitID, quest} = getState();
+    const {multiplayer, settings, commitID, quest, user} = getState();
     const elem = (quest && quest.node && quest.node.elem);
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[multiplayer.client]);
     let event: StatusEvent = {
@@ -157,6 +157,8 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
       numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
+      name: user && user.email,
+      contentSets: settings && Object.keys(settings.contentSets).filter((k) => settings.contentSets[k]),
     };
     if (partialStatus) {
       event = {...event, ...partialStatus};

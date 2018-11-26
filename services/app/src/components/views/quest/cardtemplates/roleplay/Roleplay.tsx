@@ -11,6 +11,7 @@ import {REGEX} from 'shared/Regex';
 
 export interface StateProps {
   node: ParserNode;
+  questID: string;
   onReturn?: () => any;
   prevNode?: ParserNode;
   settings: SettingsType;
@@ -131,8 +132,10 @@ const Roleplay = (props: Props, theme: CardThemeType|{}): JSX.Element => {
   });
 
   const buttons: JSX.Element[] = rpResult.choices.map((choice: Choice): JSX.Element => {
+    // ID the buttons by quest and data-line so multiplayer ripple is not confusing
+    // when clients are improperly synced.
     return (
-      <Button key={choice.idx} onClick={() => props.onChoice(props.settings, props.node, choice.idx)}>
+      <Button key={choice.idx} id={`${props.questID}-${props.node.elem.attr('data-line') || ''}-${choice.idx}`} onClick={() => props.onChoice(props.settings, props.node, choice.idx)}>
         {choice.jsx}
       </Button>
     );

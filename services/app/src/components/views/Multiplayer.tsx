@@ -3,6 +3,7 @@ import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
+import {CONTENT_SET_FULL_NAMES} from '../../Constants';
 import {MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -24,7 +25,7 @@ export interface DispatchProps {
   onStart: () => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 class MultiplayerConnect extends React.Component<Props, {}> {
   public state: {secret: string};
@@ -73,12 +74,42 @@ class MultiplayerConnect extends React.Component<Props, {}> {
   }
 }
 
-function renderLobby(props: Props): JSX.Element {
+// Get the content sets supported by all connected devices.
+function getContentSetIntersection(multiplayer: MultiplayerState): string[] {
+  let result: Set<string>|null = null;
+  const clients = multiplayer.clientStatus;
+  Object.keys(clients).map((k) => {
+    if (!clients[k].connected) {
+      return;
+    }
+
+    const contentSets = new Set(clients[k].contentSets);
+    if (!result) {
+      result = contentSets;
+      return;
+    }
+    result = new Set([...result].filter((c) => contentSets.has(c)));
+  });
+  return ['base', ...(result || [])];
+}
+
+// TODO: Put this in a separate file and move the switch statemenet to Compositor
+export function renderLobby(props: Props): JSX.Element {
   return (
     <Card title="Lobby">
       <div className="remoteplay">
-        <div><strong>Session created!</strong> Tell your friends to connect with the following code:</div>
+        <h2>Multiplayer Session</h2>
+        <div>Tell your friends to connect with the following code:</div>
         <h1 className="sessionCode">{props.multiplayer.session && props.multiplayer.session.secret}</h1>
+        <h2>Content Sets</h2>
+        <p>These are the content sets that every device has, and thus will be enabled in the session:</p>
+        <ul id="contentsets">
+          {getContentSetIntersection(props.multiplayer).map((c: string, i) => {
+            const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
+            return <li key={i}>{fullName}</li>;
+          })}
+        </ul>
+        <h2>Quick Tips</h2>
         <p>The bottom bar indicates that you are in an online multiplayer session:</p>
         <table>
           <tbody>
@@ -97,7 +128,7 @@ function renderLobby(props: Props): JSX.Element {
         </table>
         <p>Click the connected adventurers or connection state for more information.</p>
         <p>Once everyone is connected, click Start:</p>
-        <Button id="1" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
+        <Button id="start" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
       </div>
     </Card>
   );

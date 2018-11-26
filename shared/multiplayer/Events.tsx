@@ -36,6 +36,12 @@ export interface StatusEvent {
   // The last seen event ID from the client. This is used to keep
   // the client in sync.
   lastEventID?: number;
+
+  // A string identifying the client, displayed to the user.
+  name?: string;
+
+  // A list of content sets the client has.
+  contentSets?: string[];
 }
 
 // Interaction events indicate what multiplayer clients are doing,

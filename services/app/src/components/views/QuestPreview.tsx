@@ -1,5 +1,6 @@
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import * as React from 'react';
 import {PRIVATE_PARTITION} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
@@ -35,13 +36,13 @@ export interface Props extends StateProps, DispatchProps {}
 function renderRequirementsRow(quest: Quest): JSX.Element|null {
   const requires = [];
   if (quest.expansionhorror) {
-    requires.push(<div key="horror"><img className="inline_icon" src="images/horror_small.svg"/>The Horror</div>);
+    requires.push(<div key="horror"><img className="inline_icon" src="images/horror_small.svg"/>{CONTENT_SET_FULL_NAMES.horror}</div>);
   }
   if (quest.expansionfuture) {
-    requires.push(<div key="future"><img className="inline_icon" src="images/future_small.svg"/>The Future</div>);
+    requires.push(<div key="future"><img className="inline_icon" src="images/future_small.svg"/>{CONTENT_SET_FULL_NAMES.future}</div>);
   }
   if (quest.requirespenpaper) {
-    requires.push(<div key="penpaper"><img className="inline_icon" src="images/book_small.svg"/> Pen and Paper</div>);
+    requires.push(<div key="penpaper"><img className="inline_icon" src="images/book_small.svg"/>Pen and Paper</div>);
   }
 
   if (requires.length === 0) {

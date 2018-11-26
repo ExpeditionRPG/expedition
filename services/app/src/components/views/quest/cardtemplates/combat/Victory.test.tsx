@@ -1,14 +1,15 @@
 import * as React from 'react';
 import Victory, {Props} from './Victory';
-import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {MAX_ADVENTURER_HEALTH, CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import {resolveCombat} from '../Params';
 import {render} from 'app/Testing';
+import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 
 const HEAL_SUBSTR = 'Heal';
 const LOOT_SUBSTR = 'Draw Loot';
 const LEVEL_SUBSTR = 'LEVEL UP!';
-const HORROR_SUBSTR = 'The Horror';
-const FUTURE_SUBSTR = 'The Future';
+const HORROR_SUBSTR = CONTENT_SET_FULL_NAMES.horror;
+const FUTURE_SUBSTR = CONTENT_SET_FULL_NAMES.future;
 
 describe('Combat victory', () => {
   const TEST_VP: VictoryParameters = {

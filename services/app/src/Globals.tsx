@@ -134,6 +134,10 @@ export function getAudioContext(): AudioContext|null {
   return refs.audioContext;
 }
 
+export function getOnlineState(): boolean {
+  return navigator.onLine;
+}
+
 export function openWindow(url: string): any {
   const platform = getDevicePlatform();
   // Android is special; iOS and web use the same
