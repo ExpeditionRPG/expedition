@@ -87,7 +87,6 @@ export class DeleteSavedQuestDialog extends ConfirmationDialog<DeleteSavedQuestD
 
 interface MultiplayerStatusDialogProps extends React.Props<any> {
   onClose: () => void;
-  onSendReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => void;
   open: boolean;
   questDetails: Quest;
   stats: MultiplayerCounters;
@@ -114,14 +113,9 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
           </p>
           <p>Here's some multiplayer debugging information:</p>
           {stats}
-          <p>
-            If you're experiencing problems with multiplayer, please
-            tap "Send Report" below to send a log to the Expedition team. Thanks!
-          </p>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.props.onClose()}>Cancel</Button>,
-          <Button id="sendReportButton" className="primary" onClick={() => this.props.onSendReport(this.props.user, this.props.questDetails, this.props.stats)}>Send Report</Button>
         </DialogActions>
       </Dialog>
     );
@@ -383,7 +377,6 @@ export interface DispatchProps {
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
-  onSendMultiplayerReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => void;
   playQuest: (quest: Quest) => void;
 }
 
@@ -421,7 +414,6 @@ const Dialogs = (props: Props): JSX.Element => {
         user={props.user}
         multiplayer={props.multiplayer}
         questDetails={props.quest.details}
-        onSendReport={props.onSendMultiplayerReport}
         onClose={props.onClose}
       />
       <MultiplayerPeersDialog

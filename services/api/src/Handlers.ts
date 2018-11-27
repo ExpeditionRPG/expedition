@@ -353,6 +353,7 @@ export function feedback(db: Database, mail: MailService, req: express.Request, 
     text: body.text,
     userid: body.userid,
     version: body.version,
+    stats: body.stats,
   });
   if (data instanceof Error) {
     console.error(data);

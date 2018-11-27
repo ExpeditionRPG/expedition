@@ -9,9 +9,9 @@ import {exitQuest} from '../../actions/Quest';
 import {deleteSavedQuest} from '../../actions/SavedQuests';
 import {changeSettings} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
-import {fetchQuestXML, logMultiplayerStats, submitUserFeedback} from '../../actions/Web';
+import {fetchQuestXML, submitUserFeedback} from '../../actions/Web';
 import {MIN_FEEDBACK_LENGTH} from '../../Constants';
-import {getCounters, MultiplayerCounters} from '../../multiplayer/Counters';
+import {getCounters} from '../../multiplayer/Counters';
 import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
@@ -82,13 +82,6 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
         return;
       }
       dispatch(changeSettings({numLocalPlayers}));
-    },
-    onSendMultiplayerReport: (user: UserState, quest: Quest, stats: MultiplayerCounters) => {
-      logMultiplayerStats(user, quest, stats)
-        .then((r: Response) => {
-          dispatch(openSnackbar('Stats submitted. Thank you!'));
-          dispatch(setDialog(null));
-        });
     },
     playQuest: (details: Quest) => {
       dispatch(setDialog(null));

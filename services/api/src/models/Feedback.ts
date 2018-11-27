@@ -47,6 +47,7 @@ function mailFeedbackToAdmin(mail: MailService, type: FeedbackType, quest: Quest
     <p>User settings: ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
     <p>Raw platform string: ${platformDump}</p>
     <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+    <p>Multiplayer stats: ${feedback.stats}</p>
   `;
 
   if (consoleDump.length > 0) {
