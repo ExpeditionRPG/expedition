@@ -69,11 +69,11 @@ function renderStoredQuests(props: Props): JSX.Element {
   </Card>);
 }
 
-function renderLoading(props: Props): JSX.Element {
+export function renderLoading(onReturn: () => any): JSX.Element {
   return (<Card
     title="Loading"
     className="search_card"
-    onReturn={props.onReturn}>
+    onReturn={onReturn}>
     <div className="lds-ellipsis">
         <div></div>
         <div></div>
@@ -114,7 +114,7 @@ export class Search extends React.Component<Props, {}> {
     }
 
     if (!this.props.results || this.props.searching) {
-      return renderLoading(this.props);
+      return renderLoading(this.props.onReturn);
     }
 
     if (this.props.results.length === 0) {

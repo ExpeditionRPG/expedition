@@ -138,7 +138,8 @@ export type CardName =
   'SEARCH_CARD' |
   'SEARCH_SETTINGS' |
   'SETTINGS' |
-  'REMOTE_PLAY';
+  'REMOTE_PLAY' |
+  'ACCOUNT';
 export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
 export interface CardState {
   questId: string;
@@ -180,6 +181,12 @@ export interface UserQuestsType {
   [questId: string]: UserQuestInstance;
 }
 
+export interface IUserFeedback {
+  rating: number;
+  text: string;
+  quest: UserQuestInstance;
+}
+
 export interface UserState {
   loggedIn: boolean;
   id: string;
@@ -188,6 +195,8 @@ export interface UserState {
   email: string;
   lastLogin: Date;
   loginCount: number;
+  lootPoints: number;
+  feedbacks?: IUserFeedback[];
 }
 
 export interface UserQuestsState {

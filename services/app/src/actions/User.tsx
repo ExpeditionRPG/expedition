@@ -3,8 +3,9 @@ import Redux from 'redux';
 import {handleFetchErrors} from 'shared/requests';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
-import {AppState, UserState} from '../reducers/StateTypes';
+import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
 import {loggedOutUser} from '../reducers/User';
+import { openSnackbar } from './Snackbar';
 import {fetchUserQuests} from './Web';
 
 interface LoadGapiResponse {gapi: any; async: boolean; }
@@ -77,6 +78,7 @@ function registerUserAndIdToken(user: {name: string, image: string, email: strin
       name: user.name,
       lastLogin: new Date(userResult.lastLogin),
       loginCount: userResult.loginCount,
+      lootPoints: userResult.lootPoints,
     };
   }).catch((error: Error) => {
     console.log('Request failed', error);
@@ -172,7 +174,7 @@ function getGooglePlusPlugin(): Promise<CordovaLoginPlugin> {
 // Update the user's logged in state.
 // This should be called after every login attempt.
 function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<UserState>) {
-  return (user: UserState) => {
+  return (user) => {
     dispatch({type: 'USER_LOGIN', user});
     if (user) {
       // TODO: Rate-limit this
@@ -182,10 +184,36 @@ function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<
   };
 }
 
+function fetchUserFeedbacks(): Promise<IUserFeedback[]> {
+  return fetch(AUTH_SETTINGS.URL_BASE + '/user/feedbacks', {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    method: 'GET',
+  })
+  .then(handleFetchErrors)
+  .then((response: Response) => response.json())
+  .then((feedbacks: IUserFeedback[]) => feedbacks);
+}
+
+type TReduxThunk<ReturnType> = (dispatch: Redux.Dispatch<any>, getState: () => AppState) => ReturnType;
+
+export function logoutUser(): TReduxThunk<Promise<void>> {
+  return (dispatch) => {
+    const gapi = getGapi();
+    const auth2 = gapi.auth2.getAuthInstance();
+    return auth2.signOut().then(() => {
+      dispatch({type: 'USER_LOGOUT'});
+      dispatch(openSnackbar('You are successfully logged out'));
+    });
+  };
+}
+
 // Prompt the user for login if user is not logged in already.
 // Throws an error if login fails.
-export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
+export function ensureLogin(): TReduxThunk<Promise<UserState>> {
+  return (dispatch, getState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
@@ -200,8 +228,8 @@ export function ensureLogin(): (dispatch: Redux.Dispatch<any>, getState: () => A
 
 // Returns user state if successfully logged in silently.
 // Thows an error if login fails.
-export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: () => AppState) => Promise<UserState> {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppState) => {
+export function silentLogin(): TReduxThunk<Promise<UserState>> {
+  return (dispatch, getState) => {
     const currentUser = getState().user;
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
@@ -210,5 +238,13 @@ export function silentLogin(): (dispatch: Redux.Dispatch<any>, getState: () => A
     .then((p) => silentLoginCordova(p))
     .catch(() => silentLoginWeb())
     .then(updateState(dispatch));
+  };
+}
+
+export function getUserFeedBacks(): TReduxThunk<Promise<any>> {
+  return (dispatch) => {
+    return fetchUserFeedbacks()
+    .then((feedbacks: IUserFeedback[]) => dispatch({type: 'USER_FEEDBACKS', feedbacks}))
+    .catch(() => dispatch({type: 'USER_FEEDBACKS', feedbacks: []}));
   };
 }

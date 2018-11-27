@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird';
-import Sequelize from 'sequelize';
+import Sequelize, {Op} from 'sequelize';
 import {PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {User} from 'shared/schema/Users';
@@ -42,18 +42,24 @@ export function subscribeToCreatorsList(mc: any, email: string) {
   });
 }
 
-export interface UserQuestsType {
-  [questId: string]: {
-    details: Quest;
-    lastPlayed: Date;
-  };
+interface IUserQuestType {
+  details: Quest;
+  lastPlayed: Date;
 }
 
-export function getUserQuests(db: Database, id: string): Bluebird<UserQuestsType> {
+export interface UserQuestsType {
+  [questId: string]: IUserQuestType;
+}
+// Added this questId to filter the user posts on the basis of quests on which user had given the feedback.
+export function getUserQuests(db: Database, id: string, questIds?: string[]): Bluebird<UserQuestsType> {
+  const where = {userID: id, category: 'quest', action: 'end', questID: { [Op.notIn]: [] as string[] }};
+  if (questIds) {
+    where.questID = { [Op.in]: questIds };
+  }
   return db.analyticsEvent.findAll({
+    where,
     attributes: ['questID', [Sequelize.fn('MAX', Sequelize.col('created')), 'lastPlayed']],
     group: 'questID',
-    where: {userID: id, category: 'quest', action: 'end'},
   })
   .then((results: any[]) => {
     const userQuests = {} as UserQuestsType;
@@ -86,5 +92,29 @@ export function getUserQuests(db: Database, id: string): Bluebird<UserQuestsType
     }
 
     return Bluebird.all(metas).then(() => userQuests);
+  });
+}
+
+export interface IUserFeedback {
+  rating: number;
+  text: string;
+  quest: IUserQuestType;
+}
+
+export function getUserFeedbacks(db: Database, userid: string): Bluebird<IUserFeedback[]> {
+  return db.feedback.findAll({
+    where: { userid, anonymous: false },
+    attributes: ['rating', 'questid', 'text', 'questversion'],
+    order: [['created', 'DESC']],
+  }).then((feedbacks) => {
+    const questIds = feedbacks.map(({ questid }: any) => questid);
+    return getUserQuests(db, userid, questIds)
+    .then((quests) => {
+      return feedbacks.map((feedback) => ({
+          rating: feedback.get('rating'),
+          text: feedback.get('text'),
+          quest: quests[feedback.get('questid')],
+      }));
+    });
   });
 }

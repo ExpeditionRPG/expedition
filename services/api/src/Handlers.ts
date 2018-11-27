@@ -15,7 +15,7 @@ import {Database, QuestInstance, RenderedQuestInstance} from './models/Database'
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
 import {claimNewestQuestData, saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
-import {getUserQuests, UserQuestsType} from './models/Users';
+import {getUserFeedbacks, getUserQuests, IUserFeedback, UserQuestsType} from './models/Users';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
@@ -438,5 +438,14 @@ export function subscribe(mailchimp: any, listId: string, req: express.Request, 
         return res.status(200).end();
       });
     }
+  });
+}
+
+export function userFeedbacks(db: Database, req: express.Request, res: express.Response) {
+  return getUserFeedbacks(db, res.locals.id)
+  .then((feedbacks: IUserFeedback[]) => res.status(200).end(JSON.stringify(feedbacks)))
+  .catch((e: Error) => {
+    console.error(e);
+    return res.status(500).end(GENERIC_ERROR_MESSAGE);
   });
 }

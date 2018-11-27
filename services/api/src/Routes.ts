@@ -64,6 +64,7 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post('/quest/feedback/:type', limitCors, (req, res) => {Handlers.feedback(db, Mail, req, res); });
   router.post('/user/subscribe', limitCors, (req, res) => {Handlers.subscribe(mailchimp, Config.get('MAILCHIMP_PLAYERS_LIST_ID'), req, res); });
   router.get('/user/quests', limitCors, requireAuth, (req, res) => {Handlers.userQuests(db, req, res); });
+  router.get('/user/feedbacks', limitCors, requireAuth, (req, res) => {Handlers.userFeedbacks(db, req, res); });
   router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.user(db, req, res); });
   router.post('/multiplayer/v1/new_session', sessionLimiter, limitCors, requireAuth, (req, res) => {MultiplayerHandlers.newSession(db, req, res); });
   router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {MultiplayerHandlers.connect(db, req, res); });

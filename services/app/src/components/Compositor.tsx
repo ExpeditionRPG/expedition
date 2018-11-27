@@ -20,6 +20,7 @@ import NavigationContainer from './base/NavigationContainer';
 import MultiplayerClientContainer from './multiplayer/MultiplayerClientContainer';
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
+import AccountContainer from './views/AccountContainer';
 import CheckoutContainer from './views/CheckoutContainer';
 import GMCornerContainer from './views/GMCornerContainer';
 import ModeSelectContainer from './views/ModeSelectContainer';
@@ -107,6 +108,8 @@ export default class Compositor extends React.Component<Props, {}> {
         return <SettingsContainer />;
       case 'REMOTE_PLAY':
         return <MultiplayerContainer phase={this.props.card.phase as MultiplayerPhase} />;
+      case 'ACCOUNT':
+        return <AccountContainer />;
       default:
         throw new Error('Unknown card ' + this.props.card.name);
     }

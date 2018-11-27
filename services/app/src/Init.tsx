@@ -119,7 +119,6 @@ function setupDevice() {
 
   // silent login here triggers for cordova plugin
   getStore().dispatch(silentLogin())
-    .then(console.log)
     .catch(console.error);
 }
 
@@ -256,7 +255,6 @@ export function init() {
   // For non-app builds
   setTimeout(() => {
     getStore().dispatch(silentLogin())
-      .then(console.log)
       .catch(console.error);
   }, INIT_DELAY.SILENT_LOGIN_MILLIS);
 
