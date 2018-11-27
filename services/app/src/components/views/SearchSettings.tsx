@@ -13,6 +13,7 @@ import Card from '../base/Card';
 import ExpansionCheckbox from './ExpansionCheckbox';
 
 const pluralize = require('pluralize');
+import Checkbox from '../base/Checkbox';
 
 export interface StateProps {
   params: SearchParams;
@@ -42,6 +43,14 @@ export class SearchSettings extends React.Component<Props, {}> {
       this.setState({[attrib]: undefined});
     } else {
       this.setState({[attrib]: value});
+    }
+  }
+
+  public handleCheckbox(v: boolean) {
+    if (v === false) {
+      this.onChange('showPrivate', false);
+    } else {
+      this.onChange('showPrivate', true);
     }
   }
 
@@ -180,6 +189,8 @@ export class SearchSettings extends React.Component<Props, {}> {
               <option value="false">No</option>
             </NativeSelect>
           </FormControl>
+          <Checkbox id="showPrivate" label="Also show my private quests" value={this.state.showPrivate === true ? true : false} onChange={(v: boolean) => { this.handleCheckbox(v); }}>
+          </Checkbox>
           {rating && <div className="ratingDescription">
             <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
           </div>}

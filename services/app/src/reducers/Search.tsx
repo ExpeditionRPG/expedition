@@ -11,6 +11,7 @@ export const initialSearch: SearchState = {
   params: {
     language: getStorageString(LANGUAGE_KEY, 'English') as LanguageType,
     order: '+ratingavg',
+    showPrivate: true,
     text: '',
     expansions: [],
   },

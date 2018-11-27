@@ -5,7 +5,7 @@ import * as Joi from 'joi';
 import * as memoize from 'memoizee';
 import * as request from 'request-promise';
 import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
-import {PRIVATE_PARTITION, PUBLIC_PARTITION} from 'shared/schema/Constants';
+import {PUBLIC_PARTITION} from 'shared/schema/Constants';
 import {Feedback} from 'shared/schema/Feedback';
 import {QuestData} from 'shared/schema/QuestData';
 import {Quest} from 'shared/schema/Quests';
@@ -157,25 +157,19 @@ export function search(db: Database, req: express.Request, res: express.Response
     players: body.players,
     requirespenpaper: body.requirespenpaper,
     text: body.text,
+    showPrivate: body.showPrivate,
   };
 
-  if (params.partition === PUBLIC_PARTITION && res.locals.id) {
-    // Also search for private quests by this user
-    const privateParams = {...params, owner: res.locals.id, partition: PRIVATE_PARTITION};
-    return Promise.all([
-      doSearch(db, res.locals.id, params),
-      doSearch(db, res.locals.id, privateParams),
-    ]).then((results) => {
-      res.status((results[0].error) ? 500 : 200).end(JSON.stringify({
-        error: results[0].error,
-        hasMore: results[0].hasMore,
-        quests: [...results[1].quests, ...results[0].quests],
-      }));
-    });
-  }
-
   return doSearch(db, res.locals.id, params).then((result) => {
-    res.status((result.error) ? 500 : 200).end(JSON.stringify(result));
+    const sortedQuests: Quest[] = result.quests.sort((a: Quest, b: Quest) => {
+      if (a.partition.toLowerCase() <= b.partition.toLowerCase()) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    const sortedResult: QuestSearchResponse = {...result, quests: sortedQuests};
+    res.status((result.error) ? 500 : 200).end(JSON.stringify(sortedResult));
   });
 }
 

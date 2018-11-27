@@ -1,11 +1,11 @@
-import {mount} from 'app/Testing';
+import { mount } from 'app/Testing';
 import * as React from 'react';
-import {initialSearch} from '../../reducers/Search';
-import {initialSettings} from '../../reducers/Settings';
-import {loggedOutUser} from '../../reducers/User';
-import SearchSettings, {Props} from './SearchSettings';
-import {Quest} from 'shared/schema/Quests';
-import {TEST_SEARCH} from './Search.test';
+import { initialSearch } from '../../reducers/Search';
+import { initialSettings } from '../../reducers/Settings';
+import { loggedOutUser } from '../../reducers/User';
+import SearchSettings, { Props } from './SearchSettings';
+import { Quest } from 'shared/schema/Quests';
+import { TEST_SEARCH } from './Search.test';
 
 describe('SearchSettings', () => {
   function setup() {
@@ -16,7 +16,7 @@ describe('SearchSettings', () => {
       onSearch: jasmine.createSpy('onSearch'),
     };
     const e = mount(<SearchSettings {...props} />);
-    return {props, e};
+    return { props, e };
   }
 
   function getNode(k) {
@@ -26,14 +26,22 @@ describe('SearchSettings', () => {
     if (k === 'expansions') {
       return 'ExpansionCheckbox';
     }
+
+    if(k === 'showPrivate') {
+      return `Checkbox#${k}`;
+    }
+
     return `NativeSelect#${k}`;
   }
 
   test('propagates user selections when Search is pressed', () => {
-    const {props, e} = setup();
+    const { props, e } = setup();
     for (const k of Object.keys(TEST_SEARCH)) {
       const node = getNode(k);
-      const onChange = k === 'expansions' ? TEST_SEARCH[k] : { target: { value: TEST_SEARCH[k] } };
+      const onChange =
+        k === 'expansions'
+          ? TEST_SEARCH[k]
+          : { target: { value: TEST_SEARCH[k] } };
       e.find(node).prop('onChange')(onChange);
     }
     e.find('ExpeditionButton#search').prop('onClick')();
@@ -41,10 +49,13 @@ describe('SearchSettings', () => {
   });
 
   test('propagates user selections when form is submitted', () => {
-    const {props, e} = setup();
+    const { props, e } = setup();
     for (const k of Object.keys(TEST_SEARCH)) {
       const node = getNode(k);
-      const onChange = k === 'expansions' ? TEST_SEARCH[k] : { target: { value: TEST_SEARCH[k] } };
+      const onChange =
+        k === 'expansions'
+          ? TEST_SEARCH[k]
+          : { target: { value: TEST_SEARCH[k] } };
       e.find(node).prop('onChange')(onChange);
     }
     e.find('form').prop('onSubmit')();
@@ -52,15 +63,19 @@ describe('SearchSettings', () => {
   });
 
   test('params default to initial search params when submitted', () => {
-    const {props, e} = setup();
+    const { props, e } = setup();
     e.find('form').prop('onSubmit')();
     expect(props.onSearch).toHaveBeenCalledWith(initialSearch.params);
   });
 
   test('changing a value then clearing it results in no value being sent as expected', () => {
-    const {props, e} = setup();
-    e.find('NativeSelect#contentrating').prop('onChange')({ target: { value: 'Teen' } });
-    e.find('NativeSelect#contentrating').prop('onChange')({ target: { value: undefined } });
+    const { props, e } = setup();
+    e.find('NativeSelect#contentrating').prop('onChange')({
+      target: { value: 'Teen' },
+    });
+    e.find('NativeSelect#contentrating').prop('onChange')({
+      target: { value: undefined },
+    });
     e.find('form').prop('onSubmit')();
     expect(props.onSearch).toHaveBeenCalledWith(initialSearch.params);
   });
