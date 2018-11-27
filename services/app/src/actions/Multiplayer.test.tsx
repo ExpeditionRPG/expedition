@@ -221,6 +221,10 @@ describe('Multiplayer actions', () => {
       const {c, actions} = doTest("nnn", "mmm");
       expect(c.sendEvent).not.toHaveBeenCalled();
     });
+    test('persists waitingOn', () => {
+      // This has failed multiple times for various reasons, so figued it's worthwhile to test it here.
+      // TODO
+    });
   });
 
   describe('sendEvent', () => {

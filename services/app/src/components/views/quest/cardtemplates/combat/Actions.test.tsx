@@ -169,6 +169,12 @@ describe('Combat actions', () => {
     });
   });
 
+  describe('handleCombatTimerStart', () => {
+    test.skip('starts timer in pause state when 0 local alive adventurers in multiplayer', () => {
+      // TODO
+    });
+  });
+
   describe('handleCombatTimerStop', () => {
     const newStore = (overrides: any) => {
       const store = newMockStore({multiplayer: initialMultiplayer});

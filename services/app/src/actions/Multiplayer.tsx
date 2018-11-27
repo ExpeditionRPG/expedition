@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
+import {toClientKey} from 'shared/multiplayer/Session';
 import {handleFetchErrors} from 'shared/requests';
 import {openSnackbar} from '../actions/Snackbar';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
@@ -149,12 +150,14 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
     const {multiplayer, settings, commitID, quest, user} = getState();
     const elem = (quest && quest.node && quest.node.elem);
-    const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[multiplayer.client]);
+    const combat = (quest && quest.node && quest.node.ctx && quest.node.ctx.templates && quest.node.ctx.templates.combat);
+    const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[toClientKey(multiplayer.client, multiplayer.instance)]);
     let event: StatusEvent = {
       connected: true,
       lastEventID: commitID,
       line: (elem && parseInt(elem.attr('data-line'), 10)),
       numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
+      aliveAdventurers: (combat && combat.numAliveAdventurers),
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
       name: user && user.email,
