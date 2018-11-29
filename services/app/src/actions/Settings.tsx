@@ -13,7 +13,6 @@ export function changeSettings(settings: any) {
 }
 
 export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp: MultiplayerState): number {
-  console.log(Boolean(mp.clientStatus));
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     const combat = node.ctx.templates.combat;
     if (!combat) {
@@ -33,16 +32,20 @@ export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp
   return count;
 }
 
-export function numAdventurers(settings: SettingsType, mp: MultiplayerState): number {
+export function numAdventurers(settings: SettingsType, mp?: MultiplayerState): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     return numLocalAdventurers(settings);
   }
   return countAllPlayers(mp);
 }
 
-export function numLocalAdventurers(settings: SettingsType) {
-  // Since single player still has two adventurers, the minimum possible is two.
-  return Math.max(2, settings.numLocalPlayers);
+export function numLocalAdventurers(settings: SettingsType, mp?: MultiplayerState) {
+  if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
+    // Since single player still has two adventurers, the minimum possible is two.
+    return Math.max(2, settings.numLocalPlayers);
+  }
+  // Multiplayer always has at least one other player, so there could be just one adventurer locally.
+  return settings.numLocalPlayers;
 }
 
 export function numPlayers(settings: SettingsType, mp?: MultiplayerState): number {

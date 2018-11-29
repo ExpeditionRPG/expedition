@@ -152,6 +152,8 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     const elem = (quest && quest.node && quest.node.elem);
     const combat = (quest && quest.node && quest.node.ctx && quest.node.ctx.templates && quest.node.ctx.templates.combat);
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[toClientKey(multiplayer.client, multiplayer.instance)]);
+    const storeClient = multiplayer && multiplayer.client;
+    const storeInstance = multiplayer && multiplayer.instance;
     let event: StatusEvent = {
       connected: true,
       lastEventID: commitID,
@@ -161,16 +163,16 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
       type: 'STATUS',
       waitingOn: (selfStatus && selfStatus.waitingOn),
       name: user && user.email,
-      contentSets: settings && Object.keys(settings.contentSets).filter((k) => settings.contentSets[k]),
+      contentSets: settings && Object.keys(settings.contentSets || {}).filter((k) => settings.contentSets[k]),
     };
     if (partialStatus) {
       event = {...event, ...partialStatus};
     }
-    client = client || multiplayer.client || '';
-    instance = instance || multiplayer.instance || '';
+    client = client || storeClient || '';
+    instance = instance || storeInstance || '';
 
     // Send remote if we're the origin
-    if (client === multiplayer.client && instance === multiplayer.instance) {
+    if (client === storeClient && instance === storeInstance) {
       c.sendEvent(event, commitID);
     }
 

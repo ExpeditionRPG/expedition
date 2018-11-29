@@ -35,7 +35,7 @@ const TEST_SETTINGS = {
   vibration: true,
 };
 
-const TEST_RP = {
+const TEST_MP = {
   ...initialMultiplayer,
   clientStatus: {
     1: {
@@ -176,7 +176,7 @@ describe('Combat actions', () => {
   });
 
   describe('handleCombatTimerStop', () => {
-    const newStore = (overrides: any) => {
+    const runTest = (overrides: any) => {
       const store = newMockStore({multiplayer: initialMultiplayer});
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
@@ -190,19 +190,19 @@ describe('Combat actions', () => {
     };
 
     test('randomly assigns damage', () => {
-      const {actions} = newStore({});
+      const {actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
     });
     test('generates rolls according to player count', () => {
-      const {actions} = newStore({});
+      const {actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
     test('increments the round counter', () => {
-      const {actions} = newStore({});
+      const {actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
     });
     test('only generates rolls for local, not remote, players', () => {
-      const {actions} = newStore({ rp: TEST_RP });
+      const {actions} = runTest({ multiplayer: TEST_MP });
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
   });
@@ -244,11 +244,10 @@ describe('Combat actions', () => {
     });
 
     test('does not level up if multiplayer count exceeds tier sum', () => {
-      const store = newMockStore({settings: TEST_SETTINGS});
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: TEST_MP});
       store.dispatch(handleCombatEnd({
         maxTier: 4,
         node: newCombatNode(),
-        rp: TEST_RP,
         seed: '',
         settings: TEST_SETTINGS,
         victory: true,
@@ -270,11 +269,10 @@ describe('Combat actions', () => {
       // Replace combat node elem with the roleplay node
       node.elem = node.elem.find('#start');
 
-      const store = newMockStore({settings: TEST_SETTINGS});
+      const store = newMockStore({settings: TEST_SETTINGS, multiplayer: TEST_MP});
       store.dispatch(handleCombatEnd({
         maxTier: 4,
         node,
-        rp: TEST_RP,
         seed: '',
         settings: TEST_SETTINGS,
         victory: true,
@@ -319,10 +317,6 @@ describe('Combat actions', () => {
     test('does not go below 0', () => {
       const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 3, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
-    });
-    test('does not go above the player count', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: TEST_SETTINGS, current: 2, delta: 1000})[0].node;
-      expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
     });
   });
 

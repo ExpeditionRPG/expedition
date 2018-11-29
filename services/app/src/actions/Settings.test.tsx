@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers} from './Settings';
+import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers, numLocalAdventurers} from './Settings';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
@@ -30,6 +30,17 @@ describe('Settings action', () => {
       });
       test('sums up adventurers across all connected sessions', () => {
         expect(numAdventurers(s, m4)).toEqual(4);
+      });
+    });
+    describe('numLocalAdventurers', () => {
+      test('returns local adventurers', () => {
+        expect(numLocalAdventurers({...s, numLocalPlayers: 3}, m4)).toEqual(3);
+      });
+      test('returns 2 adventurers for singler-player mode', () => {
+        expect(numLocalAdventurers(s, initialMultiplayer)).toEqual(2);
+      });
+      test('returns 1 for multiplayer with single player on device', () => {
+        expect(numLocalAdventurers(s, m4)).toEqual(1);
       });
     });
     describe('numPlayers', () => {
