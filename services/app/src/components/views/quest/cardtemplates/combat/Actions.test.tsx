@@ -13,7 +13,8 @@ import {
   initCustomCombat,
   isSurgeNextRound,
   roundTimeMillis,
-  tierSumDelta
+  tierSumDelta,
+  handleCombatTimerStart,
 } from './Actions';
 
 const cheerio: any = require('cheerio');
@@ -50,6 +51,7 @@ const TEST_MP = {
     },
   },
 } as MultiplayerState;
+
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
@@ -170,8 +172,32 @@ describe('Combat actions', () => {
   });
 
   describe('handleCombatTimerStart', () => {
-    test.skip('starts timer in pause state when 0 local alive adventurers in multiplayer', () => {
-      // TODO
+    const PAUSE_TIMER_MATCH = jasmine.objectContaining({
+      type: 'MULTIPLAYER_CLIENT_STATUS',
+      status: jasmine.objectContaining({
+        waitingOn: {elapsedMillis: 0, type: 'TIMER'}
+      }),
+    });
+
+    function doTest(numAlive: number): any[] {
+      const store = newMockStore({
+        multiplayer: TEST_MP,
+      });
+      const node = newCombatNode();
+      node.ctx.templates.combat.numAliveAdventurers = numAlive;
+      store.dispatch(handleCombatTimerStart({
+        node,
+        settings: TEST_SETTINGS,
+      }));
+      return store.getActions();
+    }
+
+    test('starts timer (without pausing) when local alive adventurers in multiplayer', () => {
+      expect(doTest(2)).not.toContainEqual(PAUSE_TIMER_MATCH);
+    });
+
+    test('starts timer in pause state when 0 local alive adventurers in multiplayer', () => {
+      expect(doTest(0)).toContainEqual(PAUSE_TIMER_MATCH)
     });
   });
 

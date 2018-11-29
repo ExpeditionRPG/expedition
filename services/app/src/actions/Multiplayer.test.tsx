@@ -183,9 +183,9 @@ describe('Multiplayer actions', () => {
     const node = new ParserNode(cheerio.load('<roleplay data-line="123"></roleplay>')('roleplay'), defaultContext());
     const cid = 2;
 
-    const doTest = (client?: string, instance?: string, extras?: any) => {
+    const doTest = (client?: string, instance?: string, extras?: any, storeData?: any) => {
       const c = fakeConnection();
-      const store = newMockStore({multiplayer, quest: {node}, commitID: cid});
+      const store = newMockStore({multiplayer, quest: {node}, commitID: cid, ...storeData});
       const result = store.dispatch(sendStatus(client, instance, extras, c));
       return {c, actions: store.getActions()};
     }
@@ -202,8 +202,8 @@ describe('Multiplayer actions', () => {
       }, cid);
     });
     test('overrides defaults when partial status passed', () => {
-      const {c} = doTest(undefined, undefined, {waitingOn: 'herp'});
-      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({waitingOn: 'herp'}), cid);
+      const {c} = doTest(undefined, undefined, {waitingOn: 'something'});
+      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({waitingOn: 'something'}), cid);
     });
     test('dispatches status', () => {
       const {c, actions} = doTest();
@@ -221,9 +221,17 @@ describe('Multiplayer actions', () => {
       const {c, actions} = doTest("nnn", "mmm");
       expect(c.sendEvent).not.toHaveBeenCalled();
     });
-    test('persists waitingOn', () => {
-      // This has failed multiple times for various reasons, so figued it's worthwhile to test it here.
-      // TODO
+    test('persists waitingOn from store if not specified', () => {
+      // This has failed multiple times for various reasons, so it's worthwhile to test it here.
+      const {c, actions} = doTest(undefined, undefined, undefined, {
+        multiplayer: {
+          ...multiplayer,
+          clientStatus: {
+            "abc|def": {type: 'STATUS', connected: true, waitingOn: 'something'}, // Disconnected clients are not counted
+          },
+        },
+      });
+      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({waitingOn: 'something'}), cid);
     });
   });
 
