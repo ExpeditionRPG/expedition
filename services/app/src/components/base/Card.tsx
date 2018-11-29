@@ -12,7 +12,7 @@ import {storeSavedQuest} from '../../actions/SavedQuests';
 import {openSnackbar} from '../../actions/Snackbar';
 import {URLS} from '../../Constants';
 import {getDevicePlatform, openWindow} from '../../Globals';
-import {AppStateWithHistory, CardThemeType, SettingsType, UserState} from '../../reducers/StateTypes';
+import {AppStateWithHistory, CardName, CardThemeType, SettingsType, UserState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
@@ -24,16 +24,18 @@ export interface Props extends React.Props<any> {
   onReturn?: () => any;
   title?: string | JSX.Element;
   className?: string;
-
   settings?: SettingsType;
   quest?: Quest;
   hasReturn: boolean;
   user?: UserState;
+  selectedMenu: CardName|undefined;
 }
 
-class Card extends React.Component<Props, {}> {
-  public state: {anchorEl: HTMLElement|undefined}; // undefined instead of null for MaterialUI typing
+interface IState {
+  anchorEl: HTMLElement|undefined; // undefined instead of null for MaterialUI typing
+}
 
+class Card extends React.Component<Props, IState> {
   constructor(props: Props) {
     super(props);
     this.state = {anchorEl: undefined};
@@ -102,6 +104,14 @@ class Card extends React.Component<Props, {}> {
     }
   }
 
+  public menuItemDisableProps(value: CardName) {
+    const isSelected = this.props.selectedMenu === value;
+    return {
+      disabled: isSelected,
+      selected: isSelected,
+    };
+  }
+
   public render() {
     const {anchorEl} = this.state;
     let icon: JSX.Element = <span></span>;
@@ -131,8 +141,8 @@ class Card extends React.Component<Props, {}> {
               onClose={() => this.handleMenuClose()}>
               <MenuItem id="homeButton" onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
-              {this.props.user && this.props.user.loggedIn && <MenuItem id="accountButton" onClick={() => {this.onMenuSelect('ACCOUNT'); }}>Account</MenuItem>}
-              <MenuItem onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
+              {this.props.user && this.props.user.loggedIn && <MenuItem {...this.menuItemDisableProps('ACCOUNT')} id="accountButton" onClick={() => {this.onMenuSelect('ACCOUNT'); }}>Account</MenuItem>}
+              <MenuItem {...this.menuItemDisableProps('SETTINGS')}  onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('REPORT'); }}>Report quest</MenuItem>}
@@ -203,15 +213,14 @@ class Card extends React.Component<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): Props => {
-  return {
-    hasReturn: (state._history && state._history.length > 0),
-    quest: state.quest && state.quest.details,
-    settings: state.settings,
-    user: state.user,
-    ...ownProps,
-  };
-};
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): Props => ({
+  hasReturn: (state._history && state._history.length > 0),
+  quest: state.quest && state.quest.details,
+  settings: state.settings,
+  user: state.user,
+  selectedMenu: state.card ? state.card.name : undefined,
+  ...ownProps,
+});
 
 const CardContainer = connect(
   mapStateToProps

@@ -142,6 +142,7 @@ export type CardName =
   'REMOTE_PLAY' |
   'ACCOUNT';
 export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
+
 export interface CardState {
   questId: string;
   name: CardName;
