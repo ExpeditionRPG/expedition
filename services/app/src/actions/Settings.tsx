@@ -1,6 +1,7 @@
 import {MAX_ADVENTURERS} from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
+import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {MultiplayerState, SettingsType} from '../reducers/StateTypes';
 import {sendStatus} from './Multiplayer';
 
@@ -11,23 +12,47 @@ export function changeSettings(settings: any) {
   };
 }
 
-export function numAdventurers(settings: SettingsType, rp: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
+export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp: MultiplayerState): number {
+  if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
+    const combat = node.ctx.templates.combat;
+    if (!combat) {
+      return numLocalAdventurers(settings);
+    }
+    return combat.numAliveAdventurers;
+  }
+
+  let count = 0;
+  for (const c of Object.keys(mp.clientStatus)) {
+    const status = mp.clientStatus[c];
+    if (!status.connected) {
+      continue;
+    }
+    count += (status.aliveAdventurers || 0);
+  }
+  return count;
+}
+
+export function numAdventurers(settings: SettingsType, mp?: MultiplayerState): number {
+  if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     return numLocalAdventurers(settings);
   }
-  return countAllPlayers(rp);
+  return countAllPlayers(mp);
 }
 
-export function numLocalAdventurers(settings: SettingsType) {
-  // Since single player still has two adventurers, the minimum possible is two.
-  return Math.max(2, settings.numLocalPlayers);
+export function numLocalAdventurers(settings: SettingsType, mp?: MultiplayerState) {
+  if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
+    // Since single player still has two adventurers, the minimum possible is two.
+    return Math.max(2, settings.numLocalPlayers);
+  }
+  // Multiplayer always has at least one other player, so there could be just one adventurer locally.
+  return settings.numLocalPlayers;
 }
 
-export function numPlayers(settings: SettingsType, rp?: MultiplayerState): number {
-  if (!rp || !rp.clientStatus || Object.keys(rp.clientStatus).length < 2) {
+export function numPlayers(settings: SettingsType, mp?: MultiplayerState): number {
+  if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     return settings.numLocalPlayers;
   }
-  return countAllPlayers(rp);
+  return countAllPlayers(mp);
 }
 
 export function playerOrder(seed: string): number[] {
@@ -42,10 +67,10 @@ export function playerOrder(seed: string): number[] {
   return order;
 }
 
-function countAllPlayers(rp: MultiplayerState): number {
+function countAllPlayers(mp: MultiplayerState): number {
   let count = 0;
-  for (const c of Object.keys(rp.clientStatus)) {
-    const status = rp.clientStatus[c];
+  for (const c of Object.keys(mp.clientStatus)) {
+    const status = mp.clientStatus[c];
     if (!status.connected) {
       continue;
     }

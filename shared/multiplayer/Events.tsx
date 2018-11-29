@@ -33,6 +33,10 @@ export interface StatusEvent {
   // Count of players playing on this client - used for e.g. damage calculation
   numLocalPlayers?: number;
 
+  // The number of alive adventurers - used for updating UI and calculating
+  // actions based on living adventurer count.
+  aliveAdventurers?: number;
+
   // The last seen event ID from the client. This is used to keep
   // the client in sync.
   lastEventID?: number;

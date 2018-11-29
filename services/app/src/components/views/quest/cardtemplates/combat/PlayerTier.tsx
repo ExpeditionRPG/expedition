@@ -14,6 +14,7 @@ export interface StateProps extends StatePropsBase {
   combat: CombatState;
   maxTier: number;
   numAliveAdventurers: number;
+  localAliveAdventurers: number;
   seed: string;
   tier: number;
 }
@@ -40,7 +41,7 @@ export default function playerTier(props: Props): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.settings.contentSets.horror === true);
-  const injured = props.numAliveAdventurers < props.adventurers;
+  const injured = props.localAliveAdventurers < props.adventurers;
 
   if (props.settings.showHelp) {
     helpText = (
@@ -68,9 +69,12 @@ export default function playerTier(props: Props): JSX.Element {
       <Picker
         label="Adventurers"
         id="adventurers"
-        onDelta={(i: number) => props.onAdventurerDelta(props.node, props.settings, props.numAliveAdventurers, i)}
-        value={props.numAliveAdventurers}>
-        {props.settings.showHelp && <span>The number of adventurers &gt; 0 health.</span>}
+        onDelta={(i: number) => props.onAdventurerDelta(props.node, props.settings, props.localAliveAdventurers, i)}
+        value={props.localAliveAdventurers}>
+        {props.settings.showHelp && (props.numAliveAdventurers === props.localAliveAdventurers)
+          ? <span>The number of adventurers &gt; 0 health.</span>
+          : <span>Local adventurers &gt; 0 health.<br/>({props.numAliveAdventurers} across all devices)</span>
+        }
       </Picker>
       {helpText}
       <Button
