@@ -137,7 +137,7 @@ export default class Compositor extends React.Component<Props, {}> {
 
   public shouldComponentUpdate(nextProps: Props) {
     // Don't update the main UI if we're just syncing state
-    if (nextProps.multiplayer.syncing) {
+    if (nextProps.multiplayer && nextProps.multiplayer.syncing) {
       return false;
     }
     return true;

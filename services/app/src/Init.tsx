@@ -163,6 +163,8 @@ function handleUrlHash() {
   }
 }
 
+const MAX_ERROR_SNACKBAR_RATE_MILLIS = 1000;
+let lastErrorSnackbar: number = 0;
 function setupOnError(window: Window) {
   window.onerror = (message: string, source: string, line: number) => {
     const state = getStore().getState();
@@ -189,12 +191,16 @@ function setupOnError(window: Window) {
     const label = (source) ? `${source} line ${line}` : null;
     console.error(message, label);
     logEvent('error', 'APP_ERROR', {action: message, label});
-    // Dispatch the snackbar change after resolving intermediate state.
-    // Otherwise, redux handlers may perform strange actions like calling
-    // setState inside of a render() cycle.
-    setTimeout(() => {
-      getStore().dispatch(openSnackbar(Error(message + ' Source: ' + label)));
-    }, 0);
+    // Ratelimit snackbar opening to prevent error spam
+    if (Date.now() - lastErrorSnackbar > MAX_ERROR_SNACKBAR_RATE_MILLIS) {
+      // Dispatch the snackbar change after resolving intermediate state.
+      // Otherwise, redux handlers may perform strange actions like calling
+      // setState inside of a render() cycle.
+      setTimeout(() => {
+        getStore().dispatch(openSnackbar(Error(message + ' Source: ' + label)));
+      }, 0);
+      lastErrorSnackbar = Date.now();
+    }
     return true;
   };
 }
