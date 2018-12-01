@@ -14,7 +14,7 @@ export function changeSettings(settings: any) {
 
 export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp: MultiplayerState): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
-    const combat = node.ctx.templates.combat;
+    const combat = node && node.ctx && node.ctx.templates && node.ctx.templates.combat;
     if (!combat) {
       return numLocalAdventurers(settings);
     }

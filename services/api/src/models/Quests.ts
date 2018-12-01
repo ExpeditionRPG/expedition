@@ -38,20 +38,20 @@ export interface QuestSearchParams {
 export function getQuest(
   db: Database,
   partition: string,
-  id: string,
+  id: string
 ): Bluebird<Quest> {
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
       (result: QuestInstance | null) =>
-        new Quest(result ? result.dataValues : {}),
+        new Quest(result ? result.dataValues : {})
     );
 }
 
 export function searchQuests(
   db: Database,
   userId: string,
-  params: QuestSearchParams,
+  params: QuestSearchParams
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
   const where: Sequelize.WhereOptions<Partial<Quest>> = {
@@ -134,8 +134,8 @@ export function searchQuests(
         Sequelize.literal(
           `created >= '${Moment()
             .subtract(7, 'day')
-            .format('YYYY-MM-DD HH:mm:ss')}' DESC`,
-        ),
+            .format('YYYY-MM-DD HH:mm:ss')}' DESC`
+        )
       );
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);
@@ -170,7 +170,7 @@ export function searchQuests(
 
   const limit = Math.min(
     Math.max(params.limit || MAX_SEARCH_LIMIT, 0),
-    MAX_SEARCH_LIMIT,
+    MAX_SEARCH_LIMIT
   );
 
   return db.quests.findAll({ where, order, limit });
@@ -219,7 +219,7 @@ export function publishQuest(
   userid: string,
   majorRelease: boolean,
   quest: Quest,
-  xml: string,
+  xml: string
 ): Bluebird<QuestInstance> {
   // TODO: Validate XML via crawler
   if (!userid) {
@@ -279,7 +279,7 @@ export function publishQuest(
             partition: quest.partition,
             questversion: updateValues.questversion,
             xml,
-          }),
+          })
         )
         .then(() => {
           console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
@@ -292,7 +292,7 @@ export function publishQuest(
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update(
     { tombstone: new Date() },
-    { where: { partition, id }, limit: 1 },
+    { where: { partition, id }, limit: 1 }
   );
 }
 
@@ -306,7 +306,7 @@ export function republishQuest(db: Database, partition: string, id: string) {
 export function updateQuestRatings(
   db: Database,
   partition: string,
-  id: string,
+  id: string
 ): Bluebird<QuestInstance> {
   let quest: QuestInstance;
   return db.quests

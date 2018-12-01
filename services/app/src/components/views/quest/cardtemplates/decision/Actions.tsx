@@ -1,7 +1,7 @@
 import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
-import {numAdventurers, numPlayers} from 'app/actions/Settings';
+import {numAliveAdventurers, numPlayers} from 'app/actions/Settings';
 import {PLAYER_TIME_MULT} from 'app/Constants';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
@@ -15,6 +15,8 @@ import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE} from './
 const MAX_REQUIRED_SUCCESSES = 3;
 const MIN_REQUIRED_SUCCESSES = 1;
 
+const seedrandom = require('seedrandom');
+
 export function extractDecision(node: ParserNode): DecisionState {
   return (node &&
           node.ctx &&
@@ -25,16 +27,17 @@ export function extractDecision(node: ParserNode): DecisionState {
 
 interface InitDecisionArgs {
   node: ParserNode;
-  rp?: MultiplayerState;
+  seed: string;
+  mp?: MultiplayerState;
 }
 export const initDecision = remoteify(function initDecision(a: InitDecisionArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory) {
-  if (!a.rp) {
-    a.rp = getState().multiplayer;
+  if (!a.mp) {
+    a.mp = getState().multiplayer;
   }
 
   a.node = a.node.clone();
   const settings = getState().settings;
-  const leveledChecks = parseDecisionChecks(numAdventurers(settings, a.rp), a.node);
+  const leveledChecks = parseDecisionChecks(numAliveAdventurers(settings, a.node, a.mp), a.node, seedrandom.alea(a.seed));
   if (leveledChecks.length === 0) {
     throw new Error('No valid choices for skill check');
   }
@@ -46,7 +49,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE_DECISION', noHistory: true}));
-  return {};
+  return {seed: a.seed};
 });
 
 export function computeSuccesses(rolls: number[], selected: LeveledSkillCheck): number {
@@ -88,9 +91,9 @@ export function selectChecks(cs: LeveledSkillCheck[], rng: () => number): Levele
     });
 }
 
-export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, rp: MultiplayerState): (keyof typeof Outcome)|null {
+export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, node: ParserNode, rp: MultiplayerState): (keyof typeof Outcome)|null {
   // Compute the outcome from the most recent roll (if any)
-  const numTotalAdventurers = numAdventurers(settings, rp);
+  const aliveAdventurers = numAliveAdventurers(settings, node, rp);
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
@@ -99,7 +102,7 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
     outcome = Outcome.success;
   } else if (failures > 0) {
     outcome = Outcome.failure;
-  } else if (rolls.length >= numTotalAdventurers) {
+  } else if (rolls.length >= aliveAdventurers) {
     outcome = Outcome.interrupted;
   } else if (rolls.length > 0) {
     outcome = Outcome.retry;
@@ -111,14 +114,18 @@ function choose<T>(l: T[], rng: () => number): T {
   return l[Math.floor(rng() * l.length)];
 }
 
-export function generateLeveledChecks(numTotalAdventurers: number, rng: () => number): LeveledSkillCheck[] {
+function generateRequiredSuccesses(aliveAdventurers: number, rng: () => number): number {
+  return Math.max(MIN_REQUIRED_SUCCESSES, Math.min(MAX_REQUIRED_SUCCESSES, Math.floor(rng() * aliveAdventurers)));
+}
+
+export function generateLeveledChecks(aliveAdventurers: number, rng: () => number): LeveledSkillCheck[] {
   const results: LeveledSkillCheck[] = [];
   while (results.length < 3) {
     const gen = {
       persona: choose<keyof typeof Persona>(Object.keys(Persona) as any, rng),
       skill: choose<keyof typeof Skill>(Object.keys(Skill) as any, rng),
       difficulty: choose<keyof typeof Difficulty>(Object.keys(Difficulty) as any, rng),
-      requiredSuccesses: Math.max(MIN_REQUIRED_SUCCESSES, Math.min(MAX_REQUIRED_SUCCESSES, Math.floor(rng() * numTotalAdventurers))),
+      requiredSuccesses: generateRequiredSuccesses(aliveAdventurers, rng),
     };
 
     for (const r of results) {
@@ -131,7 +138,8 @@ export function generateLeveledChecks(numTotalAdventurers: number, rng: () => nu
   return results;
 }
 
-function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): LeveledSkillCheck[] {
+function parseDecisionChecks(aliveAdventurers: number, node?: ParserNode, rng: () => number): LeveledSkillCheck[] {
+  console.log(aliveAdventurers);
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -149,7 +157,7 @@ function parseDecisionChecks(numTotalAdventurers: number, node?: ParserNode): Le
   }
 
   return checks.map((c: SkillCheck): LeveledSkillCheck => {
-    return {...c, difficulty: 'medium', requiredSuccesses: numTotalAdventurers};
+    return {...c, difficulty: 'medium', requiredSuccesses: generateRequiredSuccesses(aliveAdventurers, rng)};
   });
 }
 
@@ -200,7 +208,7 @@ function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppSta
   // Based on the outcome, navigate to a roleplay card
   const settings = getState().settings;
   const rp = getState().multiplayer;
-  const outcome = computeOutcome(decision.rolls, selected, settings, rp);
+  const outcome = computeOutcome(decision.rolls, selected, settings, node, rp);
 
   // In all cases except for retry and just having chosen the check,
   // there's a chance we need to follow an event bullet.
