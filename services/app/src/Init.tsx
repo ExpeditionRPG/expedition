@@ -163,7 +163,7 @@ function handleUrlHash() {
   }
 }
 
-const MAX_ERROR_SNACKBAR_RATE_MILLIS = 1000;
+const MAX_SNACKBAR_ERROR_RATE_MILLIS = 1000;
 let lastErrorSnackbar: number = 0;
 function setupOnError(window: Window) {
   window.onerror = (message: string, source: string, line: number) => {
@@ -192,7 +192,7 @@ function setupOnError(window: Window) {
     console.error(message, label);
     logEvent('error', 'APP_ERROR', {action: message, label});
     // Ratelimit snackbar opening to prevent error spam
-    if (Date.now() - lastErrorSnackbar > MAX_ERROR_SNACKBAR_RATE_MILLIS) {
+    if (Date.now() - lastErrorSnackbar > MAX_SNACKBAR_ERROR_RATE_MILLIS) {
       // Dispatch the snackbar change after resolving intermediate state.
       // Otherwise, redux handlers may perform strange actions like calling
       // setState inside of a render() cycle.
