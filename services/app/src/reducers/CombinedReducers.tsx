@@ -67,6 +67,7 @@ export default function combinedReducerWithHistory(state: AppStateWithHistory, a
         } else if (navigator.device) {
             navigator.device.exitApp();
         }
+        return state;
       }
 
       let pastStateIdx: number = state._history.length - 1;
