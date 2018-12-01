@@ -390,10 +390,8 @@ describe('Combat actions', () => {
   describe('setupCombatDecision', () => {
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const node = Action(setupCombatDecision, {settings: s.basic, multiplayer: m.s2p5a1}).execute({node: newCombatNode(), seed: 'asdf'})[1].node;
-      let min = 10;
       for (const lc of node.ctx.templates.decision.leveledChecks) {
         expect(lc.requiredSuccesses).toBeLessThan(2);
-        min = Math.min(min, lc.requiredSuccesses);
       }
     });
     test.skip('populates combat decision template with generated LeveledSkillChecks', () => { /* TODO */ });
