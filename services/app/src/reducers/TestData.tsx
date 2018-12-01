@@ -18,6 +18,7 @@ export const Settings: {[k: string]: SettingsType} = {
     vibration: true,
   },
 };
+
 export const Multiplayer: {[k: string]: MultiplayerState} = {
   basic: {...initialMultiplayer},
   s2p5: {
@@ -26,11 +27,30 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
       1: {
         connected: true,
         numLocalPlayers: 3,
+        aliveAdventurers: 3,
         type: 'STATUS',
       },
       2: {
         connected: true,
         numLocalPlayers: 2,
+        aliveAdventurers: 2,
+        type: 'STATUS',
+      },
+    },
+  },
+  s2p2a1: {
+    ...initialMultiplayer,
+    clientStatus: {
+      1: {
+        connected: true,
+        numLocalPlayers: 1,
+        aliveAdventurers: 0,
+        type: 'STATUS',
+      },
+      2: {
+        connected: true,
+        numLocalPlayers: 1,
+        aliveAdventurers: 1,
         type: 'STATUS',
       },
     },

@@ -505,7 +505,7 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   combat.decisionPhase = 'PREPARE_DECISION';
   const arng = seedrandom.alea(a.seed);
   node.ctx.templates.decision = {
-    leveledChecks: generateLeveledChecks(numAdventurers(settings, mp), arng),
+    leveledChecks: generateLeveledChecks(numAliveAdventurers(settings, node, mp), arng),
     selected: null,
     rolls: [],
   };

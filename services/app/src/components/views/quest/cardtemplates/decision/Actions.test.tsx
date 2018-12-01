@@ -29,7 +29,21 @@ const TEST_NODE = new ParserNode(cheerio.load(`
     <event on="interrupted"></event>
   </decision>`)('decision'), defaultContext());
 
+// Parsed from TEST_NODE
+const testDecision = (requiredSuccesses: number) => {
+  return {
+    "leveledChecks": [
+      {difficulty: 'medium', persona: 'light', requiredSuccesses, skill: 'athletics'},
+      {difficulty: 'medium', persona: 'dark', requiredSuccesses, skill: 'athletics'},
+      {difficulty: 'medium', persona: undefined, requiredSuccesses, skill: 'charisma'}
+    ],
+    "rolls": [],
+    "selected": null
+  };
+}
+
 describe('Decision actions', () => {
+
   function setup(): ParserNode {
     const node = Action(initDecision, {
       settings: s.basic,
@@ -40,7 +54,6 @@ describe('Decision actions', () => {
     node.ctx.templates.combat = {decisionPhase: 'RESOLVE_DECISION'}; // Ignored if non-combat, used if mid-combat
     return node;
   }
-
   describe('extractDecision', () => {
     test('extracts the decision from a node', () => {
       const n = TEST_NODE.clone();
@@ -58,19 +71,21 @@ describe('Decision actions', () => {
   });
   describe('initDecision', () => {
     test('sets up decision template within node using qdl', () => {
+      const node = TEST_NODE.clone();
+      node.ctx.seed = 'abcd';
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p5,
+      }).execute({node});
+      expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
+    });
+    test('requires fewer successes than total alive player count (multiplayer)', () => {
+      const actions = Action(initDecision, {
+        settings: s.basic,
+        multiplayer: m.s2p2a1,
       }).execute({node: TEST_NODE.clone()});
-      expect(extractDecision(actions[1].node)).toEqual({
-        "leveledChecks": [
-          {difficulty: 'medium', persona: 'light', requiredSuccesses: 5, skill: 'athletics'},
-          {difficulty: 'medium', persona: 'dark', requiredSuccesses: 5, skill: 'athletics'},
-          {difficulty: 'medium', persona: undefined, requiredSuccesses: 5, skill: 'charisma'}
-        ],
-        "rolls": [],
-        "selected": null
-        });
+      expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
     });
   });
@@ -100,20 +115,21 @@ describe('Decision actions', () => {
     const selected = {difficulty: 'medium', requiredSuccesses: 5};
 
     test('computes success', () => {
-      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, m.s2p5)).toEqual(Outcome.success);
+      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.success);
     });
     test('computes failure', () => {
-      expect(computeOutcome([1], selected, s.basic, m.s2p5)).toEqual(Outcome.failure);
+      expect(computeOutcome([1], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.failure);
     });
     test('computes interrupted', () => {
-      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, m.s2p5)).toEqual(Outcome.interrupted);
+      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.interrupted);
     });
     test('computes retry', () => {
-      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, m.s2p5)).toEqual(Outcome.retry);
+      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.retry);
     });
     test('returns null when no rolls', () => {
-      expect(computeOutcome([], selected, s.basic, m.s2p5)).toEqual(null);
+      expect(computeOutcome([], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(null);
     });
+
   });
   describe('generateLeveledChecks', () => {
     test('returns 3 semi-unique, generated checks', () => {
@@ -138,7 +154,7 @@ describe('Decision actions', () => {
         skillTimeMillis({...s.basic, numLocalPlayers: 1}, m.basic)
       );
     });
-    test.skip('respects settings', () => { /* TODO */});
+    test.skip('respects settings', () => { /* TODO */ });
   });
   describe('handleDecisionRoll', () => {
     test('pushes the roll value onto the node', () => {
