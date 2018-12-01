@@ -27,7 +27,6 @@ export function extractDecision(node: ParserNode): DecisionState {
 
 interface InitDecisionArgs {
   node: ParserNode;
-  seed: string;
   mp?: MultiplayerState;
 }
 export const initDecision = remoteify(function initDecision(a: InitDecisionArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory) {
@@ -37,7 +36,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
 
   a.node = a.node.clone();
   const settings = getState().settings;
-  const leveledChecks = parseDecisionChecks(numAliveAdventurers(settings, a.node, a.mp), a.node, seedrandom.alea(a.seed));
+  const leveledChecks = parseDecisionChecks(numAliveAdventurers(settings, a.node, a.mp), seedrandom.alea(a.node.ctx.seed), a.node);
   if (leveledChecks.length === 0) {
     throw new Error('No valid choices for skill check');
   }
@@ -49,7 +48,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE_DECISION', noHistory: true}));
-  return {seed: a.seed};
+  return {};
 });
 
 export function computeSuccesses(rolls: number[], selected: LeveledSkillCheck): number {
@@ -138,7 +137,7 @@ export function generateLeveledChecks(aliveAdventurers: number, rng: () => numbe
   return results;
 }
 
-function parseDecisionChecks(aliveAdventurers: number, node?: ParserNode, rng: () => number): LeveledSkillCheck[] {
+function parseDecisionChecks(aliveAdventurers: number, rng: () => number, node?: ParserNode): LeveledSkillCheck[] {
   console.log(aliveAdventurers);
   const checks: SkillCheck[] = [];
   if (node) {

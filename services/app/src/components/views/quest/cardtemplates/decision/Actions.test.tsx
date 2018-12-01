@@ -48,7 +48,7 @@ describe('Decision actions', () => {
     const node = Action(initDecision, {
       settings: s.basic,
       multiplayer: m.s2p5,
-    }).execute({node: TEST_NODE.clone(), seed: 'abcd'})[1].node;
+    }).execute({node: TEST_NODE.clone()})[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
     node.ctx.templates.combat = {decisionPhase: 'RESOLVE_DECISION'}; // Ignored if non-combat, used if mid-combat
@@ -71,10 +71,12 @@ describe('Decision actions', () => {
   });
   describe('initDecision', () => {
     test('sets up decision template within node using qdl', () => {
+      const node = TEST_NODE.clone();
+      node.ctx.seed = 'abcd';
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p5,
-      }).execute({node: TEST_NODE.clone(), seed: 'abcd'});
+      }).execute({node});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
     });
@@ -82,7 +84,7 @@ describe('Decision actions', () => {
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p2a1,
-      }).execute({node: TEST_NODE.clone(), seed: 'abcd'});
+      }).execute({node: TEST_NODE.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
     });
