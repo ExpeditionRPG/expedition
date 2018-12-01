@@ -184,7 +184,7 @@
     "lint-staged": "^8.0.5",
     "mock-socket": "^8.0.5",
     "pluralize": "^7.0.0",
-    "prettier": "1.15.2",
+    "prettier": "1.15.3",
     "tslint-config-prettier": "^1.16.0",
     "tslint-loader": "^3.6.0"
   },
