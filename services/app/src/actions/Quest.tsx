@@ -11,6 +11,7 @@ import {
   QuestNodeAction,
 } from './ActionTypes';
 import {toCard} from './Card';
+import {setMultiplayerStatus} from './Multiplayer';
 import {logQuestPlay} from './Web';
 
 export function initQuestNode(questNode: Cheerio, ctx: TemplateContext): ParserNode {
@@ -27,6 +28,12 @@ export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateConte
 }
 
 export const exitQuest = remoteify(function exitQuest(a: any, dispatch: Redux.Dispatch<any>) {
+  // In case we're playing multiplayer, clear waitingOn state to indicate we're no longer
+  // waiting e.g. for reviews from other players.
+  dispatch(setMultiplayerStatus({
+    type: 'STATUS',
+    waitingOn: undefined,
+  }));
   dispatch({type: 'QUEST_EXIT'} as QuestExitAction);
 });
 

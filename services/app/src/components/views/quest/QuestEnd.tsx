@@ -6,7 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
-import {CheckoutState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
+import {CheckoutState, MultiplayerState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
 import Button from '../../base/Button';
 import Card from '../../base/Card';
 import StarRating from '../../base/StarRating';
@@ -18,11 +18,12 @@ export interface StateProps {
   settings: SettingsType;
   user: UserState;
   showSharing: boolean;
+  multiplayer: MultiplayerState;
 }
 
 export interface DispatchProps {
   onShare: (quest: QuestState) => void;
-  onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => void;
+  onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, multiplayer: MultiplayerState, anonymous: boolean, text: string, rating: number|null) => void;
   onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => void;
 }
 
@@ -36,6 +37,7 @@ interface QuestEndState {
   primaryIssue: string|undefined;
   issueQualifier: string|undefined;
   needsIssue: boolean;
+  submitted: boolean;
 }
 
 export default class QuestEnd extends React.Component<Props, {}> {
@@ -53,6 +55,7 @@ export default class QuestEnd extends React.Component<Props, {}> {
       primaryIssue: undefined,
       issueQualifier: undefined,
       needsIssue: false,
+      submitted: false,
     };
   }
 
@@ -246,25 +249,53 @@ export default class QuestEnd extends React.Component<Props, {}> {
       this.setState({needsIssue: true});
       return;
     } else {
-      this.setState({needsIssue: false});
-      this.props.onSubmit(this.props.quest, this.props.settings, this.props.user, this.state.anonymous, this.formatFeedback(), this.state.rating);
+      this.setState({needsIssue: false, submitted: true});
+      this.props.onSubmit(
+        this.props.quest,
+        this.props.settings,
+        this.props.user,
+        this.props.multiplayer,
+        this.state.anonymous,
+        this.formatFeedback(),
+        this.state.rating);
     }
+  }
+
+  private getUnactedDevices() {
+    let unacted = 0;
+    if (this.props.multiplayer && this.props.multiplayer.clientStatus) {
+      for (const client of Object.keys(this.props.multiplayer.clientStatus)) {
+        const clientStatus = this.props.multiplayer.clientStatus[client];
+        if (!clientStatus.connected) {
+          continue;
+        }
+        const waitingOn = clientStatus.waitingOn;
+        const waitingOnReview = (waitingOn && waitingOn.type === 'REVIEW') || false;
+        console.log(client, clientStatus.waitingOn, waitingOnReview);
+        if (!waitingOnReview) {
+          unacted++;
+        }
+      }
+    }
+    return unacted;
   }
 
   public render() {
     const rated = this.state.rating !== null && (this.state.rating > 0);
+    const unacted = this.getUnactedDevices();
+    const buttonText = (this.state.submitted) ? `Waiting on ${unacted} devices` : ((rated) ? 'Submit' : 'Return home');
     return (
-      <Card title={this.props.quest.details.title}>
+      <Card title={this.props.quest.details.title} hasReturn={!this.state.submitted}>
         <p>We hope you enjoyed <i>{this.props.quest.details.title}</i> by {this.props.quest.details.author}!</p>
         <p>Rate this quest:</p>
-        <StarRating id="starrating" hintText={true} value={this.state.rating || 0} onChange={(rating: number) => { this.setState({rating}); }}></StarRating>
+        <StarRating id="starrating" hintText={true} value={this.state.rating || 0} onChange={(rating: number) => { this.setState({rating}); }} readOnly={this.state.submitted}></StarRating>
         {this.renderFeedbackForm()}
         {this.maybeRenderTipping()}
-        <Button id="submit" onClick={() => this.validateAndSubmit()}>
-          {rated ? 'Submit' : 'Return home'}
+        <Button id="submit" onClick={() => this.validateAndSubmit()} disabled={this.state.submitted}>
+          {buttonText}
         </Button>
         {this.props.showSharing &&
-          <Button id="shareButton" onClick={() => this.props.onShare(this.props.quest)}>
+          <Button id="shareButton" onClick={() => this.props.onShare(this.props.quest)} disabled={this.state.submitted}>
             <img className="inline_icon" src="images/share_small.svg"/> Share your adventure
           </Button>
         }

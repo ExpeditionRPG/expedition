@@ -1,16 +1,22 @@
 import * as Promise from 'bluebird';
 import * as express from 'express';
 import * as http from 'http';
-import {ActionEvent, ClientID, MultiEvent, MultiplayerEvent, StatusEvent, WaitType} from 'shared/multiplayer/Events';
+import {ClientID, MultiEvent, MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
 import {toClientKey} from 'shared/multiplayer/Session';
 import * as url from 'url';
 import * as WebSocket from 'ws';
 import Config from '../config';
 import {Database, EventInstance, SessionClientInstance, SessionInstance} from '../models/Database';
-import {commitEvent, commitEventWithoutID, getLargestEventID, getLastEvent, getOrderedEventsAfter} from '../models/multiplayer/Events';
+import {commitEvent, getLargestEventID, getLastEvent, getOrderedEventsAfter} from '../models/multiplayer/Events';
 import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients';
 import {createSession, getSessionBySecret, getSessionQuestTitle} from '../models/multiplayer/Sessions';
 import {maybeChaosDB, maybeChaosWS} from './Chaos';
+import {getSession, initSessionClient, rmSessionClient, setClientStatus} from './Sessions';
+import {
+  handleWaitingOnReview,
+  handleWaitingOnTimer,
+} from './WaitingOn';
+import {broadcast} from './Websockets';
 
 export interface MultiplayerSessionMeta {
   id: number;
@@ -24,9 +30,10 @@ export function user(db: Database, req: express.Request, res: express.Response) 
   return getClientSessions(db, res.locals.id).then((sessions: SessionClientInstance[]) => {
     return Promise.all(sessions.map((sci: SessionClientInstance) => {
       const id = sci.get('session');
+      const peerCount = Object.keys(getSession(id) || {}).length;
       const meta: Partial<MultiplayerSessionMeta> = {
         id,
-        peerCount: sessionClientCount(id),
+        peerCount,
         secret: sci.get('secret'),
       };
 
@@ -84,7 +91,7 @@ export function connect(db: Database, req: express.Request, res: express.Respons
       session = s;
       if (!session) {
         res.status(404).send();
-        return Promise.reject(null);
+        return Promise.reject(new Error('session not found'));
       }
       return db.sessionClients.upsert({
         client: res.locals.id,
@@ -152,30 +159,6 @@ export function verifyWebsocket(db: Database, info: {origin: string, secure: boo
     });
 }
 
-const inMemorySessions: {[sessionID: number]: {
-  [clientAndInstance: string]: {socket: WebSocket, status: StatusEvent|null, client: string, instance: string}
-}} = {};
-
-export function sessionClientCount(sessionID: number): number {
-  const session = inMemorySessions[sessionID] || {};
-  const instances = Object.keys(session);
-  return instances.length;
-}
-
-function broadcast(session: number, msg: string) {
-  if (inMemorySessions[session] === null) {
-    return;
-  }
-  for (const peerID of Object.keys(inMemorySessions[session])) {
-    const peerWS = inMemorySessions[session][peerID] && inMemorySessions[session][peerID].socket;
-    if (peerWS && peerWS.readyState === WebSocket.OPEN) {
-      peerWS.send(msg, (e: Error) => {
-        console.error(e);
-      });
-    }
-  }
-}
-
 function makeMultiEvent(db: Database, session: number, lastEventID: number) {
   return getOrderedEventsAfter(db, session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
     if (eventInstances === null) {
@@ -220,68 +203,13 @@ function maybeFastForwardClient(db: Database, session: number, client: ClientID,
 function handleClientStatus(db: Database, session: number, client: ClientID, instance: string, ev: StatusEvent, ws: WebSocket) {
   console.log(toClientKey(client, instance) + ': ' + JSON.stringify(ev));
 
-  const s = inMemorySessions[session];
-  let cli = s[toClientKey(client, instance)];
-  if (!cli) {
-    s[toClientKey(client, instance)] = {
-      client,
-      instance,
-      socket: ws,
-      status: null,
-    };
-    cli = s[toClientKey(client, instance)];
-  }
-  cli.status = ev;
-
-  const waitCounts: {[wait: string]: number} = {};
-  let maxElapsedMillis = 0;
-  for (const c of Object.keys(s)) {
-    const sc = s[c];
-    if (!sc || sc.status === null) {
-      continue;
-    }
-    const wo: WaitType|undefined = sc.status.waitingOn;
-    if (wo) {
-      waitCounts[wo.type] = (waitCounts[wo.type] || 0) + 1;
-      if (wo.type === 'TIMER') {
-        maxElapsedMillis = Math.max(maxElapsedMillis, wo.elapsedMillis);
-      }
-    }
-  }
-
-  if (waitCounts.TIMER === Object.keys(s).length) {
-    const combatStopEvent = {
-      client: 'SERVER',
-      event: {
-        args: JSON.stringify({elapsedMillis: maxElapsedMillis, seed: Date.now()}),
-        name: 'handleCombatTimerStop',
-        type: 'ACTION',
-      } as ActionEvent,
-      id: null,
-      instance: Config.get('NODE_ENV'),
-    } as MultiplayerEvent;
-
-    commitEventWithoutID(db, session, client, instance, 'ACTION', combatStopEvent)
-      .then((eventCount: number|null) => {
-        // Broadcast to all peers - note that the event will be set by commitEventWithoutID
-        broadcast(session, JSON.stringify(combatStopEvent));
-      })
-      .catch((error: Error) => {
-        broadcast(session, JSON.stringify({
-          client: 'SERVER',
-          event: {
-            error: 'Server error: ' + error.toString(),
-            type: 'ERROR',
-          },
-          id: null,
-          instance: Config.get('NODE_ENV'),
-        } as MultiplayerEvent));
-      });
-  }
+  setClientStatus(session, client, instance, ws, ev);
+  handleWaitingOnTimer(db, session, client, instance);
+  handleWaitingOnReview(db, session, client, instance);
 
   const lastEventID = ev.lastEventID;
   if (lastEventID !== null && lastEventID !== undefined) {
-    maybeFastForwardClient(db, session, client, instance, lastEventID, s[toClientKey(client, instance)].socket);
+    maybeFastForwardClient(db, session, client, instance, lastEventID, ws);
   }
 }
 
@@ -312,20 +240,12 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
   db = maybeChaosDB(db, params.session, ws);
   ws = maybeChaosWS(ws);
 
-  if (!inMemorySessions[params.session]) {
-    inMemorySessions[params.session] = {};
-  }
-  inMemorySessions[params.session][toClientKey(params.client, params.instance)] = {
-    client: params.client,
-    instance: params.instance,
-    socket: ws,
-    status: null,
-  };
+  initSessionClient(params.session, params.client, params.instance, ws);
 
   if (ws.readyState === WebSocket.OPEN) {
     // Replay latest client statuses to the new socket so they know
     // who is connected.
-    const s = inMemorySessions[params.session];
+    const s = getSession(params.session);
     if (s) {
       for (const k of Object.keys(s)) {
         if (!s[k].status) {
@@ -407,7 +327,7 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
   });
 
   ws.on('close', () => {
-    delete inMemorySessions[params.session][toClientKey(params.client, params.instance)];
+    rmSessionClient(params.session, params.client, params.instance);
 
     // Notify other clients this client has disconnected
     broadcast(params.session, JSON.stringify({

@@ -154,31 +154,34 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[toClientKey(multiplayer.client, multiplayer.instance)]);
     const storeClient = multiplayer && multiplayer.client;
     const storeInstance = multiplayer && multiplayer.instance;
-    let event: StatusEvent = {
-      connected: true,
-      lastEventID: commitID,
-      line: (elem && parseInt(elem.attr('data-line'), 10)),
-      numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
-      aliveAdventurers: (combat && combat.numAliveAdventurers),
-      type: 'STATUS',
-      waitingOn: (selfStatus && selfStatus.waitingOn),
-      name: user && user.email,
-      contentSets: settings && Object.keys(settings.contentSets || {}).filter((k) => settings.contentSets[k]),
-    };
-    if (partialStatus) {
-      event = {...event, ...partialStatus};
-    }
     client = client || storeClient || '';
     instance = instance || storeInstance || '';
 
     // Send remote if we're the origin
     if (client === storeClient && instance === storeInstance) {
-      c.sendEvent(event, commitID);
-    }
+      // Fill in local details if they aren't set from the partial status
+      const event: StatusEvent = {
+        connected: true,
+        lastEventID: commitID,
+        line: (elem && parseInt(elem.attr('data-line'), 10)) || undefined,
+        numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
+        aliveAdventurers: (combat && combat.numAliveAdventurers),
+        type: 'STATUS',
+        waitingOn: (selfStatus && selfStatus.waitingOn),
+        name: user && user.email,
+        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k) => settings.contentSets[k]),
+        ...(partialStatus || {}),
+      };
 
-    // Dispatch locally (and publish to event subscribers)
-    dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: event});
-    c.publish({id: null, client, instance, event});
+      c.sendEvent(event, commitID);
+      // Dispatch locally (and publish to event subscribers)
+      dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: event});
+      c.publish({id: null, client, instance, event});
+    } else if (partialStatus !== undefined) {
+      // Dispatch locally (and publish to event subscribers)
+      dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: partialStatus});
+      c.publish({id: null, client, instance, event: partialStatus});
+    }
     return Promise.resolve();
   };
 }

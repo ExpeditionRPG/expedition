@@ -21,8 +21,7 @@ interface MockStore extends Redux.Store {
   getActions: any;
 }
 
-export function newMockStore(state: object): MockStore {
-  const client = new Connection();
+export function newMockStore(state: object, client= new Connection()): MockStore {
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(state as any as AppStateWithHistory);
   (store as any).multiplayerClient = client;
@@ -79,8 +78,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   };
 }
 
-export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
-  const client = new Connection();
+export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object, client= new Connection()) {
   client.sendEvent = jasmine.createSpy('sendEvent');
   setMultiplayerConnection(client);
   let store = configureStore<AppStateWithHistory>([createMiddleware(client)])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);

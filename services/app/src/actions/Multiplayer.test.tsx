@@ -17,6 +17,7 @@ import {
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
+import {fakeConnection} from '../multiplayer/Testing';
 
 var cheerio = require('cheerio');
 
@@ -35,22 +36,6 @@ const mockResponse = (status, statusText, response) => {
   };
 };
 
-function fakeConnection() {
-  return {
-    registerEventRouter: jasmine.createSpy('registerEventRouter'),
-    getClientKey: jasmine.createSpy('getClientKey'),
-    sendEvent: jasmine.createSpy('sendEvent'),
-    hasInFlight: jasmine.createSpy('hasInFlight'),
-    getClientAndInstance: jasmine.createSpy('getClientAndInstance').and.returnValue([123,456]),
-    committedEvent: jasmine.createSpy('committedEvent'),
-    rejectedEvent: jasmine.createSpy('rejectedEvent'),
-    publish: jasmine.createSpy('publish'),
-    sync: jasmine.createSpy('sync'),
-    subscribe: jasmine.createSpy('subscribe'),
-    unsubscribe: jasmine.createSpy('unsubscribe'),
-  };
-}
-
 // Fake "connected" multiplayer state
 const multiplayer = {
   ...initialMultiplayer,
@@ -58,8 +43,6 @@ const multiplayer = {
   client: "abc",
   instance: "def",
 };
-
-
 
 describe('Multiplayer actions', () => {
   let oldFetch: any;
