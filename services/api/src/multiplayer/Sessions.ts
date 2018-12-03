@@ -2,9 +2,16 @@ import {StatusEvent} from 'shared/multiplayer/Events';
 import {toClientKey} from 'shared/multiplayer/Session';
 import * as WebSocket from 'ws';
 
-export interface SessionClient {socket: WebSocket, status: StatusEvent|null, client: string, instance: string}
+export interface SessionClient {
+  socket: WebSocket;
+  status: StatusEvent|null;
+  client: string;
+  instance: string;
+}
 
-export interface InMemorySession {[clientAndInstance: string]: SessionClient}
+export interface InMemorySession {
+  [clientAndInstance: string]: SessionClient;
+}
 
 let inMemorySessions: {[session: number]: InMemorySession} = {};
 

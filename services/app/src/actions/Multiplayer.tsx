@@ -121,6 +121,9 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
 export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
     const {multiplayer} = getState();
+    if (!multiplayer) {
+      return;
+    }
     dispatch(sendStatus(undefined, undefined, ev, c));
     dispatch({
       client: multiplayer.client,
