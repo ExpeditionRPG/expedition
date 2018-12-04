@@ -1,5 +1,8 @@
 import Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
+import {ActionEvent, ClientID, MultiplayerEvent} from 'shared/multiplayer/Events';
+import Config from '../../config';
+import {broadcast} from '../../multiplayer/Websockets';
 import {Database, EventInstance, SessionInstance} from '../Database';
 
 export function getLastEvent(db: Database, session: number): Bluebird<EventInstance|null> {
@@ -23,6 +26,21 @@ export function getLargestEventID(db: Database, session: number): Bluebird<numbe
     }
     return parseInt(e.get('id'), 10);
   });
+}
+
+export function commitAndBroadcastAction(db: Database, session: number, client: ClientID, instance: string, action: ActionEvent): Bluebird<void> {
+  const ev = {
+    client: 'SERVER',
+    event: action,
+    id: null,
+    instance: Config.get('NODE_ENV'),
+  } as MultiplayerEvent;
+
+  return commitEventWithoutID(db, session, client, instance, 'ACTION', ev)
+    .then((eventCount: number|null) => {
+      // Broadcast to all peers - note that the event will be set by commitEventWithoutID
+      broadcast(session, JSON.stringify(ev));
+    });
 }
 
 export function commitEventWithoutID(db: Database, session: number, client: string, instance: string, type: string, struct: object): Bluebird<number|null> {

@@ -15,7 +15,14 @@ export interface TouchList {[id: string]: number[]; }
 // ------ Events (Passed Client-to-Client) --------
 
 // StatusEvent is published by a client to indicate some change in state.
-export interface WaitType {type: 'TIMER'; elapsedMillis: number; }
+export interface TimerWait {
+  type: 'TIMER';
+  elapsedMillis: number;
+}
+export interface ReviewWait {
+  type: 'REVIEW';
+}
+export type WaitType = TimerWait|ReviewWait;
 export interface StatusEvent {
   type: 'STATUS';
 

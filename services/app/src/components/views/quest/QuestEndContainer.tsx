@@ -1,14 +1,15 @@
+import {toPrevious} from 'app/actions/Card';
+import {checkoutSetState, toCheckout} from 'app/actions/Checkout';
+import {setMultiplayerStatus} from 'app/actions/Multiplayer';
+import {exitQuest} from 'app/actions/Quest';
+import {openSnackbar} from 'app/actions/Snackbar';
+import {ensureLogin} from 'app/actions/User';
+import {submitUserFeedback} from 'app/actions/Web';
+import {getDevicePlatform} from 'app/Globals';
+import {logEvent} from 'app/Logging';
+import {AppState, MultiplayerState, QuestState, SettingsType, UserState} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toPrevious} from '../../../actions/Card';
-import {checkoutSetState, toCheckout} from '../../../actions/Checkout';
-import {exitQuest} from '../../../actions/Quest';
-import {openSnackbar} from '../../../actions/Snackbar';
-import {ensureLogin} from '../../../actions/User';
-import {submitUserFeedback} from '../../../actions/Web';
-import {getDevicePlatform} from '../../../Globals';
-import {logEvent} from '../../../Logging';
-import {AppState, QuestState, SettingsType, UserState} from '../../../reducers/StateTypes';
 import QuestEnd, {DispatchProps, StateProps} from './QuestEnd';
 
 declare var window: any;
@@ -21,6 +22,7 @@ const mapStateToProps = (state: AppState): StateProps => {
     settings: state.settings,
     user: state.user,
     showSharing: window.plugins && window.plugins.socialsharing,
+    multiplayer: state.multiplayer,
   };
 };
 
@@ -40,12 +42,22 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       };
       window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
     },
-    onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, anonymous: boolean, text: string, rating: number|null) => {
+    onSubmit: (quest: QuestState, settings: SettingsType, user: UserState, multiplayer: MultiplayerState, anonymous: boolean, text: string, rating: number|null) => {
       if (rating && rating > 0) {
         dispatch(submitUserFeedback({quest, settings, user, anonymous, text, rating, type: 'rating'}));
       }
-      dispatch(toPrevious({skip: [{name: 'QUEST_CARD'}, {name: 'QUEST_SETUP'}]}));
-      dispatch(exitQuest({}));
+
+      if (!multiplayer.session) {
+        dispatch(toPrevious({skip: [{name: 'QUEST_CARD'}, {name: 'QUEST_SETUP'}]}));
+        dispatch(exitQuest({}));
+      } else {
+        dispatch(setMultiplayerStatus({
+          type: 'STATUS',
+          waitingOn: {
+            type: 'REVIEW',
+          },
+        }));
+      }
     },
     onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
       logEvent('navigate', 'tip_start', {value: amount, action: quest.details.title, label: quest.details.id});

@@ -1,6 +1,8 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {DifficultyType, FontSizeType, MultiplayerState} from 'app/reducers/StateTypes';
 import {Action, newMockStore} from 'app/Testing';
+import {fakeConnection} from 'app/multiplayer/Testing';
+import {getMultiplayerConnection} from 'app/multiplayer/Connection';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {
@@ -171,16 +173,19 @@ describe('Combat actions', () => {
 
   describe('handleCombatTimerStop', () => {
     const runTest = (overrides: any) => {
-      const store = newMockStore({multiplayer: initialMultiplayer});
+      const node = newCombatNode(); // Caution: this reset the multiplayer connection
+      const conn = fakeConnection();
+      const store = newMockStore({multiplayer: initialMultiplayer}, conn);
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
-        node: newCombatNode(),
+        node,
+        multiplayer: m.s2p5,
         seed: '',
         settings: s.basic,
         ...overrides,
       }));
       const actions = store.getActions();
-      return {actions, store};
+      return {actions, store, conn};
     };
 
     test('randomly assigns damage', () => {
@@ -198,6 +203,10 @@ describe('Combat actions', () => {
     test('only generates rolls for local, not remote, players', () => {
       const {actions} = runTest({ multiplayer: m.s2p5 });
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+    });
+    test('clears waitingOn for multiplayer', () => {
+      const {conn} = runTest({});
+      expect(conn.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({type: 'STATUS', waitingOn: undefined}), undefined);
     });
   });
 

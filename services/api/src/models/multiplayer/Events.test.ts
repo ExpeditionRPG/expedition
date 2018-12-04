@@ -10,10 +10,13 @@ import {
 import {
   commitEvent,
   commitEventWithoutID,
+  commitAndBroadcastAction,
   getLargestEventID,
   getLastEvent,
   getOrderedEventsAfter,
 } from './Events';
+import {resetSessions, initSessionClient} from '../../multiplayer/Sessions';
+import {newMockWebsocket} from '../../multiplayer/TestData';
 
 function ts(time: number): Date {
   return new Date(TEST_NOW.getTime() + time * 1000);
@@ -212,5 +215,36 @@ describe('events', () => {
         done();
       });
     });
+  });
+
+  describe('commitAndBroadcastAction', () => {
+    afterEach(resetSessions);
+
+    test('commits the action, then broadcasts it', (done) => {
+      const ws1 = newMockWebsocket();
+      initSessionClient(e.basic.session, e.basic.client, e.basic.instance, ws1);
+
+      let db: Database;
+      const n = 3;
+      testingDBWithState([
+        new Session({...s.basic, id: e.basic.session, eventCounter: n}),
+        new Event({...e.basic, timestamp: ts(0), id: n, json: 'OLD_EVENT_DIFFERENT_JSON'}),
+      ])
+      .then((tdb) => {
+        db = tdb;
+        return commitAndBroadcastAction(db, e.basic.session, e.basic.client, e.basic.instance, {type: 'ACTION', name: 'testFn', args: 'testargs'});
+      })
+      .then(() => {
+        return db.events.findOne({where: {id: n + 1}});
+      })
+      .then((i: EventInstance) => {
+        const result = new Event(i.dataValues);
+        expect(result.json).toContain('testFn');
+        expect(ws1.send).toHaveBeenCalled();
+        expect(ws1.send.calls.mostRecent().args[0]).toContain('testFn');
+        done();
+      })
+      .catch(done.fail);
+    })
   });
 });
