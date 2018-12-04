@@ -52,6 +52,7 @@ describe('ModeSelect', () => {
     const {elem, props} = setup({
       multiplayer: {
         ...initialMultiplayer,
+        session: {id: 'asdf', secret: 'ghjk'},
         connected: true,
         clientStatus: {
           d: {type: 'STATUS', connected: true, numLocalPlayers: 3},
@@ -60,5 +61,9 @@ describe('ModeSelect', () => {
       },
     });
     expect(elem.find('Picker#playerCount').text()).toContain('5 across all devices');
+  });
+  test('hides count across all devices when no multiplayer', () => {
+    const {elem, props} = setup({multiplayer: initialMultiplayer});
+    expect(elem.find('Picker#playerCount').text()).not.toContain('across all devices');
   });
 });
