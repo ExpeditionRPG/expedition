@@ -1,6 +1,7 @@
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
+import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES} from '../../Constants';
 import {ContentSetsType} from '../../reducers/StateTypes';
@@ -16,13 +17,27 @@ export interface IState {
   expansions: IExpansion[];
 }
 
-export interface IProps {
+export interface IConnectProps {
   contentSets: ContentSetsType;
   onChange: (values: string[]) => void;
   value: string[] | undefined;
 }
 
-export class ExpansionCheckbox extends React.Component<IProps, {}> {
+const styles = {
+  root: {
+    'color': 'black',
+    '&$checked': {
+      color: 'black',
+    },
+  },
+  checked: {},
+};
+
+interface IProps extends IConnectProps {
+  classes: any;
+}
+
+class ExpansionCheckbox extends React.Component<IProps, {}> {
   public state: IState;
   constructor(props: IProps) {
     super(props);
@@ -83,6 +98,10 @@ export class ExpansionCheckbox extends React.Component<IProps, {}> {
                   value={expansion.value}
                   checked={expansion.checked}
                   onChange={() => this.onChange(expansion.value)}
+                  classes={{
+                    root: this.props.classes.root,
+                    checked: this.props.classes.checked,
+                  }}
                 />
               }
               label={label}
@@ -93,4 +112,4 @@ export class ExpansionCheckbox extends React.Component<IProps, {}> {
   }
 }
 
-export default ExpansionCheckbox;
+export default withStyles(styles)(ExpansionCheckbox);
