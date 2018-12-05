@@ -10,7 +10,8 @@ import {
   getUserQuests,
   incrementLoginCount,
   setLootPoints,
-  subscribeToCreatorsList
+  subscribeToCreatorsList,
+  maybeGetUserByEmail
 } from './Users';
 
 describe('users', () => {
@@ -27,6 +28,7 @@ describe('users', () => {
         })
         .then((r) => {
           expect(r.loginCount).toEqual(u.basic.loginCount + 1);
+          expect(r.lastLogin.getTime()).toBeGreaterThan(u.basic.lastLogin.getTime());
           done();
         })
         .catch(done.fail);
@@ -34,7 +36,7 @@ describe('users', () => {
   });
 
   describe('setLootPoints', () => {
-    fit('sets the loot points', (done: DoneFn) => {
+    test('sets the loot points', (done: DoneFn) => {
       let db: Database;
       testingDBWithState([u.basic]).then((tdb) => {
         db = tdb;
@@ -53,7 +55,7 @@ describe('users', () => {
 
   describe('subscribeToCreatorsList', () => {
     test('subscribes to creators list', () => {
-      const mc = {post: jasmine.createSpy('post')};
+      const mc = {post: jasmine.createSpy('post').and.returnValue(Promise.resolve(''))};
       subscribeToCreatorsList(mc, u.basic.email);
       expect(mc.post).toHaveBeenCalledWith(jasmine.any(String), {
         email_address: u.basic.email,
@@ -92,4 +94,22 @@ describe('users', () => {
       }).catch(done.fail);
     });
   });
+
+  describe('maybeGetUserByEmail', () => {
+    test('returns user if exists', () => {
+      testingDBWithState([u.basic]).then((tdb) => {
+        return maybeGetUserByEmail(u.basic.email);
+      }).then((user) => {
+        expect(user.id).toEqual(u.basic.id);
+      });
+    });
+
+    test('returns null if not exists', () => {
+      testingDBWithState([]).then((tdb) => {
+        return maybeGetUserByEmail(u.basic.email);
+      }).then((user) => {
+        expect(user).toEqual(null);
+      });
+    });
+  })
 });
