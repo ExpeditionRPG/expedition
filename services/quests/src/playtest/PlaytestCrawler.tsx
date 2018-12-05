@@ -165,7 +165,7 @@ export class PlaytestCrawler extends StatsCrawler {
 
       const cp2 = (dest.elem.get(0).tagName === 'combat') ? dest.elem : getCombatParent(dest);
       if (cp2 && cp2.attr('data-line') !== line1) {
-        this.logger.err('Detected an invalid transition from this combat to another combat (line ' + cp2.attr('data-line') + ')', '427', line);
+        this.logger.err('Invalid transition from this combat to another combat (line ' + cp2.attr('data-line') + ')', '427', line);
       }
     }
   }

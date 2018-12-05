@@ -1,6 +1,6 @@
 export const NUMBER = 427;
-export const NAME = `Detected an invalid transition from this combat to another combat`;
-export const DESCRIPTION = `Jumping between combat nodes is not supported.`;
+export const NAME = `Invalid transition from this combat to another combat`;
+export const DESCRIPTION = `Jumping between combat cards is not supported.`;
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
@@ -124,7 +124,7 @@ _combat_
 
 * on round
 
-  Users get here by entering the combat node first.
+  Users get here by entering the combat card first.
 
 * on win
 
