@@ -154,4 +154,15 @@ describe('Typescript files', () => {
     }
     expect(violations).toEqual([]);
   });
+
+  test('never contain test.only', () => {
+    let violations = [];
+    for (let f of FILES) {
+      const body = fs.readFileSync(f);
+      if (body.indexOf('test.only') !== -1) {
+        violations.push(f);
+      }
+    }
+    expect(violations).toEqual([]);
+  });
 });
