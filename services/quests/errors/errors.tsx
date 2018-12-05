@@ -15,6 +15,7 @@ import * as e423 from './definitions/423';
 import * as e424 from './definitions/424';
 import * as e425 from './definitions/425';
 import * as e426 from './definitions/426';
+import * as e427 from './definitions/427';
 import * as e428 from './definitions/428';
 import * as e429 from './definitions/429';
 import * as e430 from './definitions/430';
@@ -42,6 +43,7 @@ const errors: {[id: string]: ErrorType} = {
   424: e424,
   425: e425,
   426: e426,
+  427: e427,
   428: e428,
   429: e429,
   430: e430,

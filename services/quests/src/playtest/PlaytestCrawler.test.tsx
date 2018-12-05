@@ -73,10 +73,73 @@ describe('PlaytestCrawler', () => {
 
     // (E.g. "True" and "TRUE" aren't defined, but "true" is a constant)')
     test.skip('logs if a node has an op parser failure', () => { /* TODO */ });
+
+    test('logs if a node is in a nested combat', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <combat data-line="0">
+          <e>Giant Rat</e>
+          <event on="round">
+            <roleplay data-line="5">
+              <choice>
+                <combat data-line="10">
+                  <e>Giant Rat</e>
+                  <event on="win"><trigger>end</trigger></event>
+                  <event on="lose"><trigger>end</trigger></event>
+                </combat>
+              </choice>
+            </roleplay>
+          </event>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose"><trigger>end</trigger></event>
+        </combat>
+      </quest>`)('quest > :first-child'));
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toContain('from this combat to another');
+    });
+
+    test('logs when jumping from a combat to a different combat', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <combat data-line="0">
+          <e>Giant Rat</e>
+          <event on="round">
+            <roleplay data-line="3">
+              <choice>
+                <trigger>goto c2</trigger>
+              </choice>
+            </roleplay>
+          </event>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose"><trigger>end</trigger></event>
+        </combat>
+        <combat data-line="5" id="c2">
+          <e>Giant Rat</e>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose"><trigger>end</trigger></event>
+        </combat>
+      </quest>`)('quest > :first-child'));
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toContain('from this combat to another');
+    });
+
+    test('does not log when transitioning regularly to an adjacent combat', () => {
+      const msgs = playtestXMLResult(cheerio.load(`<quest>
+        <combat data-line="0">
+          <e>Giant Rat</e>
+          <event on="win"><roleplay><p></p></roleplay></event>
+          <event on="lose"><roleplay><p></p></roleplay></event>
+        </combat>
+        <combat data-line="5" id="c2">
+          <e>Giant Rat</e>
+          <event on="win"><trigger>end</trigger></event>
+          <event on="lose"><trigger>end</trigger></event>
+        </combat>
+      </quest>`)('quest > :first-child'));
+      expect(msgs.error.length).toEqual(0);
+    });
   });
 
   describe('warning-level message', () => {
-    test.only('logs if warnings were detected in the parser node logic', () => {
+    test('logs if warnings were detected in the parser node logic', () => {
       const msgs = playtestXMLResult(cheerio.load(`<quest>
         <roleplay data-line="2">
           <choice if="notavar"><roleplay></roleplay></choice>

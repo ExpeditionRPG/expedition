@@ -37,14 +37,14 @@ export function saveQuestData(db: Database, data: QuestData, now: number = Date.
 
 }
 
-export function claimNewestQuestData(db: Database, id: string, userid: string, edittime: Date): Bluebird<QuestData> {
-  let result: QuestData;
+export function claimNewestQuestData(db: Database, id: string, userid: string, edittime: Date): Bluebird<QuestData|null> {
+  let result: QuestData|null = null;
   return db.questData.findOne({
     where: {id, userid, tombstone: null},
     order: [['created', 'DESC']],
   }).then((i: QuestDataInstance|null) => {
     if (i === null) {
-      throw new Error('No quest data found');
+      return Promise.resolve(null);
     }
     result = new QuestData((i) ? i.dataValues : {});
     result.edittime = edittime;

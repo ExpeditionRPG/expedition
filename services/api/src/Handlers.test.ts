@@ -282,7 +282,7 @@ describe('handlers', () => {
         .then((db) => loadQuestData(db, mockReq({params: {quest: qd.basic.id, edittime: qd.basic.edittime}}), res))
         .then(() => {
           expect(res.status.getCall(0).args[0]).toEqual(200);
-          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata), edittime: qd.basic.edittime});
+          expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({data: qd.basic.data, notes: qd.basic.notes, metadata: JSON.parse(qd.basic.metadata)});
           done();
         })
         .catch(done.fail);
@@ -301,7 +301,7 @@ describe('handlers', () => {
   });
 
   describe('saveQuestData', () => {
-    test.only('notifies when other client is editing quest', (done) => {
+    test('notifies when other client is editing quest', (done) => {
       const res = mockRes();
       res.locals.id = qd.basic.userid;
       testingDBWithState([qd.basic])
