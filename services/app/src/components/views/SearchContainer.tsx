@@ -5,6 +5,7 @@ import {Quest} from 'shared/schema/Quests';
 import {toCard, toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
 import {search} from '../../actions/Search';
+import {getContentSets} from '../../actions/Settings';
 import {NAV_CARDS} from '../../Constants';
 import {AppStateWithHistory, CardName, SearchParams, SettingsType} from '../../reducers/StateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
@@ -15,6 +16,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
     user: state.user,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

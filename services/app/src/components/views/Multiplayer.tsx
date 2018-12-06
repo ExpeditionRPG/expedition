@@ -4,7 +4,7 @@ import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
 import {CONTENT_SET_FULL_NAMES} from '../../Constants';
-import {MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
+import {ContentSetsType, MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
@@ -16,6 +16,7 @@ export interface StateProps {
   phase: MultiplayerPhase;
   user: UserState;
   multiplayer: MultiplayerState;
+  contentSets: Set<keyof ContentSetsType>;
 }
 
 export interface DispatchProps {
@@ -74,25 +75,6 @@ class MultiplayerConnect extends React.Component<Props, {}> {
   }
 }
 
-// Get the content sets supported by all connected devices.
-function getContentSetIntersection(multiplayer: MultiplayerState): string[] {
-  let result: Set<string>|null = null;
-  const clients = multiplayer.clientStatus;
-  Object.keys(clients).map((k) => {
-    if (!clients[k].connected) {
-      return;
-    }
-
-    const contentSets = new Set(clients[k].contentSets);
-    if (!result) {
-      result = contentSets;
-      return;
-    }
-    result = new Set([...result].filter((c) => contentSets.has(c)));
-  });
-  return ['base', ...(result || [])];
-}
-
 // TODO: Put this in a separate file and move the switch statemenet to Compositor
 export function renderLobby(props: Props): JSX.Element {
   return (
@@ -104,7 +86,7 @@ export function renderLobby(props: Props): JSX.Element {
         <h2>Content Sets</h2>
         <p>These are the content sets that every device has, and thus will be enabled in the session:</p>
         <ul id="contentsets">
-          {getContentSetIntersection(props.multiplayer).map((c: string, i) => {
+          {[...props.contentSets].map((c: string, i: number) => {
             const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
             return <li key={i}>{fullName}</li>;
           })}

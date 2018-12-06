@@ -1,4 +1,5 @@
 import {toCard, toPrevious} from 'app/actions/Card';
+import {getContentSets} from 'app/actions/Settings';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
@@ -11,6 +12,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   return {
     ...mapStateToPropsBase(state, ownProps),
     mostRecentRolls: resolveCombat(state.quest.node).mostRecentRolls,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

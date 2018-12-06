@@ -1,5 +1,5 @@
 import {toCard} from 'app/actions/Card';
-import {numAdventurers, numAliveAdventurers, numPlayers} from 'app/actions/Settings';
+import {getContentSets, numAdventurers, numAliveAdventurers, numPlayers} from 'app/actions/Settings';
 import {logEvent} from 'app/Logging';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
@@ -50,6 +50,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     numAliveAdventurers: numAliveAdventurers(state.settings, node, state.multiplayer),
     localAliveAdventurers: stateCombat.numAliveAdventurers,
     tier: stateCombat.tier,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

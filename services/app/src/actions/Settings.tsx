@@ -2,7 +2,7 @@ import {MAX_ADVENTURERS} from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {MultiplayerState, SettingsType} from '../reducers/StateTypes';
+import {ContentSetsType, MultiplayerState, SettingsType} from '../reducers/StateTypes';
 import {sendStatus} from './Multiplayer';
 
 export function changeSettings(settings: any) {
@@ -77,4 +77,29 @@ function countAllPlayers(mp: MultiplayerState): number {
     count += (status.numLocalPlayers || 1);
   }
   return count || 1;
+}
+
+export function getContentSets(settings: SettingsType, mp?: MultiplayerState): Set<keyof ContentSetsType> {
+  const cs = (mp && mp.session) ? getContentSetIntersection(mp) : settings.contentSets;
+  return new Set(Object.keys(cs).filter((s) => cs[s]));
+}
+
+// Get the content sets supported by all connected devices.
+function getContentSetIntersection(multiplayer: MultiplayerState): ContentSetsType {
+  let result: Set<string>|null = null;
+  const clients = multiplayer.clientStatus;
+  Object.keys(clients).map((k) => {
+    if (!clients[k].connected) {
+      return;
+    }
+
+    const contentSets = new Set(clients[k].contentSets);
+    if (!result) {
+      result = contentSets;
+      return;
+    }
+    // Set intersection
+    result = new Set([...result].filter((c) => contentSets.has(c)));
+  });
+  return new Map((result || []).map((r: string): [string, boolean] => [r, true])) as any as ContentSetsType;
 }

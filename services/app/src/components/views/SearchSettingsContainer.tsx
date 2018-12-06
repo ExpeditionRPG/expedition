@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard} from '../../actions/Card';
 import {changeSearchParams} from '../../actions/Search';
+import {getContentSets} from '../../actions/Settings';
 import {AppStateWithHistory, SearchParams} from '../../reducers/StateTypes';
 import SearchSettings, {DispatchProps, StateProps} from './SearchSettings';
 
@@ -10,6 +11,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     params: state.search.params,
     settings: state.settings,
     user: state.user,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

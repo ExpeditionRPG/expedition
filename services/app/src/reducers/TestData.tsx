@@ -6,6 +6,7 @@ export const Settings: {[k: string]: SettingsType} = {
     autoRoll: false,
     contentSets: {
       horror: false,
+      future: false,
     },
     difficulty: 'NORMAL' as DifficultyType,
     experimental: false,

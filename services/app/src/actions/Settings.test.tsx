@@ -1,7 +1,7 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers, numLocalAdventurers} from './Settings';
+import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers, numLocalAdventurers, getContentSets} from './Settings';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
@@ -72,6 +72,55 @@ describe('Settings action', () => {
       test('returns different orders for different seeds', () => {
         expect(playerOrder('a')).not.toEqual(playerOrder('b'));
       })
+    });
+  });
+
+  describe('getContentSets', () => {
+    const hf = {...initialSettings, contentSets: {horror: true, future: true}};
+    const b = {...initialSettings, contentSets: {horror: false, future: false}};
+    const mpHorror = {
+      ...initialMultiplayer,
+      session: {id: 'adsf', secret: 'ghjk'},
+      clientStatus: {
+        1: {
+          connected: true,
+          contentSets: ['horror', 'future'],
+          type: 'STATUS',
+        },
+        2: {
+          connected: true,
+          contentSets: ['horror'],
+          type: 'STATUS',
+        },
+      },
+    };
+
+    const mpBase = {
+      ...initialMultiplayer,
+      session: {id: 'adsf', secret: 'ghjk'},
+      clientStatus: {
+        1: {
+          connected: true,
+          contentSets: ['future'],
+          type: 'STATUS',
+        },
+        2: {
+          connected: true,
+          contentSets: ['horror'],
+          type: 'STATUS',
+        },
+      },
+    };
+
+    test('computes multiplayer intersection, ignoring local settings', () => {
+      expect(getContentSets(hf, mpHorror)).toEqual(['horror']);
+    });
+    test('computes multiplayer intersection down to base game, ignoring local settings', () => {
+      expect(getContentSets(hf, mpBase)).toEqual([]);
+    });
+    test('computes content set from local when no multiplayer session', () => {
+      expect(getContentSets(hf, initialMultiplayer)).toEqual(['horror', 'future']);
+      expect(getContentSets(b, initialMultiplayer)).toEqual([]);
     });
   });
 });

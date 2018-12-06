@@ -3,6 +3,7 @@ import Redux from 'redux';
 import {SessionID} from 'shared/multiplayer/Session';
 import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
+import {getContentSets} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
@@ -13,6 +14,7 @@ const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateP
     multiplayer: state.multiplayer,
     phase: ownProps.phase || 'CONNECT',
     user: state.user,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

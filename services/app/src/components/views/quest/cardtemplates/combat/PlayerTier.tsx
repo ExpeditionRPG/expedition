@@ -3,7 +3,7 @@ import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
 import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
-import {SettingsType} from 'app/reducers/StateTypes';
+import {ContentSetsType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {CombatPhase, CombatState} from './Types';
@@ -17,6 +17,7 @@ export interface StateProps extends StatePropsBase {
   localAliveAdventurers: number;
   seed: string;
   tier: number;
+  contentSets: Set<keyof ContentSetsType>;
 }
 
 export interface DispatchProps {
@@ -34,13 +35,13 @@ export default function playerTier(props: Props): JSX.Element {
   const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
 
   let shouldRunDecision = false;
-  if (props.settings.contentSets.future) {
+  if (props.contentSets.has('future')) {
     shouldRunDecision = (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
   }
 
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
-  const theHorror = (props.settings.contentSets.horror === true);
+  const theHorror = (props.contentSets.has('horror') === true);
   const injured = props.localAliveAdventurers < props.adventurers;
 
   if (props.settings.showHelp) {

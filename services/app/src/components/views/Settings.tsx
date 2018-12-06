@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button';
-import {numAdventurers} from 'app/actions/Settings';
+import {getContentSets, numAdventurers} from 'app/actions/Settings';
 import * as React from 'react';
 import {URLS, VERSION} from '../../Constants';
 import {openWindow} from '../../Globals';
@@ -54,10 +54,11 @@ const Settings = (props: Props): JSX.Element => {
   const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
   const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
   const adventurers = numAdventurers(props.settings, props.multiplayer);
+  const contentSets = new Set(getContentSets(props.settings, props.multiplayer));
   return (
     <Card title="Settings">
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
-      <p className="expansionLabel">Currently playing: <strong>Expedition {props.settings.contentSets.horror ? <span> + Horror</span> : null}{props.settings.contentSets.future ? <span> + Future</span> : null}</strong></p>
+      <p className="expansionLabel">Currently playing: <strong>Expedition {contentSets.has('horror') ? <span> + Horror</span> : null}{contentSets.has('future') ? <span> + Future</span> : null}</strong></p>
 
       <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
         {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
