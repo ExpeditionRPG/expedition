@@ -15,7 +15,7 @@ import {Database, QuestInstance, RenderedQuestInstance} from './models/Database'
 import {FeedbackType, submitFeedback, submitRating, submitReportQuest} from './models/Feedback';
 import {claimNewestQuestData, saveQuestData as innerSaveQuestData} from './models/QuestData';
 import {getQuest, MAX_SEARCH_LIMIT, publishQuest, QuestSearchParams, searchQuests, unpublishQuest} from './models/Quests';
-import {getUserFeedbacks, getUserQuests, IUserFeedback, UserQuestsType} from './models/Users';
+import {getUserFeedbacks, getUserQuests, IUserFeedback, maybeGetUserByEmail, UserQuestsType} from './models/Users';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
 const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
@@ -356,19 +356,19 @@ export function feedback(db: Database, mail: MailService, req: express.Request, 
   }
   const platformDump: string = body.platformDump;
   const consoleDump: string[] = body.console || [];
-  let action: Bluebird<any>;
+  const action: Bluebird<any> = maybeGetUserByEmail(db, data.email);
   switch (req.params.type as FeedbackType) {
     case 'feedback':
-      action = submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump);
+      action.then((user) => submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump, user));
       break;
     case 'rating':
-      action = submitRating(db, mail, data);
+      action.then((user) => submitRating(db, mail, data, user));
       break;
     case 'report_error':
-      action = submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump);
+      action.then((user) => submitFeedback(db, mail, req.params.type, data, platformDump, consoleDump, user));
       break;
     case 'report_quest':
-      action = submitReportQuest(db, mail, data, platformDump);
+      action.then((user) => submitReportQuest(db, mail, data, platformDump, user));
       break;
     default:
       console.error('Unknown feedback type ' + req.params.type);
