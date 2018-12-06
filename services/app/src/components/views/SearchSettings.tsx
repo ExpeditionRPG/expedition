@@ -10,7 +10,7 @@ import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
-import ExpansionCheckbox from './ExpansionCheckbox';
+import ExpansionCheckbox from '../base/ExpansionCheckbox';
 
 const pluralize = require('pluralize');
 import Checkbox from '../base/Checkbox';

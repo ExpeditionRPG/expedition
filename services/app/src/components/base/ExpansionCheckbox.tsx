@@ -60,7 +60,7 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
     this.state = { expansions };
   }
 
-  public changeSearchState(expansions: IExpansion[]) {
+  private changeSearchState(expansions: IExpansion[]) {
     const searchState = expansions.reduce((acc, expansion) => {
       if (!expansion.checked) {
         return acc;
@@ -69,11 +69,12 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
     }, []);
     this.props.onChange(searchState);
   }
+
   public componentDidMount() {
     this.changeSearchState(this.state.expansions);
   }
 
-  public onChange(value: any) {
+  private onChange(value: any) {
     const selectedExpansions = this.state.expansions.map((expansion) => {
       if (expansion.value === value) {
         expansion.checked = !expansion.checked;
