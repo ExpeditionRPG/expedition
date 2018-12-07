@@ -132,8 +132,6 @@ export class Search extends React.Component<Props, {}> {
       </QuestButtonContainer>);
     });
 
-    console.log(this.props.contentSets);
-
     return (
       <Card
         title="Quests"
@@ -147,8 +145,8 @@ export class Search extends React.Component<Props, {}> {
               {this.props.results.length} quests for {this.props.players}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
               {(this.props.contentSets.has('horror') || this.props.contentSets.has('future')) && <span> with </span>}
-              {this.props.contentSets.has('horror') && <img className="inline_icon" src="images/horror_small.svg"/>}
-              {<img className="inline_icon" src="images/future_small.svg"/>}
+              {this.props.contentSets.has('horror') && <img className="inline_icon" id="searching_horror" src="images/horror_small.svg"/>}
+              {this.props.contentSets.has('future') && <img className="inline_icon" id="searching_future" src="images/future_small.svg"/>}
           </Button>
           <Button
             className="filter_button"
@@ -156,8 +154,7 @@ export class Search extends React.Component<Props, {}> {
             id="filter">
               Filter &amp; Sort >
           </Button>
-        </div>}
-      >
+        </div>}>
         {quests}
       </Card>
     );

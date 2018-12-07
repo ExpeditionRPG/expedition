@@ -80,10 +80,8 @@ describe('Search', () => {
     expect(props.onSearch).not.toHaveBeenCalled();
   });
   test('shows only configured content set icons', () => {
-    const e = mount(setup({results: TUTORIAL_QUESTS}).e);
-    console.log(e.debug()); //find('ExpeditionButton.searchResultInfo').html());
-    let srcs = e.find('img').map((i) => i.prop('src'));
-    expect(srcs).toContain('images/horror_small.svg');
-    expect(srcs).not.toContain('images/future_small.svg');
+    const e = mount(setup({user: testLoggedInUser, results: TUTORIAL_QUESTS}).e);
+    expect(e.find('#searching_horror').exists()).toEqual(true);
+    expect(e.find('#searching_future').exists()).toEqual(false);
   });
 });
