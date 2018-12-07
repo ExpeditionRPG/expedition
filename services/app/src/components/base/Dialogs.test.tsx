@@ -170,7 +170,7 @@ describe('Dialogs', () => {
     test('sets horror content set', () => {
       const {props, e} = setup();
       e.find('#horror').hostNodes().prop('onClick')();
-      expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true});
+      expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true, future: false});
     });
     test('sets horror + future content sets', () => {
       const {props, e} = setup();

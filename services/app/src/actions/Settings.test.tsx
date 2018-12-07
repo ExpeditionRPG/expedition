@@ -113,14 +113,14 @@ describe('Settings action', () => {
     };
 
     test('computes multiplayer intersection, ignoring local settings', () => {
-      expect(getContentSets(hf, mpHorror)).toEqual(['horror']);
+      expect([...getContentSets(hf, mpHorror)]).toEqual(['horror']);
     });
     test('computes multiplayer intersection down to base game, ignoring local settings', () => {
-      expect(getContentSets(hf, mpBase)).toEqual([]);
+      expect([...getContentSets(hf, mpBase)]).toEqual([]);
     });
     test('computes content set from local when no multiplayer session', () => {
-      expect(getContentSets(hf, initialMultiplayer)).toEqual(['horror', 'future']);
-      expect(getContentSets(b, initialMultiplayer)).toEqual([]);
+      expect([...getContentSets(hf, initialMultiplayer)]).toEqual(['horror', 'future']);
+      expect([...getContentSets(b, initialMultiplayer)]).toEqual([]);
     });
   });
 });

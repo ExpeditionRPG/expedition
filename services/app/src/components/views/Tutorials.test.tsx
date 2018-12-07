@@ -13,6 +13,7 @@ describe('TutorialsContainer', () => {
     const props: Props = {
       quests: TUTORIAL_QUESTS,
       settings: {...initialSettings},
+      contentSets: new Set(),
       onQuestSelect: jasmine.createSpy('onQuestSelect'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
@@ -22,19 +23,28 @@ describe('TutorialsContainer', () => {
   }
 
   test('Shows quests', () => {
-    const text = setup({settings: {...initialSettings, contentSets: {horror: true, future: true}}}).e.text();
+    const text = setup({
+      settings: initialSettings,
+      contentSets: new Set(['horror', 'future']),
+      }).e.text();
     expect(text).toContain(HORROR_SUBSTR);
     expect(text).toContain(FUTURE_SUBSTR);
   });
 
   test('Filters out Horror quests if Horror disabled', () => {
-    const text = setup({settings: {...initialSettings, contentSets: {horror: false}}}).e.text();
+    const text = setup({
+      settings: initialSettings,
+      contentSets: new Set(['future']),
+    }).e.text();
     expect(text).toContain("Learning");
     expect(text).not.toContain(HORROR_SUBSTR);
   });
 
   test('Filters out Future quests if Future disabled', () => {
-    const text = setup({settings: {...initialSettings, contentSets: {future: false}}}).e.text();
+    const text = setup({
+      settings: initialSettings,
+      contentSets: new Set(['horror']),
+    }).e.text();
     expect(text).toContain("Learning");
     expect(text).not.toContain(FUTURE_SUBSTR);
   });

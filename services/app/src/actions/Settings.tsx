@@ -80,12 +80,15 @@ function countAllPlayers(mp: MultiplayerState): number {
 }
 
 export function getContentSets(settings: SettingsType, mp?: MultiplayerState): Set<keyof ContentSetsType> {
-  const cs = (mp && mp.session) ? getContentSetIntersection(mp) : settings.contentSets;
+  if (mp && mp.session) {
+    return getContentSetIntersection(mp);
+  }
+  const cs = settings && settings.contentSets || {};
   return new Set(Object.keys(cs).filter((s) => cs[s]));
 }
 
 // Get the content sets supported by all connected devices.
-function getContentSetIntersection(multiplayer: MultiplayerState): ContentSetsType {
+function getContentSetIntersection(multiplayer: MultiplayerState): Set<keyof ContentSetsType> {
   let result: Set<string>|null = null;
   const clients = multiplayer.clientStatus;
   Object.keys(clients).map((k) => {
@@ -93,7 +96,7 @@ function getContentSetIntersection(multiplayer: MultiplayerState): ContentSetsTy
       return;
     }
 
-    const contentSets = new Set(clients[k].contentSets);
+    const contentSets = new Set(clients[k].contentSets || []);
     if (!result) {
       result = contentSets;
       return;
@@ -101,5 +104,5 @@ function getContentSetIntersection(multiplayer: MultiplayerState): ContentSetsTy
     // Set intersection
     result = new Set([...result].filter((c) => contentSets.has(c)));
   });
-  return new Map((result || []).map((r: string): [string, boolean] => [r, true])) as any as ContentSetsType;
+  return result;
 }

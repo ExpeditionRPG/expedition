@@ -4,7 +4,6 @@ import {isSurgeRound} from './Actions';
 const seedrandom = require('seedrandom');
 
 function supportedEnemies(scope: any): string[] {
-  // TODO Populate this on init
   const contentSets = scope._.contentSets() || [];
   return Object.keys(ENCOUNTERS)
           .filter((key) => ENCOUNTERS[key].set === 'base' || contentSets[ENCOUNTERS[key].set]);

@@ -5,7 +5,7 @@ import { initialSettings } from '../../reducers/Settings';
 import { loggedOutUser } from '../../reducers/User';
 import SearchSettings, { Props } from './SearchSettings';
 import { Quest } from 'shared/schema/Quests';
-import { TEST_SEARCH } from './Search.test';
+import {TEST_SEARCH} from '../../reducers/TestData';
 
 describe('SearchSettings', () => {
   function setup() {

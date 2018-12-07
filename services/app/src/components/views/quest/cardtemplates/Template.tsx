@@ -111,7 +111,7 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
-        const {settings, multiplayer} = getState().settings;
+        const {settings, multiplayer} = getState();
         const result: any = {};
         for (const cs of [...getContentSets(settings, multiplayer)]) {
           result[cs] = true;

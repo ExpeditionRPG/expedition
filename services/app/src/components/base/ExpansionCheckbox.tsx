@@ -41,7 +41,7 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
   public state: IState;
   constructor(props: IProps) {
     super(props);
-    const expansions: IExpansion[] = [
+    const expansions: IExpansion[] = (props.contentSets && [
       {
         checked: props.contentSets.has('horror'),
         value: 'horror',
@@ -54,7 +54,7 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
         label: CONTENT_SET_FULL_NAMES.future,
         disabled: !props.contentSets.has('future'),
       },
-    ];
+    ]) || [];
     this.state = { expansions };
   }
 

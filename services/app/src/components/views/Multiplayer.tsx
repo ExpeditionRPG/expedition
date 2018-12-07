@@ -87,8 +87,7 @@ export function renderLobby(props: Props): JSX.Element {
         <p>These are the content sets that every device has, and thus will be enabled in the session:</p>
         <ul id="contentsets">
           {[...props.contentSets].map((c: string, i: number) => {
-            const fullName: string = CONTENT_SET_FULL_NAMES[c] || c;
-            return <li key={i}>{fullName}</li>;
+            return <li key={i}>{CONTENT_SET_FULL_NAMES[c] || c}</li>;
           })}
         </ul>
         <h2>Quick Tips</h2>

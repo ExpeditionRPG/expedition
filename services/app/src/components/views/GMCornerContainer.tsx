@@ -23,6 +23,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onQuestSelect(quest: Quest): void {
       dispatch(previewQuest({quest}));
     },
+    // TODO: Merge this code with <Tutorials/> once GM corner quests are added here... use a "custom combat" quest of some kind instead.
     onCustomCombatSelect(settings: SettingsType): void {
       dispatch(initCustomCombat({}));
     },

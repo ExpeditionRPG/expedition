@@ -5,10 +5,10 @@ import ExpansionCheckBox, { IProps } from './ExpansionCheckbox';
 
 describe('ExpansionCheckBox', () => {
 
-  function createElement(contentSets= {}) {
+  function setup(contentSets=[]) {
     const props: IProps = {
       onChange: jest.fn(),
-      contentSets: { horror: true, ...contentSets },
+      contentSets: new Set(contentSets),
       value: undefined,
     };
     const elem = mount(<ExpansionCheckBox {...props} />);
@@ -16,25 +16,25 @@ describe('ExpansionCheckBox', () => {
   }
 
   test('changes search param values when onChange is clicked', () => {
-    const {elem, props} = createElement();
+    const {elem, props} = setup(['horror']);
     elem.find('Checkbox#horror').prop('onChange')('horror');
     expect(props.onChange).toHaveBeenCalledWith(['horror']);
   });
 
   test('default horror expansion is selected based on settings', () => {
-    const {elem} = createElement();
+    const {elem} = setup(['horror']);
     expect(elem.find('input#horror').props().checked).toBe(true);
     expect(elem.find('input#future').props().disabled).toBe(true);
   });
 
   test('default horror and future expansion is selected based on settings', () => {
-    const {elem} = createElement({ future: true });
+    const {elem} = setup(['horror', 'future']);
     expect(elem.find('input#horror').props().checked).toBe(true);
     expect(elem.find('input#future').props().checked).toBe(true);
   });
 
   test('default no expansion is selected based on settings', () => {
-    const {elem} = createElement({ horror: false });
+    const {elem} = setup([]);
     expect(elem.find('input#horror').props().disabled).toBe(true);
     expect(elem.find('input#future').props().disabled).toBe(true);
   });
