@@ -58,13 +58,13 @@ const Settings = (props: Props): JSX.Element => {
   const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
   const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
   const adventurers = numAdventurers(props.settings, props.multiplayer);
-  const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets));
+  const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets).filter((k) => props.settings.contentSets[k]));
   const globalExpansions = stringifyContentSet([...getContentSets(props.settings, props.multiplayer)]);
 
   const expansions = (props.multiplayer.session)
     ? <p className="expansionLabel">
         Locally: <strong>{localExpansions}</strong><br/>
-        Currently playing: <strong>{globalExpansions}</strong> (available on all devices)
+        All Devices: <strong>{globalExpansions}</strong>
       </p>
     : <p className="expansionLabel">Currently playing: <strong>{globalExpansions}</strong></p>;
 

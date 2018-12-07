@@ -54,17 +54,17 @@ describe('Settings', () => {
     const {elem, props} = setup({settings: {...initialSettings, contentSets: {horror: true, future: false}}});
     const text = elem.find('p.expansionLabel').text();
     expect(text).toContain('Horror');
-    expect(text).not.toContain('all devices');
+    expect(text).not.toContain('All devices');
   });
   test('hides non-configured local content sets', () => {
     const {elem, props} = setup({settings: {...initialSettings, contentSets: {horror: false, future: false}}});
     const text = elem.find('p.expansionLabel').text();
     expect(text).not.toContain('Horror');
-    expect(text).not.toContain('all devices');
+    expect(text).not.toContain('All devices');
   });
   test('shows multiplayer content sets intersection', () => {
     const {elem, props} = setup({settings: {...initialSettings, contentSets: {horror: false, future: false}}, multiplayer: m.s2p5});
     const text = elem.find('p.expansionLabel').text();
-    expect(text).toContain('all devices');
+    expect(text).toContain('All devices');
   });
 });
