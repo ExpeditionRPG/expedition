@@ -1,5 +1,6 @@
+import {LanguageType} from 'shared/schema/Constants';
 import {initialMultiplayer} from './Multiplayer';
-import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from './StateTypes';
+import {DifficultyType, FontSizeType, MultiplayerState, SearchParams, SettingsType} from './StateTypes';
 export const Settings: {[k: string]: SettingsType} = {
   basic: {
     audioEnabled: false,
@@ -24,7 +25,7 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
   basic: {...initialMultiplayer},
   s2p5: {
     ...initialMultiplayer,
-    session: {id: 'abc', secret: 'def'},
+    session: {id: 123, secret: 'def'},
     clientStatus: {
       1: {
         connected: true,
@@ -44,7 +45,7 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
   },
   s2p2a1: {
     ...initialMultiplayer,
-    session: {id: 'abc', secret: 'def'},
+    session: {id: 123, secret: 'def'},
     clientStatus: {
       1: {
         connected: true,

@@ -104,5 +104,5 @@ function getContentSetIntersection(multiplayer: MultiplayerState): Set<keyof Con
     // Set intersection
     result = new Set([...result].filter((c) => contentSets.has(c)));
   });
-  return result;
+  return result || new Set();
 }
