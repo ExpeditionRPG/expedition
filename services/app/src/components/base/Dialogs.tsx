@@ -6,12 +6,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
-import {getContentSets} from '../../actions/Settings';
+import {getContentSets, numPlayers} from '../../actions/Settings';
 import {openWindow} from '../../Globals';
 import {MultiplayerCounters} from '../../multiplayer/Counters';
 import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
 import Checkbox from './Checkbox';
-import Picker from './Picker';
+import PlayerCount from './PlayerCount';
 
 const pluralize = require('pluralize');
 
@@ -310,7 +310,7 @@ interface SetPlayerCountDialogProps extends React.Props<any> {
   multiplayer: MultiplayerState;
   onClose: () => void;
   onMultitouchChange: (v: boolean) => void;
-  onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
+  onPlayerChange: (numLocalPlayers: number) => void;
   playQuest: (quest: Quest) => void;
 }
 
@@ -318,14 +318,14 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
   public render(): JSX.Element {
     const quest = this.props.quest;
     let playersAllowed = true;
+    const allPlayers = numPlayers(this.props.settings, this.props.multiplayer);
     if (quest.minplayers && quest.maxplayers) {
-      playersAllowed = (this.props.settings.numLocalPlayers >= quest.minplayers &&
-        this.props.settings.numLocalPlayers <= quest.maxplayers);
+      playersAllowed = (allPlayers >= quest.minplayers &&
+        allPlayers <= quest.maxplayers);
     }
     let contents = <div>
-        <Picker id="adventurerCount" label="Adventurers" value={this.props.settings.numLocalPlayers} onDelta={(i: number) => this.props.onPlayerDelta(this.props.settings.numLocalPlayers, i)}>
-          {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
-        </Picker>
+        {!playersAllowed && `Quest requires ${quest.minplayers} - ${quest.maxplayers} players.`}
+        <PlayerCount id="playerCount" localPlayers={this.props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(i: number) => this.props.onPlayerChange(i)}/>
         <Checkbox id="multitouch" label="Multitouch" value={this.props.settings.multitouch} onChange={this.props.onMultitouchChange}>
           {(this.props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
         </Checkbox>
@@ -379,7 +379,7 @@ export interface DispatchProps {
   onExpansionSelect: (contentSets: ContentSetsType) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
-  onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
+  onPlayerChange: (numLocalPlayers: number) => void;
   playQuest: (quest: Quest) => void;
 }
 
@@ -452,7 +452,7 @@ const Dialogs = (props: Props): JSX.Element => {
       <SetPlayerCountDialog
         open={props.dialog && props.dialog.open === 'SET_PLAYER_COUNT'}
         onMultitouchChange={props.onMultitouchChange}
-        onPlayerDelta={props.onPlayerDelta}
+        onPlayerChange={props.onPlayerChange}
         onClose={props.onClose}
         playQuest={props.playQuest}
         quest={props.quest.details}

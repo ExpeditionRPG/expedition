@@ -3,12 +3,12 @@ import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
-import {numAdventurers} from '../../actions/Settings';
+import {numPlayers} from '../../actions/Settings';
 import {CONTENT_SET_FULL_NAMES, MAX_ADVENTURERS} from '../../Constants';
 import {ContentSetsType, MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
-import Picker from '../base/Picker';
+import PlayerCount from '../base/PlayerCount';
 
 const Moment = require('moment');
 
@@ -27,7 +27,7 @@ export interface DispatchProps {
   onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
   onStart: () => void;
-  onDelta: (numLocalPlayers: number, delta: number, adventurers: number) => void;
+  onPlayerChange: (localPlayers: number) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -81,7 +81,7 @@ class MultiplayerConnect extends React.Component<Props, {}> {
 
 // TODO: Put this in a separate file and move the switch statemenet to Compositor
 export function renderLobby(props: Props): JSX.Element {
-  const adventurers = numAdventurers(props.settings, props.multiplayer);
+  const allPlayers = numPlayers(props.settings, props.multiplayer);
   return (
     <Card title="Lobby">
       <div className="remoteplay">
@@ -115,11 +115,10 @@ export function renderLobby(props: Props): JSX.Element {
         <p>Click the connected adventurers or connection state for more information.</p>
         <h2>Adventurers</h2>
         <p>Max of {MAX_ADVENTURERS} players allowed in multiplayer.</p>
-        <Picker id="playerCount" label="Players" onDelta={(i: number) => props.onDelta(props.settings.numLocalPlayers, i, adventurers)} value={props.settings.numLocalPlayers}>
-        The number of local players. <div>({adventurers} across all devices)</div>
-        </Picker><br/>
-        <p>Once everyone is connected, click Start:</p>
-        <Button id="start" className="mediumbutton" disabled={adventurers > MAX_ADVENTURERS} onClick={() => {props.onStart(); }}>{(adventurers > MAX_ADVENTURERS) ? `Player count must be < ${MAX_ADVENTURERS}` : 'Start'}</Button>
+        <PlayerCount id="playerCount" localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(localPlayers: number) => props.onPlayerChange(localPlayers)} />
+        <br/>
+        <p>Once everyone is ready, click Start:</p>
+        <Button id="start" className="mediumbutton" disabled={allPlayers > MAX_ADVENTURERS} onClick={() => {props.onStart(); }}>{(allPlayers > MAX_ADVENTURERS) ? `Player count must be < ${MAX_ADVENTURERS}` : 'Start'}</Button>
       </div>
     </Card>
   );

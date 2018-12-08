@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button';
-import {getContentSets, numAdventurers} from 'app/actions/Settings';
+import {getContentSets, numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES, URLS, VERSION} from '../../Constants';
 import {openWindow} from '../../Globals';
@@ -7,6 +7,7 @@ import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from '../.
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
 import Picker from '../base/Picker';
+import PlayerCount from '../base/PlayerCount';
 
 export interface StateProps {
   settings: SettingsType;
@@ -21,7 +22,7 @@ export interface DispatchProps {
   onExperimentalChange: (change: boolean) => void;
   onFontSizeDelta: (idx: number, delta: number) => void;
   onMultitouchChange: (change: boolean) => void;
-  onPlayerDelta: (numLocalPlayers: number, i: number) => void;
+  onPlayerChange: (numLocalPlayers: number) => void;
   onShowHelpChange: (change: boolean) => void;
   onTimerSecondsDelta: (idx: number, delta: number) => void;
   onVibrationChange: (change: boolean) => void;
@@ -57,7 +58,7 @@ const Settings = (props: Props): JSX.Element => {
   const difficultyIdx = difficultyValues.indexOf(props.settings.difficulty);
   const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
   const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
-  const adventurers = numAdventurers(props.settings, props.multiplayer);
+  const allPlayers = numPlayers(props.settings, props.multiplayer);
   const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets).filter((k) => props.settings.contentSets[k]));
   const globalExpansions = stringifyContentSet([...getContentSets(props.settings, props.multiplayer)]);
 
@@ -73,10 +74,7 @@ const Settings = (props: Props): JSX.Element => {
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
       {expansions}
 
-      <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
-        {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
-        {props.multiplayer.session && <div>({adventurers} across all devices)</div>}
-      </Picker>
+      <PlayerCount id="playerCount" localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(i: number) => props.onPlayerChange(i)} />
 
       <Checkbox label="Multitouch" value={props.settings.multitouch} onChange={props.settings.onMultitouchChange}>
         {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}

@@ -5,7 +5,6 @@ import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
 import {changeSettings, getContentSets} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
-import {MAX_ADVENTURERS} from '../../Constants';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
 import Multiplayer, {DispatchProps, MIN_SECRET_LENGTH, StateProps} from './Multiplayer';
@@ -29,14 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
-    onDelta: (numLocalPlayers: number, delta: number, adventurers: number) => {
-      if (delta > 0 && adventurers + delta > MAX_ADVENTURERS) {
-        return;
-      }
-      if (delta < 0 && adventurers + delta < 1) {
-        return;
-      }
-      numLocalPlayers += delta;
+    onPlayerChange: (numLocalPlayers: number) => {
       dispatch(changeSettings({numLocalPlayers}));
     },
     onStart: () => {
