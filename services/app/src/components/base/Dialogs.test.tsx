@@ -213,7 +213,7 @@ describe('Dialogs', () => {
     })
     test('can adjust player count', () => {
       const {props, e} = setup();
-      console.log(e.find('PlayerCount#playerCount').prop('onChange')(0));
+      e.find('PlayerCount#playerCount').prop('onChange')(0);
       expect(props.onPlayerChange).toHaveBeenCalledWith(0);
     });
     test('can enable/disable multitouch', () => {

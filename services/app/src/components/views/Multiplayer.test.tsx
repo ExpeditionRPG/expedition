@@ -54,6 +54,7 @@ describe('Multiplayer lobby', () => {
     expect(props.onStart).toHaveBeenCalled();
   });
   test('disables onStart when too many players', () => {
-    // TODO
+    const {elem, props} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
+    expect(elem.find('ExpeditionButton#start').prop('disabled')).toEqual(true);
   });
 });
