@@ -4,6 +4,7 @@ import {toNavCard} from '../../actions/Card';
 import {loadMultiplayer} from '../../actions/Multiplayer';
 import {changeSettings} from '../../actions/Settings';
 import {ensureLogin} from '../../actions/User';
+import {MAX_ADVENTURERS} from '../../Constants';
 import {AppState, UserState} from '../../reducers/StateTypes';
 import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 
@@ -20,7 +21,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onDelta: (numLocalPlayers: number, delta: number) => {
       numLocalPlayers += delta;
-      if (numLocalPlayers < 1 || numLocalPlayers > 6) {
+      if (numLocalPlayers < 1 || numLocalPlayers > MAX_ADVENTURERS) {
         return;
       }
       dispatch(changeSettings({numLocalPlayers}));

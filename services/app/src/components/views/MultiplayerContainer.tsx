@@ -3,8 +3,9 @@ import Redux from 'redux';
 import {SessionID} from 'shared/multiplayer/Session';
 import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
-import {getContentSets} from '../../actions/Settings';
+import {changeSettings, getContentSets} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
+import {MAX_ADVENTURERS} from '../../Constants';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
 import Multiplayer, {DispatchProps, MIN_SECRET_LENGTH, StateProps} from './Multiplayer';
@@ -14,6 +15,7 @@ const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateP
     multiplayer: state.multiplayer,
     phase: ownProps.phase || 'CONNECT',
     user: state.user,
+    settings: state.settings,
     contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
@@ -26,6 +28,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         return dispatch(openSnackbar(`Please enter the full session code (${MIN_SECRET_LENGTH} characters)`));
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
+    },
+    onDelta: (numLocalPlayers: number, delta: number, adventurers: number) => {
+      if (delta > 0 && adventurers + delta > MAX_ADVENTURERS) {
+        return;
+      }
+      if (delta < 0 && adventurers + delta < 1) {
+        return;
+      }
+      numLocalPlayers += delta;
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onStart: () => {
       logEvent('multiplayer', 'session_start', {});
