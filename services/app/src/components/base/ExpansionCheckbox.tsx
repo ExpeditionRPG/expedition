@@ -3,24 +3,19 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
-import {CONTENT_SET_FULL_NAMES} from '../../Constants';
+import {ALL_CONTENT_SETS, CONTENT_SET_FULL_NAMES} from '../../Constants';
 import {ContentSetsType} from '../../reducers/StateTypes';
 
 interface IExpansion {
   checked: boolean;
   value: string;
   disabled: boolean;
-  label: string;
-}
-
-export interface IState {
-  expansions: IExpansion[];
 }
 
 export interface IConnectProps {
   contentSets: Set<keyof ContentSetsType>;
   onChange: (values: string[]) => void;
-  value: string[] | undefined;
+  value: string[];
 }
 
 const styles = {
@@ -33,61 +28,43 @@ const styles = {
   checked: {},
 };
 
-interface IProps extends IConnectProps {
+interface Props extends IConnectProps {
   classes: any;
 }
 
-class ExpansionCheckbox extends React.Component<IProps, {}> {
-  public state: IState;
-  constructor(props: IProps) {
-    super(props);
-    const expansions: IExpansion[] = (props.contentSets && [
-      {
-        checked: props.contentSets.has('horror'),
-        value: 'horror',
-        label: CONTENT_SET_FULL_NAMES.horror,
-        disabled: !props.contentSets.has('horror'),
-      },
-      {
-        checked: props.contentSets.has('future'),
-        value: 'future',
-        label: CONTENT_SET_FULL_NAMES.future,
-        disabled: !props.contentSets.has('future'),
-      },
-    ]) || [];
-    this.state = { expansions };
-  }
-
-  private changeSearchState(expansions: IExpansion[]) {
-    const searchState = expansions.reduce((acc, expansion) => {
-      if (!expansion.checked) {
-        return acc;
-      }
-      return [...acc, expansion.value];
-    }, []);
-    this.props.onChange(searchState);
-  }
+class ExpansionCheckbox extends React.Component<Props, {}> {
 
   public componentDidMount() {
-    this.changeSearchState(this.state.expansions);
+    // Default to all supported expansions checked
+    // Done in a timer so as to not interrupt event/transition loops.
+    setTimeout(() => {
+      this.props.onChange([...this.props.contentSets]);
+    }, 0);
   }
 
-  private onChange(value: any) {
-    const selectedExpansions = this.state.expansions.map((expansion) => {
+  private onChange(expansions: IExpansion[], value: any) {
+    const selected: string[] = expansions.map((expansion) => {
       if (expansion.value === value) {
         expansion.checked = !expansion.checked;
       }
-      return expansion;
-    });
-    this.changeSearchState(selectedExpansions);
-    this.setState({ expansions: selectedExpansions });
+      return (expansion.checked) ? expansion.value : '';
+    }).filter((e) => e !== '');
+    this.props.onChange(selected);
   }
 
   public render() {
+    const expansions: IExpansion[] = ALL_CONTENT_SETS.map((cs: string) => {
+      return {
+        value: cs,
+        checked: (this.props.value.indexOf(cs) !== -1),
+        disabled: !this.props.contentSets.has(cs),
+      };
+    });
+
     return (
       <FormGroup row>
-        {this.state.expansions.map((expansion) => {
-          const label = `${expansion.label}${expansion.disabled ? ' (Enable this expansion in settings)' : ''}`;
+        {expansions.map((expansion) => {
+          const label = `${CONTENT_SET_FULL_NAMES[expansion.value]}${expansion.disabled ? ' (Enable this expansion in settings)' : ''}`;
           return <FormControlLabel
               key={expansion.value}
               control={
@@ -96,7 +73,7 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
                   disabled={expansion.disabled}
                   value={expansion.value}
                   checked={expansion.checked}
-                  onChange={() => this.onChange(expansion.value)}
+                  onChange={() => this.onChange(expansions, expansion.value)}
                   classes={{
                     root: this.props.classes.root,
                     checked: this.props.classes.checked,

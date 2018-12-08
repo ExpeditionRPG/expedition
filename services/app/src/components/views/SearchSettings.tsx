@@ -23,27 +23,25 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onSearch: (search: SearchParams) => void;
+  onChangeParams: (params: Partial<SearchParams>) => void;
+  onSearch: (params: SearchParams) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
 
 export class SearchSettings extends React.Component<Props, {}> {
-  public state: SearchParams;
-
   constructor(props: Props) {
     super(props);
-    this.state = this.props.params;
   }
 
   public onChange(attrib: string, value: any) {
-    // 10/26/18 bugfix: have to use 'null' string instead of raw undefined
+    // Have to use 'null' string instead of raw undefined
     // as select value, otherwise HTML auto-populates the value as the display
     // string, which breaks the API (i.e. passing "Any length" instead no value)
     if (value === 'null') {
-      this.setState({[attrib]: undefined});
+      this.props.onChangeParams({[attrib]: undefined});
     } else {
-      this.setState({[attrib]: value});
+      this.props.onChangeParams({[attrib]: value});
     }
   }
 
@@ -59,13 +57,13 @@ export class SearchSettings extends React.Component<Props, {}> {
     if (e) {
       e.preventDefault();
     }
-    this.props.onSearch(this.state);
+    this.props.onSearch(this.props.params);
   }
 
   // TODO remove the clutter here / move to Theme.tsx
   public render() {
     const players = numPlayers(this.props.settings);
-    const rating = (this.state.contentrating) ? CONTENT_RATING_DESC[this.state.contentrating] : undefined;
+    const rating = (this.props.params.contentrating) ? CONTENT_RATING_DESC[this.props.params.contentrating] : undefined;
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <option key={index} value={minutes}>{`${minutes} min`}</option>;
     });
@@ -83,7 +81,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <ExpansionCheckbox
               onChange={(values) => this.onChange('expansions', values)}
               contentSets={this.props.contentSets}
-              value={this.state.expansions}
+              value={this.props.params.expansions || []}
             />
           </FormControl>
           <FormControl fullWidth={true}>
@@ -94,7 +92,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               label="text search - title, author, ID"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange('text', e.target.value)}
               onFocus={(e: any) => e.target.scrollIntoView()}
-              value={this.state.text}
+              value={this.props.params.text}
             />
           </FormControl>
           <FormControl className="selectfield" fullWidth={true}>
@@ -102,7 +100,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="order"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('order', e.target.value)}
-              value={this.state.order}
+              value={this.props.params.order}
             >
               <option value="+ratingavg">Highest rated</option>
               <option value="-created">Newest</option>
@@ -115,7 +113,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="mintimeminutes"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('mintimeminutes', e.target.value)}
-              value={this.state.mintimeminutes}
+              value={this.props.params.mintimeminutes}
             >
               <option value={'null'}>Any length</option>
               {timeBuckets}
@@ -126,7 +124,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="maxtimeminutes"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('maxtimeminutes', e.target.value)}
-              value={this.state.maxtimeminutes}
+              value={this.props.params.maxtimeminutes}
             >
               <option value={'null'}>Any length</option>
               {timeBuckets}
@@ -137,7 +135,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="age"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('age', e.target.value)}
-              value={this.state.age}
+              value={this.props.params.age}
             >
               <option value={'null'}>All time</option>
               <option value={31536000}>Published this year</option>
@@ -150,7 +148,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="language"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
-              value={this.state.language}
+              value={this.props.params.language}
             >
               {LANGUAGES.map((language: string, i: number) => <option key={i} value={language}>{language}</option>)}
             </NativeSelect>
@@ -160,7 +158,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="genre"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('genre', e.target.value)}
-              value={this.state.genre}
+              value={this.props.params.genre}
             >
               <option value={'null'}>All genres</option>
               {visibleGenres.map((genre: string, i: number) => <option key={i} value={genre}>{genre}</option>)}
@@ -171,7 +169,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="contentrating"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('contentrating', e.target.value)}
-              value={this.state.contentrating}
+              value={this.props.params.contentrating}
             >
               <option value={'null'}>All ratings</option>
               <option value="Kid-friendly">Kid-friendly</option>
@@ -184,17 +182,17 @@ export class SearchSettings extends React.Component<Props, {}> {
             <NativeSelect
               id="requirespenpaper"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('requirespenpaper', e.target.value)}
-              value={this.state.requirespenpaper}
+              value={this.props.params.requirespenpaper}
             >
               <option value={'null'}>No Preference</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </NativeSelect>
           </FormControl>
-          <Checkbox id="showPrivate" label="Also show my private quests" value={this.state.showPrivate === true ? true : false} onChange={(v: boolean) => { this.handleCheckbox(v); }}>
+          <Checkbox id="showPrivate" label="Also show my private quests" value={this.props.params.showPrivate === true ? true : false} onChange={(v: boolean) => { this.handleCheckbox(v); }}>
           </Checkbox>
           {rating && <div className="ratingDescription">
-            <span>"{this.state.contentrating}" rating means: {rating.summary}</span>
+            <span>"{this.props.params.contentrating}" rating means: {rating.summary}</span>
           </div>}
           <Button onClick={(e: React.FormEvent) => {this.submit(e); }} id="search">Search</Button>
         </form>

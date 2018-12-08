@@ -192,6 +192,7 @@ export const INIT_DELAY = {
   SILENT_LOGIN_MILLIS: 1000,
 };
 
+export const ALL_CONTENT_SETS: string[] = ['horror', 'future'];
 export const CONTENT_SET_FULL_NAMES: {[k: string]: string} = {
   base: 'Expedition',
   horror: 'The Horror',

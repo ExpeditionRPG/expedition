@@ -30,6 +30,11 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
     case 'MULTIPLAYER_SYNC':
     case 'MULTIPLAYER_REJECT':
       return {...state, syncing: true};
+    case 'MULTIPLAYER_COMMIT':
+      if (state.syncing && !state.multiEvent) {
+        state.syncing = false;
+      }
+      return state;
     case 'MULTIPLAYER_MULTI_EVENT_START':
       return {...state, multiEvent: true, syncID: (action as MultiplayerMultiEventStartAction).syncID};
     case 'MULTIPLAYER_MULTI_EVENT':

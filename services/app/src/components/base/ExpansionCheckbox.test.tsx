@@ -1,15 +1,17 @@
 import {mount} from 'app/Testing';
 import * as React from 'react';
 
-import ExpansionCheckBox, { IProps } from './ExpansionCheckbox';
+import ExpansionCheckBox, { Props } from './ExpansionCheckbox';
+
+jest.useFakeTimers();
 
 describe('ExpansionCheckBox', () => {
 
   function setup(contentSets=[]) {
-    const props: IProps = {
+    const props: Props = {
       onChange: jest.fn(),
       contentSets: new Set(contentSets),
-      value: undefined,
+      value: [],
     };
     const elem = mount(<ExpansionCheckBox {...props} />);
     return {elem, props};
@@ -22,19 +24,22 @@ describe('ExpansionCheckBox', () => {
   });
 
   test('default horror expansion is selected based on settings', () => {
-    const {elem} = setup(['horror']);
-    expect(elem.find('input#horror').props().checked).toBe(true);
+    const {elem, props} = setup(['horror']);
+    jest.runOnlyPendingTimers();
+    expect(props.onChange).toHaveBeenCalledWith(['horror']);
     expect(elem.find('input#future').props().disabled).toBe(true);
   });
 
   test('default horror and future expansion is selected based on settings', () => {
-    const {elem} = setup(['horror', 'future']);
-    expect(elem.find('input#horror').props().checked).toBe(true);
-    expect(elem.find('input#future').props().checked).toBe(true);
+    const {elem, props} = setup(['horror', 'future']);
+    jest.runOnlyPendingTimers();
+    expect(props.onChange).toHaveBeenCalledWith(['horror', 'future']);
   });
 
   test('default no expansion is selected based on settings', () => {
-    const {elem} = setup([]);
+    const {elem, props} = setup([]);
+    jest.runOnlyPendingTimers();
+    expect(props.onChange).toHaveBeenCalledWith([]);
     expect(elem.find('input#horror').props().disabled).toBe(true);
     expect(elem.find('input#future').props().disabled).toBe(true);
   });
