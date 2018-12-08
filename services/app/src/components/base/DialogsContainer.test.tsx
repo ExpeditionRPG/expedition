@@ -27,9 +27,7 @@ describe('DialogsContainer', () => {
       return {store, dispatchProps};
     }
     test.skip('dispatches dialog change with onClose', () => { /* TODO */ });
-
     test.skip('onFeedbackSubmit validates input', () => { /* TODO */ });
-    test.skip('onPlayerDelta does nothing when going below min/above max players', () => { /* TODO */ });
 
     describe('onExitQuest', () => {
       test('submits feedback if there is any', (done) => {

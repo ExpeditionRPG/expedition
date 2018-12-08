@@ -3,10 +3,12 @@ import NetworkWifi from '@material-ui/icons/NetworkWifi';
 import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
-import {CONTENT_SET_FULL_NAMES} from '../../Constants';
-import {ContentSetsType, MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
+import {numPlayers} from '../../actions/Settings';
+import {CONTENT_SET_FULL_NAMES, MAX_ADVENTURERS} from '../../Constants';
+import {ContentSetsType, MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
+import PlayerCount from '../base/PlayerCount';
 
 const Moment = require('moment');
 
@@ -16,6 +18,7 @@ export interface StateProps {
   phase: MultiplayerPhase;
   user: UserState;
   multiplayer: MultiplayerState;
+  settings: SettingsType;
   contentSets: Set<keyof ContentSetsType>;
 }
 
@@ -24,6 +27,7 @@ export interface DispatchProps {
   onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
   onStart: () => void;
+  onPlayerChange: (localPlayers: number) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -77,6 +81,7 @@ class MultiplayerConnect extends React.Component<Props, {}> {
 
 // TODO: Put this in a separate file and move the switch statemenet to Compositor
 export function renderLobby(props: Props): JSX.Element {
+  const allPlayers = numPlayers(props.settings, props.multiplayer);
   return (
     <Card title="Lobby">
       <div className="remoteplay">
@@ -108,8 +113,12 @@ export function renderLobby(props: Props): JSX.Element {
           </tbody>
         </table>
         <p>Click the connected adventurers or connection state for more information.</p>
-        <p>Once everyone is connected, click Start:</p>
-        <Button id="start" className="mediumbutton" onClick={() => {props.onStart(); }}>Start</Button>
+        <h2>Adventurers</h2>
+        <p>Max of {MAX_ADVENTURERS} players allowed in multiplayer.</p>
+        <PlayerCount id="playerCount" localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(localPlayers: number) => props.onPlayerChange(localPlayers)} />
+        <br/>
+        <p>Once everyone is ready, click Start:</p>
+        <Button id="start" className="mediumbutton" disabled={allPlayers > MAX_ADVENTURERS} onClick={() => {props.onStart(); }}>{(allPlayers > MAX_ADVENTURERS) ? `Player count must be ≤ ${MAX_ADVENTURERS}` : 'Start'}</Button>
       </div>
     </Card>
   );

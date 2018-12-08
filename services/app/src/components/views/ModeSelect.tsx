@@ -1,10 +1,10 @@
-import {numAdventurers} from 'app/actions/Settings';
+import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {MultiplayerState, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
-import Picker from '../base/Picker';
+import PlayerCount from '../base/PlayerCount';
 import TextDivider from '../base/TextDivider';
 
 export interface StateProps {
@@ -15,7 +15,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onDelta: (numLocalPlayers: number, delta: number) => void;
+  onPlayerChange: (numLocalPlayers: number) => void;
   onLocalSelect: () => void;
   onMultiplayerSelect: (user: UserState) => void;
   onMultitouchChange: (change: boolean) => void;
@@ -24,13 +24,10 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 const ModeSelect = (props: Props): JSX.Element => {
-  const adventurers = numAdventurers(props.settings, props.multiplayer);
+  const allPlayers = numPlayers(props.settings, props.multiplayer);
   return (
     <Card title="Game Setup">
-      <Picker id="playerCount" label="Players" onDelta={(i: number) => props.onDelta(props.settings.numLocalPlayers, i)} value={props.settings.numLocalPlayers}>
-      {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}
-      {props.multiplayer.session && <div>({adventurers} across all devices)</div>}
-      </Picker>
+      <PlayerCount id="playerCount" onChange={(i: number) => props.onPlayerChange(i)} localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers}/>
       <Checkbox id="multitouch" label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
         {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>

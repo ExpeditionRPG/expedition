@@ -15,7 +15,21 @@ describe('CardTemplates template', () => {
       });
       expect(ctx.scope._.contentSets()).toEqual({horror: true});
     });
-    test.skip('numAdventurers gets adventurer count', () => { /* TODO */ });
-    test.skip('viewCount gets the view count for a node id', () => { /* TODO */ });
+    test('numAdventurers gets adventurer count', () => {
+      const ctx = defaultContext(() => return {
+        settings: {...initialSettings, numLocalPlayers: 3},
+        multiplayer: initialMultiplayer,
+      });
+      expect(ctx.scope._.numAdventurers()).toEqual(3);
+    });
+    test('viewCount gets the view count for a node id', () => {
+      const ctx = defaultContext(() => return {});
+      ctx.views['a'] = 5;
+      expect(ctx.scope._.viewCount('a')).toEqual(5);
+    });
+    test ('viewCount handles unviewed nodes', () => {
+      const ctx = defaultContext(() => return {});
+      expect(ctx.scope._.viewCount('a')).toEqual(0);
+    });
   });
 });

@@ -226,6 +226,7 @@ body {
   .peers {
     flex: 8;
     text-align: center;
+    overflow: hidden;
 
     .group {
       padding-left: size(base);

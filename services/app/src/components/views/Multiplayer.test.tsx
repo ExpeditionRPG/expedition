@@ -12,12 +12,14 @@ describe('Multiplayer lobby', () => {
     const props: Props = {
       phase: 'LOBBY',
       user: loggedOutUser,
+      settings: initialSettings,
       multiplayer: initialMultiplayer,
       contentSets: new Set(),
       onConnect: jasmine.createSpy('onConnect'),
       onReconnect: jasmine.createSpy('onReconnect'),
       onNewSessionRequest: jasmine.createSpy('onNewSessionRequest'),
       onStart: jasmine.createSpy('onStart'),
+      onPlayerChange: jasmine.createSpy('onPlayerChange'),
       ...overrides,
     };
     const elem = mount(renderLobby(props));
@@ -50,5 +52,9 @@ describe('Multiplayer lobby', () => {
     const {elem, props} = setup();
     elem.find('ExpeditionButton#start').prop('onClick')();
     expect(props.onStart).toHaveBeenCalled();
+  });
+  test('disables onStart when too many players', () => {
+    const {elem, props} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
+    expect(elem.find('ExpeditionButton#start').prop('disabled')).toEqual(true);
   });
 });
