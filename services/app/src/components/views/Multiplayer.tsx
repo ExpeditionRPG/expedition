@@ -118,7 +118,7 @@ export function renderLobby(props: Props): JSX.Element {
         <PlayerCount id="playerCount" localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(localPlayers: number) => props.onPlayerChange(localPlayers)} />
         <br/>
         <p>Once everyone is ready, click Start:</p>
-        <Button id="start" className="mediumbutton" disabled={allPlayers > MAX_ADVENTURERS} onClick={() => {props.onStart(); }}>{(allPlayers > MAX_ADVENTURERS) ? `Player count must be < ${MAX_ADVENTURERS}` : 'Start'}</Button>
+        <Button id="start" className="mediumbutton" disabled={allPlayers > MAX_ADVENTURERS} onClick={() => {props.onStart(); }}>{(allPlayers > MAX_ADVENTURERS) ? `Player count must be ≤ ${MAX_ADVENTURERS}` : 'Start'}</Button>
       </div>
     </Card>
   );
