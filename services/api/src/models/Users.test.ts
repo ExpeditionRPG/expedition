@@ -16,7 +16,7 @@ import {
 
 describe('users', () => {
   describe('incrementLoginCount', () => {
-    test('increments for existing user', (done: DoneFn) => {
+    test('increments for existing user', (done) => {
       let db: Database;
       testingDBWithState([u.basic])
         .then((tdb) => {
@@ -36,7 +36,7 @@ describe('users', () => {
   });
 
   describe('setLootPoints', () => {
-    test('sets the loot points', (done: DoneFn) => {
+    test('sets the loot points', (done) => {
       let db: Database;
       testingDBWithState([u.basic]).then((tdb) => {
         db = tdb;
@@ -65,7 +65,7 @@ describe('users', () => {
   });
 
   describe('getUserQuests', () => {
-    test('returns valid results for players without quest history', (done: DoneFn) => {
+    test('returns valid results for players without quest history', (done) => {
       testingDBWithState([u.basic]).then((tdb) => {
         return getUserQuests(tdb, u.basic.id);
       })
@@ -76,7 +76,7 @@ describe('users', () => {
       .catch(done.fail);
     });
 
-    test('returns valid results for players with quest history', (done: DoneFn) => {
+    test('returns valid results for players with quest history', (done) => {
       testingDBWithState([
         u.basic,
         q.basic,
@@ -96,20 +96,22 @@ describe('users', () => {
   });
 
   describe('maybeGetUserByEmail', () => {
-    test('returns user if exists', () => {
+    test('returns user if exists', (done) => {
       testingDBWithState([u.basic]).then((tdb) => {
-        return maybeGetUserByEmail(u.basic.email);
+        return maybeGetUserByEmail(tdb, u.basic.email);
       }).then((user) => {
         expect(user.id).toEqual(u.basic.id);
-      });
+        done();
+      }).catch(done.fail);
     });
 
-    test('returns null if not exists', () => {
+    test('returns null if not exists', (done) => {
       testingDBWithState([]).then((tdb) => {
-        return maybeGetUserByEmail(u.basic.email);
+        return maybeGetUserByEmail(tdb, u.basic.email);
       }).then((user) => {
         expect(user).toEqual(null);
-      });
+        done();
+      }).catch(done.fail);
     });
   })
 });

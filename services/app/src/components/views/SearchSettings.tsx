@@ -7,10 +7,10 @@ import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
-import {SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
+import {ContentSetsType, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
-import ExpansionCheckbox from './ExpansionCheckbox';
+import ExpansionCheckbox from '../base/ExpansionCheckbox';
 
 const pluralize = require('pluralize');
 import Checkbox from '../base/Checkbox';
@@ -18,6 +18,7 @@ import Checkbox from '../base/Checkbox';
 export interface StateProps {
   params: SearchParams;
   settings: SettingsType;
+  contentSets: Set<keyof ContentSetsType>;
   user: UserState;
 }
 
@@ -68,6 +69,7 @@ export class SearchSettings extends React.Component<Props, {}> {
     const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
       return <option key={index} value={minutes}>{`${minutes} min`}</option>;
     });
+
     // TODO Once we have 3 romance & SciFi quests, change code to just display genre list
     const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
     return (
@@ -80,7 +82,7 @@ export class SearchSettings extends React.Component<Props, {}> {
             <FormLabel htmlFor="expansion">Expansion</FormLabel>
             <ExpansionCheckbox
               onChange={(values) => this.onChange('expansions', values)}
-              contentSets={this.props.settings.contentSets}
+              contentSets={this.props.contentSets}
               value={this.state.expansions}
             />
           </FormControl>

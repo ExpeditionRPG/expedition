@@ -26,6 +26,9 @@ function handleServerStatus(data: FetchServerStatusResponse) {
     const newVersion = data.versions[getDevicePlatform()];
     const oldVersion = VERSION;
     const isLatestAppVersion = semver.valid(newVersion) && semver.valid(oldVersion) && semver.lte(newVersion, oldVersion) || false;
+    if (!isLatestAppVersion) {
+      console.warn('Version mismatch with server:', oldVersion, 'local vs server', newVersion);
+    }
     if (data.message !== null && data.message !== '') {
       dispatch(setServerStatus({
         announcement: {

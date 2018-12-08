@@ -13,6 +13,7 @@ describe('Multiplayer lobby', () => {
       phase: 'LOBBY',
       user: loggedOutUser,
       multiplayer: initialMultiplayer,
+      contentSets: new Set(),
       onConnect: jasmine.createSpy('onConnect'),
       onReconnect: jasmine.createSpy('onReconnect'),
       onNewSessionRequest: jasmine.createSpy('onNewSessionRequest'),
@@ -37,12 +38,9 @@ describe('Multiplayer lobby', () => {
       multiplayer: {
         ...initialMultiplayer,
         connected: true,
-        clientStatus: {
-          d: {type: 'STATUS', connected: false, contentSets: []}, // Disconnected clients are not counted
-          e: {type: 'STATUS', connected: true, contentSets: ['horror']},
-          f: {type: 'STATUS', connected: true, contentSets: ['horror', 'future']},
-        },
+        session: {id: 'abc', secret: 'def'},
       },
+      contentSets: new Set(['horror']),
     });
     const result = elem.find('#contentsets').text();
     expect(result).toContain('The Horror');
@@ -53,5 +51,4 @@ describe('Multiplayer lobby', () => {
     elem.find('ExpeditionButton#start').prop('onClick')();
     expect(props.onStart).toHaveBeenCalled();
   });
-
 });

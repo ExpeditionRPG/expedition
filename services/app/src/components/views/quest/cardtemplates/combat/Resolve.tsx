@@ -1,12 +1,14 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
+import {ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {CombatPhase} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
   mostRecentRolls?: number[];
+  contentSets: Set<keyof ContentSetsType>;
 }
 
 export interface DispatchProps {
@@ -18,11 +20,10 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function resolve(props: Props): JSX.Element {
   let helpText: JSX.Element = (<p>Resolve all played abilities.</p>);
-  const theHorror = (props.settings.contentSets.horror === true);
   if (props.settings.showHelp) {
     helpText = (
       <span>
-        {theHorror && <div>
+        {props.contentSets.has('horror') && <div>
           <h2>{CONTENT_SET_FULL_NAMES.horror} <img className="inline_icon" src="images/horror_white_small.svg"></img></h2>
           <p>Adventurers at Min persona must resolve their persona effect and reset to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.</p>
         </div>}

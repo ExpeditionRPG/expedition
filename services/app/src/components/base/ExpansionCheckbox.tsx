@@ -18,7 +18,7 @@ export interface IState {
 }
 
 export interface IConnectProps {
-  contentSets: ContentSetsType;
+  contentSets: Set<keyof ContentSetsType>;
   onChange: (values: string[]) => void;
   value: string[] | undefined;
 }
@@ -41,26 +41,24 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
   public state: IState;
   constructor(props: IProps) {
     super(props);
-    const isHorror = this.props.contentSets.horror ? true : false;
-    const isFuture = this.props.contentSets.future ? true : false;
-    const expansions: IExpansion[] = [
+    const expansions: IExpansion[] = (props.contentSets && [
       {
-        checked: isHorror,
+        checked: props.contentSets.has('horror'),
         value: 'horror',
         label: CONTENT_SET_FULL_NAMES.horror,
-        disabled: !isHorror,
+        disabled: !props.contentSets.has('horror'),
       },
       {
-        checked: isFuture,
+        checked: props.contentSets.has('future'),
         value: 'future',
         label: CONTENT_SET_FULL_NAMES.future,
-        disabled: !isFuture,
+        disabled: !props.contentSets.has('future'),
       },
-    ];
+    ]) || [];
     this.state = { expansions };
   }
 
-  public changeSearchState(expansions: IExpansion[]) {
+  private changeSearchState(expansions: IExpansion[]) {
     const searchState = expansions.reduce((acc, expansion) => {
       if (!expansion.checked) {
         return acc;
@@ -69,11 +67,12 @@ class ExpansionCheckbox extends React.Component<IProps, {}> {
     }, []);
     this.props.onChange(searchState);
   }
+
   public componentDidMount() {
     this.changeSearchState(this.state.expansions);
   }
 
-  public onChange(value: any) {
+  private onChange(value: any) {
     const selectedExpansions = this.state.expansions.map((expansion) => {
       if (expansion.value === value) {
         expansion.checked = !expansion.checked;

@@ -8,21 +8,9 @@ import {loggedOutUser} from '../../reducers/User';
 import {testLoggedInUser} from '../../reducers/User.test';
 import {render, mount, unmountAll} from 'app/Testing';
 import Search, {Props} from './Search';
+import {TEST_SEARCH} from '../../reducers/TestData';
 
 const Moment = require('moment');
-
-export const TEST_SEARCH: SearchParams = {
-  age: 31536000,
-  contentrating: 'Teen',
-  genre: 'Comedy',
-  language: 'English' as LanguageType,
-  maxtimeminutes: 60,
-  mintimeminutes: 30,
-  order: '+title',
-  text: 'Test Text',
-  expansions: [],
-  showPrivate: true,
-};
 
 describe('Search', () => {
 
@@ -32,6 +20,7 @@ describe('Search', () => {
     const props: Props = {
       params: TEST_SEARCH,
       settings: initialSettings,
+      contentSets: new Set(['horror']),
       user: loggedOutUser,
       results: [],
       searching: false,
@@ -89,5 +78,10 @@ describe('Search', () => {
     });
     mount(e);
     expect(props.onSearch).not.toHaveBeenCalled();
+  });
+  test('shows only configured content set icons', () => {
+    const e = mount(setup({user: testLoggedInUser, results: TUTORIAL_QUESTS}).e);
+    expect(e.find('#searching_horror').exists()).toEqual(true);
+    expect(e.find('#searching_future').exists()).toEqual(false);
   });
 });

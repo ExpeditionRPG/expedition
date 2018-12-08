@@ -6,6 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
+import {getContentSets} from '../../actions/Settings';
 import {openWindow} from '../../Globals';
 import {MultiplayerCounters} from '../../multiplayer/Counters';
 import {ContentSetsType, DialogState, FeedbackType, MultiplayerState, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
@@ -166,7 +167,7 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
           <Button id="base" className="primary large" onClick={() => this.props.onExpansionSelect({horror: false, future: false})}>Base Game</Button>
           <br/>
           <br/>
-          <Button id="horror" className="primary large" onClick={() => this.props.onExpansionSelect({horror: true})}>Base + Horror</Button>
+          <Button id="horror" className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: false})}>Base + Horror</Button>
           <br/>
           <br/>
           <Button id="future" className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
@@ -306,6 +307,7 @@ interface SetPlayerCountDialogProps extends React.Props<any> {
   open: boolean;
   quest: Quest;
   settings: SettingsType;
+  multiplayer: MultiplayerState;
   onClose: () => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerDelta: (numLocalPlayers: number, delta: number) => void;
@@ -330,9 +332,10 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
       </div>;
 
     let expansionErr = '';
-    if (quest.expansionhorror && !this.props.settings.contentSets.horror) {
+    const contentSets = new Set(getContentSets(this.props.settings, this.props.multiplayer));
+    if (quest.expansionhorror && !contentSets.has('horror')) {
       expansionErr = 'Horror';
-    } else if (quest.expansionfuture && !this.props.settings.contentSets.future) {
+    } else if (quest.expansionfuture && !contentSets.has('future')) {
       expansionErr = 'Future';
     }
     if (expansionErr) {
@@ -454,6 +457,7 @@ const Dialogs = (props: Props): JSX.Element => {
         playQuest={props.playQuest}
         quest={props.quest.details}
         settings={props.settings}
+        multiplayer={props.multiplayer}
       />
     </span>
   );

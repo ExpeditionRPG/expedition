@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
-import {numAdventurers} from 'app/actions/Settings';
+import {getContentSets, numAdventurers} from 'app/actions/Settings';
 import * as React from 'react';
-import {URLS, VERSION} from '../../Constants';
+import {CONTENT_SET_FULL_NAMES, URLS, VERSION} from '../../Constants';
 import {openWindow} from '../../Globals';
 import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
@@ -49,15 +49,29 @@ const timerText: { [v: string]: any } = [
 ];
 export const timerValues: Array<number|null> = [null, 30, 15, 10, 6];
 
+function stringifyContentSet(cs: string[]): string {
+  return ['base', ...cs].map((name) => CONTENT_SET_FULL_NAMES[name]).join(' + ');
+}
+
 const Settings = (props: Props): JSX.Element => {
   const difficultyIdx = difficultyValues.indexOf(props.settings.difficulty);
   const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
   const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
   const adventurers = numAdventurers(props.settings, props.multiplayer);
+  const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets).filter((k) => props.settings.contentSets[k]));
+  const globalExpansions = stringifyContentSet([...getContentSets(props.settings, props.multiplayer)]);
+
+  const expansions = (props.multiplayer.session)
+    ? <p className="expansionLabel">
+        Locally: <strong>{localExpansions}</strong><br/>
+        All Devices: <strong>{globalExpansions}</strong>
+      </p>
+    : <p className="expansionLabel">Currently playing: <strong>{globalExpansions}</strong></p>;
+
   return (
     <Card title="Settings">
       <Button className="primary large" onClick={() => props.onExpansionSelect()}>Choose game / expansion</Button>
-      <p className="expansionLabel">Currently playing: <strong>Expedition {props.settings.contentSets.horror ? <span> + Horror</span> : null}{props.settings.contentSets.future ? <span> + Future</span> : null}</strong></p>
+      {expansions}
 
       <Picker id="playerCount" label="Adventurers" value={props.settings.numLocalPlayers} onDelta={(i: number) => props.onPlayerDelta(props.settings.numLocalPlayers, i)}>
         {(adventurers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the combat timer.</div>}

@@ -1,4 +1,4 @@
-import {numAdventurers} from 'app/actions/Settings';
+import {getContentSets, numAdventurers} from 'app/actions/Settings';
 import {AppStateWithHistory, CardState, CardThemeType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
@@ -111,8 +111,12 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
-        const settings = getState().settings;
-        return settings && settings.contentSets;
+        const {settings, multiplayer} = getState();
+        const result: any = {};
+        for (const cs of [...getContentSets(settings, multiplayer)]) {
+          result[cs] = true;
+        }
+        return result;
       },
       numAdventurers(): number {
         return numAdventurers(getState().settings, getState().multiplayer);
