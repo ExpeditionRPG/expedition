@@ -86,6 +86,7 @@ function getSearchResults(
     dispatch({ type: 'SEARCH_REQUEST' });
 
     fetch(AUTH_SETTINGS.URL_BASE + '/quests', {
+      credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
