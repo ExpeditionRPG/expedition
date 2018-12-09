@@ -1,3 +1,4 @@
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as React from 'react';
 import {DOUBLE_TAP_MS, SPLASH_SCREEN_TIPS} from '../../Constants';
 import {AnnouncementState} from '../../reducers/StateTypes';
@@ -17,6 +18,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     tip: string;
     touchCount: number;
     transitionTimeout: any;
+    progress: number;
   };
 
   constructor(props: PlayerCounterProps) {
@@ -27,11 +29,12 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
       touchCount: 0,
       transitionTimeout: null,
+      progress: 0,
     };
   }
 
   // NOTE: transitionMillis is also defined in scss for the timer spinner
-  public onTouchChange(numFingers: number) {
+  private onTouchChange(numFingers: number) {
     if (this.state.transitionTimeout) {
       clearTimeout(this.state.transitionTimeout);
       this.setState({transitionTimeout: null});
@@ -48,8 +51,20 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       this.setState({transitionTimeout: setTimeout(() => {
         this.props.onPlayerCountSelect(numFingers);
       }, this.props.transitionMillis)});
+      this.animate();
     }
     this.setState({touchCount: numFingers, maxTouches: Math.max(this.state.maxTouches, numFingers)});
+  }
+
+  private animate() {
+    if (this.state.transitionTimeout === null) {
+      return;
+    }
+    const progress = Math.min(100, (Date.now() - this.state.lastTouchTime) / (this.props.transitionMillis) * 100);
+    if (progress !== this.state.progress) {
+      this.setState({progress});
+    }
+    window.requestAnimationFrame(() => this.animate());
   }
 
   public render() {
@@ -63,9 +78,16 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
           <h2>Multiplayer & More:</h2>
           <p>Double tap the screen.</p>
         </div>
-        {!showInstruction && <div className="splashMultitouchPlayerCount">
-          <h1>{this.state.touchCount}</h1>
-        </div>}
+        {!showInstruction && <span>
+          <div className="splashMultitouchPlayerCount">
+            <h1>{this.state.touchCount}</h1>
+          </div>
+          <CircularProgress
+            className={'splashProgress'}
+            variant="determinate"
+            value={this.state.progress}
+          />
+          </span>}
         <div className="splashTips">{this.state.tip}</div>
         <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
       </div>
@@ -101,7 +123,7 @@ const SplashScreen = (props: Props): JSX.Element => {
       <PlayerCounter
         onDoubleTap={props.onPlayerManualSelect}
         onPlayerCountSelect={props.onPlayerCountSelect}
-        transitionMillis={1500}
+        transitionMillis={2000}
       />
     </div>
   );
