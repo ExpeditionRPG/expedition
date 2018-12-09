@@ -104,6 +104,17 @@ export const quests = {
     summary: 'This be a test PRIVATE quest!',
     title: 'Test Private Quest',
     url: 'http://test-private.com',
+    userid: 'testuser',
+  }),
+  privateUser2: new Quest({
+    ...basicQuest,
+    partition: PRIVATE_PARTITION,
+    id: 'questidotheruser',
+    publishedurl: 'http://testpublishedPRIVATEquesturl.com',
+    summary: 'This be a test PRIVATE quest!',
+    title: 'Test Private Quest',
+    url: 'http://test-private.com',
+    userid: 'otheruser',
   }),
 };
 
