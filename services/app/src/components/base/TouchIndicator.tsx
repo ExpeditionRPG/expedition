@@ -8,12 +8,10 @@ export interface Props extends React.Props<any> {
 export default class TouchIndicator extends React.Component<Props, {}> {
   public ctx: any;
   public canvas: any;
-  private boundDrawTouchPoints: () => void;
   public styles: any;
 
   constructor(props: Props) {
     super(props);
-    this.boundDrawTouchPoints = this.drawTouchPoints.bind(this);
     this.styles = {
       center: {
         radius: 36,
@@ -26,10 +24,10 @@ export default class TouchIndicator extends React.Component<Props, {}> {
     };
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    // Request a single animation frame every time our input values change,
+  public componentDidUpdate() {
+    // Redraw touch points every time the component repaints
     // instead of rendering continuously (saves render load).
-    window.requestAnimationFrame(this.boundDrawTouchPoints);
+    this.drawTouchPoints();
   }
 
   protected drawTouchPoint(x: number, y: number, color: string) {
@@ -45,8 +43,9 @@ export default class TouchIndicator extends React.Component<Props, {}> {
   }
 
   private drawTouchPoints() {
+    // For some reason the canvas is cleared whenever React
+    // updates the component, so canvas clearing is not needed here.
     const keys = Object.keys(this.props.clientInputs);
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     for (let i = 0; i < keys.length && i < COLORBLIND_FRIENDLY_PALETTE.length; i++) {
       const color = COLORBLIND_FRIENDLY_PALETTE[i];
       const inputs = this.props.clientInputs[keys[i]];

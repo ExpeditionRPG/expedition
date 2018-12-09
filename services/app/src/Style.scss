@@ -200,12 +200,12 @@ body {
   border-top: $border_accent;
 
   &.quest_theme_horror {
-    background-color: $bg_primary_faded;
+    background-color: $bg_primary_faded !important;
   }
 
   &.card_theme_dark {
-    background-color: $bg_dark_primary;
-    color: $font_color_dark_primary;
+    background-color: $bg_dark_primary !important;
+    color: $font_color_dark_primary !important;
   }
 }
 
@@ -1076,7 +1076,17 @@ body.android .dialog .textfield:focus-within {
       color: white;
     }
 
-    .splashMultitouchInstruction, .splashMultitouchPlayerCount {
+    .splashMultitouchInstruction {
+      width: 90%;
+      left: 50%;
+      margin-left: -45%;
+      margin-top: -20%;
+      position: absolute;
+      top: 50%;
+      text-align: center;
+    }
+
+    .splashMultitouchPlayerCount {
       width: 90%;
       height: size(spinner);
       left: 50%;
@@ -1092,6 +1102,7 @@ body.android .dialog .textfield:focus-within {
         text-align: center;
       }
     }
+
     .splashMultitouchInstruction {
       font-size: fontsize(flavor);
       opacity: 0;

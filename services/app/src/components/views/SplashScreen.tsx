@@ -60,7 +60,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     if (this.state.transitionTimeout === null) {
       return;
     }
-    const progress = (Date.now() - this.state.lastTouchTime) / (this.props.transitionMillis) * 100;
+    const progress = Math.min(100, (Date.now() - this.state.lastTouchTime) / (this.props.transitionMillis) * 100);
     if (progress !== this.state.progress) {
       this.setState({progress});
     }
