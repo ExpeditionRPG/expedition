@@ -58,11 +58,11 @@ export function searchQuests(
     published: { $ne: null } as any,
     tombstone: null,
   };
+  const order = [];
 
   if (params.showPrivate === true) {
-    where.partition = {
-      [Op.or]: [PUBLIC_PARTITION, PRIVATE_PARTITION],
-    };
+    (where as any)[Op.or] = [{partition: PUBLIC_PARTITION}, {partition: PRIVATE_PARTITION, userid: userId}];
+    order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
     where.partition = params.partition || PUBLIC_PARTITION;
   }
@@ -74,6 +74,7 @@ export function searchQuests(
   // Require results to be published if we're not querying our own quests
   if (params.owner) {
     where.userid = params.owner;
+    where.published = { [Op.ne]: null };
   }
 
   if (params.players) {
@@ -126,7 +127,6 @@ export function searchQuests(
     where.requirespenpaper = params.requirespenpaper;
   }
 
-  const order = [];
   if (params.order) {
     if (params.order === '+ratingavg') {
       // Default sort - also show very new quests on top
