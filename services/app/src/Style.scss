@@ -116,6 +116,7 @@ $sizemap: (
   base: 2vmin,
   small: 1vmin,
   tiny: 0.5vmin,
+  spinner: 40vmin,
 );
 
 $fontsizemap: (
@@ -1064,14 +1065,32 @@ body.android .dialog .textfield:focus-within {
       height: 100%;
     }
 
-    .splashMultitouchInstruction, .splashMultitouchPlayerCount {
-      width: 90%;
-      left: 50%;
-      margin-left: -45%;
-      margin-top: -20%;
+    .splashProgress {
+      width: size(spinner) !important;
+      height: size(spinner) !important;
       position: absolute;
       top: 50%;
-      text-align: center;
+      left: 50%;
+      margin-top: -0.5 * size(spinner);
+      margin-left: -0.5 * size(spinner);
+      color: white;
+    }
+
+    .splashMultitouchInstruction, .splashMultitouchPlayerCount {
+      width: 90%;
+      height: size(spinner);
+      left: 50%;
+      margin-left: -45%;
+      margin-top: -0.5 * size(spinner) !important;
+      position: absolute;
+      top: 50%;
+      display: flex;
+      align-items: center;
+
+      h1 {
+        width: 100%;
+        text-align: center;
+      }
     }
     .splashMultitouchInstruction {
       font-size: fontsize(flavor);
@@ -1603,6 +1622,7 @@ $sizemap: (
   base: 2vmin * $abs_scale_vh,
   small: 1vmin * $abs_scale_vh,
   tiny: 0.5vmin * $abs_scale_vh,
+  spinner: 40vmin * $abs_scale_vh,
 );
 
 $fontsizemap: (
