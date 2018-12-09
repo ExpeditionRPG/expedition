@@ -61,7 +61,7 @@ export function searchQuests(
   const order = [];
 
   if (params.showPrivate === true) {
-    where[Op.or] = [{partition: PUBLIC_PARTITION}, {partition: PRIVATE_PARTITION, userid: userId}];
+    (where as any)[Op.or] = [{partition: PUBLIC_PARTITION}, {partition: PRIVATE_PARTITION, userid: userId}];
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
     where.partition = params.partition || PUBLIC_PARTITION;
@@ -74,7 +74,7 @@ export function searchQuests(
   // Require results to be published if we're not querying our own quests
   if (params.owner) {
     where.userid = params.owner;
-    where.published = { $not: null };
+    where.published = { [Op.ne]: null };
   }
 
   if (params.players) {
