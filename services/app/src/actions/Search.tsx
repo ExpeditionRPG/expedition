@@ -11,9 +11,10 @@ import {} from './ActionTypes';
 import { toCard } from './Card';
 import { previewQuest } from './Quest';
 
-export function changeSearchParams(params: any): SearchChangeParamsAction {
-  return { type: 'SEARCH_CHANGE_PARAMS', params };
-}
+export const changeSearchParams = remoteify(function changeSearchParams(a: {params: Partial<SearchParams>}, dispatch: Redux.Dispatch<any>) {
+  dispatch({type: 'SEARCH_CHANGE_PARAMS', params: a.params} as SearchChangeParamsAction);
+  return a;
+});
 
 // TODO: Make search options propagate to other clients
 export const search = remoteify(function search(

@@ -10,12 +10,13 @@ import {
   getUserQuests,
   incrementLoginCount,
   setLootPoints,
-  subscribeToCreatorsList
+  subscribeToCreatorsList,
+  maybeGetUserByEmail
 } from './Users';
 
 describe('users', () => {
   describe('incrementLoginCount', () => {
-    test('increments for existing user', (done: DoneFn) => {
+    test('increments for existing user', (done) => {
       let db: Database;
       testingDBWithState([u.basic])
         .then((tdb) => {
@@ -27,6 +28,7 @@ describe('users', () => {
         })
         .then((r) => {
           expect(r.loginCount).toEqual(u.basic.loginCount + 1);
+          expect(r.lastLogin.getTime()).toBeGreaterThan(u.basic.lastLogin.getTime());
           done();
         })
         .catch(done.fail);
@@ -34,7 +36,7 @@ describe('users', () => {
   });
 
   describe('setLootPoints', () => {
-    fit('sets the loot points', (done: DoneFn) => {
+    test('sets the loot points', (done) => {
       let db: Database;
       testingDBWithState([u.basic]).then((tdb) => {
         db = tdb;
@@ -53,7 +55,7 @@ describe('users', () => {
 
   describe('subscribeToCreatorsList', () => {
     test('subscribes to creators list', () => {
-      const mc = {post: jasmine.createSpy('post')};
+      const mc = {post: jasmine.createSpy('post').and.returnValue(Promise.resolve(''))};
       subscribeToCreatorsList(mc, u.basic.email);
       expect(mc.post).toHaveBeenCalledWith(jasmine.any(String), {
         email_address: u.basic.email,
@@ -63,7 +65,7 @@ describe('users', () => {
   });
 
   describe('getUserQuests', () => {
-    test('returns valid results for players without quest history', (done: DoneFn) => {
+    test('returns valid results for players without quest history', (done) => {
       testingDBWithState([u.basic]).then((tdb) => {
         return getUserQuests(tdb, u.basic.id);
       })
@@ -74,7 +76,7 @@ describe('users', () => {
       .catch(done.fail);
     });
 
-    test('returns valid results for players with quest history', (done: DoneFn) => {
+    test('returns valid results for players with quest history', (done) => {
       testingDBWithState([
         u.basic,
         q.basic,
@@ -92,4 +94,24 @@ describe('users', () => {
       }).catch(done.fail);
     });
   });
+
+  describe('maybeGetUserByEmail', () => {
+    test('returns user if exists', (done) => {
+      testingDBWithState([u.basic]).then((tdb) => {
+        return maybeGetUserByEmail(tdb, u.basic.email);
+      }).then((user) => {
+        expect(user.id).toEqual(u.basic.id);
+        done();
+      }).catch(done.fail);
+    });
+
+    test('returns null if not exists', (done) => {
+      testingDBWithState([]).then((tdb) => {
+        return maybeGetUserByEmail(tdb, u.basic.email);
+      }).then((user) => {
+        expect(user).toEqual(null);
+        done();
+      }).catch(done.fail);
+    });
+  })
 });

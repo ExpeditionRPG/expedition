@@ -1,4 +1,4 @@
-import {CardName, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
+import {CardName, ContentSetsType, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {BUNDLED_QUESTS} from '../../Constants';
@@ -16,6 +16,7 @@ export interface StateProps {
   results: Quest[]|null;
   searching: boolean;
   settings: SettingsType;
+  contentSets: Set<keyof ContentSetsType>;
   user: UserState;
 }
 
@@ -131,9 +132,6 @@ export class Search extends React.Component<Props, {}> {
       </QuestButtonContainer>);
     });
 
-    const horror = this.props.settings.contentSets.horror;
-    const future = this.props.settings.contentSets.future;
-
     return (
       <Card
         title="Quests"
@@ -146,9 +144,9 @@ export class Search extends React.Component<Props, {}> {
             disabled={true}>
               {this.props.results.length} quests for {this.props.players}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
-              {(horror || future) && <span> with </span>}
-              {horror && <img className="inline_icon" src="images/horror_small.svg"/>}
-              {future && <img className="inline_icon" src="images/future_small.svg"/>}
+              {(this.props.contentSets.has('horror') || this.props.contentSets.has('future')) && <span> with </span>}
+              {this.props.contentSets.has('horror') && <img className="inline_icon" id="searching_horror" src="images/horror_small.svg"/>}
+              {this.props.contentSets.has('future') && <img className="inline_icon" id="searching_future" src="images/future_small.svg"/>}
           </Button>
           <Button
             className="filter_button"
@@ -156,8 +154,7 @@ export class Search extends React.Component<Props, {}> {
             id="filter">
               Filter &amp; Sort >
           </Button>
-        </div>}
-      >
+        </div>}>
         {quests}
       </Card>
     );

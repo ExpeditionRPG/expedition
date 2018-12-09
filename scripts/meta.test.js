@@ -154,4 +154,17 @@ describe('Typescript files', () => {
     }
     expect(violations).toEqual([]);
   });
+
+  test('never contain test.only', () => {
+    let violations = [];
+    for (let f of FILES) {
+      const body = fs.readFileSync(f);
+      if (body.indexOf('test.only') !== -1) {
+        violations.push(f);
+      } else if (body.indexOf(' fit(') !== -1) { // fit() for force-select test may still be used in some places.
+        violations.push(f);
+      }
+    }
+    expect(violations).toEqual([]);
+  });
 });

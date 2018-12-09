@@ -1,5 +1,5 @@
 import {toCard} from 'app/actions/Card';
-import {numAdventurers, numPlayers} from 'app/actions/Settings';
+import {getContentSets, numAdventurers, numPlayers} from 'app/actions/Settings';
 import {AppState} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
@@ -10,6 +10,7 @@ const mapStateToProps = (state: AppState): StateProps => {
     adventurers: numAdventurers(state.settings, state.multiplayer),
     players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

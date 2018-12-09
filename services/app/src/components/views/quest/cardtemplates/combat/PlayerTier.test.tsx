@@ -19,6 +19,7 @@ describe('PlayerTier', () => {
       localAliveAdventurers: 2,
       seed: 'asdf',
       tier: 0,
+      contentSets: new Set(),
       onAdventurerDelta: jasmine.createSpy('onAdventurerDelta'),
       onDecisionSetup: jasmine.createSpy('onDecisionSetup'),
       onDefeat: jasmine.createSpy('onDefeat'),
@@ -39,5 +40,13 @@ describe('Combat PlayerTier', () => {
     const text = e.find("Picker#adventurers").text();
     expect(text).toContain('Adventurers: 2');
     expect(text).toContain('3 across all devices');
+  });
+  test('shows persona instructions when injured and horror contentset enabled', () => {
+    const {e} = setup({
+      adventurers: 3,
+      localAliveAdventurers: 2,
+      contentSets: new Set(['horror']),
+    });
+    expect(e.text()).toContain('reset your persona');
   });
 });

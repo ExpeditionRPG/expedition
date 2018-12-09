@@ -18,6 +18,24 @@ const LOOT_INSTRUCTION = /(\w*\s*\w*\s*\w+ \w+ loot)/gi;
 const VALID_LOOT_INSTRUCTION = /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
 const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 
+function getCombatParent(node: Node<Context>): Cheerio|null {
+  let e = node.elem.parent();
+  while (e.get(0) && e.parent()) {
+    const tag = e.get(0).tagName;
+
+    // Don't count being within the win/lose events of a combat node as being "in combat".
+    if (tag === 'event' && (e.attr('on') === 'win' || e.attr('on') === 'lose')) {
+      return null;
+    }
+
+    if (tag === 'combat') {
+      return e;
+    }
+    e = e.parent();
+  }
+  return null;
+}
+
 // Surfaces errors, warnings, statistics, and other useful information
 // about particular states encountered during play through the quest, or
 // about the quest in aggregate.
@@ -64,6 +82,7 @@ export class PlaytestCrawler extends StatsCrawler {
         this.verifyChoiceCount(q.node, line);
         this.verifyInstructionFormat(q.node, line);
         this.verifyRoleplayArt(q.node, line);
+        this.verifyMidCombatRoleplayNoJumpToCombat(q.node, line);
         break;
       default:
         break;
@@ -122,6 +141,33 @@ export class PlaytestCrawler extends StatsCrawler {
         }
       }
     });
+  }
+
+  private verifyMidCombatRoleplayNoJumpToCombat(roleplayNode: Node<Context>, line: number) {
+    const cp1 = getCombatParent(roleplayNode);
+    if (!cp1) {
+      return;
+    }
+    const line1 = cp1.attr('data-line');
+
+    const keys = roleplayNode.getVisibleKeys();
+    for (const k of (keys.length > 0) ? keys : [0]) {
+      const dest = roleplayNode.handleAction(k);
+      if (!dest) {
+        continue; // This problem (no destination on action) handled elsewhere
+      }
+
+      if (keys.length === 0 && dest.elem.prev().attr('data-line') === line1) {
+        // If there were no choices from the node and we landed directly on the next node,
+        // then we probably are actually just exiting the mid-combat roleplay portion.
+        continue;
+      }
+
+      const cp2 = (dest.elem.get(0).tagName === 'combat') ? dest.elem : getCombatParent(dest);
+      if (cp2 && cp2.attr('data-line') !== line1) {
+        this.logger.err('Invalid transition from this combat to another combat (line ' + cp2.attr('data-line') + ')', '427', line);
+      }
+    }
   }
 
   private verifyChoiceCount(roleplayNode: Node<Context>, line: number) {

@@ -124,5 +124,15 @@ describe('quest', () => {
       })
       .catch(done.fail);
     });
+    test('returns null if no quest data', (done) => {
+      testingDBWithState([]).then((tdb) => {
+        return claimNewestQuestData(tdb, qd.basic.id, qd.basic.userid, new Date());
+      })
+      .then((result) => {
+        expect(result).toEqual(null);
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 });

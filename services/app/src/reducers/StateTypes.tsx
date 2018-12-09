@@ -89,6 +89,7 @@ export type ExpansionsType = 'horror';
 export interface ContentSetsType {
   [index: string]: boolean;
   horror: boolean;
+  future: boolean;
 }
 
 export interface SettingsType {

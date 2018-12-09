@@ -3,6 +3,7 @@ import Redux from 'redux';
 import {SessionID} from 'shared/multiplayer/Session';
 import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
+import {changeSettings, getContentSets} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
@@ -13,6 +14,8 @@ const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateP
     multiplayer: state.multiplayer,
     phase: ownProps.phase || 'CONNECT',
     user: state.user,
+    settings: state.settings,
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 
@@ -24,6 +27,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         return dispatch(openSnackbar(`Please enter the full session code (${MIN_SECRET_LENGTH} characters)`));
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
+    },
+    onPlayerChange: (numLocalPlayers: number) => {
+      dispatch(changeSettings({numLocalPlayers}));
     },
     onStart: () => {
       logEvent('multiplayer', 'session_start', {});

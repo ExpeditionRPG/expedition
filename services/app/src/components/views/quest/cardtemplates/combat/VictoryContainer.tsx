@@ -1,5 +1,6 @@
 import {toPrevious} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
+import {getContentSets} from 'app/actions/Settings';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
@@ -40,6 +41,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     combat,
     victoryParameters,
     theme: getCardTemplateTheme(state.card),
+    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 

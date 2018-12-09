@@ -14,7 +14,7 @@ describe('ModeSelect', () => {
       settings: initialSettings;
       multiplayer: initialMultiplayer;
       user: loggedOutUser;
-      onDelta: jasmine.createSpy('onDelta'),
+      onPlayerChange: jasmine.createSpy('onPlayerChange'),
       onLocalSelect: jasmine.createSpy('onLocalSelect'),
       onMultiplayerSelect: jasmine.createSpy('onMultiplayerSelect'),
       onMultitouchChange: jasmine.createSpy('onMultitouchChange'),
@@ -45,8 +45,8 @@ describe('ModeSelect', () => {
   });
   test('can change player count', () => {
     const {elem, props} = setup();
-    elem.find('Picker#playerCount').prop('onDelta')(1);
-    expect(props.onDelta).toHaveBeenCalledWith(jasmine.any(Number), 1);
+    elem.find('PlayerCount#playerCount').prop('onChange')(1);
+    expect(props.onPlayerChange).toHaveBeenCalledWith(1);
   });
   test('shows count across all devices', () => {
     const {elem, props} = setup({
@@ -60,10 +60,10 @@ describe('ModeSelect', () => {
         },
       },
     });
-    expect(elem.find('Picker#playerCount').text()).toContain('5 across all devices');
+    expect(elem.find('PlayerCount#playerCount').text()).toContain('5 across all devices');
   });
   test('hides count across all devices when no multiplayer', () => {
     const {elem, props} = setup({multiplayer: initialMultiplayer});
-    expect(elem.find('Picker#playerCount').text()).not.toContain('across all devices');
+    expect(elem.find('PlayerCount#playerCount').text()).not.toContain('across all devices');
   });
 });

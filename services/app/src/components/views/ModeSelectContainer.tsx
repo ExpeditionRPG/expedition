@@ -18,18 +18,14 @@ const mapStateToProps = (state: AppState): StateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onDelta: (numLocalPlayers: number, delta: number) => {
-      numLocalPlayers += delta;
-      if (numLocalPlayers < 1 || numLocalPlayers > 6) {
-        return;
-      }
+    onPlayerChange: (numLocalPlayers: number) => {
       dispatch(changeSettings({numLocalPlayers}));
     },
     onLocalSelect: () => {
       dispatch(changeSettings({multitouch: false}));
       dispatch(toNavCard({}));
     },
-    onMultiplayerSelect(user: UserState): void {
+    onMultiplayerSelect: (user: UserState) => {
       dispatch(ensureLogin())
         .then((u: UserState) => {
           dispatch(loadMultiplayer(u));

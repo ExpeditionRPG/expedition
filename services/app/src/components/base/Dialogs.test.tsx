@@ -170,7 +170,7 @@ describe('Dialogs', () => {
     test('sets horror content set', () => {
       const {props, e} = setup();
       e.find('#horror').hostNodes().prop('onClick')();
-      expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true});
+      expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true, future: false});
     });
     test('sets horror + future content sets', () => {
       const {props, e} = setup();
@@ -201,7 +201,7 @@ describe('Dialogs', () => {
         settings: {...initialSettings},
         onClose: jasmine.createSpy('onClose'),
         onMultitouchChange: jasmine.createSpy('onMultitouchChange'),
-        onPlayerDelta: jasmine.createSpy('onPlayerDelta'),
+        onPlayerChange: jasmine.createSpy('onPlayerChange'),
         playQuest: jasmine.createSpy('playQuest'),
         ...overrides,
       };
@@ -213,8 +213,8 @@ describe('Dialogs', () => {
     })
     test('can adjust player count', () => {
       const {props, e} = setup();
-      e.find('#adventurerCount IconButton').at(0).simulate('click');
-      expect(props.onPlayerDelta).toHaveBeenCalledWith(jasmine.any(Number), jasmine.any(Number));
+      e.find('PlayerCount#playerCount').prop('onChange')(0);
+      expect(props.onPlayerChange).toHaveBeenCalledWith(0);
     });
     test('can enable/disable multitouch', () => {
       const {props, e} = setup();

@@ -12,11 +12,14 @@ describe('Multiplayer lobby', () => {
     const props: Props = {
       phase: 'LOBBY',
       user: loggedOutUser,
+      settings: initialSettings,
       multiplayer: initialMultiplayer,
+      contentSets: new Set(),
       onConnect: jasmine.createSpy('onConnect'),
       onReconnect: jasmine.createSpy('onReconnect'),
       onNewSessionRequest: jasmine.createSpy('onNewSessionRequest'),
       onStart: jasmine.createSpy('onStart'),
+      onPlayerChange: jasmine.createSpy('onPlayerChange'),
       ...overrides,
     };
     const elem = mount(renderLobby(props));
@@ -37,12 +40,9 @@ describe('Multiplayer lobby', () => {
       multiplayer: {
         ...initialMultiplayer,
         connected: true,
-        clientStatus: {
-          d: {type: 'STATUS', connected: false, contentSets: []}, // Disconnected clients are not counted
-          e: {type: 'STATUS', connected: true, contentSets: ['horror']},
-          f: {type: 'STATUS', connected: true, contentSets: ['horror', 'future']},
-        },
+        session: {id: 'abc', secret: 'def'},
       },
+      contentSets: new Set(['horror']),
     });
     const result = elem.find('#contentsets').text();
     expect(result).toContain('The Horror');
@@ -53,5 +53,8 @@ describe('Multiplayer lobby', () => {
     elem.find('ExpeditionButton#start').prop('onClick')();
     expect(props.onStart).toHaveBeenCalled();
   });
-
+  test('disables onStart when too many players', () => {
+    const {elem, props} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
+    expect(elem.find('ExpeditionButton#start').prop('disabled')).toEqual(true);
+  });
 });

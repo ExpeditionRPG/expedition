@@ -29,12 +29,9 @@ describe('Combat victory', () => {
       victoryParameters: {...TEST_VP},
       settings: {
         showHelp: true,
-        contentSets: {
-          horror: false,
-          future: false,
-        },
       },
-      theme: 'dark';
+      theme: 'dark',
+      contentSets: new Set(),
       onCustomEnd: jasmine.createSpy('onCustomEnd'),
       onEvent: jasmine.createSpy('onEvent'),
       ...overrides,
@@ -81,17 +78,20 @@ describe('Combat victory', () => {
   });
   test('shows horror tips if horror expansion', () => {
     expect(setup({
-      settings: {showHelp: true, contentSets: {horror: true}}
+      settings: {showHelp: true},
+      contentSets: new Set(['horror']),
     }).e.text()).toContain(HORROR_SUBSTR);
   });
   test('shows future tips if future expansion', () => {
     expect(setup({
-      settings: {showHelp: true, contentSets: {future: true}}
+      settings: {showHelp: true},
+      contentSets: new Set(['future']),
     }).e.text()).toContain(FUTURE_SUBSTR);
   });
   test('hides expansion tips if no expansion', () => {
     const text = setup({
-      settings: {showHelp: true, contentSets: {future: false, horror: false}}
+      settings: {showHelp: true},
+      contentSets: new Set([]),
     }).e.text();
     expect(text).not.toContain(HORROR_SUBSTR);
     expect(text).not.toContain(FUTURE_SUBSTR);
