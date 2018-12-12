@@ -43,12 +43,14 @@ describe('Cards actions', () => {
       expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text']);
     });
 
-    test('bolds "statement: text. statement: text" structures', () => {
+    test('bolds "statement: text. statement: text" structures except flavortext', () => {
       const cards = [{
         text: 'statement: text. statement: text',
+        flavortext: 'not: bolded',
       }];
       const cleaned = filterAndFormatCards(cards, dummyFilters);
       expect(cleaned[0].text).toEqual([<strong key={0}>statement:</strong>, ' text.', <strong key={2}> statement:</strong>, ' text']);
+      expect(cleaned[0].flavortext).toEqual(['not:', ' bolded']);
     });
 
     test('wraps symbols like &gt; in a symbol span', () => {

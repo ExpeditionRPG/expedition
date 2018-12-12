@@ -155,8 +155,8 @@ function formatCard(card: CardType, filters: FiltersState): CardType {
             if (orRegex.test(str)) {
               return <div key={index} className="or">OR</div>;
             }
-            // Bold "Declaration: "
-            if (boldColonedRegex.test(str)) {
+            // Bold "Declaration: " (EXCEPT FLAVORTEXT)
+            if (boldColonedRegex.test(str) && key !== 'flavortext') {
               return <strong key={index}>{str}</strong>;
             }
             // Parse & wrap symbols (<, >, etc) in a span for better style control
