@@ -1,11 +1,15 @@
-export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
-export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
-export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
+export const VERSION =
+  (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
+export const NODE_ENV =
+  (process && process.env && process.env.NODE_ENV) || 'dev';
+export const API_HOST =
+  (process && process.env && process.env.API_HOST) || 'http://localhost:8081';
 
 export const URLS = {
   ANNOUNCEMENTS: API_HOST + '/qc/announcements',
   CONTACT: 'http://expeditiongame.com/contact',
-  DOCUMENTATION: 'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/index.md',
+  DOCUMENTATION:
+    'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/index.md',
 };
 
 export const METADATA_FIELDS = [
@@ -21,6 +25,9 @@ export const PARTITIONS = {
   PRIVATE: 'expedition-private',
   PUBLIC: 'expedition-public',
 };
+
+export const discordChannelID = '469518697002827782'; // id for quests-creator channel
+
 export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 6;
 export const METADATA_DEFAULTS = {
