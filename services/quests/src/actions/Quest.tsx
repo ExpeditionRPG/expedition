@@ -25,6 +25,19 @@ import {setSnackbar} from './Snackbar';
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
 
+// Override realtime api error handling, which by default
+// calls alert() and sets window.href to "/" whenever an error occurs.
+realtimeUtils.__proto__.onError = (error: any) => {
+  if (error.type === window.gapi.drive.realtime.ErrorType
+      .TOKEN_REFRESH_REQUIRED) {
+    realtimeUtils.authorizer.authorize(() => {
+      console.log('Error, auth refreshed');
+    }, false);
+  } else {
+    console.error(error);
+  }
+};
+
 // Loaded on index.html
 declare var window: any;
 
@@ -110,7 +123,10 @@ export function newQuest(user: UserState) {
           if (err) {
             return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
           }
-          dispatch(loadQuest(user, createResponse.id));
+          // save an equivalent to the API server
+          saveQuestInternal(createResponse.id, NEW_QUEST_TEMPLATE, '', '').then(() => {
+            dispatch(loadQuest(user, createResponse.id));
+          });
           window.gapi.client.request({
             body: {
               allowFileDiscovery: true,
@@ -129,8 +145,6 @@ export function newQuest(user: UserState) {
               category: 'Error',
               label: createResponse.id,
             });
-            // TODO better error handling
-            // console.log('Error connecting quest file to Fabricate.IO', json);
           });
         });
       });
@@ -205,6 +219,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
         return result || fromRealtime(user, docid);
       })
       .then((result) => {
+        window.location.hash = docid;
         const md = new EditableString('md', result.data);
         const notes = new EditableString('notes', result.notes);
         const metadata = new EditableMap('metadata', result.metadata);
@@ -274,7 +289,6 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
 export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
   return new Promise((resolve, reject) => {
     realtimeUtils.load(docid, (doc: any) => {
-      window.location.hash = docid;
       doc.addEventListener('collaborator_joined', (e: any) => {
         ReactGA.event({
           action: 'COLLABORATOR_JOINED',
@@ -341,8 +355,7 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>) => any) {
   };
 }
 
-export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean):
-  ((dispatch: Redux.Dispatch<any>) => any) {
+export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
     dispatch({type: 'QUEST_RENDER', qdl: renderResult, msgs: renderResult.getFinalizedLogs()});
@@ -407,71 +420,72 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
 export function saveQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
-
     const data = quest.mdRealtime.getText();
     const notes = quest.notesRealtime.getText();
     const metadata = quest.metadataRealtime.getValue();
-
-    const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
-    const text: string = data + notesCommented;
-
-    const xmlResult = renderXML(text);
-    dispatch({type: 'QUEST_RENDER', qdl: xmlResult, msgs: xmlResult.getFinalizedLogs()});
-
-    const meta = xmlResult.getMeta();
-    // For all metadata values, see https://developers.google.com/drive/v2/reference/files
-    const fileMeta = {
-      description: meta.summary,
-      title: meta.title + '.quest',
-    };
-
-    const id = quest.id;
-    if (id === undefined) {
-      throw new Error('Undefined quest ID');
-    }
-    return new Promise((resolve, reject) => {
-      updateDriveFile(id, fileMeta, text, (err: Error|null, result: any) => {
-        if (err) {
-          throw err;
-        }
-        resolve(result);
-      });
-    }).then(() => {
-      const edittime = quest.edittime || new Date();
-      return fetch(`${API_HOST}/save/quest/${id}`, {
-          method: 'POST',
-          cache: 'no-cache',
-          credentials: 'include',
-          headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-          },
-          referrer: 'no-referrer',
-          body: JSON.stringify({data, notes, metadata, edittime: edittime.getTime()}),
-      }).then((response) => {
-        if (!response.ok) {
-          return response.text();
-        }
-        return Promise.resolve(null);
-      });
-    }).then((err: string|null) => {
-      if (err) {
-        console.log(err);
-        throw new Error(err);
-      }
+    return saveQuestInternal(quest.id, data, notes, metadata, quest.edittime).then((response: {meta: any, xmlResult: any}) => {
+      dispatch({type: 'QUEST_RENDER', qdl: response.xmlResult, msgs: response.xmlResult.getFinalizedLogs()});
       ReactGA.event({
         action: 'Quest Save',
         category: 'Background',
       });
-      dispatch({type: 'RECEIVE_QUEST_SAVE', meta} as ReceiveQuestSaveAction);
+      dispatch({type: 'RECEIVE_QUEST_SAVE', meta: response.meta} as ReceiveQuestSaveAction);
     }).catch((error: Error) => {
       ReactGA.event({
         action: 'Error saving quest',
         category: 'Error',
-        label: id,
+        label: quest.id,
       });
       dispatch({type: 'RECEIVE_QUEST_SAVE_ERR', err: error.toString()} as ReceiveQuestSaveErrAction);
     });
   };
+}
+
+function saveQuestInternal(id: string|undefined, data: string, notes: string, metadata: string, edittime: Date = new Date()): Promise<{meta: any, xmlResult: any}> {
+  if (id === undefined) {
+    return Promise.reject(new Error('Undefined quest ID'));
+  }
+
+  const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
+  const text: string = data + notesCommented;
+  const xmlResult = renderXML(text);
+  const meta = xmlResult.getMeta();
+  // For all metadata values, see https://developers.google.com/drive/v2/reference/files
+  const fileMeta = {
+    description: meta.summary,
+    title: meta.title + '.quest',
+  };
+
+  return new Promise((resolve, reject) => {
+    updateDriveFile(id, fileMeta, text, (err: Error|null, result: any) => {
+      if (err) {
+        throw err;
+      }
+      resolve(result);
+    });
+  }).then(() => {
+    return fetch(`${API_HOST}/save/quest/${id}`, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+        },
+        referrer: 'no-referrer',
+        body: JSON.stringify({data, notes, metadata, edittime: edittime.getTime()}),
+    }).then((response) => {
+      if (!response.ok) {
+        return response.text();
+      }
+      return Promise.resolve(null);
+    });
+  }).then((err: string|null) => {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+    return {meta, xmlResult};
+  });
 }
 
 export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
