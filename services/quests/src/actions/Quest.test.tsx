@@ -18,6 +18,16 @@ describe('quest actions', () => {
     fetchMock.restore();
   });
 
+  describe('newQuest', () => {
+    test.skip('calls out to Drive API to create file', () => { /* TODO */ });
+
+    test.skip('grants file discovery to Fabricate', () => { /* TODO */ });
+
+    test.skip('uploads example quest to API', () => { /* TODO */ });
+
+    test.skip('begins quest load after new quest created', () => { /* TODO */ });
+  });
+
   describe('saveQuest', () => {
     test.skip('converts md to xml', () => { /* TODO */ });
 

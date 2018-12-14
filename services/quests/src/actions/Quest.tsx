@@ -27,16 +27,18 @@ const QueryString = require('query-string');
 
 // Override realtime api error handling, which by default
 // calls alert() and sets window.href to "/" whenever an error occurs.
-realtimeUtils.__proto__.onError = (error: any) => {
-  if (error.type === window.gapi.drive.realtime.ErrorType
-      .TOKEN_REFRESH_REQUIRED) {
-    realtimeUtils.authorizer.authorize(() => {
-      console.log('Error, auth refreshed');
-    }, false);
-  } else {
-    console.error(error);
-  }
-};
+if (realtimeUtils) {
+  realtimeUtils.__proto__.onError = (error: any) => {
+    if (error.type === window.gapi.drive.realtime.ErrorType
+        .TOKEN_REFRESH_REQUIRED) {
+      realtimeUtils.authorizer.authorize(() => {
+        console.log('Error, auth refreshed');
+      }, false);
+    } else {
+      console.error(error);
+    }
+  };
+}
 
 // Loaded on index.html
 declare var window: any;
