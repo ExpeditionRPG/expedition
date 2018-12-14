@@ -315,6 +315,10 @@ $large-icon-width: 0.195in;
         min-height: 0.4in;
       }
 
+      .hp-tracker-horizontal {
+        bottom: 0.03in;
+      }
+
       .rng {
         min-height: 0.65in;
         text-align: left;
@@ -398,7 +402,7 @@ $large-icon-width: 0.195in;
       article {
         .ongoing {
           margin-top: $tiny;
-          margin-right: -$tiny;
+          margin-right: -2.5pt;
         }
 
         .surge {
