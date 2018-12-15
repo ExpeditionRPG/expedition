@@ -100,6 +100,7 @@ describe('Dependencies', () => {
 describe('Typescript files', () => {
   test('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
+      'ActionTypes$',
       'reducers/',
       'Constants$',
       'Container$',
