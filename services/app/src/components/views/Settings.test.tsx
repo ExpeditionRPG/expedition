@@ -8,7 +8,7 @@ import {Multiplayer as m} from '../../reducers/TestData';
 describe('Settings', () => {
   afterEach(unmountAll);
 
-  function setup(overrides?: Props) {
+  function setup(overrides?: Partial<Props>) {
     const props: Props = {
       settings: initialSettings,
       multiplayer: initialMultiplayer,
@@ -34,7 +34,7 @@ describe('Settings', () => {
 
   test('changes player count', () => {
     const {elem, props} = setup();
-    const text = elem.find('PlayerCount#playerCount').prop('onChange')(1);
+    elem.find('PlayerCount#playerCount').prop('onChange')(1);
     expect(props.onPlayerChange).toHaveBeenCalledWith(1);
   });
   test('shows current locally configured content sets', () => {
@@ -53,5 +53,35 @@ describe('Settings', () => {
     const {elem, props} = setup({settings: {...initialSettings, contentSets: {horror: false, future: false}}, multiplayer: m.s2p5});
     const text = elem.find('p.expansionLabel').text();
     expect(text).toContain('All Devices');
+  });
+  test('changes multitouch', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#multitouch').prop('onChange')(true);
+    expect(props.onMultitouchChange).toHaveBeenCalledWith(true);
+  });
+  test('changes sound', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#sound').prop('onChange')(true);
+    expect(props.onAudioChange).toHaveBeenCalledWith(true);
+  });
+  test('changes help', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#help').prop('onChange')(true);
+    expect(props.onShowHelpChange).toHaveBeenCalledWith(true);
+  });
+  test('changes vibration', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#vibration').prop('onChange')(true);
+    expect(props.onVibrationChange).toHaveBeenCalledWith(true);
+  });
+  test('changes autoroll', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#autoroll').prop('onChange')(true);
+    expect(props.onAutoRollChange).toHaveBeenCalledWith(true);
+  });
+  test('changes experimental', () => {
+    const {elem, props} = setup();
+    elem.find('Checkbox#experimental').prop('onChange')(true);
+    expect(props.onExperimentalChange).toHaveBeenCalledWith(true);
   });
 });
