@@ -31,7 +31,7 @@ declare module 'redux' {
 const store = getStore();
 
 store.dispatch(loadFiltersFromUrl());
-store.dispatch(downloadCards());
+store.dispatch(downloadCards(store.getState().filters.source.current));
 
 // Ctrl + <hotkey>
 window.addEventListener('keydown', (event: any) => {

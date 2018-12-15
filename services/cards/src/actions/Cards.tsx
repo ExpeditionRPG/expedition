@@ -13,12 +13,12 @@ interface ResultType {
   translations?: TranslationsType;
 }
 
-export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
+export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
     dispatch(cardsLoading());
 
-    const keys = store.getState().filters.source.current.split(':')[1].split(',');
+    const keys = source.split(':')[1].split(',');
 
     Promise.all(keys.map(downloadAndProcessSpreadsheet))
       .then((results: ResultType[]) => {

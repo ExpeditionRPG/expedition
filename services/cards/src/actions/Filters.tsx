@@ -37,10 +37,10 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
     }
     window.history.pushState(null, 'Expedition Card Creator', '?' + qs.stringify(query));
 
+    const store = getStore();
     if (name === 'source') {
-      dispatch(downloadCards());
+      dispatch(downloadCards(store.getState().filters.source.current));
     } else {
-      const store = getStore();
       dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
       dispatch(filtersCalculate(store.getState().cards.filtered));
     }
