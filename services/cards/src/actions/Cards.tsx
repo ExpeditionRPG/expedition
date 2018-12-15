@@ -3,6 +3,7 @@ import Redux from 'redux';
 import {icon} from '../helpers';
 import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
 import {getStore} from '../Store';
+import {CardsFilterAction, CardsLoadingAction, CardsUpdateAction, TranslationsUpdateAction} from './ActionTypes';
 import {filtersCalculate} from './Filters';
 
 declare var require: any;
@@ -97,36 +98,16 @@ function downloadAndProcessSpreadsheet(key: string) {
   });
 }
 
-export interface CardsLoadingAction extends Redux.Action {
-  type: 'CARDS_LOADING';
-}
-
 export function cardsLoading(): CardsLoadingAction {
   return {type: 'CARDS_LOADING'};
-}
-
-export interface CardsUpdateAction extends Redux.Action {
-  type: 'CARDS_UPDATE';
-  cards: CardType[];
 }
 
 export function cardsUpdate(cards: CardType[]): CardsUpdateAction {
   return {type: 'CARDS_UPDATE', cards};
 }
 
-export interface TranslationsUpdateAction extends Redux.Action {
-  type: 'TRANSLATIONS_UPDATE';
-  translations: TranslationsType;
-}
-
 export function translationsUpdate(translations: TranslationsType): TranslationsUpdateAction {
   return {type: 'TRANSLATIONS_UPDATE', translations};
-}
-
-export interface CardsFilterAction extends Redux.Action {
-  type: 'CARDS_FILTER';
-  cards: CardType[];
-  filters: FiltersState;
 }
 
 export function cardsFilter(cards: CardType[], filters: FiltersState): CardsFilterAction {

@@ -1,5 +1,5 @@
 import Redux from 'redux';
-import {FilterChangeAction, FiltersCalculateAction} from '../actions/Filters';
+import {FilterChangeAction, FiltersCalculateAction} from '../actions/ActionTypes';
 import {CardType, FiltersState} from './StateTypes';
 
 // In UI order
