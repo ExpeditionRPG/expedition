@@ -367,7 +367,7 @@ $large-icon-width: 0.195in;
     &.Adventurer, &.Encounter, &.Loot {
 
       .flavortext {
-        padding: 0 $padding;
+        padding: 0 6pt 0 $padding;
       }
 
       &.bottomBar .flavortext {
