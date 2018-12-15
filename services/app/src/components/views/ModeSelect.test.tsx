@@ -8,7 +8,7 @@ import {loggedOutUser} from '../../reducers/User';
 describe('ModeSelect', () => {
   afterEach(unmountAll);
 
-  function setup(overrides?: Props) {
+  function setup(overrides?: Partial<Props>) {
     const props: Props = {
       isLatestAppVersion: true;
       settings: initialSettings;

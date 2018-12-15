@@ -76,7 +76,7 @@ const Settings = (props: Props): JSX.Element => {
 
       <PlayerCount id="playerCount" localPlayers={props.settings.numLocalPlayers} allPlayers={allPlayers} onChange={(i: number) => props.onPlayerChange(i)} />
 
-      <Checkbox label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
+      <Checkbox id="multitouch" label="Multitouch" value={props.settings.multitouch} onChange={props.onMultitouchChange}>
         {(props.settings.multitouch) ? 'All players must hold their finger on the screen to end combat.' : 'A single tap will end combat.'}
       </Checkbox>
 
@@ -91,19 +91,19 @@ const Settings = (props: Props): JSX.Element => {
         </div>
       </Picker>
 
-      <Checkbox label="Sound" value={props.settings.audioEnabled} onChange={props.onAudioChange}>
+      <Checkbox id="sound" label="Sound" value={props.settings.audioEnabled} onChange={props.onAudioChange}>
         {(props.settings.audioEnabled) ? 'Music and sound effects enabled.' : 'Music and sound effects disabled.'}
       </Checkbox>
 
-      <Checkbox label="Show Help" value={props.settings.showHelp} onChange={props.onShowHelpChange}>
+      <Checkbox id="help" label="Show Help" value={props.settings.showHelp} onChange={props.onShowHelpChange}>
         {(props.settings.showHelp) ? 'Setup and combat hints are shown.' : 'Setup and combat hints are hidden.'}
       </Checkbox>
 
-      <Checkbox label="Vibration" value={props.settings.vibration} onChange={props.onVibrationChange}>
+      <Checkbox id="vibration" label="Vibration" value={props.settings.vibration} onChange={props.onVibrationChange}>
         {(props.settings.vibration) ? 'Vibrate on touch.' : 'Do not vibrate.'}
       </Checkbox>
 
-      <Checkbox label="Auto-Roll" value={props.settings.autoRoll} onChange={props.onAutoRollChange}>
+      <Checkbox id="autoroll" label="Auto-Roll" value={props.settings.autoRoll} onChange={props.onAutoRollChange}>
         {(props.settings.autoRoll) ? 'Automatically roll for the party when resolving combat.' : 'Do not show pre-generated rolls in combat.'}
       </Checkbox>
 
@@ -111,7 +111,7 @@ const Settings = (props: Props): JSX.Element => {
         Takes effect once you leave settings.
       </Picker>
 
-      <Checkbox label="Experimental" value={props.settings.experimental} onChange={props.onExperimentalChange}>
+      <Checkbox id="experimental" label="Experimental" value={props.settings.experimental} onChange={props.onExperimentalChange}>
         {(props.settings.experimental) ? 'Experimental features are currently enabled.' : 'Experimental features are currently disabled.'}
       </Checkbox>
 
