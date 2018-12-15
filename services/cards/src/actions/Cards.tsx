@@ -45,7 +45,10 @@ export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) 
           dispatch(translationsUpdate({AdjectiveAfterNoun: false, ...translations}));
         }
         dispatch(cardsUpdate(cards));
-        dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
+
+        // TODO this series of actions is order-dependent
+        // This should be made more robust with something like a Redux watcher
+        dispatch(cardsFilter(cards, store.getState().filters));
         dispatch(filtersCalculate(store.getState().cards.filtered));
       });
   };
