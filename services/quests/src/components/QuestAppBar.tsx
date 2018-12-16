@@ -126,17 +126,12 @@ class QuestAppBar extends React.Component<Props, {}> {
               Unpublish
             </Button>
           }
-          <Button disabled={this.props.quest.id === null} onClick={(event: any) => this.props.onMenuSelect('DRIVE_VIEW', this.props.quest)}>
+          <Tooltip title="View the source file in Google Drive"><span><Button disabled={this.props.quest.id === null} onClick={(event: any) => this.props.onMenuSelect('DRIVE_VIEW', this.props.quest)}>
             View in Drive
-          </Button>
-          {(this.props.quest.published)
-            ? (<Button id="appview" onClick={(event: any) => this.props.onMenuSelect('APP_VIEW', this.props.quest)}>
-                View in App
-              </Button>)
-            : (<Tooltip title="Publish to view in app"><span><Button id="appview" disabled={true}>
-                View in App
-              </Button></span></Tooltip>)
-          }
+          </Button></span></Tooltip>
+          {this.props.quest.published && <Tooltip title="Opens the published version of your quest in the web app"><span><Button id="appview" onClick={(event: any) => this.props.onMenuSelect('APP_VIEW', this.props.quest)}>
+            View in App
+          </Button></span></Tooltip>}
           <Button onClick={(event: any) => this.props.onMenuSelect('HELP', this.props.quest)}>
             Help
           </Button>

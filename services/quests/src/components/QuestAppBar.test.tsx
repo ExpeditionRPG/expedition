@@ -44,11 +44,11 @@ describe('QuestAppBar', () => {
       expect(e.find('#appview').prop('disabled') || false).toEqual(false);
     });
 
-    test('disabled when quest not published', () => {
+    test('not shown when quest not published', () => {
       const {e} = setup({
         quest: {...TEST_QUEST, published: null},
       });
-      expect(e.find('#appview').prop('disabled')).toEqual(true);
+      expect(e.find('#appview')).toHaveLength(0);
     });
   });
 });
