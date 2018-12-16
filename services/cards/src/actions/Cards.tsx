@@ -3,15 +3,60 @@ import Redux from 'redux';
 import {icon} from '../helpers';
 import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
 import {getStore} from '../Store';
+import {CardsFilterAction, CardsLoadingAction, CardsUpdateAction, TranslationsUpdateAction} from './ActionTypes';
 import {filtersCalculate} from './Filters';
 
 declare var require: any;
 const Tabletop = require('tabletop');
 
-export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
+interface ResultType {
+  cards?: CardType[];
+  translations?: TranslationsType;
+}
+
+export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
     dispatch(cardsLoading());
+
+    const keys = source.split(':')[1].split(',');
+
+    Promise.all(keys.map(downloadAndProcessSpreadsheet))
+      .then((results: ResultType[]) => {
+        const cards = results.reduce((acc: CardType[], obj: ResultType) => {
+          return [...acc, ...(obj.cards || [])];
+        }, []).sort((a: CardType, b: CardType) => {
+          if (a.sheet < b.sheet) {
+            return -1;
+          } else if (a.sheet > b.sheet) {
+            return 1;
+          } else if (a.class < b.class) {
+            return -1;
+          } else if (a.class > b.class) {
+            return 1;
+          }
+          return 0;
+        });
+
+        const translations = results.reduce((acc: TranslationsType, obj: ResultType) => {
+          return {...acc, ...(obj.translations || {})};
+        }, {});
+
+        if (Object.keys(translations).length > 0) {
+          dispatch(translationsUpdate({AdjectiveAfterNoun: false, ...translations}));
+        }
+        dispatch(cardsUpdate(cards));
+
+        // TODO this series of actions is order-dependent
+        // This should be made more robust with something like a Redux watcher
+        dispatch(cardsFilter(cards, store.getState().filters));
+        dispatch(filtersCalculate(store.getState().cards.filtered));
+      });
+  };
+}
+
+function downloadAndProcessSpreadsheet(key: string) {
+  return new Promise((resolve, reject) => {
     Tabletop.init({
       callback: (data: any, tabletop: any) => {
         // Turn into an array, remove commented out / hidden cards, attach sheet name
@@ -21,13 +66,14 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
         let translations = null;
         if (sheets.Translations) {
           translations = sheets.Translations.elements.reduce((acculumator: TranslationsType, translation: {Language: string, Translated: string | boolean}) => {
-            acculumator[translation.Language.toLowerCase()] = translation.Translated;
+            if (translation.Translated && translation.Translated !== '') {
+              acculumator[translation.Language.toLowerCase()] = translation.Translated;
+            }
             return acculumator;
           }, {});
           // Delete the translations lookup table since it's not cards
           delete sheets.Translations;
         }
-        dispatch(translationsUpdate(translations));
 
         Object.keys(sheets).sort().forEach((sheetName: string) => {
           cards = cards.concat(sheets[sheetName].elements.filter((card: CardType) => {
@@ -37,55 +83,31 @@ export function downloadCards(): ((dispatch: Redux.Dispatch<any>) => void) {
             return card;
           }));
         });
-        dispatch(cardsUpdate(cards));
-        dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
-        dispatch(filtersCalculate(store.getState().cards.filtered));
+        resolve({cards, translations});
       },
-      key: store.getState().filters.source.current.split(':')[1],
+      key,
       parseNumbers: true,
       postProcess: (card: CardType) => {
         // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
-        // Note that we can't make too many assumptions about the data coming in if we want this to work with
-        // multiple games... unless each theme has its own validation schema!
         // Note: also have to be careful about the translations settings sheet
         // Note: doesn't yet have access to sheet name, that's assigned in callback
         return card;
       },
       simpleSheet: true,
     });
-  };
-}
-
-export interface CardsLoadingAction extends Redux.Action {
-  type: 'CARDS_LOADING';
+  });
 }
 
 export function cardsLoading(): CardsLoadingAction {
   return {type: 'CARDS_LOADING'};
 }
 
-export interface CardsUpdateAction extends Redux.Action {
-  type: 'CARDS_UPDATE';
-  cards: CardType[];
-}
-
 export function cardsUpdate(cards: CardType[]): CardsUpdateAction {
   return {type: 'CARDS_UPDATE', cards};
 }
 
-export interface TranslationsUpdateAction extends Redux.Action {
-  type: 'TRANSLATIONS_UPDATE';
-  translations: TranslationsType;
-}
-
 export function translationsUpdate(translations: TranslationsType): TranslationsUpdateAction {
   return {type: 'TRANSLATIONS_UPDATE', translations};
-}
-
-export interface CardsFilterAction extends Redux.Action {
-  type: 'CARDS_FILTER';
-  cards: CardType[];
-  filters: FiltersState;
 }
 
 export function cardsFilter(cards: CardType[], filters: FiltersState): CardsFilterAction {

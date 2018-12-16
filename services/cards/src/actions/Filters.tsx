@@ -2,17 +2,12 @@ import Redux from 'redux';
 import {initialState} from '../reducers/Filters';
 import {CardType} from '../reducers/StateTypes';
 import {getStore} from '../Store';
+import {FilterChangeAction, FiltersCalculateAction} from './ActionTypes';
 import {cardsFilter, downloadCards} from './Cards';
 
 declare var require: any;
 declare var window: any;
 const qs = require('qs');
-
-export interface FilterChangeAction extends Redux.Action {
-  type: 'FILTER_CHANGE';
-  name: string;
-  value: string | number;
-}
 
 // Filter changes trigger several things, including the actual FiltersChange action
 export function filterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>) => void) {
@@ -37,10 +32,10 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
     }
     window.history.pushState(null, 'Expedition Card Creator', '?' + qs.stringify(query));
 
+    const store = getStore();
     if (name === 'source') {
-      dispatch(downloadCards());
+      dispatch(downloadCards(store.getState().filters.source.current));
     } else {
-      const store = getStore();
       dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
       dispatch(filtersCalculate(store.getState().cards.filtered));
     }
@@ -57,11 +52,6 @@ export function loadFiltersFromUrl(): ((dispatch: Redux.Dispatch<any>) => void) 
       }
     }
   };
-}
-
-export interface FiltersCalculateAction extends Redux.Action {
-  type: 'FILTERS_CALCULATE';
-  cardsFiltered: CardType[];
 }
 
 export function filtersCalculate(cardsFiltered: CardType[]): FiltersCalculateAction {

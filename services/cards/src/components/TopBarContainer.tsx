@@ -14,8 +14,8 @@ const mapStateToProps = (state: AppState): StateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    downloadCards: () => {
-      dispatch(downloadCards());
+    downloadCards: (source: string) => {
+      dispatch(downloadCards(source));
     },
     handleFilterChange(name: string, value: string | number): void {
       dispatch(filterChange(name, value));

@@ -1,5 +1,6 @@
 import Redux from 'redux';
-import {CardsFilterAction, CardsUpdateAction, filterAndFormatCards, TranslationsUpdateAction} from '../actions/Cards';
+import {CardsFilterAction, CardsUpdateAction, TranslationsUpdateAction} from '../actions/ActionTypes';
+import {filterAndFormatCards} from '../actions/Cards';
 import {CardsState} from './StateTypes';
 
 export const initialState: CardsState = {

@@ -19,7 +19,7 @@ export interface StateProps extends React.Props<any> {
 }
 
 export interface DispatchProps {
-  downloadCards: () => void;
+  downloadCards: (source: string) => void;
   handleFilterChange: (name: string, value: string | number) => void;
   openHelp: () => void;
 }
@@ -74,7 +74,7 @@ class TopBar extends React.Component<Props, {}> {
           </Typography>
           {filters}
           <Tooltip title="Reload card data">
-            <IconButton onClick={this.props.downloadCards}>
+            <IconButton onClick={() => this.props.downloadCards(this.props.filters.source.current)}>
               <AutoRenew />
             </IconButton>
           </Tooltip>
