@@ -39,7 +39,7 @@ describe('Account', () => {
 
   test('clicked on logout', () => {
     const {elem, props} = createElement({ feedbacks: []});
-    elem.find('PowerSettingsNew#logout').prop('onClick')();
+    elem.find('ExpeditionButton#logout').prop('onClick')();
     expect(props.logoutUser).toBeCalled();
   });
 
