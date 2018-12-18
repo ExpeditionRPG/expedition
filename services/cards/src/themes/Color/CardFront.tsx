@@ -124,7 +124,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="surge"><strong>Surge: </strong>{card.surge}</div>
                 }
               </article>
-              {card.image && <img className="art" src={`/images/icons/${card.image}.png`} />}
+              {card.image && <div className="art">{icon(card.image)}</div>}
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>
