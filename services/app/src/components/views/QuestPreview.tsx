@@ -142,7 +142,7 @@ const QuestPreview = (props: Props): JSX.Element => {
       {actions}
       <div className="searchDetailsExtended">
         <h3>Details</h3>
-        <table className="searchDetailsTable">
+        <table className="detailsTable">
           <tbody>
             {renderRequirementsRow(quest)}
             <tr><th>Content rating</th><td>{quest.contentrating}</td></tr>

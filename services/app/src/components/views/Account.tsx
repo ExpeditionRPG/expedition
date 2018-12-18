@@ -1,8 +1,8 @@
 import Divider from '@material-ui/core/Divider';
-import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {IUserFeedback, UserState} from '../../reducers/StateTypes';
+import Button from '../base/Button';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 import StarRating from '../base/StarRating';
@@ -34,6 +34,9 @@ class Account extends React.Component<IProps, {}> {
       return `You haven't submitted any feedback`;
     }
     return feedbacks.map((feedback) => {
+      if (!feedback || !feedback.quest) {
+        return;
+      }
       const quest = feedback.quest.details;
       return (
         <QuestButtonContainer key={quest.id} id={quest.id} summary={feedback.text} quest={quest} onClick={() => this.props.onQuestSelect(quest)}>
@@ -54,23 +57,17 @@ class Account extends React.Component<IProps, {}> {
     }
     return (
       <Card title="Account">
-        <div className="searchDetailsExtended">
-          <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-            <h3>Account Info</h3>
-            <PowerSettingsNew id="logout" onClick={logoutUser} />
-          </div>
-          <Divider/>
-          <br/>
-          <table className="searchDetailsTable">
+        <div className="detailsCard">
+          <table className="detailsTable">
             <tbody>
-              <tr><th>Name</th><td>{user.name}</td></tr>
+              {user.name && <tr><th>Name</th><td>{user.name}</td></tr>}
               <tr><th>Email</th><td>{user.email}</td></tr>
               <tr><th>Loot Points</th><td>{user.lootPoints || 'No points'}</td></tr>
             </tbody>
           </table>
+          <Button id="logout" onClick={logoutUser}>Log Out</Button>
           <br/>
           <br/>
-          <Divider/>
           <h3>My Reviews</h3>
           <Divider/>
           <br/>

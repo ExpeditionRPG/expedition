@@ -141,8 +141,8 @@ class Card extends React.Component<Props, IState> {
               onClose={() => this.handleMenuClose()}>
               <MenuItem id="homeButton" onClick={() => {this.onMenuSelect('HOME'); }}>Home</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('SAVE'); }}>Save quest</MenuItem>}
-              {this.props.user && this.props.user.loggedIn && <MenuItem {...this.menuItemDisableProps('ACCOUNT')} id="accountButton" onClick={() => {this.onMenuSelect('ACCOUNT'); }}>Account</MenuItem>}
               <MenuItem {...this.menuItemDisableProps('SETTINGS')}  onClick={() => {this.onMenuSelect('SETTINGS'); }}>Settings</MenuItem>
+              {this.props.user && this.props.user.loggedIn && <MenuItem {...this.menuItemDisableProps('ACCOUNT')} id="accountButton" onClick={() => {this.onMenuSelect('ACCOUNT'); }}>Account</MenuItem>}
               {getDevicePlatform() !== 'web' && <MenuItem onClick={() => {this.onMenuSelect('RATE'); }}>Rate the App</MenuItem>}
               <MenuItem onClick={() => {this.onMenuSelect('FEEDBACK'); }}>Send Feedback</MenuItem>
               {this.props.inQuest && <MenuItem onClick={() => {this.onMenuSelect('REPORT'); }}>Report quest</MenuItem>}

@@ -1428,9 +1428,9 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  .searchDetailsExtended {
+  .searchDetailsExtended, .detailsCard {
     margin-top: size(large);
-    .searchDetailsTable {
+    .detailsTable {
       width: 100%;
       table-layout: fixed;
       th {
