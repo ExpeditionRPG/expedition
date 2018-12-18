@@ -720,9 +720,8 @@ body.android .dialog .textfield:focus-within {
       order: 1;
       height: size(inputsquare);
       svg {
-        width: size(inputsquare);
         height: size(inputsquare);
-        padding: size(inputspacing)/2; /* /2 since applied to both sides */
+        padding: 0 size(inputspacing)/2; /* /2 since applied to both sides */
       }
       button {
         min-width: 0 !important;
