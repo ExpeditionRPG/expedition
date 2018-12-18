@@ -32,13 +32,13 @@ const GMCorner = (props: Props): JSX.Element => {
   // TODO: Rename to "GM's Corner" after stretch goal achieved, add quests.
   return (
     <Card title="Tools" icon="gm_corner" onReturn={props.onReturn}>
-      {items}
       <Button id="selectCustomCombat" onClick={() => props.onCustomCombatSelect(props.settings)}>
         <div className="questButtonWithIcon">
-          <div className="title">Custom Combat</div>
-          <div className="summary">You tell the story, and the app runs the combat.</div>
+          <div className="title">Combat Only</div>
+          <div className="summary">Tell your own story, and let the app run combat.</div>
         </div>
       </Button>
+      {items}
     </Card>
   );
 };

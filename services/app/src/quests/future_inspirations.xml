@@ -1,0 +1,321 @@
+<quest title="GM's Corner #2: Future Inspirations" data-line="0">
+  <roleplay title="Introduction" data-line="2">
+    <p>Welcome to the GM's Corner! This is meant to be a halfway point between the rigid storylines of formal quests and the freeform nature of "GM Mode". We'll provide a basic skeleton of randomized ideas to give structure to the adventure, then you or your group fill in the details.</p>
+  </roleplay>
+  <roleplay title="continue" data-line="6">
+    <p>You may want to have a sheet of paper or dry erase board to keep track of the adventure as it unfolds.</p>
+    <p>Player Option: For a different way to play, give each person a few index cards. When the app presents a question prompt, have each player write a brief suggestion, then select one as a group.</p>
+  </roleplay>
+  <roleplay id="Index" title="The Index" data-line="11">
+    <p>Which story element do you need help crafting? Choosing one of the options in each category will bring you back to this screen for the next component.</p>
+    <p>You don't have to use each prompt, or even select them in order, but if you need some inspiration, these will give you structure.</p>
+    <choice text="The Plot.">
+      <trigger data-line="18">goto Plot</trigger>
+    </choice>
+    <choice text="The Location.">
+      <trigger data-line="22">goto Location</trigger>
+    </choice>
+    <choice text="The First Encounter (Antagonists).">
+      <trigger data-line="26">goto Threat</trigger>
+    </choice>
+    <choice text="A Vexing Complication">
+      <trigger data-line="30">goto Complication</trigger>
+    </choice>
+    <choice text="The Twist">
+      <trigger data-line="34">goto Twist</trigger>
+    </choice>
+    <choice text="The Final Confrontation">
+      <trigger data-line="38">goto Confrontation</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Plot" title="The Plot" data-line="40">
+    <instruction>
+      <p>What is motivating or threatening the party?  What do they need to accomplish?</p>
+    </instruction>
+    <choice text="Saving or retrieving a person or thing out of the hands of some peril.">
+      <trigger data-line="46">goto PlotTwo</trigger>
+    </choice>
+    <choice text="Eliminating a growing threat to a community.">
+      <trigger data-line="50">goto Kill</trigger>
+    </choice>
+    <choice text="Acquiring fortune and glory.">
+      <trigger data-line="54">goto PlotTwo</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="PlotTwo" title="Finders" data-line="56">
+    <instruction>
+      <p>Describe the specifics. What person or thing are they saving? What is the peril (environmental, villainous?) ? If you need some inspiration, consider the prompts below.</p>
+    </instruction>
+    <choice text="A criminal Consortium is abducting children and selling body parts. Why are buyers paying exorbitant sums instead of cloning their own organs?">
+      <trigger data-line="62">goto Index</trigger>
+    </choice>
+    <choice text="An experimental piece of technology has been stolen from a secure facility. Your government wants it back (or to steal it for itself). What is it? Does it work or not?">
+      <trigger data-line="66">goto Index</trigger>
+    </choice>
+    <choice text="The heir to an alien empire is being held hostage. Why does the heir resist your rescue attempt?">
+      <trigger data-line="70">goto Index</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Kill" title="Kill Squad" data-line="72">
+    <choice text="A dangerous but relatively unintelligent species has spawned near a newly established colony. They need you to clear the infestation, but why do the adventurers find this might not be the best option?">
+      <trigger data-line="76">goto Index</trigger>
+    </choice>
+    <choice text="A commando squad from a hostile interstellar faction want to sabotage the ship/station/colony. Why?">
+      <trigger data-line="80">goto Index</trigger>
+    </choice>
+    <choice text="A virus of digital or biological nature is spreading, turning the community into a Trojan horse within the stellar system. Unless you can halt the spread, nuclear options will be employed to excise the infection. When you arrive planetside, however, you see no immediate cause for alarm. What is going on?">
+      <trigger data-line="84">goto Index</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Location" title="Location" data-line="86">
+    <p>{{show = randomInt(0, 4)}}</p>
+    <p if="show == 0"> You begin your quest in a nexus city, home to many races and countless interests.</p>
+    <p if="show == 1"> You've recently docked at a space station, astride the interstellar crossroads.</p>
+    <p if="show == 2"> You've landed on an alien world on the fringes of known space.</p>
+    <p if="show == 3"> You are crew on a massive colony ship, on its way to a fertile system.</p>
+    <instruction if="show == 0">
+      <p>Why are you here? What makes the city wondrously unlike any other?</p>
+    </instruction>
+    <instruction if="show == 1">
+      <p>Why are you here? What makes the station especially dangerous?</p>
+    </instruction>
+    <instruction if="show == 2">
+      <p>Why is your government intent on keeping your mission secret?</p>
+    </instruction>
+    <instruction if="show == 3">
+      <p>Why is your ship about to depart from its intended course?</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="106">goto Index</trigger>
+  <roleplay id="Threat" title="The Threat" data-line="108">
+    <p>What Encounter Type do you wish to fight tonight?</p>
+    <choice text="The (Un)Dead, reanimated through unethical science.">
+      <trigger data-line="114">goto Dead</trigger>
+    </choice>
+    <choice text="Alien Horrors from a parallel dimension.">
+      <trigger data-line="118">goto Horror</trigger>
+    </choice>
+    <choice text="Synths created by a long-dead race.">
+      <trigger data-line="122">goto Synth</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Dead" title="The Dead" data-line="124">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="128">
+    <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+    <event on="win">
+      <trigger data-line="134">goto Index</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="138">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <trigger data-line="140">end</trigger>
+  <roleplay id="Horror" title="The Horrors" data-line="142">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="146">
+    <e>{{_.randomEnemyOfClassTier("Horror", 2)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Horror", 1)}}</e>
+    <event on="win">
+      <trigger data-line="152">goto Index</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="156">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <trigger data-line="158">end</trigger>
+  <roleplay id="Synth" title="The Synths" data-line="160">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="164">
+    <e>{{_.randomEnemyOfClassTier("Synth", 1)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Synth", 3)}}</e>
+    <event on="win">
+      <trigger data-line="171">goto Index</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="175">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <trigger data-line="177">end</trigger>
+  <roleplay id="Confrontation" title="The Final Confrontation" data-line="179">
+    <instruction>
+      <p>Which enemy type did you choose?</p>
+    </instruction>
+    <choice text="The (Un)Dead.">
+      <trigger data-line="185">goto Deader</trigger>
+    </choice>
+    <choice text="Alien Horrors.">
+      <trigger data-line="189">goto Horrible</trigger>
+    </choice>
+    <choice text="Synths.">
+      <trigger data-line="193">goto Synths</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Horrible" title="Horrible" data-line="195">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="199">
+    <e>{{_.randomEnemyOfClassTier("Horror", 2)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Horror", 5)}}</e>
+    <event on="win">
+      <trigger data-line="205">goto Victory</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="209">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <roleplay id="Synths" title="Synths" data-line="211">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="215">
+    <e>{{_.randomEnemyOfClassTier("Synth", 2)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Synth", 4)}}</e>
+    <event on="win">
+      <trigger data-line="221">goto Victory</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="225">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <roleplay id="Deader" title="Deader" data-line="227">
+    <instruction>
+      <p>After discovering (on the next screen) which enemies you are about to face, describe your first encounter.</p>
+    </instruction>
+  </roleplay>
+  <combat data-line="231">
+    <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+    <e>{{_.randomEnemyOfClassTier("Undead", 4)}}</e>
+    <event on="win">
+      <trigger data-line="237">goto Victory</trigger>
+    </event>
+    <event on="lose">
+      <roleplay title="" data-line="241">
+        <instruction>
+          <p>Describe your demise and its wider consequences.</p>
+        </instruction>
+      </roleplay>
+    </event>
+  </combat>
+  <trigger data-line="243">end</trigger>
+  <roleplay id="Victory" title="Victory" data-line="245">
+    <p>You prevail over difficult odds.</p>
+    <instruction>
+      <p>Describe the consequences of your victory on the wider world.</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="251">end</trigger>
+  <roleplay id="Twist" title="The Twist" data-line="253">
+    <p>You experience or encounter a thing of mystery. It is a...</p>
+    <p>{{show = randomInt(0, 5)}}</p>
+    <p if="show == 0"> Stranger</p>
+    <p if="show == 1"> Room</p>
+    <p if="show == 2"> Message</p>
+    <p if="show == 3"> Artifact</p>
+    <p if="show == 4"> Dream</p>
+    <p if="show == 5"> Unusual Marking (Tattoo, Graffiti, Rune, Sigil, etc.)</p>
+  </roleplay>
+  <trigger data-line="271">goto Mystery</trigger>
+  <roleplay id="Mystery" title="Mystery Too" data-line="273">
+    <p>{{show = randomInt(0, 5)}}</p>
+    <p if="show == 0"> Describe its appearance...How has it concealed its true identity?</p>
+    <p if="show == 1"> Describe it. What challenge must be surmounted to gain access to its secrets?</p>
+    <p if="show == 2"> Describe it. What benefit does it hint at, and what does it threaten?</p>
+    <p if="show == 3"> Describe it. Why does it mystify or unnerve you?</p>
+    <p if="show == 4"> Describe it. Why does it fill you with dread?</p>
+    <p if="show == 5"> How did it appear here?  Why is it known to one of you?</p>
+  </roleplay>
+  <trigger data-line="289">goto Skill</trigger>
+  <roleplay id="Skill" title="Skills" data-line="291">
+    <instruction>
+      <p>Choose which skill you will attempt to use to plumb the depths of this mystery. On success or failure describe how the outcome listed below comes about.</p>
+    </instruction>
+    <choice text="Make a Charisma :roll: of 10 or above. On success you gain 1 Persona. On failure suffer -3 to the next Ability roll.">
+      <trigger data-line="297">goto Solved</trigger>
+    </choice>
+    <choice text="Make a Knowledge :roll: of 10 or above. On success increase a skill rating by 1. On failure suffer 3 damage.">
+      <trigger data-line="301">goto Solved</trigger>
+    </choice>
+    <choice text="Make a Persona :roll: of 10 or above (add +1 for each level above base, -1 for each below). If you succeed gain 1 Loot. If you fail lose 2 health.">
+      <trigger data-line="305">goto Solved</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Solved" title="A Solution" data-line="307">
+    <instruction>
+      <p>If you failed the check, describe how the mysterious thing vanishes or escapes. It takes its secrets with it.</p>
+    </instruction>
+    <instruction>
+      <p>If you succeeded at the check, what revelation does the mysterious thing yield to you? Why is it important to your quest?</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="313">goto Index</trigger>
+  <roleplay id="Complication" title="A Complication" data-line="315">
+    <instruction>
+      <p>Something has gone unexpectedly wrong. What is it and how did events take this turn?</p>
+    </instruction>
+    <choice text="A vital piece of gear malfunctions or breaks.">
+      <trigger data-line="321">goto Loot</trigger>
+    </choice>
+    <choice text="An ally appears to be traitorous.">
+      <trigger data-line="325">goto Traitor</trigger>
+    </choice>
+    <choice text="A skill check of one type (Charisma, Knowledge, Athletics) must be made with a roll of 12.">
+      <trigger data-line="329">goto SkillA</trigger>
+    </choice>
+  </roleplay>
+  <roleplay id="Loot" title="Complication: Loot" data-line="331">
+    <instruction>
+      <p>The party loses 1 Loot item. Describe how it happens.</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="335">goto Index</trigger>
+  <roleplay id="Traitor" title="Complication: Traitor" data-line="337">
+    <instruction>
+      <p>Set aside a Tier II Encounter card.  Add this card to the next combat encounter and update the Tier Sum.</p>
+    </instruction>
+    <p>Your betrayer has left you a message expressing their enmity and defection. Someone roleplay it.</p>
+  </roleplay>
+  <trigger data-line="343">goto Index</trigger>
+  <roleplay id="SkillA" title="Complication: Skill" data-line="345">
+    <instruction>
+      <p>Describe a situation requiring a successful skill check of one of the established types (Charisma, Athletics, or Knowledge).  Decide if the difficulty is easy (7), normal (10), or difficult (13).</p>
+    </instruction>
+    <instruction>
+      <p>Anyone failing the Skill check loses 2 health. Describe the action that resulted in harm.</p>
+    </instruction>
+  </roleplay>
+  <trigger data-line="351">goto Index</trigger>
+</quest>

@@ -52,7 +52,7 @@ export default class Navigation extends React.Component<Props, {}> {
         <BottomNavigationAction classes={{label: 'navlabel'}} id="offline" label="Offline" value="SAVED_QUESTS" icon={this.genIcon('offline')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} id="search" label="Quests" value="SEARCH_CARD" icon={this.genIcon('compass')} />
         <BottomNavigationAction classes={{label: 'navlabel'}} id="history" label="History" value="QUEST_HISTORY" icon={this.genIcon('hourglass')} />
-        <BottomNavigationAction classes={{label: 'navlabel'}} id="gm" label="Tools" value="GM_CARD" icon={this.genIcon('gm_corner')} />
+        <BottomNavigationAction classes={{label: 'navlabel'}} id="gm" label="GM's Corner" value="GM_CARD" icon={this.genIcon('gm_corner')} />
       </BottomNavigation>
     );
   }
