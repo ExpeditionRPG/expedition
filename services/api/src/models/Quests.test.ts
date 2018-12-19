@@ -209,7 +209,7 @@ describe('quest', () => {
     });
   });
 
-  test.only('allows ordering results by created', (done) => {
+  test('allows ordering results by created', (done) => {
     const q1 = new Quest({
       ...q.basic,
       id: 'q1',
