@@ -209,6 +209,42 @@ describe('quest', () => {
     });
   });
 
+  test.only('allows ordering results by created', (done) => {
+    const q1 = new Quest({
+      ...q.basic,
+      id: 'q1',
+      created: Moment().subtract(1, 'month'),
+    });
+    const q3 = new Quest({
+      ...q.basic,
+      id: 'q3',
+      created: Moment().subtract(3, 'month'),
+    });
+    const q4 = new Quest({
+      ...q.basic,
+      id: 'q4',
+      created: Moment().subtract(4, 'month'),
+    });
+    const q2 = new Quest({
+      ...q.basic,
+      id: 'q2',
+      created: Moment().subtract(2, 'month'),
+    });
+
+    testingDBWithState([q1, q2, q3, q4])
+      .then((tdb) => searchQuests(tdb, '', { order: '-created' }))
+      .then((results) => {
+        expect(results.map(r => r.get('id'))).toEqual([
+          'q1',
+          'q2',
+          'q3',
+          'q4',
+        ]);
+        done();
+      })
+      .catch(done.fail);
+  });
+
   describe('publishQuest', () => {
     test.skip('shows up in public search results', () => {
       /* TODO */
