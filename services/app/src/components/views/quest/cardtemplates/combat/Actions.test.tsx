@@ -196,6 +196,20 @@ describe('Combat actions', () => {
       const {actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
     });
+    test('generates new rolls on new rounds', () => {
+      const {actions, store} = runTest({});
+      const firstRolls = actions[2].node.ctx.templates.combat.mostRecentRolls;
+      store.dispatch(handleCombatTimerStop({
+        elapsedMillis: 1000,
+        node: actions[2].node,
+        multiplayer: m.s2p5,
+        seed: '',
+        settings: s.basic
+      }));
+      console.log(store.getActions());
+      const secondRolls = store.getActions()[8].node.ctx.templates.combat.mostRecentRolls;
+      expect(firstRolls).not.toEqual(secondRolls);
+    })
     test('increments the round counter', () => {
       const {actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
