@@ -357,7 +357,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   dispatch(audioSet({peakIntensity: 0}));
 
   a.node = a.node.clone();
-  const arng = seedrandom.alea(a.seed);
+  const arng = seedrandom.alea(a.seed + combat.roundCount);
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
     combat = generateCombatTemplate(a.settings, false, a.node, mp);
