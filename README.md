@@ -56,18 +56,11 @@ Use jasmine.objectContaining for more robust tests
 
 Components: test branches for key content, i.e. if search results empty, make sure that resulting string contains "No results found"
 
-Components: make sure that key interactivity works, i.e. that clicking the button calls the expected function
+Components: make sure that key interactivity works, i.e. that clicking the button calls the expected function (see app/AdvancedPlay tests / enzyme / using spies)
 
-see app/AdvancedPlay tests / enzyme / using spies
-Containers: test when doing logic in mapping state or dispatch (i.e. not just glue) & test the logic
+Containers: test when doing logic in mapping state or dispatch (i.e. not just glue) & test the logic (i.e. the combat container) See app/AdvancedPlayContainer, create a mock store, dispatch function, check that actions are dispatched with correct parameters.... this one goes too far and actually also tests the action
 
-i.e. the combat container
-see app/AdvancedPlayContainer, create a mock store, dispatch function, check that actions are dispatched with correct parameters.... this one goes too far and actually also tests the action
-Actions: test actions with logic / not just glue
-
-ie Quest load node
-see app/actions/card - mock store, spy on outputs, expect the action with parameters to return an object containing
-if plain function, call directly. If dispatch-wrapped action, call store.dispatch(action)
+Actions: test actions with logic / not just glue (ie Quest load node) see app/actions/card - mock store, spy on outputs, expect the action with parameters to return an object containing. If plain function, call directly. If dispatch-wrapped action, call store.dispatch(action)
 
 ### Renovate
 
