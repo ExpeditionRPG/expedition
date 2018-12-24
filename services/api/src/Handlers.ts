@@ -161,15 +161,7 @@ export function search(db: Database, req: express.Request, res: express.Response
   };
 
   return doSearch(db, res.locals.id, params).then((result) => {
-    const sortedQuests: Quest[] = result.quests.sort((a: Quest, b: Quest) => {
-      if (a.partition.toLowerCase() <= b.partition.toLowerCase()) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    const sortedResult: QuestSearchResponse = {...result, quests: sortedQuests};
-    res.status((result.error) ? 500 : 200).end(JSON.stringify(sortedResult));
+    res.status((result.error) ? 500 : 200).end(JSON.stringify(result));
   });
 }
 

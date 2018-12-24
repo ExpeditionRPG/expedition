@@ -329,6 +329,13 @@
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
 
+"@types/raven-for-redux@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/raven-for-redux/-/raven-for-redux-1.1.1.tgz#205799891d6d13550741ef44b13cd0c43c6e86d3"
+  dependencies:
+    raven-js ">=3.21.0"
+    redux ">=3.7.2"
+
 "@types/react-dom@^16.0.5":
   version "16.0.6"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.6.tgz#f1a65a4e7be8ed5d123f8b3b9eacc913e35a1a3c"
@@ -9587,6 +9594,14 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
 
+raven-for-redux@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/raven-for-redux/-/raven-for-redux-1.4.0.tgz#37cf4fc7bdde227ce5cc8fa29942f21ea517b7fb"
+
+raven-js@>=3.21.0:
+  version "3.27.0"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.27.0.tgz#9f47c03e17933ce756e189f3669d49c441c1ba6e"
+
 raven-js@^3.26.2:
   version "3.26.3"
   resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.26.3.tgz#0efb49969b5b11ab965f7b0d6da4ca102b763cb0"
@@ -9903,6 +9918,13 @@ redux-mock-store@^1.2.3:
 redux-thunk@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
+
+redux@>=3.7.2:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.1.tgz#436cae6cc40fbe4727689d7c8fae44808f1bfef5"
+  dependencies:
+    loose-envify "^1.4.0"
+    symbol-observable "^1.2.0"
 
 redux@^3.6.0:
   version "3.7.2"

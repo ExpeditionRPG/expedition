@@ -26,7 +26,7 @@ import {AUTH_SETTINGS, INIT_DELAY, NODE_ENV, UNSUPPORTED_BROWSERS, VERSION} from
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
 import {SettingsType} from './reducers/StateTypes';
-import {getStore} from './Store';
+import {createAppStore, getStore} from './Store';
 import theme from './Theme';
 
 import Promise from 'promise-polyfill'; // promise polyfill
@@ -241,6 +241,7 @@ export function init() {
   const document = getDocument();
 
   setupOnError(window); // Do first to catch other loading errors
+  createAppStore(Raven);
   setupStorage(document);
 
   window.platform = window.cordova ? 'cordova' : 'web';

@@ -1,3 +1,4 @@
+import * as createRavenMiddleware from 'raven-for-redux';
 import Redux, {applyMiddleware, createStore} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import {getMultiplayerConnection} from './multiplayer/Connection';
@@ -14,8 +15,11 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
   store = createdStore;
 }
 
-function createAppStore() {
+export function createAppStore(raven: any = null) {
   const middleware = [createMiddleware(getMultiplayerConnection())];
+  if (raven) {
+    middleware.push(createRavenMiddleware(raven));
+  }
   const composeEnhancers = composeWithDevTools({
     actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS'],
   });
