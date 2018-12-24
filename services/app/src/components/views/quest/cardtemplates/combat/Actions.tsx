@@ -357,12 +357,13 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   dispatch(audioSet({peakIntensity: 0}));
 
   a.node = a.node.clone();
-  const arng = seedrandom.alea(a.seed + combat.roundCount);
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
     combat = generateCombatTemplate(a.settings, false, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
+  // Have to include the combat round b/c it's the same node for all of combat
+  const arng = seedrandom.alea(a.seed + combat.roundCount);
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, mp, a.elapsedMillis, arng);
   combat.mostRecentRolls = generateRolls(numLocalAdventurers(a.settings), arng);
   combat.roundCount++;

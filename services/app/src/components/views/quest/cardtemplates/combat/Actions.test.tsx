@@ -194,7 +194,7 @@ describe('Combat actions', () => {
     });
     test('generates rolls according to player count', () => {
       const {actions} = runTest({});
-      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(s.basic.numLocalPlayers);
     });
     test('generates new rolls on new rounds', () => {
       const {actions, store} = runTest({});
@@ -206,7 +206,6 @@ describe('Combat actions', () => {
         seed: '',
         settings: s.basic
       }));
-      console.log(store.getActions());
       const secondRolls = store.getActions()[8].node.ctx.templates.combat.mostRecentRolls;
       expect(firstRolls).not.toEqual(secondRolls);
     })
