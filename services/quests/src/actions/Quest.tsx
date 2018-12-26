@@ -1,7 +1,7 @@
 import Redux from 'redux';
 import { renderXML } from 'shared/render/QDLParser';
+import client from '../../../api/bot';
 import { realtimeUtils } from '../Auth';
-import client from '../bot';
 import {
   API_HOST,
   METADATA_DEFAULTS,

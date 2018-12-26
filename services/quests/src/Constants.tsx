@@ -26,7 +26,7 @@ export const PARTITIONS = {
   PUBLIC: 'expedition-public',
 };
 
-export const discordChannelID = '469518697002827782'; // id for quests-creator channel
+export const discordChannelID = '522789456881909761'; // id for new-quests channel
 
 export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 6;

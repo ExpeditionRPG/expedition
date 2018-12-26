@@ -3,12 +3,12 @@ import {SetProfileMetaAction} from '../actions/ActionTypes';
 import {UserState} from './StateTypes';
 
 export const loggedOutUser: UserState = {
-  displayName: '',
-  email: '',
-  id: '',
-  image: '',
-  loggedIn: false,
-  lootPoints: 0,
+  displayName: 'Saumya Tiwari',
+  email: 'saumyatiwari.29@gmail.com',
+  id: '100640728843297963982',
+  image: 'https://lh3.googleusercontent.com/-vCklp13LiDA/AAAAAAAAAAI/AAAAAAAAALc/nEBjkdkvBdg/photo.jpg?sz=50',
+  loggedIn: true,
+  lootPoints: 500,
 };
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
