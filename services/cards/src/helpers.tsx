@@ -71,9 +71,11 @@ export function translateTier(tier: number, english: string, translations: Trans
   if (translations) {
     const translated = translate(english, translations);
     const translatedTier = translate('Tier', translations);
-    if (translations.AdjectiveAfterNoun) {
+    if (translations.tierwordorder && translations.tierwordorder === 't#w') {
+      return translatedTier + ' ' + tierRoman + ' ' + english;
+    } else if (translations.AdjectiveAfterNoun) { // old default "true"
       return translated + ' ' + translatedTier + ' ' + tierRoman;
-    } else {
+    } else { // old default "false"
       return translatedTier + ' ' + translated + ' ' + tierRoman;
     }
   }
