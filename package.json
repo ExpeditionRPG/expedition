@@ -201,10 +201,10 @@
         {
           "targets": {
             "browsers": [
-              ">5%",
+              ">2%",
               "last 2 years",
               "last 3 iOS versions",
-              "chrome >= 39"
+              "chrome >= 30"
             ]
           }
         }
