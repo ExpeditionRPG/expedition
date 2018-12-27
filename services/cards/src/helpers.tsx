@@ -72,7 +72,7 @@ export function translateTier(tier: number, english: string, translations: Trans
     const translated = translate(english, translations);
     const translatedTier = translate('Tier', translations);
     if (translations.tierwordorder && translations.tierwordorder === 't#w') {
-      return translatedTier + ' ' + tierRoman + ' ' + english;
+      return translatedTier + ' ' + tierRoman + ' ' + translated;
     } else if (translations.AdjectiveAfterNoun) { // old default "true"
       return translated + ' ' + translatedTier + ' ' + tierRoman;
     } else { // old default "false"
