@@ -3,15 +3,14 @@ import { UserFeedbacksAction, UserLoginAction } from '../actions/ActionTypes';
 import { UserState } from './StateTypes';
 
 export const loggedOutUser: UserState = {
+  email: '',
+  id: '',
+  image: '',
+  loggedIn: false,
+  name: '',
   lastLogin: new Date(),
-  loginCount: 1,
-  name: 'Saumya Tiwari',
-  email: 'saumyatiwari.29@gmail.com',
-  id: '100640728843297963982',
-  image:
-    'https://lh3.googleusercontent.com/-vCklp13LiDA/AAAAAAAAAAI/AAAAAAAAALc/nEBjkdkvBdg/photo.jpg?sz=50',
-  loggedIn: true,
-  lootPoints: 200,
+  loginCount: 0,
+  lootPoints: 0,
 };
 
 export function user(

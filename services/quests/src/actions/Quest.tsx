@@ -36,8 +36,9 @@ const QueryString = require('query-string');
 // calls alert() and sets window.href to "/" whenever an error occurs.
 if (realtimeUtils) {
   realtimeUtils.__proto__.onError = (error: any) => {
-    if (error.type === window.gapi.drive.realtime.ErrorType
-        .TOKEN_REFRESH_REQUIRED) {
+    if (
+      error.type === window.gapi.drive.realtime.ErrorType.TOKEN_REFRESH_REQUIRED
+    ) {
       realtimeUtils.authorizer.authorize(() => {
         console.log('Error, auth refreshed');
       }, false);
@@ -135,33 +136,50 @@ export function newQuest(user: UserState) {
     // TODO migrate this to use same upload method as updateDriveFile to remove dependency
     // on loading drive2 api
     window.gapi.client.load('drive', 'v2', () => {
-      window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
-        updateDriveFile(createResponse.id, {}, '', (err, result) => {
-          if (err) {
-            return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
-          }
-          // save an equivalent to the API server
-          saveQuestInternal(createResponse.id, NEW_QUEST_TEMPLATE, '', '').then(() => {
-            dispatch(loadQuest(user, createResponse.id));
-          });
-          window.gapi.client.request({
-            body: {
-              allowFileDiscovery: true,
-              domain: 'Fabricate.io',
-              role: 'writer',
-              type: 'domain',
-            },
-            method: 'POST',
-            params: {sendNotificationEmails: false},
-            path: '/drive/v3/files/' + createResponse.id + '/permissions',
-          }).then((json: any, raw: any) => {
-            // Succeed silently
-          }, (json: any) => {
-            ReactGA.event({
-              action: 'Error connecting quest file to Fabricate.IO',
-              category: 'Error',
-              label: createResponse.id,
+      window.gapi.client.drive.files
+        .insert(insertHash)
+        .execute((createResponse: { id: string }) => {
+          updateDriveFile(createResponse.id, {}, '', (err, result) => {
+            if (err) {
+              return dispatch(
+                pushError(
+                  new Error('Failed to create new quest: ' + err.message)
+                )
+              );
+            }
+            // save an equivalent to the API server
+            saveQuestInternal(
+              createResponse.id,
+              NEW_QUEST_TEMPLATE,
+              '',
+              ''
+            ).then(() => {
+              dispatch(loadQuest(user, createResponse.id));
             });
+            window.gapi.client
+              .request({
+                body: {
+                  allowFileDiscovery: true,
+                  domain: 'Fabricate.io',
+                  role: 'writer',
+                  type: 'domain',
+                },
+                method: 'POST',
+                params: { sendNotificationEmails: false },
+                path: '/drive/v3/files/' + createResponse.id + '/permissions',
+              })
+              .then(
+                (json: any, raw: any) => {
+                  // Succeed silently
+                },
+                (json: any) => {
+                  ReactGA.event({
+                    action: 'Error connecting quest file to Fabricate.IO',
+                    category: 'Error',
+                    label: createResponse.id,
+                  });
+                }
+              );
           });
         });
     });
@@ -341,12 +359,15 @@ export function loadQuestFromRealtime(
   docid: string
 ): Promise<{ data: string; notes: string; metadata: any; edittime: Date }> {
   return new Promise((resolve, reject) => {
-    realtimeUtils.load(docid, (doc: any) => {
-      doc.addEventListener('collaborator_joined', (e: any) => {
-        ReactGA.event({
-          action: 'COLLABORATOR_JOINED',
-          category: 'Background',
-          label: docid,
+    realtimeUtils.load(
+      docid,
+      (doc: any) => {
+        doc.addEventListener('collaborator_joined', (e: any) => {
+          ReactGA.event({
+            action: 'COLLABORATOR_JOINED',
+            category: 'Background',
+            label: docid,
+          });
         });
         const md = doc
           .getModel()
@@ -425,7 +446,11 @@ export function publishQuestSetup(): ((dispatch: Redux.Dispatch<any>) => any) {
   };
 }
 
-export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePublish?: boolean): ((dispatch: Redux.Dispatch<any>) => any) {
+export function publishQuest(
+  quest: QuestType,
+  majorRelease?: boolean,
+  privatePublish?: boolean
+): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     const renderResult = renderXML(quest.mdRealtime.getText());
     dispatch({
@@ -471,7 +496,6 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
         if (channel !== undefined) {
           channel.send(`${quest.title} is published`);
         }
-
         dispatch({
           type: 'RECEIVE_QUEST_PUBLISH',
           quest,
@@ -518,32 +542,53 @@ export function saveQuest(
   quest: QuestType
 ): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'REQUEST_QUEST_SAVE', quest} as RequestQuestSaveAction);
+    dispatch({ type: 'REQUEST_QUEST_SAVE', quest } as RequestQuestSaveAction);
     const data = quest.mdRealtime.getText();
     const notes = quest.notesRealtime.getText();
     const metadata = quest.metadataRealtime.getValue();
-    return saveQuestInternal(quest.id, data, notes, metadata, quest.edittime).then((response: {meta: any, xmlResult: any}) => {
-      dispatch({type: 'QUEST_RENDER', qdl: response.xmlResult, msgs: response.xmlResult.getFinalizedLogs()});
-      ReactGA.event({
-        action: 'Quest Save',
-        category: 'Background',
-      });
-      dispatch({type: 'RECEIVE_QUEST_SAVE', meta: response.meta} as ReceiveQuestSaveAction);
-    }).catch((error: Error) => {
-      ReactGA.event({
-        action: 'Error saving quest',
-        category: 'Error',
-        label: quest.id,
+    return saveQuestInternal(quest.id, data, notes, metadata, quest.edittime)
+      .then((response: { meta: any; xmlResult: any }) => {
+        dispatch({
+          type: 'QUEST_RENDER',
+          qdl: response.xmlResult,
+          msgs: response.xmlResult.getFinalizedLogs(),
+        });
+        ReactGA.event({
+          action: 'Quest Save',
+          category: 'Background',
+        });
+        dispatch({
+          type: 'RECEIVE_QUEST_SAVE',
+          meta: response.meta,
+        } as ReceiveQuestSaveAction);
+      })
+      .catch((error: Error) => {
+        ReactGA.event({
+          action: 'Error saving quest',
+          category: 'Error',
+          label: quest.id,
+        });
+        dispatch({
+          type: 'RECEIVE_QUEST_SAVE_ERR',
+          err: error.toString(),
+        } as ReceiveQuestSaveErrAction);
       });
   };
 }
 
-function saveQuestInternal(id: string|undefined, data: string, notes: string, metadata: string, edittime: Date = new Date()): Promise<{meta: any, xmlResult: any}> {
+function saveQuestInternal(
+  id: string | undefined,
+  data: string,
+  notes: string,
+  metadata: string,
+  edittime: Date = new Date()
+): Promise<{ meta: any; xmlResult: any }> {
   if (id === undefined) {
     return Promise.reject(new Error('Undefined quest ID'));
   }
 
-  const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
+  const notesCommented =
+    '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
   const text: string = data + notesCommented;
   const xmlResult = renderXML(text);
   const meta = xmlResult.getMeta();
@@ -554,38 +599,47 @@ function saveQuestInternal(id: string|undefined, data: string, notes: string, me
   };
 
   return new Promise((resolve, reject) => {
-    updateDriveFile(id, fileMeta, text, (err: Error|null, result: any) => {
+    updateDriveFile(id, fileMeta, text, (err: Error | null, result: any) => {
       if (err) {
         throw err;
       }
       resolve(result);
     });
-  }).then(() => {
-    return fetch(`${API_HOST}/save/quest/${id}`, {
+  })
+    .then(() => {
+      return fetch(`${API_HOST}/save/quest/${id}`, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/json; charset=utf-8',
         },
         referrer: 'no-referrer',
-        body: JSON.stringify({data, notes, metadata, edittime: edittime.getTime()}),
-    }).then((response) => {
-      if (!response.ok) {
-        return response.text();
+        body: JSON.stringify({
+          data,
+          notes,
+          metadata,
+          edittime: edittime.getTime(),
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          return response.text();
+        }
+        return Promise.resolve(null);
+      });
+    })
+    .then((err: string | null) => {
+      if (err) {
+        console.error(err);
+        throw new Error(err);
       }
-      return Promise.resolve(null);
+      return { meta, xmlResult };
     });
-  }).then((err: string|null) => {
-    if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-    return {meta, xmlResult};
-  });
 }
 
-export function unpublishQuest(quest: QuestType): ((dispatch: Redux.Dispatch<any>) => any) {
+export function unpublishQuest(
+  quest: QuestType
+): ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch({
       type: 'REQUEST_QUEST_UNPUBLISH',

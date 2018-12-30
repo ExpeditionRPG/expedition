@@ -3,7 +3,7 @@ export const VERSION =
 export const NODE_ENV =
   (process && process.env && process.env.NODE_ENV) || 'dev';
 export const API_HOST =
-  (process && process.env && process.env.API_HOST) || 'http://localhost:8081';
+  (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
 
 export const URLS = {
   ANNOUNCEMENTS: API_HOST + '/qc/announcements',
