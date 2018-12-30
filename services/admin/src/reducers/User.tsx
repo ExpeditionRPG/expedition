@@ -3,11 +3,11 @@ import { SetProfileMetaAction } from '../actions/ActionTypes';
 import { UserState } from './StateTypes';
 
 export const loggedOutUser: UserState = {
-  displayName: 'Saumya',
-  email: 'saumyatiwari.29@gmail.com',
-  id: '100640728843297963982',
-  image: 'https://lh3.googleusercontent…jpg?sz=50',
-  loggedIn: true,
+  displayName: '',
+  email: '',
+  id: '',
+  image: '',
+  loggedIn: false,
 };
 
 export function user(
