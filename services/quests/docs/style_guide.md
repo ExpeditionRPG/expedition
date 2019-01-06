@@ -10,7 +10,7 @@ Maintaining consistent style in your quest makes your life easier when authoring
 
 ## Titles
 
-Quest Titles Should be Capitalized, Just Like Books!
+Quest Titles Should Be in [Title Case](http://titlecase.com).
 
 ## Conversations
 
