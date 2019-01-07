@@ -3,10 +3,10 @@
     <name>Expedition</name>
     <description>
     The Companion App for Expedition: The Roleplaying Card Game.
-  </description>
+    </description>
     <author email="contact@fabricate.io" href="http://fabricate.io">
     FabricateIO
-  </author>
+    </author>
     <content src="index.html" />
     <icon src="www/images/icon/192x192.png" />
     <access origin="*" />

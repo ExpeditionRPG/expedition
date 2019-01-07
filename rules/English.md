@@ -4,14 +4,14 @@ These rules are meant for playing without a device and with one player acting as
 
 If you want to play the latest and greatest version of Expedition, including dozens of built-in adventures that don't require a GM, you can use the Web, Android or iOS app available at [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*This document is based on Expedition App v1.13.8. You can view the app's current version at the bottom of the settings page.*
+_This document is based on Expedition App v1.21.0. You can view the app's current version at the bottom of the settings page._
 
 ## Prerequisites
 
 To play, you'll need a copy of the Expedition cards. You can:
 
-* Buy a copy from the Expedition store ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) or Amazon.
-* Or, print and play your own cards at [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). If you print and play, you'll also need to find at least one d20 die and a dozen tracking clips (such as clothes pins or paper clips).
+- Buy a copy from the Expedition store ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) or Amazon.
+- Or, print and play your own cards at [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). If you print and play, you'll also need to find at least one d20 die and a dozen tracking clips (such as clothes pins or paper clips).
 
 You'll also want to print out these rules for reference while playing.
 
@@ -25,19 +25,19 @@ Once you're ready to play, each player besides the GM should:
 
 **Select** one adventurer of your choice from the deck, set it face up in front of you and pass the deck along.
 
-*If playing with only one player*: Select and set up two adventurers.
+_If playing with only one player_: Select and set up two adventurers.
 
-*If playing with The Horror*: Draw a persona card, set it face up in front of you, and attach a clip at "Base".
+_If playing with The Horror_: Draw a persona card, set it face up in front of you, and attach a clip at "Base".
 
 **Clip** a health tracker onto your adventurer at full health (12).
 
-*If playing with only one non-GM player*: Draw and set up two adventurers.
+_If playing with only one non-GM player_: Draw and set up two adventurers.
 
 ### Abilities
 
 **Draw** the starting abilities listed on your adventurer.
 
-*If playing with The Horror*: Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).
+_If playing with The Horror_: Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).
 
 **Read** through your abilities. You may mulligan (redraw all) once if desired.
 
@@ -55,12 +55,12 @@ Unique to Expedition, when the GM handles skill checks (such as attempting to sn
 
 For example, they might let you increase your roll by +1 for each ability of a relevant type you have:
 
-| Ability class | Types of skill checks it could benefit |
-| ----- | ----- |
-| Melee | Strength, endurance, constitution, intimidation |
-| Ranged | Dexterity, stealth, perception, climbing, acrobatics, thievery |
-| Magic | Intelligence, knowledge, lore, history, wisdom |
-| Music | Charisma, diplomacy, persuasion, negotiation |
+| Ability class | Types of skill checks it could benefit                         |
+| ------------- | -------------------------------------------------------------- |
+| Melee         | Strength, endurance, constitution, intimidation                |
+| Ranged        | Dexterity, stealth, perception, climbing, acrobatics, thievery |
+| Magic         | Intelligence, knowledge, lore, history, wisdom                 |
+| Music         | Charisma, diplomacy, persuasion, negotiation                   |
 
 The GM might also allow you to use one of your specific ability cards as a "shortcut" - for example, instead of trying to use brute strength to break down a door, you could try to cast Fireball at it.
 
@@ -90,15 +90,15 @@ Each player should, at the same time:
 
 If you're playing with a timer:
 
-* **Pre-draw your hand** of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.
-* **Start the timer**.
-* **Play one ability** from your hand.
-* If the timer runs out, multiply damage recieved this round by 1.5 (rounding up).
+- **Pre-draw your hand** of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.
+- **Start the timer**.
+- **Play one ability** from your hand.
+- If the timer runs out, multiply damage recieved this round by 1.5 (rounding up).
 
 If you're playing without a timer:
 
-* **Draw your hand** of three abilities.
-* **Play one ability** from your hand.
+- **Draw your hand** of three abilities.
+- **Play one ability** from your hand.
 
 #### Surges
 
@@ -110,7 +110,7 @@ Surge effects happen before abilities. Abilities that apply "this round" do no a
 
 ### Rolling and Resolving
 
-*If playing with The Horror*: Adventurers at Min persona must resolve their persona effect and reset to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.
+_If playing with The Horror_: Adventurers at Min persona must resolve their persona effect and reset to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.
 
 **Roll**: Each adventurer rolls a die for each ability they played. If roll ≥ X, the ability succeeds. Ability cards may list additional effects based on the roll, even if they fail.
 
@@ -131,72 +131,72 @@ If you'd like combat to be easier, use the table for 1 fewer players. If you'd l
 ##### 1 - 2 players (2 adventurers)
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
-| 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
-| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
+| -------- | --------- | --- | ---- | ----- | ----- | --------- |
+| 1        | 0         | 0   | 0    | 1     | 2     | 0.6       |
+| 2        | 0         | 1   | 1    | 1     | 2     | 1         |
+| 3        | 0         | 1   | 2    | 2     | 3     | 1.6       |
+| 4        | 1         | 2   | 2    | 2     | 3     | 2         |
+| 5        | 2         | 2   | 2    | 3     | 4     | 2.6       |
+| 6        | 2         | 2   | 3    | 4     | 4     | 3         |
+| 7        | 2         | 3   | 4    | 4     | 5     | 3.6       |
+| 8        | 3         | 3   | 4    | 5     | 5     | 4         |
+| 9+       | 4         | 4   | 4    | 5     | 6     | 4.6       |
 
 ##### 3 players
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
-| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
-| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
-| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
-| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
-| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| -------- | --------- | --- | ---- | ----- | ----- | --------- |
+| 1        | 0         | 0   | 1    | 1     | 2     | 0.8       |
+| 2        | 1         | 1   | 1    | 2     | 2     | 1.4       |
+| 3        | 1         | 2   | 2    | 3     | 3     | 2.2       |
+| 4        | 1         | 2   | 3    | 3     | 4     | 2.6       |
+| 5        | 3         | 3   | 3    | 4     | 4     | 3.4       |
+| 6        | 3         | 3   | 4    | 4     | 5     | 3.8       |
+| 7        | 3         | 4   | 5    | 5     | 5     | 4.4       |
+| 8        | 4         | 4   | 5    | 5     | 6     | 4.8       |
+| 9+       | 5         | 5   | 5    | 6     | 6     | 5.4       |
 
 ##### 4 players
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
-| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
-| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
-| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
-| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
-| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
+| -------- | --------- | --- | ---- | ----- | ----- | --------- |
+| 1        | 0         | 1   | 1    | 1     | 2     | 1         |
+| 2        | 1         | 1   | 2    | 2     | 2     | 1.6       |
+| 3        | 2         | 2   | 2    | 3     | 3     | 2.4       |
+| 4        | 2         | 2   | 3    | 4     | 4     | 3         |
+| 5        | 3         | 3   | 4    | 4     | 4     | 3.6       |
+| 6        | 3         | 4   | 4    | 5     | 5     | 4.2       |
+| 7        | 4         | 4   | 5    | 5     | 6     | 4.8       |
+| 8        | 5         | 5   | 5    | 6     | 6     | 5.4       |
+| 9+       | 5         | 6   | 6    | 6     | 7     | 6         |
 
 ##### 5 players
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
-| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
-| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
-| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
-| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
-| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| -------- | --------- | --- | ---- | ----- | ----- | --------- |
+| 1        | 0         | 1   | 1    | 1     | 2     | 1         |
+| 2        | 1         | 1   | 2    | 2     | 3     | 1.8       |
+| 3        | 2         | 2   | 2    | 3     | 4     | 2.6       |
+| 4        | 2         | 2   | 3    | 4     | 5     | 3.2       |
+| 5        | 3         | 3   | 4    | 4     | 5     | 3.8       |
+| 6        | 3         | 4   | 4    | 5     | 6     | 4.4       |
+| 7        | 4         | 5   | 5    | 5     | 6     | 5         |
+| 8        | 5         | 6   | 6    | 6     | 6     | 5.8       |
+| 9+       | 6         | 6   | 6    | 7     | 7     | 6.4       |
 
 ##### 6 players
 
 | Tier Sum | Roll: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (average) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
-| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
-| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
-| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
-| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
-| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
+| -------- | --------- | --- | ---- | ----- | ----- | --------- |
+| 1        | 1         | 1   | 1    | 1     | 2     | 1.2       |
+| 2        | 1         | 2   | 2    | 2     | 3     | 2         |
+| 3        | 2         | 2   | 3    | 3     | 4     | 2.8       |
+| 4        | 3         | 3   | 3    | 4     | 5     | 3.6       |
+| 5        | 4         | 4   | 4    | 4     | 5     | 4.2       |
+| 6        | 4         | 4   | 5    | 5     | 6     | 4.8       |
+| 7        | 5         | 5   | 6    | 6     | 6     | 5.6       |
+| 8        | 6         | 6   | 6    | 7     | 7     | 6.4       |
+| 9+       | 6         | 7   | 7    | 7     | 8     | 7         |
 
 ### Victory
 
@@ -211,23 +211,23 @@ All adventurers heal to full health (even if at 0 health), unless the GM says ot
 Divide the loot amongst adventurers. It can be used at any time and does not cost an action (unless otherwise specified).
 
 | Combat tier | Loot reward |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| ----------- | ----------- |
+| 1           | 1           |
+| 2           | 1           |
+| 3           | 2           |
+| 4           | 3           |
+| 5           | 3           |
+| 6           | 4           |
+| 7           | 4           |
+| 8+          | 5           |
 
 **Leveling up**: The party gains experience equal to the combat's tier sum. Keep track of experience on the back of an encounter card or sheet of paper. On the back of a separate encounter card, keep track of the experience required to level up. This starts at 4 and increases by 1 each time you level up.
 
 When you level up, all adventurers may learn a new ability:
 
-* Draw 3 abilties from one of the decks listed on your adventurer card. *If you are playing with The Horror*: All adventurers may also draw from the influence deck.
-* Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.
-* You *may* choose to discard an ability.
+- Draw 3 abilties from one of the decks listed on your adventurer card. _If you are playing with The Horror_: All adventurers may also draw from the influence deck.
+- Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.
+- You _may_ choose to discard an ability.
 
 ### Defeat
 
