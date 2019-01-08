@@ -1,9 +1,9 @@
 import Redux from 'redux';
 import {UserState} from 'shared/auth/UserState';
 import {renderXML} from 'shared/render/QDLParser';
+import {API_HOST} from 'shared/schema/Constants';
 import {realtimeUtils} from '../Auth';
 import {
-  API_HOST,
   METADATA_DEFAULTS,
   NEW_QUEST_TEMPLATE,
   PARTITIONS,

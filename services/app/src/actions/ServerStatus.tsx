@@ -1,7 +1,8 @@
 import Redux from 'redux';
 import * as semver from 'semver';
 import {handleFetchErrors} from 'shared/requests';
-import {AUTH_SETTINGS, URLS, VERSION} from '../Constants';
+import {AUTH_SETTINGS, URLS} from '../Constants';
+import {VERSION} from 'shared/schema/Constants';
 import {getDevicePlatform} from '../Globals';
 import {logEvent} from '../Logging';
 import {ServerStatusState} from '../reducers/StateTypes';

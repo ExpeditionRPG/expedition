@@ -1,18 +1,10 @@
+import {API_HOST, AUTH_SETTINGS as AUTH_SETTINGS_BASE, NODE_ENV} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 
-export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
-export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
-// Should be overriden via env vars to use local server
-export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
 export const AUTH_SETTINGS = {
-  // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
-  // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
-  API_KEY: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
-  CLIENT_ID: (process && process.env && process.env.OAUTH2_CLIENT_ID) || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
+  ...AUTH_SETTINGS_BASE,
   RAVEN: 'https://990df74f1b58424395ec3d3ec6f79b42@sentry.io/420182',
-  SCOPES: 'profile email',
   STRIPE: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
-  URL_BASE: API_HOST,
 };
 
 const splitURL = API_HOST.split('/');
