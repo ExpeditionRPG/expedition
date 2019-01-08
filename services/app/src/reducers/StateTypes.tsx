@@ -1,3 +1,4 @@
+import {UserState as UserStateBase} from 'shared/auth/UserState';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
 import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
@@ -6,7 +7,6 @@ import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {UserState as UserStateBase} from 'shared/auth/UserState';
 
 export interface AnnouncementState {
   open: boolean;

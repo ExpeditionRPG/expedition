@@ -9,11 +9,11 @@ export interface AuthResult {
 }
 
 let gapiLoaded = false;
-function loadGapi(gapi: any, apiKey: string, clientId: string, scopes: string): Promise<LoadGapiResponse> {
+export function loadGapi(gapi: any, apiKey: string, clientId: string, scopes: string, loaded= gapiLoaded): Promise<LoadGapiResponse> {
   if (!gapi) {
     return Promise.reject(Error('gapi not loaded'));
   }
-  if (gapiLoaded) {
+  if (loaded) {
     return Promise.resolve({gapi, async: false});
   }
   return new Promise((resolve, reject) => {
@@ -47,20 +47,20 @@ function googleUserToAuthResult(googleUser: any): AuthResult {
   };
 }
 
-export function loginWeb(gapi: any, apiKey: string, clientId: string, scopes: string): Promise<AuthResult> {
-  return loadGapi(gapi, apiKey, clientId, scopes)
+export function loginWeb(gapi: any, apiKey: string, clientId: string, scopes: string, load= loadGapi): Promise<AuthResult> {
+  return load(gapi, apiKey, clientId, scopes)
   .then((r) => {
     // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
     // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
     if (r.async) {
-      return silentLoginWeb(gapi, apiKey, clientId, scopes);
+      return silentLoginWeb(gapi, apiKey, clientId, scopes, load);
     }
     return r.gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'}).then(googleUserToAuthResult);
   });
 }
 
-export function silentLoginWeb(gapi: any, apiKey: string, clientId: string, scopes: string): Promise<AuthResult> {
-  return loadGapi(gapi, apiKey, clientId, scopes)
+export function silentLoginWeb(gapi: any, apiKey: string, clientId: string, scopes: string, load= loadGapi): Promise<AuthResult> {
+  return load(gapi, apiKey, clientId, scopes)
   .then((r) => {
     if (!r.gapi.auth2.getAuthInstance().isSignedIn.get()) {
       throw new Error('Failed to silently login');

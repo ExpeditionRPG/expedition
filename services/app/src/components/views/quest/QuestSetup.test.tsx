@@ -3,7 +3,7 @@ import * as React from 'react';
 import QuestSetup, { Props } from './QuestSetup';
 import {initialSettings} from 'app/reducers/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {loggedOutUser} from 'app/reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 
 const PERSONA_SUBSTR1 = 'Draw a persona card';

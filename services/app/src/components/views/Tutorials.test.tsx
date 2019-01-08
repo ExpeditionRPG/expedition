@@ -3,7 +3,7 @@ import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import Tutorials, {Props} from './Tutorials';
 import {render} from 'app/Testing';
-import {loggedOutUser} from '../../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 
 const HORROR_SUBSTR = "Horror";
 const FUTURE_SUBSTR = "Future";

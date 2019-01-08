@@ -7,7 +7,7 @@ import {initialQuestState} from '../reducers/Quest';
 import {initialServerStatusState} from '../reducers/ServerStatus';
 import {initialSettings} from '../reducers/Settings';
 import {initialSnackbar} from '../reducers/Snackbar';
-import {loggedOutUser} from '../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {newMockStore} from '../Testing';
 import Compositor, {Props} from './Compositor';
 configure({ adapter: new Adapter() });

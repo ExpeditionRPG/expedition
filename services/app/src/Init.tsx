@@ -13,6 +13,7 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 
+import {NODE_ENV, VERSION} from 'shared/schema/Constants';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
 import {setDialog} from './actions/Dialog';
@@ -23,7 +24,6 @@ import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
 import {silentLogin} from './actions/User';
 import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
-import {VERSION, NODE_ENV} from 'shared/schema/Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
 import {SettingsType} from './reducers/StateTypes';

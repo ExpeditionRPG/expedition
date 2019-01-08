@@ -3,7 +3,7 @@ import * as React from 'react';
 import GMCorner, { Props } from './GMCorner';
 import {initialSettings} from '../../reducers/Settings';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
-import {loggedOutUser} from '../../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {TUTORIAL_QUESTS} from '../../Constants';
 
 describe('GMCorner', () => {

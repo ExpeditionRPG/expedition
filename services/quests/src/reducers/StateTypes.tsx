@@ -1,7 +1,7 @@
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {UserState} from 'shared/auth/UserState';
 import {QDLParser} from 'shared/render/QDLParser';
 import {ContentRatingLabelType, LanguageType, ThemeType} from 'shared/schema/Constants';
-import {UserState} from 'shared/auth/UserState';
 import {ErrorType} from '../../errors/types';
 // TODO: URL type?
 

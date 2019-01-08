@@ -3,7 +3,7 @@ import * as React from 'react';
 import ModeSelect, { Props } from './ModeSelect';
 import {initialSettings} from '../../reducers/Settings';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
-import {loggedOutUser} from '../../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 
 describe('ModeSelect', () => {
   afterEach(unmountAll);

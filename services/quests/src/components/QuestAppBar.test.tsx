@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 import QuestAppBar, {Props} from './QuestAppBar';
 import {defaultState as initialEditor} from '../reducers/Editor';
-import {loggedOutUser} from '../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {initialQuestState} from '../reducers/Quest';
 configure({ adapter: new Adapter() });
 

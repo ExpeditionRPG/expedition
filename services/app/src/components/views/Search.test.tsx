@@ -4,7 +4,7 @@ import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {SearchParams} from '../../reducers/StateTypes';
 import {initialSettings} from '../../reducers/Settings';
-import {loggedOutUser} from '../../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {testLoggedInUser} from '../../reducers/User.test';
 import {render, mount, unmountAll} from 'app/Testing';
 import Search, {Props} from './Search';

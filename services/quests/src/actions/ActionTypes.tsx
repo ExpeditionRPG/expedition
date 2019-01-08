@@ -1,7 +1,7 @@
 import Redux from 'redux';
+import {UserState} from 'shared/auth/UserState';
 import {LogMessageMap} from 'shared/render/Logger';
 import {QDLParser} from 'shared/render/QDLParser';
-import {UserState} from 'shared/auth/UserState';
 import {DialogIDType, PanelType, QuestType, SnackbarState} from '../reducers/StateTypes';
 
 export const NEW_QUEST: string = 'NEW_QUEST';
