@@ -6,6 +6,7 @@ import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {UserState as UserStateBase} from 'shared/auth/UserState';
 
 export interface AnnouncementState {
   open: boolean;
@@ -190,15 +191,7 @@ export interface IUserFeedback {
   quest: UserQuestInstance;
 }
 
-export interface UserState {
-  loggedIn: boolean;
-  id: string;
-  name: string;
-  image: string;
-  email: string;
-  lastLogin: Date;
-  loginCount: number;
-  lootPoints: number;
+export interface UserState extends UserStateBase {
   feedbacks?: IUserFeedback[];
 }
 

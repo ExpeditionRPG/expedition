@@ -10,10 +10,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
+import {UserState} from 'shared/auth/UserState';
 import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'shared/schema/Constants';
 import {ErrorType} from '../../errors/types';
 import {MAX_PLAYERS, MIN_PLAYERS} from '../Constants';
-import {DialogIDType, DialogsState, QuestType, UserState} from '../reducers/StateTypes';
+import {DialogIDType, DialogsState, QuestType} from '../reducers/StateTypes';
 import Checkbox from './base/Checkbox';
 
 interface ErrorDialogProps extends React.Props<any> {

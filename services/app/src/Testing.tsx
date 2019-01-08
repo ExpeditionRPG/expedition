@@ -8,7 +8,7 @@ import {Connection, setMultiplayerConnection} from './multiplayer/Connection';
 import {createMiddleware} from './multiplayer/Middleware';
 import combinedReducers from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
-import {loggedOutUser} from './reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 
 configure({ adapter: new Adapter() });
 

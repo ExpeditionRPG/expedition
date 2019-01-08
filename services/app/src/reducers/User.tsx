@@ -1,17 +1,7 @@
 import Redux from 'redux';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {UserFeedbacksAction, UserLoginAction} from '../actions/ActionTypes';
 import {UserState} from './StateTypes';
-
-export const loggedOutUser: UserState = {
-  email: '',
-  id: '',
-  image: '',
-  loggedIn: false,
-  name: '',
-  lastLogin: new Date(),
-  loginCount: 0,
-  lootPoints: 0,
-};
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
   switch (action.type) {
