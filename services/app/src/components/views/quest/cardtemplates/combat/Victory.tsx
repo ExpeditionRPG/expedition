@@ -17,7 +17,6 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onCustomEnd: () => void;
   onEvent: (node: ParserNode, event: string) => void;
 }
 
@@ -118,7 +117,7 @@ export default function victory(props: Props): JSX.Element {
       {maybeRenderPersona(props)}
       {maybeRenderLoot(props)}
       {maybeRenderLevelUp(props)}
-      <Button onClick={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'win')}>Next</Button>
+      <Button onClick={() => props.onEvent(props.node, 'win')}>Next</Button>
     </Card>
   );
 }

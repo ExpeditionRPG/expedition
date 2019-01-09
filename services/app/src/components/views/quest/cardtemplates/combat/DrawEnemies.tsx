@@ -1,7 +1,6 @@
 import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import Picker from 'app/components/base/Picker';
 import {Enemy} from 'app/reducers/QuestTypes';
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
@@ -24,23 +23,6 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function drawEnemies(props: Props): JSX.Element {
   const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
-
-  // Show a tier picker if this is a custom combat
-  if (props.combat.custom) {
-    return (
-      <Card title="Draw Enemies" theme="dark" inQuest={true}>
-        <Picker
-          label="Tier Sum"
-          id="tier_sum"
-          onDelta={(i: number) => props.onTierSumDelta(props.node, props.tier, i)}
-          value={props.tier}>
-          Set this to the combined tier you wish to fight.
-        </Picker>
-        <Button onClick={() => props.onNext(nextCard)} disabled={props.tier <= 0}>Next</Button>
-        <AudioControlsContainer />
-      </Card>
-    );
-  }
 
   let repeatEnemy = false;
   let uniqueEnemy = false;

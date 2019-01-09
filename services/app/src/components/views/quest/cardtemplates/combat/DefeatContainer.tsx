@@ -20,9 +20,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onCustomEnd: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
-    },
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event({node, evt}));
     },

@@ -8,7 +8,7 @@ import Redux from 'redux';
 import {findCombatParent, handleCombatEnd} from '../combat/Actions';
 import {ParserNode} from '../TemplateTypes';
 
-export function initRoleplay(node: ParserNode, custom?: boolean) {
+export function initRoleplay(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // We set the quest state *after* updating the history to prevent
     // the history from grabbing the quest state before navigating.
