@@ -1,4 +1,4 @@
-import {CONTENT_RATINGS, GENRES, LANGUAGES, PARTITIONS, THEMES} from './Constants';
+import {CONTENT_RATINGS, enumValues, GENRES, Language, PARTITIONS, THEMES} from './Constants';
 import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class Quest extends SchemaBase {
@@ -140,7 +140,7 @@ export class Quest extends SchemaBase {
   @field({
     default: 'English',
     maxLength: 128,
-    valid: LANGUAGES,
+    valid: enumValues(Language),
   }) public language: string;
 
   @field({

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {CONTENT_RATINGS, GENRES, LANGUAGES} from 'shared/schema/Constants';
+import {CONTENT_RATINGS, enumValues, GENRES, Language} from 'shared/schema/Constants';
 import {setDialog} from '../actions/Dialogs';
 import {publishQuest, questMetadataChange} from '../actions/Quest';
 import {AppState, DialogIDType, QuestType} from '../reducers/StateTypes';
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
         expansionhorror: Joi.boolean(),
         expansionfuture: Joi.boolean(),
         genre: Joi.string().valid(GENRES),
-        language: Joi.string().valid(LANGUAGES),
+        language: Joi.string().valid(enumValues(Language)),
         maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
         maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
         minplayers: Joi.number().min(1).max(Joi.ref('maxplayers')),

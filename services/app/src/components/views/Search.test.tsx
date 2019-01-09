@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {LanguageType} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {SearchParams} from '../../reducers/StateTypes';

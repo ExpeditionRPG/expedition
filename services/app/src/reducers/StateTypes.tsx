@@ -1,6 +1,6 @@
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
-import {ContentRatingLabelType, GenreType, LanguageType} from 'shared/schema/Constants';
+import {ContentRatingLabelType, GenreType, Language} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
@@ -78,7 +78,7 @@ export interface SearchParams {
   owner?: string;
   partition?: 'expedition-public' | 'expedition-private';
   expansions?: ExpansionsType[];
-  language?: LanguageType;
+  language?: Language;
   showPrivate: boolean;
 }
 

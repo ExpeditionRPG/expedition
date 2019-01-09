@@ -5,7 +5,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
 import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
-import {CONTENT_RATING_DESC, GenreType, LANGUAGES} from 'shared/schema/Constants';
+import {CONTENT_RATING_DESC, enumValues, GenreType, Language} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {ContentSetsType, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -150,7 +150,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange('language', e.target.value)}
               value={this.props.params.language}
             >
-              {LANGUAGES.map((language: string, i: number) => <option key={i} value={language}>{language}</option>)}
+              {enumValues(Language).map((l: string, i: number) => <option key={i} value={l}>{l}</option>)}
             </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">

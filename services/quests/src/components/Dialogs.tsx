@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
-import {CONTENT_RATING_DESC, GENRES, LANGUAGES, THEMES} from 'shared/schema/Constants';
+import {CONTENT_RATING_DESC, enumValues, GENRES, Language, THEMES} from 'shared/schema/Constants';
 import {ErrorType} from '../../errors/types';
 import {MAX_PLAYERS, MIN_PLAYERS} from '../Constants';
 import {DialogIDType, DialogsState, QuestType, UserState} from '../reducers/StateTypes';
@@ -155,8 +155,8 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     const genres = GENRES.map((genre: string, index: number) => {
       return <MenuItem key={index} value={genre}>{genre}</MenuItem>;
     });
-    const languages = LANGUAGES.map((language: string, index: number) => {
-      return <MenuItem key={index} value={language}>{language}</MenuItem>;
+    const languages = enumValues(Language).map((str: string, index: number) => {
+      return <MenuItem key={index} value={str}>{str}</MenuItem>;
     });
     const rating = CONTENT_RATING_DESC[metadata.get('contentrating')];
     const ratings = Object.keys(CONTENT_RATING_DESC).map((str: string, index: number) => {
@@ -184,6 +184,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             className="fullWidth"
             value={metadata.get('summary')}
             label="Quest summary (1-2 sentences)"
+            // TODO get rid of these magic numbers
             onChange={(e: any) => { handleMetadataChange(quest, 'summary', e.target.value); }}
           />
           <TextField

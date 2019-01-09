@@ -11,6 +11,10 @@ export const PRIVATE_PARTITION = 'expedition-private';
 export const PUBLIC_PARTITION = 'expedition-public';
 export const PARTITIONS: PartitionType[] = [PRIVATE_PARTITION, PUBLIC_PARTITION];
 
+export function enumValues<T>(e: T): Array<T[keyof T]> {
+  return Object.keys(e).map((k: keyof T) => e[k]);
+}
+
 export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance' | 'SciFi';
 export const GENRES: GenreType[] = [
   'Comedy',
@@ -21,17 +25,16 @@ export const GENRES: GenreType[] = [
   'SciFi',
 ];
 
-export type LanguageType = 'English' | 'French' | 'German' | 'Hungarian' | 'Italian' | 'Portuguese' | 'Romanian' | 'Spanish';
-export const LANGUAGES: LanguageType[] = [
-  'English',
-  'French',
-  'German',
-  'Hungarian',
-  'Italian',
-  'Portuguese',
-  'Romanian',
-  'Spanish',
-];
+export enum Language {
+  english = 'English',
+  french = 'French',
+  german = 'German',
+  hungarian = 'Hungarian',
+  italian = 'Italian',
+  portuguese = 'Portuguese',
+  romanian = 'Romanian',
+  spanish = 'Spanish',
+}
 
 /* tslint:disable object-literal-sort-keys */
 

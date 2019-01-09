@@ -1,6 +1,6 @@
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {QDLParser} from 'shared/render/QDLParser';
-import {ContentRatingLabelType, LanguageType, ThemeType} from 'shared/schema/Constants';
+import {ContentRatingLabelType, Language, ThemeType} from 'shared/schema/Constants';
 import {ErrorType} from '../../errors/types';
 // TODO: URL type?
 
@@ -76,7 +76,7 @@ export interface QuestType {
   saveError?: string;
   expansionhorror?: boolean;
   expansionfuture?: boolean;
-  language?: LanguageType;
+  language?: Language;
   theme?: ThemeType;
   requirespenpaper?: boolean;
   edittime?: Date;
