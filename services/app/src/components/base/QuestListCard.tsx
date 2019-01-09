@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
-import {ContentSetsType, SettingsType} from '../../reducers/StateTypes';
+import {ContentSetsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 
 export interface StateProps {
   quests: Quest[];
-  settings: SettingsType;
   contentSets: Set<keyof ContentSetsType>;
+  title: string;
+  icon: string;
 }
 
 export interface DispatchProps {
@@ -17,7 +18,7 @@ export interface DispatchProps {
 
 export interface Props extends StateProps, DispatchProps {}
 
-const Tutorials = (props: Props): JSX.Element => {
+const QuestListCard = (props: Props): JSX.Element => {
   const items: JSX.Element[] = props.quests
     .filter((quest: Quest): boolean => {
       return (!quest.expansionhorror || props.contentSets.has('horror'))
@@ -28,10 +29,10 @@ const Tutorials = (props: Props): JSX.Element => {
     });
 
   return (
-    <Card title="Tutorial Quests" icon="helper" onReturn={props.onReturn}>
+    <Card title={props.title} icon={props.icon} onReturn={props.onReturn}>
       {items}
     </Card>
   );
 };
 
-export default Tutorials;
+export default QuestListCard;
