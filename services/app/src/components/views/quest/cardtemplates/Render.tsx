@@ -38,6 +38,11 @@ export const NUMERALS: {[k: number]: string; } = {
   3: 'III',
   4: 'IV',
   5: 'V',
+  6: 'VI',
+  7: 'VII',
+  8: 'VIII',
+  9: 'IX',
+  10: 'X',
 };
 
 export function numberToWord(input: number): string {
