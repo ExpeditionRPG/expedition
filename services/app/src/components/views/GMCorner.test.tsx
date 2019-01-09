@@ -15,7 +15,6 @@ describe('GMCorner', () => {
       settings: initialSettings,
       contentSets: new Set(['horror']),
       onQuestSelect: jasmine.createSpy('onQuestSelect'),
-      onCustomCombatSelect: jasmine.createSpy('onCustomCombatSelect'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };

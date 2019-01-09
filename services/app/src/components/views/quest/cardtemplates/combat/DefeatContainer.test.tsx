@@ -25,7 +25,6 @@ function setup(overrides: Partial<Props>) {
     node: TEST_NODE.clone(),
     seed: '123',
     mostRecentRolls: undefined,
-    onCustomEnd: jasmine.createSpy('onCustomEnd'),
     onEvent: jasmine.createSpy('onEvent'),
     onRetry: jasmine.createSpy('onRetry'),
     ...overrides,

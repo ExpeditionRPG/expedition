@@ -22,7 +22,6 @@ describe('Combat victory', () => {
     const props: Props = {
       combat: {
         ...resolveCombat(null),
-        custom:false,
         levelUp: true,
         loot: [],
       },
@@ -32,7 +31,6 @@ describe('Combat victory', () => {
       },
       theme: 'dark',
       contentSets: new Set(),
-      onCustomEnd: jasmine.createSpy('onCustomEnd'),
       onEvent: jasmine.createSpy('onEvent'),
       ...overrides,
     };
