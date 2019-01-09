@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
-import {CONTENT_RATING_DESC, enumValues, GENRES, Language, THEMES} from 'shared/schema/Constants';
+import {CONTENT_RATING_DESC, ContentRating, enumValues, Genre, Language, Theme} from 'shared/schema/Constants';
 import {ErrorType} from '../../errors/types';
 import {MAX_PLAYERS, MIN_PLAYERS} from '../Constants';
 import {DialogIDType, DialogsState, QuestType, UserState} from '../reducers/StateTypes';
@@ -152,20 +152,20 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
     for (let i = MIN_PLAYERS; i <= MAX_PLAYERS; i++) {
       playerItems.push(<MenuItem value={i} key={i}>{i}</MenuItem>);
     }
-    const genres = GENRES.map((genre: string, index: number) => {
+    const genres = enumValues(Genre).map((genre: string, index: number) => {
       return <MenuItem key={index} value={genre}>{genre}</MenuItem>;
     });
     const languages = enumValues(Language).map((str: string, index: number) => {
       return <MenuItem key={index} value={str}>{str}</MenuItem>;
     });
-    const rating = CONTENT_RATING_DESC[metadata.get('contentrating')];
+    const rating = CONTENT_RATING_DESC[metadata.get('contentrating') as ContentRating];
     const ratings = Object.keys(CONTENT_RATING_DESC).map((str: string, index: number) => {
       return <MenuItem key={index} value={str}>{str}</MenuItem>;
     });
     const ratingDefinitions = rating && Object.keys(rating.details).map((category: string, index: number) => {
       return <li key={index}>{(rating.details as {[key: string]: string})[category]}</li>;
     });
-    const themes = THEMES.map((theme: string, index: number) => {
+    const themes = enumValues(Theme).map((theme: string, index: number) => {
       return <MenuItem key={index} value={theme}>{theme}</MenuItem>;
     });
 

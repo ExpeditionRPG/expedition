@@ -5,7 +5,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
 import {numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
-import {CONTENT_RATING_DESC, enumValues, GenreType, Language} from 'shared/schema/Constants';
+import {CONTENT_RATING_DESC, enumValues, Genre, Language} from 'shared/schema/Constants';
 import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
 import {ContentSetsType, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -69,7 +69,7 @@ export class SearchSettings extends React.Component<Props, {}> {
     });
 
     // TODO Once we have 3 romance & SciFi quests, change code to just display genre list
-    const visibleGenres: GenreType[] = ['Comedy', 'Drama', 'Horror', 'Mystery'];
+    const visibleGenres: Genre[] = [Genre.comedy, Genre.drama, Genre.horror, Genre.mystery];
     return (
       <Card title="Quest Search">
         <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>

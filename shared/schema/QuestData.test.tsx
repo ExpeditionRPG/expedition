@@ -1,4 +1,3 @@
-import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Constants';
 import {QuestData} from './QuestData';
 
 describe('QuestData Schema', () => {

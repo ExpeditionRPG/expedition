@@ -1,4 +1,4 @@
-import {Language} from 'shared/schema/Constants';
+import {ContentRating, Genre, Language} from 'shared/schema/Constants';
 import {initialMultiplayer} from './Multiplayer';
 import {DifficultyType, FontSizeType, MultiplayerState, SearchParams, SettingsType} from './StateTypes';
 export const Settings: {[k: string]: SettingsType} = {
@@ -65,8 +65,8 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
 
 export const TEST_SEARCH: SearchParams = {
   age: 31536000,
-  contentrating: 'Teen',
-  genre: 'Comedy',
+  contentrating: ContentRating.teen,
+  genre: Genre.comedy,
   language: Language.english,
   maxtimeminutes: 60,
   mintimeminutes: 30,
