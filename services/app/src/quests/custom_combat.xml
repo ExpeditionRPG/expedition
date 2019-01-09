@@ -122,18 +122,18 @@
       </event>
    </roleplay>
    <roleplay id="victory" title="Victory!" data-line="154">
-      <choice text="new combat">
+      <choice text="Start another combat">
          <trigger data-line="158">goto start</trigger>
       </choice>
-      <choice text="end">
+      <choice text="End">
          <trigger data-line="162">end</trigger>
       </choice>
    </roleplay>
    <roleplay id="defeat" title="Defeat" data-line="164">
-      <choice text="new combat">
+      <choice text="Start another combat">
          <trigger data-line="168">goto start</trigger>
       </choice>
-      <choice text="end">
+      <choice text="End">
          <trigger data-line="172">end</trigger>
       </choice>
    </roleplay>
