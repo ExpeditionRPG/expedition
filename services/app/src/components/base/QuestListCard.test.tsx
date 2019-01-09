@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
-import Tutorials, {Props} from './Tutorials';
+import QuestListCard, {Props} from './QuestListCard';
 import {render} from 'app/Testing';
 import {loggedOutUser} from '../../reducers/User';
 
 const HORROR_SUBSTR = "Horror";
 const FUTURE_SUBSTR = "Future";
 
-describe('TutorialsContainer', () => {
+describe('QuestListCard', () => {
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
       quests: TUTORIAL_QUESTS,
@@ -18,7 +18,7 @@ describe('TutorialsContainer', () => {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };
-    const e = render(<Tutorials {...(props as any as Props)} />);
+    const e = render(<QuestListCard {...(props as any as Props)} />);
     return {props, e};
   }
 

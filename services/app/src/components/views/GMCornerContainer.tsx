@@ -13,12 +13,11 @@ const mapStateToProps = (state: AppState): StateProps => {
   return {
     quests: GM_QUESTS,
     contentSets: getContentSets(state.settings, state.multiplayer),
-    title: 'Tools',
+    title: 'GM\'s Corner',
     icon: 'gm_corner',
   };
 };
 
-// TODO: Merge this code with <Tutorials/> once GM corner quests are added here... use a "custom combat" quest of some kind instead.
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onQuestSelect(quest: Quest): void {
