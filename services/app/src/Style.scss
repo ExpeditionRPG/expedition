@@ -1483,6 +1483,9 @@ body.android .dialog .textfield:focus-within {
         top: 50%;
       }
     }
+    .showPrivateControl svg {
+      color: black !important;
+    }
   }
 
   .searchDescription {
