@@ -46,7 +46,12 @@ export function fetchSearchResults(params: SearchParams): Promise<QuestSearchRes
     });
 }
 
-export function searchInternal(a: DoSearchType, dispatch: Redux.Dispatch<any>, fetchResults = fetchSearchResults) {
+interface DoSearchParams {
+ params: SearchParams;
+ players: number;
+ settings: SettingsType;
+}
+export function searchInternal(a: DoSearchParams, dispatch: Redux.Dispatch<any>, fetchResults = fetchSearchResults) {
   const params = { ...a.params };
   Object.keys(params).forEach((key: string) => {
     if ((params as any)[key] === null) {
@@ -74,10 +79,10 @@ export function searchInternal(a: DoSearchType, dispatch: Redux.Dispatch<any>, f
 
 // TODO: Make search options propagate to other clients
 export const search = remoteify(function search(
-  a: { params: SearchParams; players: number; settings: SettingsType },
+  a: DoSearchParams,
   dispatch: Redux.Dispatch<any>
 ) {
-  return doSearch(a, dispatch);
+  return searchInternal(a, dispatch);
 });
 
 export function searchAndPlayInternal(id: string, dispatch: Redux.Dispatch<any>, fetchResults = fetchSearchResults) {
