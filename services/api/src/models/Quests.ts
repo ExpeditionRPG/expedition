@@ -1,6 +1,6 @@
 import * as Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
-import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { User } from 'shared/schema/Users';
@@ -38,20 +38,20 @@ export interface QuestSearchParams {
 export function getQuest(
   db: Database,
   partition: string,
-  id: string
+  id: string,
 ): Bluebird<Quest> {
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
       (result: QuestInstance | null) =>
-        new Quest(result ? result.dataValues : {})
+        new Quest(result ? result.dataValues : {}),
     );
 }
 
 export function searchQuests(
   db: Database,
   userId: string,
-  params: QuestSearchParams
+  params: QuestSearchParams,
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
   const where: Sequelize.WhereOptions<Partial<Quest>> = {
@@ -61,10 +61,13 @@ export function searchQuests(
   const order = [];
 
   if (params.showPrivate === true) {
-    (where as any)[Op.or] = [{partition: PUBLIC_PARTITION}, {partition: PRIVATE_PARTITION, userid: userId}];
+    (where as any)[Op.or] = [
+      { partition: Partition.expeditionPublic },
+      { partition: Partition.expeditionPrivate, userid: userId },
+    ];
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
-    where.partition = params.partition || PUBLIC_PARTITION;
+    where.partition = params.partition || Partition.expeditionPublic;
   }
 
   if (params.id) {
@@ -134,8 +137,9 @@ export function searchQuests(
         Sequelize.literal(
           `created >= '${Moment()
             .subtract(7, 'day')
-            .format('YYYY-MM-DD HH:mm:ss')}' DESC`
-        )
+            .format('YYYY-MM-DD HH:mm:ss')}' DESC`,
+        ),
+        Sequelize.literal('ratingcount < 5 DESC'),
       );
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);
@@ -170,7 +174,7 @@ export function searchQuests(
 
   const limit = Math.min(
     Math.max(params.limit || MAX_SEARCH_LIMIT, 0),
-    MAX_SEARCH_LIMIT
+    MAX_SEARCH_LIMIT,
   );
 
   return db.quests.findAll({ where, order, limit });
@@ -219,7 +223,7 @@ export function publishQuest(
   userid: string,
   majorRelease: boolean,
   quest: Quest,
-  xml: string
+  xml: string,
 ): Bluebird<QuestInstance> {
   // TODO: Validate XML via crawler
   if (!userid) {
@@ -234,9 +238,9 @@ export function publishQuest(
   return db.quests
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
-      isNew = !Boolean(i);
+      isNew = true; // !Boolean(i);
       instance = i || db.quests.build(prepare(quest));
-      if (isNew && quest.partition === PUBLIC_PARTITION) {
+      if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
 
         // New publish on public = 100 loot point award
@@ -279,7 +283,7 @@ export function publishQuest(
             partition: quest.partition,
             questversion: updateValues.questversion,
             xml,
-          })
+          }),
         )
         .then(() => {
           console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
@@ -292,7 +296,7 @@ export function publishQuest(
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update(
     { tombstone: new Date() },
-    { where: { partition, id }, limit: 1 }
+    { where: { partition, id }, limit: 1 },
   );
 }
 
@@ -306,7 +310,7 @@ export function republishQuest(db: Database, partition: string, id: string) {
 export function updateQuestRatings(
   db: Database,
   partition: string,
-  id: string
+  id: string,
 ): Bluebird<QuestInstance> {
   let quest: QuestInstance;
   return db.quests

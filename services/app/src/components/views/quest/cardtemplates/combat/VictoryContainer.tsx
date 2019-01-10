@@ -1,4 +1,3 @@
-import {toPrevious} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {getContentSets} from 'app/actions/Settings';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
@@ -26,11 +25,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     xp: true,
   };
   if (combatFromNode) {
-    if (!combat.custom) {
-      const parsedParams = node.getEventParameters('win');
-      if (parsedParams !== null) {
-        victoryParameters = parsedParams;
-      }
+    const parsedParams = node.getEventParameters('win');
+    if (parsedParams !== null) {
+      victoryParameters = parsedParams;
     }
   }
 
@@ -47,9 +44,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onCustomEnd: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: false}));
-    },
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event({node, evt}));
     },

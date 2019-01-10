@@ -1,4 +1,4 @@
-import {CONTENT_RATINGS, GENRES, LANGUAGES, PARTITIONS, THEMES} from './Constants';
+import {ContentRating, enumValues, Genre, Language, Partition, Theme} from './Constants';
 import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class Quest extends SchemaBase {
@@ -18,7 +18,7 @@ export class Quest extends SchemaBase {
     allowNull: false,
     maxLength: 32,
     primaryKey: true,
-    valid: PARTITIONS,
+    valid: enumValues(Partition),
   }) public partition: string;
 
   @field({
@@ -107,13 +107,13 @@ export class Quest extends SchemaBase {
   @field({
     default: '',
     maxLength: 128,
-    valid: GENRES,
+    valid: enumValues(Genre),
   }) public genre: string;
 
   @field({
     default: '',
     maxLength: 128,
-    valid: CONTENT_RATINGS,
+    valid: enumValues(ContentRating),
   }) public contentrating: string;
 
   @field({
@@ -140,13 +140,13 @@ export class Quest extends SchemaBase {
   @field({
     default: 'English',
     maxLength: 128,
-    valid: LANGUAGES,
+    valid: enumValues(Language),
   }) public language: string;
 
   @field({
     default: 'base',
     maxLength: 128,
-    valid: THEMES,
+    valid: enumValues(Theme),
   }) public theme: string;
 
   @field({

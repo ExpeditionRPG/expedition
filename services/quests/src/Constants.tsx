@@ -15,10 +15,7 @@ export const METADATA_FIELDS = [
   'mintimeminutes',
   'maxtimeminutes',
 ];
-export const PARTITIONS = {
-  PRIVATE: 'expedition-private',
-  PUBLIC: 'expedition-public',
-};
+// TODO move to schema constants
 export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 6;
 export const METADATA_DEFAULTS = {

@@ -13,11 +13,8 @@ import {sendStatus} from 'app/actions/Multiplayer';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
-import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
-
-const cheerio: any = require('cheerio');
 
 export function findCombatParent(node: ParserNode): Cheerio|null {
   let elem = node && node.elem;
@@ -49,11 +46,10 @@ export function getEnemiesAndTier(node?: ParserNode): {enemies: Enemy[], tier: n
   return {enemies, tier};
 }
 
-export function generateCombatTemplate(settings: SettingsType, custom: boolean, node?: ParserNode, mp?: MultiplayerState): CombatState {
+export function generateCombatTemplate(settings: SettingsType, node?: ParserNode, mp?: MultiplayerState): CombatState {
   const {enemies, tier} = getEnemiesAndTier(node);
 
   return {
-    custom,
     decisionPhase: 'PREPARE_DECISION',
     enemies,
     numAliveAdventurers: numLocalAdventurers(settings, mp),
@@ -65,32 +61,18 @@ export function generateCombatTemplate(settings: SettingsType, custom: boolean, 
 
 interface InitCombatArgs {
   node: ParserNode;
-  custom?: boolean;
 }
 export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory) {
   const mp = getState().multiplayer;
   a.node = a.node.clone();
   const settings = getState().settings;
-  a.node.ctx.templates.combat = generateCombatTemplate(settings, a.custom || false, a.node, mp);
+  a.node.ctx.templates.combat = generateCombatTemplate(settings, a.node, mp);
   const tierSum = a.node.ctx.templates.combat.tier;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
   dispatch(audioSet({intensity: calculateAudioIntensity(tierSum, tierSum, 0, 0)}));
   return null;
-});
-
-interface InitCustomCombatArgs {
-  seed?: string;
-}
-export const initCustomCombat = remoteify(function initCustomCombat(a: InitCustomCombatArgs, dispatch: Redux.Dispatch<any>,  getState: () => AppStateWithHistory): InitCustomCombatArgs {
-  // Set seed if we got one from multiplayer
-  const node = new ParserNode(cheerio.load('<combat></combat>')('combat'), defaultContext(), undefined, a.seed);
-  dispatch(initCombat({custom: true, node}));
-  if (!a.seed) {
-    a.seed = node.ctx.seed;
-  }
-  return {seed: a.seed};
 });
 
 function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
@@ -360,7 +342,7 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   const arng = seedrandom.alea(a.seed);
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
-    combat = generateCombatTemplate(a.settings, false, a.node, mp);
+    combat = generateCombatTemplate(a.settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, mp, a.elapsedMillis, arng);
@@ -416,7 +398,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
 
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
-    combat = generateCombatTemplate(a.settings, false, a.node, mp);
+    combat = generateCombatTemplate(a.settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
 
@@ -454,7 +436,7 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
-    combat = generateCombatTemplate(getState().settings, false, a.node, mp);
+    combat = generateCombatTemplate(getState().settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
   combat.tier = Math.max(a.current + a.delta, 0);
@@ -479,7 +461,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
   a.node = a.node.clone();
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
-    combat = generateCombatTemplate(getState().settings, false, a.node, mp);
+    combat = generateCombatTemplate(getState().settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
   combat.numAliveAdventurers = newAdventurerCount;

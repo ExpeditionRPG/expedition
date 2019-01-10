@@ -2,7 +2,7 @@ import {configure, render} from 'enzyme';
 import * as React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
 import {TUTORIAL_QUESTS} from 'app/Constants';
-import {PRIVATE_PARTITION} from 'shared/schema/Constants';
+import {Partition} from 'shared/schema/Constants';
 import QuestButton, {Props} from './QuestButton';
 import {newMockStore} from 'app/Testing';
 import {Provider} from 'react-redux';
@@ -76,6 +76,14 @@ describe('QuestButton', () => {
     expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
+  test('displays "new" icon if quest has fewer than 5 ratings', () => {
+    const html = setup({
+      lastLogin: Moment(),
+      quest: new Quest({...TUTORIAL_QUESTS[0], ratingcount: 4}),
+    }).e.html();
+    expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
+  });
+
   test('does not display "new" icon if quest created before last login', () => {
     const html = setup({
       lastLogin: Moment(),
@@ -128,11 +136,11 @@ describe('QuestButton', () => {
   });
 
   test('shows private icon when quest is private', () => {
-    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION}}).e.html();
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: Partition.expeditionPrivate}}).e.html();
     expect(html).toContain('private_small.svg');
   });
   test('hides private icon when quest is not private', () => {
-    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION}}).e.html();
+    const html = setup({quest: {...TUTORIAL_QUESTS[0], partition: Partition.expeditionPrivate}}).e.html();
     expect(html).toContain('private_small.svg');
   });
 });

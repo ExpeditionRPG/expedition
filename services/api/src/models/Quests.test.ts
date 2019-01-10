@@ -1,5 +1,5 @@
 import { object } from 'joi';
-import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
 import { searchQuests } from './Quests';
@@ -11,24 +11,28 @@ describe('quest', () => {
   describe('searchQuests', () => {
     const quests = [q.basic, q.private, q.privateUser2, q.horror, q.future];
 
-    test('returns an empty array if no results', (done) => {
+    test('returns an empty array if no results', done => {
       testingDBWithState(quests)
-        .then((tdb) => {
-          return searchQuests(tdb, q.basic.userid, { partition: 'otherpartition' });
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: 'otherpartition',
+          });
         })
-        .then((results) => {
+        .then(results => {
           expect(results.length).toEqual(0);
           done();
         })
         .catch(done.fail);
     });
 
-    test('returns full quest data', (done) => {
+    test('returns full quest data', done => {
       testingDBWithState(quests)
-        .then((tdb) => {
-          return searchQuests(tdb, q.basic.userid, { partition: PUBLIC_PARTITION });
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: Partition.expeditionPublic,
+          });
         })
-        .then((results) => {
+        .then(results => {
           expect(results.length).toEqual(1);
           const resolved = new Quest(results[0].dataValues);
           for (const k of Object.keys(q.basic.optionsMap)) {
@@ -39,12 +43,14 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('does not return expansions if unspecified', (done) => {
+    test('does not return expansions if unspecified', done => {
       testingDBWithState(quests)
-        .then((tdb) => {
-          return searchQuests(tdb, q.basic.userid, { partition: PUBLIC_PARTITION });
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: Partition.expeditionPublic,
+          });
         })
-        .then((results) => {
+        .then(results => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(
             jasmine.objectContaining({ id: 'questid' }),
@@ -54,15 +60,15 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('returns expansion quests first if specified', (done) => {
+    test('returns expansion quests first if specified', done => {
       testingDBWithState(quests)
-        .then((tdb) =>
+        .then(tdb =>
           searchQuests(tdb, '', {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             expansions: ['horror'],
           }),
         )
-        .then((results) => {
+        .then(results => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(
             jasmine.objectContaining({ id: 'questidhorror' }),
@@ -72,53 +78,66 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('return private quests (alongside public quests) when showPrivate is set to true', (done) => {
+    test('return private quests (alongside public quests) when showPrivate is set to true', done => {
       testingDBWithState([q.basic, q.private])
-        .then((tdb) => {
+        .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })
-        .then((results) => {
-          results
+        .then(results => {
           expect(results.length).toEqual(2);
-          expect((results[0] as any).dataValues).toEqual(jasmine.objectContaining({partition: PRIVATE_PARTITION}));
-          expect((results[1] as any).dataValues).toEqual(jasmine.objectContaining({partition: PUBLIC_PARTITION}));
+          expect((results[0] as any).dataValues).toEqual(
+            jasmine.objectContaining({
+              partition: Partition.expeditionPrivate,
+            }),
+          );
+          expect((results[1] as any).dataValues).toEqual(
+            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
+          );
           done();
         })
         .catch(done.fail);
     });
 
-    test('return private quests before public quests when showPrivate is set to true', (done) => {
+    test('return private quests before public quests when showPrivate is set to true', done => {
       testingDBWithState([q.basic, q.private])
-        .then((tdb) => {
+        .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })
-        .then((results) => {
-          expect(results[0].dataValues).toEqual(jasmine.objectContaining({partition: PRIVATE_PARTITION}));
-          expect(results[1].dataValues).toEqual(jasmine.objectContaining({partition: PUBLIC_PARTITION}));
+        .then(results => {
+          expect(results[0].dataValues).toEqual(
+            jasmine.objectContaining({
+              partition: Partition.expeditionPrivate,
+            }),
+          );
+          expect(results[1].dataValues).toEqual(
+            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
+          );
           done();
         })
         .catch(done.fail);
     });
 
-    test('does not return private quests when showPrivate is set to false', (done) => {
+    test('does not return private quests when showPrivate is set to false', done => {
       testingDBWithState(quests)
-        .then((tdb) => {
+        .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: false,
           });
         })
-        .then((results) => {
+        .then(results => {
           expect(results.length).toEqual(1);
           Object.keys(results[0]).forEach(key => {
             if (results[0][key].hasOwnProperty('partition')) {
-              expect(results[0][key].partition).toEqual(PUBLIC_PARTITION);
+              expect(results[0][key].partition).toEqual(
+                Partition.expeditionPublic,
+              );
             }
           });
           done();
@@ -126,56 +145,58 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('returns only private quests belonging to provided user', (done) => {
+    test('returns only private quests belonging to provided user', done => {
       testingDBWithState(quests)
-        .then((tdb) => {
+        .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })
-        .then((results) => {
+        .then(results => {
           for (const r of results) {
-            expect(r.dataValues).toEqual(jasmine.objectContaining({userid: q.basic.userid}));
+            expect(r.dataValues).toEqual(
+              jasmine.objectContaining({ userid: q.basic.userid }),
+            );
           }
           done();
         })
         .catch(done.fail);
     });
 
-    test('+ratingavg (default) orders by newly published, rating, then rating count', (done) => {
+    test('+ratingavg (default) orders by newly published, rating, then rating count', done => {
       const q1 = new Quest({
         ...q.basic,
         id: 'q1',
         ratingavg: 4.0,
-        ratingcount: 6,
+        ratingcount: 10,
         created: Moment().subtract(1, 'month'),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 5.0,
-        ratingcount: 1,
+        ratingcount: 6,
         created: Moment().subtract(1, 'month'),
       });
       const q3 = new Quest({
         ...q.basic,
         id: 'q3',
         ratingavg: 5.0,
-        ratingcount: 3,
+        ratingcount: 8,
         created: Moment().subtract(1, 'month'),
       });
       const q4 = new Quest({
         ...q.basic,
         id: 'q4',
         ratingavg: 4.5,
-        ratingcount: 1,
+        ratingcount: 6,
         created: Moment().subtract(6, 'days'),
       });
 
       testingDBWithState([q1, q2, q3, q4])
-        .then((tdb) => searchQuests(tdb, '', { order: '+ratingavg' }))
-        .then((results) => {
+        .then(tdb => searchQuests(tdb, '', { order: '+ratingavg' }))
+        .then(results => {
           expect(results.map(r => r.get('id'))).toEqual([
             'q4',
             'q3',
@@ -187,7 +208,32 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('age filter works', (done) => {
+    test('+ratingavg orders quests with <5 ratings before quests with high rating count', done => {
+      const q1 = new Quest({
+        ...q.basic,
+        id: 'q1',
+        ratingavg: 4.0,
+        ratingcount: 10,
+        created: Moment().subtract(1, 'month'),
+      });
+      const q2 = new Quest({
+        ...q.basic,
+        id: 'q2',
+        ratingavg: 4.0,
+        ratingcount: 2,
+        created: Moment().subtract(1, 'month'),
+      });
+
+      testingDBWithState([q1, q2])
+        .then(tdb => searchQuests(tdb, '', { order: '+ratingavg' }))
+        .then(results => {
+          expect(results.map(r => r.get('id'))).toEqual(['q2', 'q1']);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('age filter works', done => {
       const q1 = new Quest({
         ...q.basic,
         id: 'q1',
@@ -200,8 +246,8 @@ describe('quest', () => {
       });
 
       testingDBWithState([q1, q2])
-        .then((db) => searchQuests(db, '', { age: '31536000' })) // this year
-        .then((results) => {
+        .then(db => searchQuests(db, '', { age: '31536000' })) // this year
+        .then(results => {
           expect(results.map(r => r.get('id'))).toEqual(['q1']);
           done();
         })
@@ -209,7 +255,7 @@ describe('quest', () => {
     });
   });
 
-  test('allows ordering results by created', (done) => {
+  test('allows ordering results by created', done => {
     const q1 = new Quest({
       ...q.basic,
       id: 'q1',
@@ -232,14 +278,9 @@ describe('quest', () => {
     });
 
     testingDBWithState([q1, q2, q3, q4])
-      .then((tdb) => searchQuests(tdb, '', { order: '-created' }))
-      .then((results) => {
-        expect(results.map(r => r.get('id'))).toEqual([
-          'q1',
-          'q2',
-          'q3',
-          'q4',
-        ]);
+      .then(tdb => searchQuests(tdb, '', { order: '-created' }))
+      .then(results => {
+        expect(results.map(r => r.get('id'))).toEqual(['q1', 'q2', 'q3', 'q4']);
         done();
       })
       .catch(done.fail);

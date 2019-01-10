@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
-import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
 import { Event } from 'shared/schema/multiplayer/Events';
 import { SessionClient } from 'shared/schema/multiplayer/SessionClients';
@@ -64,7 +64,7 @@ const basicQuest = new Quest({
   maxtimeminutes: 60,
   minplayers: 1,
   mintimeminutes: 30,
-  partition: PUBLIC_PARTITION,
+  partition: Partition.expeditionPublic,
   published: new Date(),
   publishedurl: 'http://testpublishedquesturl.com',
   questversion: 1,
@@ -99,7 +99,7 @@ export const quests = {
   }),
   private: new Quest({
     ...basicQuest,
-    partition: PRIVATE_PARTITION,
+    partition: Partition.expeditionPrivate,
     publishedurl: 'http://testpublishedPRIVATEquesturl.com',
     summary: 'This be a test PRIVATE quest!',
     title: 'Test Private Quest',
@@ -108,7 +108,7 @@ export const quests = {
   }),
   privateUser2: new Quest({
     ...basicQuest,
-    partition: PRIVATE_PARTITION,
+    partition: Partition.expeditionPrivate,
     id: 'questidotheruser',
     publishedurl: 'http://testpublishedPRIVATEquesturl.com',
     summary: 'This be a test PRIVATE quest!',
@@ -142,7 +142,7 @@ const basicFeedback = new Feedback({
   difficulty: 'NORMAL',
   email: 'test@test.com',
   name: 'Test Testerson',
-  partition: PUBLIC_PARTITION,
+  partition: Partition.expeditionPublic,
   platform: 'ios',
   players: 5,
   questid: 'questid',
@@ -221,7 +221,7 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
       dialect: 'sqlite',
       logging: false,
       storage: ':memory:',
-    })
+    }),
   );
 
   return Promise.all([
@@ -237,7 +237,7 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
   ])
     .then(() =>
       Promise.all(
-        state.map((entry) => {
+        state.map(entry => {
           if (entry instanceof AnalyticsEvent) {
             return db.analyticsEvent.create(prepare(entry)).then(() => null);
           }
@@ -266,8 +266,8 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
             return db.sessions.create(prepare(entry)).then(() => null);
           }
           throw new Error('Unsupported entry for testingDBWithState');
-        })
-      )
+        }),
+      ),
     )
     .then(() => db);
 }
