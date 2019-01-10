@@ -6,13 +6,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
+import {VERSION} from 'shared/schema/Constants';
 import theme from 'shared/Theme';
 import {fetchAnnouncements} from './actions/Announcement';
 import {renderAndPlay} from './actions/Editor';
 import {questLoading, saveQuest} from './actions/Quest';
 import {setSnackbar} from './actions/Snackbar';
 import {loginUser} from './actions/User';
-import {VERSION} from './Constants';
 import {store} from './Store';
 
 declare var require: any;

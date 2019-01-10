@@ -6,7 +6,7 @@ import {Partition} from 'shared/schema/Constants';
 import QuestButton, {Props} from './QuestButton';
 import {newMockStore} from 'app/Testing';
 import {Provider} from 'react-redux';
-import {loggedOutUser} from 'app/reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {initialSettings} from 'app/reducers/Settings';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });

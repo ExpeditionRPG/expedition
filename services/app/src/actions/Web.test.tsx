@@ -3,7 +3,7 @@ import {AUTH_SETTINGS} from '../Constants';
 import * as requests from 'shared/requests';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
-import {loggedOutUser} from '../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {Action} from '../Testing';
 import {fetchQuestXML, loadQuestXML} from './Web';
 

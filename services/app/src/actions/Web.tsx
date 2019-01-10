@@ -1,9 +1,10 @@
 import Redux from 'redux';
 import {fetchLocal, handleFetchErrors} from 'shared/requests';
+import {VERSION} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {AUTH_SETTINGS, VERSION} from '../Constants';
+import {AUTH_SETTINGS} from '../Constants';
 import {MIN_FEEDBACK_LENGTH} from '../Constants';
 import {getDevicePlatform, getPlatformDump} from '../Globals';
 import {getLogBuffer} from '../Logging';

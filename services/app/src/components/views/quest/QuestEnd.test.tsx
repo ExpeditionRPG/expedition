@@ -3,7 +3,7 @@ import QuestEnd, {Props} from './QuestEnd';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {initialSettings} from 'app/reducers/Settings';
 import {initialState as initialCheckout} from 'app/reducers/Checkout';
-import {loggedOutUser} from 'app/reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {mountRoot} from 'app/Testing';
 
 const GOOD_FORM_SUBSTR = 'Glad you liked it';

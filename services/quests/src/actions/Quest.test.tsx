@@ -1,5 +1,5 @@
 import {loadQuest} from './Quest';
-import {API_HOST} from '../Constants';
+import {API_HOST} from 'shared/schema/Constants';
 import {loggedOutUser} from '../reducers/User';
 import {Action} from '../Testing';
 

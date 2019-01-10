@@ -13,7 +13,7 @@ import {
   MultiplayerPeersDialogProps,
   MultiplayerPeersDialog
 } from './Dialogs';
-import {loggedOutUser} from 'app/reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {initialSettings} from 'app/reducers/Settings';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';

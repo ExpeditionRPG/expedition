@@ -2,7 +2,7 @@ import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {AUTH_SETTINGS} from '../Constants';
 import {initialQuestState} from '../reducers/Quest';
 import {initialSettings} from '../reducers/Settings';
-import {loggedOutUser} from '../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {Action} from '../Testing';
 import {exitQuest, endQuest, initQuest} from './Quest';
 import {fakeConnection} from '../multiplayer/Testing';

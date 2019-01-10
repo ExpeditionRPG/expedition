@@ -10,7 +10,6 @@ To get you started, when you first log in, the Quest Editor is populated with an
 
 Here we'll dive into more specific details about what's possible in QDL.
 
-
 ## Glossary
 
 [**Attribute**](#attributes): cards and elements can be given additional attributes, such as ID's and if statements, that extend their functionality.
@@ -26,7 +25,6 @@ Here we'll dive into more specific details about what's possible in QDL.
 [**Formatting**](#formatting): ways to format your text, including bold, italic, newlines and more.
 
 [**Metadata**](#metadata): Quest metadata defined at the top of the quest. Specifies things like the number of adventurers supported, the quest title and author, etc
-
 
 ## Attributes
 
@@ -87,10 +85,10 @@ You prepare to ask John a question...
   You leave the conversation and the loop
 ```
 
-
 ### IFs
 
 For **elements** (including listing combat enemies), you can add IF statements that reference the **context** to selectively show or hide the element. This looks like:
+
 ```
 > {{ onFire == true }} Lose 1 health
 * {{ gold >= 10 }} Buy a potion for 10 gold
@@ -105,7 +103,6 @@ Branching lets you create interactive adventurers with choices and consequences.
 
 You have two types of branches at your disposal:
 
-
 ### Choices
 
 You can present adventurers choices in roleplaying cards, which appear at the bottom of the card.
@@ -119,6 +116,7 @@ Here's a basic example:
 ```
 
 And a more complex demonstration of how branches fall through once complete:
+
 ```
 * First choice: option A
 
@@ -149,11 +147,9 @@ _Unity_
 Adventurers will see this card after both options fall through (unless they're redirected, for example with a **goto** or **end** element)
 ```
 
-
 ### Events
 
 Where choices are triggered by adventurers making a choice between buttons, events are triggered by the app when certain criteria are met. Right now, there are `* on round`, `* on win` and `* on lose` events in combat, though this may be expanded in the future.
-
 
 ## Cards
 
@@ -173,7 +169,7 @@ This is a separate line of text! You can also use **bold**, _italicize_ and ~~st
 
 _another roleplay card_
 
-Users see this card once they tap the "Next" button from the previous card. 
+Users see this card once they tap the "Next" button from the previous card.
 
 * here's a choice that looks like a button users can tap on.
 
@@ -189,7 +185,6 @@ Note that you cannot title roleplaying cards `combat` / `Combat` or `decision` /
 ### Combat cards
 
 What's an adventure without some swordplay? The basic syntax for a combat card is:
-
 
 ```markdown
 _combat_
@@ -226,15 +221,15 @@ _combat_
 
   > Is the Lich dead?
 
-  *  Yes
+  - Yes
 
-     **win**
+    **win**
 
-  *  No
+  - No
 
-     The Lich engulfs your party in frost!
+    The Lich engulfs your party in frost!
 
-     > All adventurers take 1 damage
+    > All adventurers take 1 damage
 
 * on win
 
@@ -252,13 +247,13 @@ _combat_
 
 ...
 
-* {{_.currentCombatRound() % 2 == 1}} on round
+- {{_.currentCombatRound() % 2 == 1}} on round
 
   This happens on every two rounds, starting with 1 (i.e. rounds 1, 3, 5, etc.).
-  
+
   The first round is round 1.
 
-* {{_.currentCombatRound() == 4}} on round
+- {{_.currentCombatRound() == 4}} on round
 
   This happens once, on the 4th round.
 ```
@@ -270,7 +265,7 @@ _combat_
 
 ...
 
-* {{_.isCombatSurgeRound()}} on round
+- {{_.isCombatSurgeRound()}} on round
 
   Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
@@ -278,15 +273,15 @@ _combat_
 You can also have mid-combat choices lead to the end of combat by having them use the win / lose triggers outside of the normal combat flow. For example:
 
 ```markdown
-* on round
+- on round
 
   Did you kill the Lich?
 
-  * Yes
+  - Yes
 
     **win**
 
-  * No
+  - No
 
     The battle continues...
 ```
@@ -310,7 +305,6 @@ When writing your story, we encourage you to think about what would happen if th
 Sometimes in a quest, it makes sense for the enemies to be random. Maybe you encounter a group of Bandit thugs, but it doesn't affect the story if they're tier 1 archers or tier 1 footpads. In cases like this, a touch of randomness can increase surprise and replayability.
 
 You can use the following syntax to create random enemies - anything from a totally random enemy, to a random enemy of a specific class or tier, all the way to a random enemy of a specific class and tier:
-
 
 ```
 _combat_
@@ -348,70 +342,70 @@ When out of combat, skill checks look sort of like a special roleplay card:
 
 ```markdown
 _decision_
-  
-This text will be shown as users are getting ready to make a decision. 
 
-* on athletics
+This text will be shown as users are getting ready to make a decision.
+
+- on athletics
 
   This is one athletics outcome.
 
-* on athletics
+- on athletics
 
   This is another athletics outcome!
 
-* on knowledge
+- on knowledge
 
   This is a knowledge outcome.
 
-* on charisma
+- on charisma
 
   This is a charisma outcome.
 
-* on failure
+- on failure
 
   Failure!
 ```
 
-* Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from. 
-* Each of these outcomes must specify at least the skill being used - one of knowledge, athletics, or charisma.
-* If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona. If you reference persona, you must mark your quest as requiring The Horror expansion (otherwise users won't benefit from it). 
-* Unless specified, your outcome describes what happens when the user succeeds in rolling for the outcome. You can also add "success", "failure", or "interrupted" to describe specifically what happens when users roll to high, too low, or not significantly in either direction. 
-  * If you want to reuse the same failure text for every outcome, you can specify an "on failure" node that is used for any skill and persona alignment that doesn't have a more specific failure outcome.
-  * If you don't add any "interrupted" outcomes, the app will generate some generic "interrupted" text and use it.
-  * There *must* be a success and failure for every outcome - whether it's specified in two outcomes, or using a generic failure outcome is up to you.
+- Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from.
+- Each of these outcomes must specify at least the skill being used - one of knowledge, athletics, or charisma.
+- If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona. If you reference persona, you must mark your quest as requiring The Horror expansion (otherwise users won't benefit from it).
+- Unless specified, your outcome describes what happens when the user succeeds in rolling for the outcome. You can also add "success", "failure", or "interrupted" to describe specifically what happens when users roll to high, too low, or not significantly in either direction.
+  - If you want to reuse the same failure text for every outcome, you can specify an "on failure" node that is used for any skill and persona alignment that doesn't have a more specific failure outcome.
+  - If you don't add any "interrupted" outcomes, the app will generate some generic "interrupted" text and use it.
+  - There _must_ be a success and failure for every outcome - whether it's specified in two outcomes, or using a generic failure outcome is up to you.
 
 Whew, that's a lot of options! You can get as fancy as you want with this - here's a valid decision that uses all kinds of different outcomes:
 
 ```markdown
 _decision_
-  
+
 Truly a fancy decision.
 
-* on light athletics failure
+- on light athletics failure
 
   Light athletics failed!
 
-* on light athletics interrupted
+- on light athletics interrupted
 
   Light athletics interrupted!
 
-* on light athletics success
+- on light athletics success
 
   Light athletics succeeded!
 
-* on dark athletics
+- on dark athletics
 
   Dark athletics succeeded!
 
-* on knowledge
+- on knowledge
 
   Knowledge succeeded!
 
-* on interrupted
+- on interrupted
 
   Interrupted!
 
-* on failure
+- on failure
 
   Failure!
 ```
@@ -432,14 +426,14 @@ _title_
 
 {{gold == 0}} You have no gold!
 
-* {{ gold >= 5 }} Buy the potion
+- {{ gold >= 5 }} Buy the potion
 
   {{ hasPotion = true }}
   {{ gold = gold - 5 }}
 
   You purchase the potion. You now have a potion, and {{ gold }} gold.
 
-* Continue walking
+- Continue walking
 
   You decide not to purchase the potion.
 
@@ -516,7 +510,6 @@ MathJS includes a number of other useful geometric, combinatorial, algebraic, tr
 
 Using elements, roleplaying cards can be more than just text.
 
-
 ### Choices
 
 As covered in the **branching** section, you can include choice elements inside of cards.
@@ -557,7 +550,6 @@ Whist this will show the value of gold (10):
 ```
 You have {{ gold }} gold.
 ```
-
 
 ### Pointers
 

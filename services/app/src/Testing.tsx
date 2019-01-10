@@ -4,11 +4,11 @@ import * as React from 'react';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {Connection, setMultiplayerConnection} from './multiplayer/Connection';
 import {createMiddleware} from './multiplayer/Middleware';
 import combinedReducers from './reducers/CombinedReducers';
 import {AppStateWithHistory} from './reducers/StateTypes';
-import {loggedOutUser} from './reducers/User';
 
 configure({ adapter: new Adapter() });
 

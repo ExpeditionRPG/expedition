@@ -1,6 +1,4 @@
-export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
-export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
-export const API_HOST = (process && process.env && process.env.API_HOST) || 'http://betaapi.expeditiongame.com';
+import {API_HOST, VERSION} from 'shared/schema/Constants';
 
 export const URLS = {
   ANNOUNCEMENTS: API_HOST + '/qc/announcements',

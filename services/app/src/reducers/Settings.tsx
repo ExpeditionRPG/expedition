@@ -1,6 +1,6 @@
 import Redux from 'redux';
+import {NODE_ENV} from 'shared/schema/Constants';
 import {ChangeSettingsAction} from '../actions/ActionTypes';
-import {NODE_ENV} from '../Constants';
 import {getStorageBoolean, getStorageJson, getStorageNumber, getStorageString, setStorageKeyValue} from '../LocalStorage';
 import {ContentSetsType, DifficultyType, FontSizeType, SettingsType} from './StateTypes';
 
