@@ -139,6 +139,7 @@ export function searchQuests(
             .subtract(7, 'day')
             .format('YYYY-MM-DD HH:mm:ss')}' DESC`,
         ),
+        Sequelize.literal('ratingcount < 5 DESC'),
       );
       order.push(['ratingavg', 'DESC']);
       order.push(['ratingcount', 'DESC']);

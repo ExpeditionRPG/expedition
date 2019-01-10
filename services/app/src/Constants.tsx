@@ -44,6 +44,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
   new Quest({
     id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
@@ -63,6 +64,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
   new Quest({
     id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
@@ -82,6 +84,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
 ];
 export const GM_QUESTS: Quest[] = [
@@ -106,6 +109,7 @@ export const GM_QUESTS: Quest[] = [
     requirespenpaper: true,
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
   new Quest({
     id: '1kssfItnSzYRhaI6p-ASGb1pS0aCOIuVr',
@@ -128,6 +132,7 @@ export const GM_QUESTS: Quest[] = [
     requirespenpaper: true,
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
 ];
 export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
@@ -149,6 +154,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
   new Quest({
     id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
@@ -169,6 +175,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
     expansionhorror: true,
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
   new Quest({
     id: '1kWPBHWA6L9bViU1SqLd6WOw6hNMvtedI',
@@ -190,6 +197,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }),
 ];
 
@@ -212,6 +220,7 @@ if (NODE_ENV === 'dev') {
     language: 'English',
     created: EPOCH,
     published: EPOCH,
+    ratingcount: 100000, // prevent "new quest" icon
   }));
 }
 

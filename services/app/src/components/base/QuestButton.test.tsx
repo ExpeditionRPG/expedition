@@ -76,6 +76,14 @@ describe('QuestButton', () => {
     expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
   });
 
+  test('displays "new" icon if quest has fewer than 5 ratings', () => {
+    const html = setup({
+      lastLogin: Moment(),
+      quest: new Quest({...TUTORIAL_QUESTS[0], ratingcount: 4}),
+    }).e.html();
+    expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
+  });
+
   test('does not display "new" icon if quest created before last login', () => {
     const html = setup({
       lastLogin: Moment(),

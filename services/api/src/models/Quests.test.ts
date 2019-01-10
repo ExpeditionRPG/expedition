@@ -169,28 +169,28 @@ describe('quest', () => {
         ...q.basic,
         id: 'q1',
         ratingavg: 4.0,
-        ratingcount: 6,
+        ratingcount: 10,
         created: Moment().subtract(1, 'month'),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 5.0,
-        ratingcount: 1,
+        ratingcount: 6,
         created: Moment().subtract(1, 'month'),
       });
       const q3 = new Quest({
         ...q.basic,
         id: 'q3',
         ratingavg: 5.0,
-        ratingcount: 3,
+        ratingcount: 8,
         created: Moment().subtract(1, 'month'),
       });
       const q4 = new Quest({
         ...q.basic,
         id: 'q4',
         ratingavg: 4.5,
-        ratingcount: 1,
+        ratingcount: 6,
         created: Moment().subtract(6, 'days'),
       });
 
@@ -203,6 +203,31 @@ describe('quest', () => {
             'q2',
             'q1',
           ]);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('+ratingavg orders quests with <5 ratings before quests with high rating count', done => {
+      const q1 = new Quest({
+        ...q.basic,
+        id: 'q1',
+        ratingavg: 4.0,
+        ratingcount: 10,
+        created: Moment().subtract(1, 'month'),
+      });
+      const q2 = new Quest({
+        ...q.basic,
+        id: 'q2',
+        ratingavg: 4.0,
+        ratingcount: 2,
+        created: Moment().subtract(1, 'month'),
+      });
+
+      testingDBWithState([q1, q2])
+        .then(tdb => searchQuests(tdb, '', { order: '+ratingavg' }))
+        .then(results => {
+          expect(results.map(r => r.get('id'))).toEqual(['q2', 'q1']);
           done();
         })
         .catch(done.fail);
