@@ -336,13 +336,13 @@ To do this, you simply annotate the combat on win outcome. Below, you can see wh
 
 Note: In cases where adventurers won't heal at the end of combat, it's nice to warn them with an instruction node before combat starts so that they can make better choices - for example: `> You're on the run! You won't heal after this encounter.`
 
-### Decision cards
+### Decision cards (The Future expansion)
 
-Decisions allow you to add a more structure element of action to your quest. These can happen both in combat and during roleplay - in fact, they can happen automatically in combat if The Future expansion is enabled!
+Decisions allow you to add a more structure element of action to your quest. These can happen both in combat and during roleplay - in fact, they sometimes happen automatically in combat!
 
 A decision plays out similarly to a round of combat - there's a timed phase where users have a limited amount of time to select the best action to take given some scenario you present.
 
-Decisions can be used without The Future, but they really shine when users have Skill cards that they can use to affect their success or failure when attempting a skill check. Try to use these only in quests where you mark The Future as a requred expansion.
+Decisions can be made when when users have Skill cards that they can use to affect their success or failure when attempting a skill check. If you use decisions, you must mark The Future as a requred expansion.
 
 When out of combat, skill checks look sort of like a special roleplay card:
 
@@ -374,7 +374,7 @@ This text will be shown as users are getting ready to make a decision.
 
 * Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from. 
 * Each of these outcomes must specify at least the skill being used - one of knowledge, athletics, or charisma.
-* If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona (a type of card from The Horror expansion). 
+* If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona. If you reference persona, you must mark your quest as requiring The Horror expansion (otherwise users won't benefit from it). 
 * Unless specified, your outcome describes what happens when the user succeeds in rolling for the outcome. You can also add "success", "failure", or "interrupted" to describe specifically what happens when users roll to high, too low, or not significantly in either direction. 
   * If you want to reuse the same failure text for every outcome, you can specify an "on failure" node that is used for any skill and persona alignment that doesn't have a more specific failure outcome.
   * If you don't add any "interrupted" outcomes, the app will generate some generic "interrupted" text and use it.
