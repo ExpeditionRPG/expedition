@@ -349,27 +349,27 @@ When out of combat, skill checks look sort of like a special roleplay card:
 ```markdown
 _decision_
   
-  This text will be shown as users are getting ready to make a decision. 
-  
-  * on athletics
-  
-    This is one athletics outcome.
-    
-  * on athletics
- 
-    This is another athletics outcome!
-    
-  * on knowledge
- 
-    This is a knowledge outcome.
-   
-  * on charisma
-  
-    This is a charisma outcome.
-  
-  * on failure
- 
-    Failure!
+This text will be shown as users are getting ready to make a decision. 
+
+* on athletics
+
+  This is one athletics outcome.
+
+* on athletics
+
+  This is another athletics outcome!
+
+* on knowledge
+
+  This is a knowledge outcome.
+
+* on charisma
+
+  This is a charisma outcome.
+
+* on failure
+
+  Failure!
 ```
 
 * Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from. 
@@ -385,35 +385,35 @@ Whew, that's a lot of options! You can get as fancy as you want with this - here
 ```markdown
 _decision_
   
-  Truly a fancy decision.
-  
-  * on light athletics failure
- 
-    Light athletics failed!
-    
-  * on light athletics interrupted
- 
-    Light athletics interrupted!
-    
-  * on light athletics success
- 
-    Light athletics succeeded!
-    
-  * on dark athletics
- 
-    Dark athletics succeeded!
-    
-  * on knowledge
- 
-    Knowledge succeeded!
-    
-  * on interrupted
- 
-    Interrupted!
-  
-  * on failure
- 
-    Failure!
+Truly a fancy decision.
+
+* on light athletics failure
+
+  Light athletics failed!
+
+* on light athletics interrupted
+
+  Light athletics interrupted!
+
+* on light athletics success
+
+  Light athletics succeeded!
+
+* on dark athletics
+
+  Dark athletics succeeded!
+
+* on knowledge
+
+  Knowledge succeeded!
+
+* on interrupted
+
+  Interrupted!
+
+* on failure
+
+  Failure!
 ```
 
 ## Context
