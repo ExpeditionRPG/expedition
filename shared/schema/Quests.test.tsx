@@ -1,10 +1,10 @@
-import {PRIVATE_PARTITION, PUBLIC_PARTITION} from './Constants';
+import {Partition} from './Constants';
 import {Quest} from './Quests';
 
 describe('Quests Schema', () => {
-  const base = {partition: PRIVATE_PARTITION, id: '12345'};
+  const base = {partition: Partition.expeditionPrivate, id: '12345'};
   test('is invalid when no partition or id', () => {
-    expect(Quest.create({partition: PUBLIC_PARTITION}) instanceof Error).toEqual(true);
+    expect(Quest.create({partition: Partition.expeditionPublic}) instanceof Error).toEqual(true);
     expect(Quest.create({id: ''}) instanceof Error).toEqual(true);
   });
   test('is valid when partition and ID given', () => {
@@ -27,7 +27,7 @@ describe('Quests Schema', () => {
       genre: 'Horror',
       id: '12345',
       language: 'English',
-      partition: PRIVATE_PARTITION,
+      partition: Partition.expeditionPrivate,
       theme: 'base',
     });
     expect(q.contentrating).toEqual('Adult');

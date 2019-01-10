@@ -1,3 +1,4 @@
+import {Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 
 export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
@@ -27,7 +28,7 @@ const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped
 export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
   new Quest({
     id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Oust Albanus',
@@ -46,7 +47,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
   }),
   new Quest({
     id: '0B7K9abSH1xEOUUR1Z0lncm9NRjQ',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Dungeon Crawl',
@@ -65,7 +66,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
   }),
   new Quest({
     id: '0B7K9abSH1xEORjdkMWtTY3ZtNGs',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Mistress Malaise',
@@ -86,7 +87,7 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
 export const GM_QUESTS: Quest[] = [
   new Quest({
     id: '1tgIk4_lnxqgWy5WQUId68XMQnfn1Be5s',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'A Shiny Score (BETA)',
@@ -108,7 +109,7 @@ export const GM_QUESTS: Quest[] = [
   }),
   new Quest({
     id: '1kssfItnSzYRhaI6p-ASGb1pS0aCOIuVr',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Future Inspirations (BETA)',
@@ -132,7 +133,7 @@ export const GM_QUESTS: Quest[] = [
 export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
   new Quest({
     id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Learning to Adventure',
@@ -151,7 +152,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
   }),
   new Quest({
     id: '0B7K9abSH1xEOWVpEV1JGWDFtWmc',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'horror',
     official: true,
     title: 'Learning 2: The Horror',
@@ -171,7 +172,7 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
   }),
   new Quest({
     id: '1kWPBHWA6L9bViU1SqLd6WOw6hNMvtedI',
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
     theme: 'base',
     official: true,
     title: 'Learning 3: The Future',

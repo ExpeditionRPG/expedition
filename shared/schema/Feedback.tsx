@@ -1,4 +1,4 @@
-import {DIFFICULTIES, PARTITIONS} from './Constants';
+import {Difficulty, enumValues, Partition} from './Constants';
 import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
 
 export class Feedback extends SchemaBase {
@@ -18,7 +18,7 @@ export class Feedback extends SchemaBase {
     allowNull: false,
     maxLength: 32,
     primaryKey: true,
-    valid: [...PARTITIONS, ''],
+    valid: [...enumValues(Partition), ''],
   }) public partition: string;
 
   @field({
@@ -76,7 +76,7 @@ export class Feedback extends SchemaBase {
   @field({
     default: 'NORMAL',
     maxLength: 32,
-    valid: DIFFICULTIES,
+    valid: enumValues(Difficulty),
   }) public difficulty: string;
 
   @field({

@@ -3,7 +3,7 @@ import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestPreview, {Props} from './QuestPreview';
-import {PRIVATE_PARTITION} from 'shared/schema/Constants';
+import {Partition} from 'shared/schema/Constants';
 import {mount, unmountAll} from 'app/Testing';
 
 describe('QuestPreview', () => {
@@ -118,7 +118,7 @@ describe('QuestPreview', () => {
   });
 
   test('indicates when quest is private', () => {
-    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: PRIVATE_PARTITION})});
+    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: Partition.expeditionPrivate})});
     expect(wrapper.find(".indicators").text()).toContain("Private Quest");
   });
 
