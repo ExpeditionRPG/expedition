@@ -1,11 +1,11 @@
 import Redux from 'redux';
 import {renderXML} from 'shared/render/QDLParser';
+import {Partition} from 'shared/schema/Constants';
 import {realtimeUtils} from '../Auth';
 import {
   API_HOST,
   METADATA_DEFAULTS,
   NEW_QUEST_TEMPLATE,
-  PARTITIONS,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
 import {EditableMap, EditableModel, EditableString} from '../Editable';
@@ -375,7 +375,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       maxtimeminutes: quest.maxtimeminutes,
       minplayers: quest.minplayers,
       mintimeminutes: quest.mintimeminutes,
-      partition: (privatePublish) ? PARTITIONS.PRIVATE : PARTITIONS.PUBLIC,
+      partition: (privatePublish) ? Partition.expeditionPrivate : Partition.expeditionPublic,
       requirespenpaper: quest.requirespenpaper,
       summary: quest.summary,
       theme: quest.theme,
