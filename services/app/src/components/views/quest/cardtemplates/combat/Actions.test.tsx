@@ -12,7 +12,6 @@ import {
   handleCombatTimerStop,
   handleResolvePhase,
   initCombat,
-  initCustomCombat,
   isSurgeNextRound,
   roundTimeMillis,
   tierSumDelta,
@@ -60,7 +59,6 @@ describe('Combat actions', () => {
       // "Unknown" enemies are given tier 1.
       // Known enemies' tier is parsed from constants.
       expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
-        custom: false,
         enemies: [
           {name: 'Test', tier: 1},
           {name: 'Lich', tier: 4, class: 'Undead'},
@@ -71,38 +69,6 @@ describe('Combat actions', () => {
         tier: 9,
       }));
     });
-  });
-
-  describe('generate combat template', () => {
-    test.skip('Returns expected difficulty settings', () => { /* TODO */ });
-    test.skip('Returns expected alive adventurers - one player', () => { /* TODO */ });
-    test.skip('Returns expected alive adventurers - multiplayer', () => { /* TODO */ });
-  });
-
-  describe('initCustomCombat', () => {
-    test('has custom=true', () => {
-      const actions = Action(initCustomCombat, {settings: s.basic}).execute({});
-      expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
-        custom: true,
-      }));
-    });
-
-    test('identifies as a combat element', () => {
-      const actions = Action(initCustomCombat, {settings: s.basic}).execute({});
-      expect(actions[1].node.getTag()).toEqual('combat');
-    });
-
-    test('passes seed to multiplayer', () => {
-      const store = newMockStore({settings: s.basic, multiplayer: {...initialMultiplayer, connected: true, client: "abc", instance: "def", commitID: 0});
-      (store as any).multiplayerClient.sendEvent = jasmine.createSpy('sendEvent');
-      store.dispatch(initCustomCombat({seed: 'testseed'}));
-      expect((store as any).multiplayerClient.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({args: JSON.stringify({seed: 'testseed'})}), undefined);
-    });
-
-    test('uses passed seed', () => {
-      const actions = Action(initCustomCombat, {settings: s.basic}).execute({seed: 'testseed'});
-      expect(actions[1].node.ctx.seed).toEqual('testseed');
-    })
   });
 
   describe('isSurgeNextRound', () => {

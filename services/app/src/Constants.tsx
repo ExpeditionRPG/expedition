@@ -87,7 +87,30 @@ export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
     ratingcount: 100000, // prevent "new quest" icon
   }),
 ];
+
 export const GM_QUESTS: Quest[] = [
+  new Quest({
+    id: '1_SDISJtbeCMzUzNJPPYYagofuLRDNG3W',
+    partition: 'expedition-public',
+    theme: 'base',
+    official: true,
+    title: 'Custom Combat',
+    summary: 'Tell your own story, and let the app run combat.',
+    author: 'Expedition Team',
+    publishedurl: 'quests/custom_combat.xml',
+    minplayers: 1,
+    maxplayers: 6,
+    mintimeminutes: 5,
+    maxtimeminutes: 60,
+    genre: 'Mystery',
+    contentrating: 'Kid-friendly',
+    language: 'English',
+    expansionhorror: false,
+    expansionfuture: false,
+    requirespenpaper: false,
+    created: EPOCH,
+    published: EPOCH,
+  }),
   new Quest({
     id: '1tgIk4_lnxqgWy5WQUId68XMQnfn1Be5s',
     partition: Partition.expeditionPublic,

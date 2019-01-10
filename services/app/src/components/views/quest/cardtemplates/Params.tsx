@@ -9,7 +9,7 @@ export function resolveParams(node: ParserNode|undefined, getState: () => AppSta
   const decision = node.ctx.templates.decision || EMPTY_DECISION_STATE;
   let combat = node.ctx.templates.combat;
   if (!combat) {
-    combat = generateCombatTemplate(getState().settings, false);
+    combat = generateCombatTemplate(getState().settings);
   }
   return {node, decision, combat};
 }
@@ -21,7 +21,6 @@ export function resolveCombat(node: ParserNode|undefined): CombatState {
       tier: 0,
       mostRecentRolls: [],
       numAliveAdventurers: 1,
-      custom: false,
       surgePeriod: 0,
       decisionPeriod: 0,
       damageMultiplier: 0,

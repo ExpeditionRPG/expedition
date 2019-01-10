@@ -12,7 +12,6 @@ export interface StateProps extends StatePropsBase {
 
 export interface DispatchProps {
   onRetry: () => void;
-  onCustomEnd: () => void;
   onEvent: (node: ParserNode, event: string) => void;
 }
 
@@ -33,7 +32,7 @@ export default function defeat(props: Props): JSX.Element {
 
   // If onLose is just an **end**, offer a retry button
   let retryButton = <span></span>;
-  if (props.combat && !props.combat.custom) {
+  if (props.combat) {
     const nextNode = props.node.handleAction('lose');
     if (nextNode && nextNode.isEnd()) {
       retryButton = <Button onClick={() => props.onRetry()}>Retry (heal to full)</Button>;
@@ -46,7 +45,7 @@ export default function defeat(props: Props): JSX.Element {
       {props.settings.showHelp && <p>Shuffle all of your ability cards back into your ability draw pile.</p>}
       {helpText}
       {retryButton}
-      <Button onClick={() => (props.combat.custom) ? props.onCustomEnd() : props.onEvent(props.node, 'lose')}>Next</Button>
+      <Button onClick={() => props.onEvent(props.node, 'lose')}>Next</Button>
     </Card>
   );
 }

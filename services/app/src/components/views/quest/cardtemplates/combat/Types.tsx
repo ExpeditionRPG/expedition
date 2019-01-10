@@ -32,9 +32,7 @@ export interface CombatDifficultySettings {
   maxRoundDamage: number;
 }
 
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {
-  custom: boolean;
-}
+export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
 
 export type CombatPhase = 'DRAW_ENEMIES'
   | 'PREPARE'

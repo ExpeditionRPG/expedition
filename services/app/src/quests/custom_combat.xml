@@ -1,0 +1,141 @@
+<quest title="Custom Combat" data-line="0">
+   <roleplay id="start" title="Combat Tier" data-line="2">
+      <p>What tier would you like to fight?</p>
+      <choice text="Tier I (Trivial)">
+         <combat data-line="8">
+            <e tier="1">Custom</e>
+            <event on="win">
+               <trigger data-line="14">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="18">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier II (Easy)">
+         <combat data-line="22">
+            <e tier="2">Custom</e>
+            <event on="win">
+               <trigger data-line="28">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="32">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier III (Easy)">
+         <combat data-line="36">
+            <e tier="3">Custom</e>
+            <event on="win">
+               <trigger data-line="42">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="46">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier IV (Medium)">
+         <combat data-line="50">
+            <e tier="4">Custom</e>
+            <event on="win">
+               <trigger data-line="56">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="60">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier V (Medium)">
+         <combat data-line="64">
+            <e tier="5">Custom</e>
+            <event on="win">
+               <trigger data-line="70">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="74">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier VI (Hard)">
+         <combat data-line="78">
+            <e tier="6">Custom</e>
+            <event on="win">
+               <trigger data-line="84">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="88">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier VII (Hard)">
+         <combat data-line="92">
+            <e tier="7">Custom</e>
+            <event on="win">
+               <trigger data-line="98">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="102">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier VIII (Impossible)">
+         <combat data-line="106">
+            <e tier="8">Custom</e>
+            <event on="win">
+               <trigger data-line="112">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="116">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier IX (Impossible)">
+         <combat data-line="120">
+            <e tier="9">Custom</e>
+            <event on="win">
+               <trigger data-line="126">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="130">goto defeat</trigger>
+            </event>
+         </combat>
+      </choice>
+      <choice text="Tier X (Impossible)">
+         <combat data-line="134">
+            <e tier="10">Custom</e>
+            <event on="win">
+               <trigger data-line="140">goto victory</trigger>
+            </event>
+            <event on="lose">
+               <trigger data-line="144">goto defeat</trigger>
+            </event>
+         </combat>
+         <roleplay title="Victory!" data-line="146">
+            <p />
+         </roleplay>
+         <trigger data-line="148">goto start</trigger>
+      </choice>
+      <event on="lose">
+         <roleplay title="Defeated!" data-line="152">
+            <p />
+         </roleplay>
+      </event>
+   </roleplay>
+   <roleplay id="victory" title="Victory!" data-line="154">
+      <choice text="Start another combat">
+         <trigger data-line="158">goto start</trigger>
+      </choice>
+      <choice text="End">
+         <trigger data-line="162">end</trigger>
+      </choice>
+   </roleplay>
+   <roleplay id="defeat" title="Defeat" data-line="164">
+      <choice text="Start another combat">
+         <trigger data-line="168">goto start</trigger>
+      </choice>
+      <choice text="End">
+         <trigger data-line="172">end</trigger>
+      </choice>
+   </roleplay>
+   <trigger data-line="174">end</trigger>
+</quest>

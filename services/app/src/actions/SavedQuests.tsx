@@ -85,7 +85,6 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
   // We lack some metadata about combat, but we can still parse enemies and tier.
   const {enemies, tier} = getEnemiesAndTier(node);
   node.ctx.templates.combat = {
-    custom: false,
     enemies,
     numAliveAdventurers: 0,
     roundCount: 0,
