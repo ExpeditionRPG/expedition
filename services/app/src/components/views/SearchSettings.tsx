@@ -1,4 +1,6 @@
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
@@ -13,7 +15,6 @@ import Card from '../base/Card';
 import ExpansionCheckbox from '../base/ExpansionCheckbox';
 
 const pluralize = require('pluralize');
-import Checkbox from '../base/Checkbox';
 
 export interface StateProps {
   params: SearchParams;
@@ -189,8 +190,15 @@ export class SearchSettings extends React.Component<Props, {}> {
               <option value="false">No</option>
             </NativeSelect>
           </FormControl>
-          <Checkbox id="showPrivate" label="Also show my private quests" value={this.props.params.showPrivate === true ? true : false} onChange={(v: boolean) => { this.handleCheckbox(v); }}>
-          </Checkbox>
+          <FormControl fullWidth={true} className="showPrivateControl">
+            <FormControlLabel control={
+              <Checkbox
+                id="showPrivate"
+                checked={this.props.params.showPrivate === true ? true : false}
+                onChange={(_, v: boolean) => { this.handleCheckbox(v); }}
+              />
+            } label={'Also show my private quests'}></FormControlLabel>
+          </FormControl>
           {rating && <div className="ratingDescription">
             <span>"{this.props.params.contentrating}" rating means: {rating.summary}</span>
           </div>}
