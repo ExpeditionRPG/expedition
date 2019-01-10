@@ -159,13 +159,39 @@ Where choices are triggered by adventurers making a choice between buttons, even
 
 Cards are your basic storytelling tool in QDL. You have at your disposal:
 
+### Roleplay cards
 
-### Combat Cards
+Roleplay cards are like the chips to your story's salsa - they carry tasty morsels of scene and exposition to your waiting users, adding flavor to your quest. Use roleplay cards to describe what's happening in the quest and get users to feel like they're part of the story by making tough or interesting decisions and advancing the plot.
+
+```
+_the roleplay card title_
+
+Here's some text! It appears on the roleplay card.
+This text appears on the same line.
+
+This is a separate line of text! You can also use **bold**, _italicize_ and ~~strikethrough~~.
+
+_another roleplay card_
+
+Users see this card once they tap the "Next" button from the previous card. 
+
+* here's a choice that looks like a button users can tap on.
+
+  And here's the resulting text that is shown when the user clicks the button!
+
+* you can have multiple choices...
+
+  With multiple outcomes!
+```
+
+Note that you cannot title roleplaying cards `combat` / `Combat` or `decision` / `Decision`, because these are reserved for special cards (see below).
+
+### Combat cards
 
 What's an adventure without some swordplay? The basic syntax for a combat card is:
 
 
-```
+```markdown
 _combat_
 
 - Enemy Name
@@ -310,21 +336,85 @@ To do this, you simply annotate the combat on win outcome. Below, you can see wh
 
 Note: In cases where adventurers won't heal at the end of combat, it's nice to warn them with an instruction node before combat starts so that they can make better choices - for example: `> You're on the run! You won't heal after this encounter.`
 
+### Decision cards (The Future expansion)
 
-### Roleplaying Cards
+Decisions allow you to add a more structure element of action to your quest. These can happen both in combat and during roleplay - in fact, they sometimes happen automatically in combat!
 
-Everything except for combat happens in roleplay cards, including showing text and choices to adventurers. The basic syntax for a roleplaying card is:
+A decision plays out similarly to a round of combat - there's a timed phase where users have a limited amount of time to select the best action to take given some scenario you present.
 
+Decisions can be made when when users have Skill cards that they can use to affect their success or failure when attempting a skill check. If you use decisions, you must mark The Future as a requred expansion.
+
+When out of combat, skill checks look sort of like a special roleplay card:
+
+```markdown
+_decision_
+  
+This text will be shown as users are getting ready to make a decision. 
+
+* on athletics
+
+  This is one athletics outcome.
+
+* on athletics
+
+  This is another athletics outcome!
+
+* on knowledge
+
+  This is a knowledge outcome.
+
+* on charisma
+
+  This is a charisma outcome.
+
+* on failure
+
+  Failure!
 ```
-_Card Title_
 
-Card text.
+* Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from. 
+* Each of these outcomes must specify at least the skill being used - one of knowledge, athletics, or charisma.
+* If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona. If you reference persona, you must mark your quest as requiring The Horror expansion (otherwise users won't benefit from it). 
+* Unless specified, your outcome describes what happens when the user succeeds in rolling for the outcome. You can also add "success", "failure", or "interrupted" to describe specifically what happens when users roll to high, too low, or not significantly in either direction. 
+  * If you want to reuse the same failure text for every outcome, you can specify an "on failure" node that is used for any skill and persona alignment that doesn't have a more specific failure outcome.
+  * If you don't add any "interrupted" outcomes, the app will generate some generic "interrupted" text and use it.
+  * There *must* be a success and failure for every outcome - whether it's specified in two outcomes, or using a generic failure outcome is up to you.
 
-More card text.
+Whew, that's a lot of options! You can get as fancy as you want with this - here's a valid decision that uses all kinds of different outcomes:
+
+```markdown
+_decision_
+  
+Truly a fancy decision.
+
+* on light athletics failure
+
+  Light athletics failed!
+
+* on light athletics interrupted
+
+  Light athletics interrupted!
+
+* on light athletics success
+
+  Light athletics succeeded!
+
+* on dark athletics
+
+  Dark athletics succeeded!
+
+* on knowledge
+
+  Knowledge succeeded!
+
+* on interrupted
+
+  Interrupted!
+
+* on failure
+
+  Failure!
 ```
-
-Note that you cannot title roleplaying cards `combat` / `Combat`, because that is reserved for combat cards.
-
 
 ## Context
 
