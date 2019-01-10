@@ -25,9 +25,7 @@ export default class QuestButton extends React.Component<Props, {}> {
     if (this.props.lastPlayed) {
       classes.push('played');
     }
-
-    const isNew = (this.props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !this.props.lastPlayed;
-
+    const isNew = Boolean((this.props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7 || quest.ratingcount < 5) && !this.props.lastPlayed);
     return (
       <Button onClick={() => {if (this.props.onClick) {this.props.onClick(); }}} id={this.props.id}>
         <div className={classes.join(' ')}>
