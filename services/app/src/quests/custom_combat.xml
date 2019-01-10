@@ -1,7 +1,7 @@
 <quest title="Custom Combat" data-line="0">
    <roleplay id="start" title="Combat Tier" data-line="2">
       <p>What tier would you like to fight?</p>
-      <choice text="Tier I">
+      <choice text="Tier I (Trivial)">
          <combat data-line="8">
             <e tier="1">Custom</e>
             <event on="win">
@@ -12,7 +12,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier II">
+      <choice text="Tier II (Easy)">
          <combat data-line="22">
             <e tier="2">Custom</e>
             <event on="win">
@@ -23,7 +23,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier III">
+      <choice text="Tier III (Easy)">
          <combat data-line="36">
             <e tier="3">Custom</e>
             <event on="win">
@@ -34,7 +34,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier IV">
+      <choice text="Tier IV (Medium)">
          <combat data-line="50">
             <e tier="4">Custom</e>
             <event on="win">
@@ -45,7 +45,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier V">
+      <choice text="Tier V (Medium)">
          <combat data-line="64">
             <e tier="5">Custom</e>
             <event on="win">
@@ -56,7 +56,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier VI">
+      <choice text="Tier VI (Hard)">
          <combat data-line="78">
             <e tier="6">Custom</e>
             <event on="win">
@@ -67,7 +67,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier VII">
+      <choice text="Tier VII (Hard)">
          <combat data-line="92">
             <e tier="7">Custom</e>
             <event on="win">
@@ -78,7 +78,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier VIII">
+      <choice text="Tier VIII (Impossible)">
          <combat data-line="106">
             <e tier="8">Custom</e>
             <event on="win">
@@ -89,7 +89,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier IX">
+      <choice text="Tier IX (Impossible)">
          <combat data-line="120">
             <e tier="9">Custom</e>
             <event on="win">
@@ -100,7 +100,7 @@
             </event>
          </combat>
       </choice>
-      <choice text="Tier X">
+      <choice text="Tier X (Impossible)">
          <combat data-line="134">
             <e tier="10">Custom</e>
             <event on="win">
