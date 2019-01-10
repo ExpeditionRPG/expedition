@@ -1,15 +1,16 @@
 import Redux from 'redux';
+import {UserState} from 'shared/auth/UserState';
 import {renderXML} from 'shared/render/QDLParser';
+import {API_HOST} from 'shared/schema/Constants';
 import {Partition} from 'shared/schema/Constants';
 import {realtimeUtils} from '../Auth';
 import {
-  API_HOST,
   METADATA_DEFAULTS,
   NEW_QUEST_TEMPLATE,
   QUEST_DOCUMENT_HEADER
 } from '../Constants';
 import {EditableMap, EditableModel, EditableString} from '../Editable';
-import {QuestType, UserState} from '../reducers/StateTypes';
+import {QuestType} from '../reducers/StateTypes';
 import {
   QuestLoadingAction,
   QuestMetadataChangeAction, QuestPublishingSetupAction, ReceiveQuestLoadAction,
@@ -231,7 +232,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
           try {
             const defaults = {
               ...METADATA_DEFAULTS,
-              author: user.displayName,
+              author: user.name,
               email: user.email,
               language: 'English',
               maxplayers: 6,
@@ -304,7 +305,7 @@ export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{
 
       const metaRaw: any = {
         ...METADATA_DEFAULTS,
-        author: user.displayName,
+        author: user.name,
         email: user.email,
         language: 'English',
         maxplayers: 6,

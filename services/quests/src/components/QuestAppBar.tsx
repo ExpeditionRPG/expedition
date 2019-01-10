@@ -11,8 +11,9 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertError from '@material-ui/icons/Error';
 import SyncIcon from '@material-ui/icons/Sync';
 import * as React from 'react';
+import {UserState} from 'shared/auth/UserState';
 import {QuestActionType} from '../actions/ActionTypes';
-import {AnnotationType, EditorState, QuestType, UserState} from '../reducers/StateTypes';
+import {AnnotationType, EditorState, QuestType} from '../reducers/StateTypes';
 
 export interface StateProps {
   annotations: AnnotationType[];
@@ -93,7 +94,7 @@ class QuestAppBar extends React.Component<Props, {}> {
 
   public render() {
     const { menuAnchor } = this.state;
-    const loginText = 'Logged in as ' + this.props.user.displayName;
+    const loginText = 'Logged in as ' + this.props.user.name;
     const questTitle = this.props.quest.title || 'unsaved quest';
     return (
       <AppBar className="quest_app_bar">

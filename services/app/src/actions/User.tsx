@@ -1,129 +1,39 @@
 import * as Raven from 'raven-js';
 import Redux from 'redux';
+import {registerUserAndIdToken} from 'shared/auth/API';
+import {UserState as UserStateAuth} from 'shared/auth/UserState';
+import {loggedOutUser} from 'shared/auth/UserState';
+import {loginWeb as loginWebBase, silentLoginWeb as silentLoginWebBase} from 'shared/auth/Web';
 import {handleFetchErrors} from 'shared/requests';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
 import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
-import {loggedOutUser} from '../reducers/User';
-import { openSnackbar } from './Snackbar';
+import {openSnackbar} from './Snackbar';
 import {fetchUserQuests} from './Web';
 
-interface LoadGapiResponse {gapi: any; async: boolean; }
-
-let gapiLoaded = false;
-function loadGapi(): Promise<LoadGapiResponse> {
-  const gapi = getGapi();
-  if (!gapi) {
-    return Promise.reject(Error('gapi not loaded'));
+function postRegister(us: UserStateAuth) {
+  const ga = getGA();
+  if (ga) {
+    ga.set({ userId: us.id });
   }
-  if (gapiLoaded) {
-    return Promise.resolve({gapi, async: false});
-  }
-  return new Promise((resolve, reject) => {
-    gapi.load('client:auth2', {
-      callback: () => resolve(),
-      onerror: () => reject(Error('could not load gapi')),
-    });
-  })
-  .then(() => {
-    gapi.client.setApiKey(AUTH_SETTINGS.API_KEY);
-    return gapi.auth2.init({
-      client_id: AUTH_SETTINGS.CLIENT_ID,
-      cookie_policy: 'none',
-      scope: AUTH_SETTINGS.SCOPES,
-    });
-  })
-  .then(() => {
-    gapiLoaded = true;
-    return {gapi, async: true};
-  });
+  Raven.setUserContext({id: us.id});
+  return us;
 }
 
-function registerUserAndIdToken(user: {name: string, image: string, email: string}, idToken: string): Promise<UserState> {
-  return fetch(AUTH_SETTINGS.URL_BASE + '/auth/google', {
-    body: JSON.stringify({
-      email: user.email,
-      id_token: idToken,
-      image: user.image,
-      name: user.name,
-    }),
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'text/plain',
-    },
-    method: 'POST',
-  })
-  .then(handleFetchErrors)
-  .then((response: Response) => response.text())
-  .then((response: string) => {
-    let userResult = {} as any;
-    try {
-      userResult = {
-        id: response,
-        ...JSON.parse(response),
-      };
-    } catch (err) {
-      userResult.id = response;
-    }
-
-    if (getGA()) {
-      getGA().set({ userId: userResult.id });
-    }
-    Raven.setUserContext({id: userResult.id});
-    return {
-      email: user.email,
-      id: userResult.id,
-      image: user.image,
-      loggedIn: true,
-      name: user.name,
-      lastLogin: new Date(userResult.lastLogin),
-      loginCount: userResult.loginCount,
-      lootPoints: userResult.lootPoints,
-    };
-  }).catch((error: Error) => {
-    console.log('Request failed', error);
-    throw new Error('Error authenticating.');
-  });
-}
-
-function loginWeb(): Promise<void> {
-  return loadGapi()
-  .then((r) => {
-    // Since this is a user action, we can't show pop-ups if we get sidetracked loading,
-    // so we'll attempt a silent login instead. If that fails, their next attempt should be instant.
-    if (r.async) {
-      return silentLoginWeb();
-    }
-
-    return r.gapi.auth2.getAuthInstance().signIn({redirect_uri: 'postmessage'})
-    .then((googleUser: any) => {
-      const idToken: string = googleUser.getAuthResponse().id_token;
-      const basicProfile: any = googleUser.getBasicProfile();
-      return registerUserAndIdToken({
-        email: basicProfile.getEmail(),
-        image: basicProfile.getImageUrl(),
-        name: basicProfile.getName(),
-      }, idToken);
-    });
-  });
+function loginWeb(): Promise<UserState|null> {
+  return loginWebBase(getGapi(), AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
+    .then((r) => {
+      return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, r);
+    })
+    .then(postRegister);
 }
 
 function silentLoginWeb(): Promise<UserState|null> {
-  return loadGapi()
-  .then((r) => {
-    if (!r.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      throw new Error('Failed to silently login');
-    }
-
-    const googleUser: any = r.gapi.auth2.getAuthInstance().currentUser.get();
-    const idToken: string = googleUser.getAuthResponse().id_token;
-    const basicProfile: any = googleUser.getBasicProfile();
-    return registerUserAndIdToken({
-      email: basicProfile.getEmail(),
-      image: basicProfile.getImageUrl(),
-      name: basicProfile.getName(),
-    }, idToken);
-  });
+  return silentLoginWebBase(getGapi(), AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
+    .then((r) => {
+      return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, r);
+    })
+    .then(postRegister);
 }
 
 function silentLoginCordova(p: CordovaLoginPlugin): Promise<UserState|null> {
@@ -132,11 +42,12 @@ function silentLoginCordova(p: CordovaLoginPlugin): Promise<UserState|null> {
       scopes: AUTH_SETTINGS.SCOPES,
       webClientId: AUTH_SETTINGS.CLIENT_ID,
     }, (obj: any) => {
-      registerUserAndIdToken({
+      registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, {
         email: obj.email,
         image: obj.imageUrl,
         name: obj.displayName,
-      }, obj.idToken).then(resolve);
+        idToken: obj.idToken,
+      }).then(resolve);
     }, (err: string) => {
       reject(Error(err));
     });
@@ -149,11 +60,12 @@ function loginCordova(p: CordovaLoginPlugin): Promise<UserState> {
       scopes: AUTH_SETTINGS.SCOPES,
       webClientId: AUTH_SETTINGS.CLIENT_ID,
     }, (obj: any) => {
-      return registerUserAndIdToken({
+      return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, {
         email: obj.email,
         image: obj.imageUrl,
         name: obj.displayName,
-      }, obj.idToken).then(resolve);
+        idToken: obj.idToken,
+      }).then(resolve);
     }, (err: string) => {
       reject(Error(err));
     });

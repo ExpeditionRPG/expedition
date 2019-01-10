@@ -1,3 +1,4 @@
+import {UserState as UserStateBase} from 'shared/auth/UserState';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
 import {ContentRating, Genre, Language, Partition} from 'shared/schema/Constants';
@@ -190,15 +191,7 @@ export interface IUserFeedback {
   quest: UserQuestInstance;
 }
 
-export interface UserState {
-  loggedIn: boolean;
-  id: string;
-  name: string;
-  image: string;
-  email: string;
-  lastLogin: Date;
-  loginCount: number;
-  lootPoints: number;
+export interface UserState extends UserStateBase {
   feedbacks?: IUserFeedback[];
 }
 

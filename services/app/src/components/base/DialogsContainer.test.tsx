@@ -1,5 +1,5 @@
 import {mapDispatchToProps} from './DialogsContainer';
-import {loggedOutUser} from 'app/reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {initialSettings} from 'app/reducers/Settings';
 import {AUTH_SETTINGS, TUTORIAL_QUESTS} from 'app/Constants';
 import {newMockStore} from 'app/Testing';

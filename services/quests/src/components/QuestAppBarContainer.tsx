@@ -1,12 +1,13 @@
 import {defaultContext} from 'app/components/views/quest/cardtemplates/Template';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {UserState} from 'shared/auth/UserState';
 import {QuestActionType} from '../actions/ActionTypes';
 import {renderAndPlay, setLine} from '../actions/Editor';
 import {publishQuestSetup, saveQuest, unpublishQuest} from '../actions/Quest';
 import {logoutUser} from '../actions/User';
 import {URLS} from '../Constants';
-import {AnnotationType, AppState, EditorState, QuestType, UserState} from '../reducers/StateTypes';
+import {AnnotationType, AppState, EditorState, QuestType} from '../reducers/StateTypes';
 import QuestAppBar, {DispatchProps, StateProps} from './QuestAppBar';
 
 const math = require('mathjs') as any;

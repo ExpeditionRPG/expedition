@@ -1,4 +1,5 @@
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {UserState} from 'shared/auth/UserState';
 import {QDLParser} from 'shared/render/QDLParser';
 import {ContentRating, Language, Theme} from 'shared/schema/Constants';
 import {ErrorType} from '../../errors/types';
@@ -122,15 +123,6 @@ export interface SnackbarState {
 
 export interface TutorialState {
   playFromCursor: boolean;
-}
-
-export interface UserState {
-  loggedIn: boolean;
-  id: string;
-  displayName: string;
-  image: string;
-  email: string;
-  lootPoints: number;
 }
 
 export interface AppState {

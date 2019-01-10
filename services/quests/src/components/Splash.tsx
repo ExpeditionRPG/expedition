@@ -4,7 +4,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import ExpeditionButton from 'app/components/base/Button';
 import * as React from 'react';
-import {AnnouncementState, UserState} from '../reducers/StateTypes';
+import {UserState} from 'shared/auth/UserState';
+import {AnnouncementState} from '../reducers/StateTypes';
 
 export interface StateProps {
   announcement: AnnouncementState;

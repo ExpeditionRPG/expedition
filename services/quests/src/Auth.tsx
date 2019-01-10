@@ -10,7 +10,6 @@ try {
     scopes: [ // https://developers.google.com/identity/protocols/googlescopes
       'https://www.googleapis.com/auth/drive.install', // ?
       'https://www.googleapis.com/auth/drive.file', // view and manage drive files opened / created in app
-      'https://www.googleapis.com/auth/plus.login', // basic demographics
       'https://www.googleapis.com/auth/userinfo.email', // profile email
     ],
   });
