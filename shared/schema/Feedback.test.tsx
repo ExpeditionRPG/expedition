@@ -1,8 +1,8 @@
-import {PRIVATE_PARTITION} from './Constants';
+import {Partition} from './Constants';
 import {Feedback} from './Feedback';
 
 describe('Feedback Schema', () => {
-  const base = {partition: PRIVATE_PARTITION, questid: '12345', userid: '54321'};
+  const base = {partition: Partition.expeditionPrivate, questid: '12345', userid: '54321'};
   test('is invalid when missing partition, questid, or userid', () => {
     expect(Feedback.create({...base, userid: undefined}) instanceof Error).toEqual(true);
     expect(Feedback.create({...base, questid: undefined}) instanceof Error).toEqual(true);

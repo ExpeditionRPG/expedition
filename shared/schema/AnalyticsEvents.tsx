@@ -1,4 +1,4 @@
-import {DIFFICULTIES} from './Constants';
+import {Difficulty, enumValues} from './Constants';
 import {copyAndUnsetDefaults, field, NOW, SchemaBase} from './SchemaBase';
 
 export class AnalyticsEvent extends SchemaBase {
@@ -52,7 +52,7 @@ export class AnalyticsEvent extends SchemaBase {
   @field({
     default: '',
     maxLength: 32,
-    valid: [...DIFFICULTIES, ''],
+    valid: [...enumValues(Difficulty), ''],
   }) public difficulty: string;
 
   @field({

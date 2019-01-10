@@ -1,4 +1,4 @@
-import {PARTITIONS} from './Constants';
+import {enumValues, Partition} from './Constants';
 import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
 
 export class RenderedQuest extends SchemaBase {
@@ -18,7 +18,7 @@ export class RenderedQuest extends SchemaBase {
     allowNull: false,
     maxLength: 32,
     primaryKey: true,
-    valid: [PARTITIONS],
+    valid: [enumValues(Partition)],
   }) public partition: string;
 
   @field({

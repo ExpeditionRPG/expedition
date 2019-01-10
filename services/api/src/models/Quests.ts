@@ -1,6 +1,6 @@
 import * as Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
-import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { User } from 'shared/schema/Users';
@@ -62,12 +62,12 @@ export function searchQuests(
 
   if (params.showPrivate === true) {
     (where as any)[Op.or] = [
-      { partition: PUBLIC_PARTITION },
-      { partition: PRIVATE_PARTITION, userid: userId },
+      { partition: Partition.expeditionPublic },
+      { partition: Partition.expeditionPrivate, userid: userId },
     ];
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
-    where.partition = params.partition || PUBLIC_PARTITION;
+    where.partition = params.partition || Partition.expeditionPublic;
   }
 
   if (params.id) {
@@ -240,7 +240,7 @@ export function publishQuest(
     .then((i: QuestInstance | null) => {
       isNew = true; // !Boolean(i);
       instance = i || db.quests.build(prepare(quest));
-      if (isNew && quest.partition === PUBLIC_PARTITION) {
+      if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
 
         // New publish on public = 100 loot point award

@@ -1,6 +1,7 @@
 import { QuestSearchResponse } from 'api/Handlers';
 import * as Redux from 'redux';
 import { handleFetchErrors } from 'shared/requests';
+import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { openSnackbar } from '../actions/Snackbar';
 import { AUTH_SETTINGS, TUTORIAL_QUESTS } from '../Constants';
@@ -48,7 +49,7 @@ export const searchAndPlay = remoteify(function searchAndPlay(
 ) {
   const params = {
     id,
-    partition: 'expedition-public',
+    partition: Partition.expeditionPublic,
   } as SearchParams;
   const featuredQuest = TUTORIAL_QUESTS.filter((q) => q.id === id);
   if (featuredQuest.length === 1) {

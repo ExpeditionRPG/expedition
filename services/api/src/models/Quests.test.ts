@@ -1,5 +1,5 @@
 import { object } from 'joi';
-import { PRIVATE_PARTITION, PUBLIC_PARTITION } from 'shared/schema/Constants';
+import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
 import { searchQuests } from './Quests';
@@ -29,7 +29,7 @@ describe('quest', () => {
       testingDBWithState(quests)
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
           });
         })
         .then(results => {
@@ -47,7 +47,7 @@ describe('quest', () => {
       testingDBWithState(quests)
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
           });
         })
         .then(results => {
@@ -64,7 +64,7 @@ describe('quest', () => {
       testingDBWithState(quests)
         .then(tdb =>
           searchQuests(tdb, '', {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             expansions: ['horror'],
           }),
         )
@@ -82,17 +82,19 @@ describe('quest', () => {
       testingDBWithState([q.basic, q.private])
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })
         .then(results => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({ partition: PRIVATE_PARTITION }),
+            jasmine.objectContaining({
+              partition: Partition.expeditionPrivate,
+            }),
           );
           expect((results[1] as any).dataValues).toEqual(
-            jasmine.objectContaining({ partition: PUBLIC_PARTITION }),
+            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
           );
           done();
         })
@@ -103,16 +105,18 @@ describe('quest', () => {
       testingDBWithState([q.basic, q.private])
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })
         .then(results => {
           expect(results[0].dataValues).toEqual(
-            jasmine.objectContaining({ partition: PRIVATE_PARTITION }),
+            jasmine.objectContaining({
+              partition: Partition.expeditionPrivate,
+            }),
           );
           expect(results[1].dataValues).toEqual(
-            jasmine.objectContaining({ partition: PUBLIC_PARTITION }),
+            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
           );
           done();
         })
@@ -123,7 +127,7 @@ describe('quest', () => {
       testingDBWithState(quests)
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: false,
           });
         })
@@ -131,7 +135,9 @@ describe('quest', () => {
           expect(results.length).toEqual(1);
           Object.keys(results[0]).forEach(key => {
             if (results[0][key].hasOwnProperty('partition')) {
-              expect(results[0][key].partition).toEqual(PUBLIC_PARTITION);
+              expect(results[0][key].partition).toEqual(
+                Partition.expeditionPublic,
+              );
             }
           });
           done();
@@ -143,7 +149,7 @@ describe('quest', () => {
       testingDBWithState(quests)
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
-            partition: PUBLIC_PARTITION,
+            partition: Partition.expeditionPublic,
             showPrivate: true,
           });
         })

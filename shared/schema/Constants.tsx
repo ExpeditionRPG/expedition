@@ -1,48 +1,48 @@
-export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
-export const DIFFICULTIES: DifficultyType[] = [
-  'EASY',
-  'NORMAL',
-  'HARD',
-  'IMPOSSIBLE',
-];
+export function enumValues<T>(e: T): Array<T[keyof T]> {
+  return Object.keys(e).map((k: keyof T) => e[k]);
+}
 
-export type PartitionType = 'expedition-private' | 'expedition-public';
-export const PRIVATE_PARTITION = 'expedition-private';
-export const PUBLIC_PARTITION = 'expedition-public';
-export const PARTITIONS: PartitionType[] = [PRIVATE_PARTITION, PUBLIC_PARTITION];
+export enum Difficulty {
+  easy = 'EASY',
+  normal = 'NORMAL',
+  hard = 'HARD',
+  impossible = 'IMPOSSIBLE',
+}
 
-export type GenreType = 'Comedy' | 'Drama' | 'Horror' | 'Mystery' | 'Romance' | 'SciFi';
-export const GENRES: GenreType[] = [
-  'Comedy',
-  'Drama',
-  'Horror',
-  'Mystery',
-  'Romance',
-  'SciFi',
-];
+export enum Partition {
+  expeditionPrivate = 'expedition-private',
+  expeditionPublic = 'expedition-public',
+}
 
-export type LanguageType = 'English' | 'French' | 'German' | 'Hungarian' | 'Italian' | 'Portuguese' | 'Romanian' | 'Spanish';
-export const LANGUAGES: LanguageType[] = [
-  'English',
-  'French',
-  'German',
-  'Hungarian',
-  'Italian',
-  'Portuguese',
-  'Romanian',
-  'Spanish',
-];
+export enum Genre {
+  comedy = 'Comedy',
+  drama = 'Drama',
+  horror = 'Horror',
+  mystery = 'Mystery',
+  romance = 'Romance',
+  scifi = 'SciFi',
+}
+
+export enum Language {
+  english = 'English',
+  french = 'French',
+  german = 'German',
+  hungarian = 'Hungarian',
+  italian = 'Italian',
+  portuguese = 'Portuguese',
+  romanian = 'Romanian',
+  spanish = 'Spanish',
+}
 
 /* tslint:disable object-literal-sort-keys */
 
 // Content rating options and their definitions, generally based on MPAA guidelines
-export type ContentRatingLabelType = 'Kid-friendly' | 'Teen' | 'Adult';
-export const CONTENT_RATINGS: ContentRatingLabelType[] = [
-  'Kid-friendly',
-  'Teen',
-  'Adult',
-];
-export interface ContentRatingType {
+export enum ContentRating {
+  kidFriendly = 'Kid-friendly',
+  teen = 'Teen',
+  adult = 'Adult',
+}
+export interface ContentRatingDescription {
   summary: string;
   details: {
     [key: string]: string;
@@ -52,17 +52,18 @@ export interface ContentRatingType {
     violence: string;
   };
 }
-export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
-  'Kid-friendly': {
-    summary: 'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
+
+export const CONTENT_RATING_DESC: {[key in ContentRating]: ContentRatingDescription} = {
+  [ContentRating.kidFriendly]: {
+    summary:   'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
     details: {
-      drugs: 'No drug use allowed.',
-      language: 'Only very limited profanity allowed, and no sexually-derived words.',
-      nudity: 'No nudity allowed.',
-      violence: 'No descriptions of violence allowed outside of game mechanics.',
+      drugs:   'No drug use allowed.',
+      language:   'Only very limited profanity allowed, and no sexually-derived words.',
+      nudity:   'No nudity allowed.',
+      violence:   'No descriptions of violence allowed outside of game mechanics.',
     },
   },
-  'Teen': {
+  [ContentRating.teen]: {
     summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
     details: {
       drugs: 'May contain drug use, but not abuse.',
@@ -71,7 +72,7 @@ export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
       violence: 'May contain brief, limited descriptions of violence.',
     },
   },
-  'Adult': {
+  [ContentRating.adult]: {
     summary: 'Mature (but not pornographic). Titles and descriptions must still be PG.',
     details: {
       drugs: 'Drugs allowed.',
@@ -82,10 +83,9 @@ export const CONTENT_RATING_DESC: {[key: string]: ContentRatingType} = {
   },
 };
 
-export type ThemeType = 'base' | 'horror';
-export const THEMES: ThemeType[] = [
-  'base',
-  'horror',
-];
+export enum Theme {
+  base = 'base',
+  horror = 'horror',
+}
 
 /* tslint:enable object-literal-sort-keys */

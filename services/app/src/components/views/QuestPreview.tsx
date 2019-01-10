@@ -2,7 +2,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import * as React from 'react';
-import {PRIVATE_PARTITION} from 'shared/schema/Constants';
+import {Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
 import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';
@@ -135,7 +135,7 @@ const QuestPreview = (props: Props): JSX.Element => {
           {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/> Available Offline</div>}
           {props.lastPlayed && <div className="inline_icon"><img className="inline_icon" src="images/checkmark_small.svg"/> Last completed {Moment(props.lastPlayed).fromNow()}</div>}
           {quest.official && <div className="inline_icon"><img className="inline_icon" src="images/logo_outline_small.svg"/> Official Quest</div>}
-          {quest.partition === PRIVATE_PARTITION && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
+          {quest.partition === Partition.expeditionPrivate && <div className="inline_icon"><img className="inline_icon" src="images/private_small.svg"/> Private Quest</div>}
           {quest.awarded && <div className="inline_icon"><img className="inline_icon" src="images/trophy_small.svg"/> {quest.awarded}</div>}
         </div>
       </div>
