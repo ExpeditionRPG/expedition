@@ -24,9 +24,15 @@ export default class TouchIndicator extends React.Component<Props, {}> {
     };
   }
 
+  public shouldComponentUpdate() {
+    // Never re-render the canvas (except by force).
+    // Instead, take this as a hint to draw the touch points.
+    window.requestAnimationFrame(() => this.drawTouchPoints());
+    return false;
+  }
+
   public componentDidUpdate() {
-    // Redraw touch points every time the component repaints
-    // instead of rendering continuously (saves render load).
+    // Redraw touch points every time the component repaints.
     this.drawTouchPoints();
   }
 
@@ -43,8 +49,7 @@ export default class TouchIndicator extends React.Component<Props, {}> {
   }
 
   private drawTouchPoints() {
-    // For some reason the canvas is cleared whenever React
-    // updates the component, so canvas clearing is not needed here.
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     const keys = Object.keys(this.props.clientInputs);
     for (let i = 0; i < keys.length && i < COLORBLIND_FRIENDLY_PALETTE.length; i++) {
       const color = COLORBLIND_FRIENDLY_PALETTE[i];
@@ -66,13 +71,16 @@ export default class TouchIndicator extends React.Component<Props, {}> {
     if (!this.canvas) {
       return;
     }
-    this.ctx = this.canvas.getContext('2d');
-    if (!this.canvas.parentElement) {
-      console.error('Could not find canvas parent element');
-      return;
-    }
-    this.ctx.canvas.width = this.canvas.parentElement.offsetWidth;
-    this.ctx.canvas.height = this.canvas.parentElement.offsetHeight;
+
+    window.requestAnimationFrame(() => {
+      this.ctx = this.canvas.getContext('2d');
+      if (!this.canvas.parentElement) {
+        console.error('Could not find canvas parent element');
+        return;
+      }
+      this.ctx.canvas.width = this.canvas.parentElement.offsetWidth;
+      this.ctx.canvas.height = this.canvas.parentElement.offsetHeight;
+    });
   }
 
   public render() {

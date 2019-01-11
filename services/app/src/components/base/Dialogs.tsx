@@ -32,6 +32,10 @@ export class ConfirmationDialog<T extends BaseDialogProps> extends React.Compone
     throw new Error('Unimplemented');
   }
 
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
@@ -53,6 +57,10 @@ interface ExitMultiplayerDialogProps extends BaseDialogProps {
 }
 
 export class ExitMultiplayerDialog extends ConfirmationDialog<ExitMultiplayerDialogProps> {
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   constructor(props: ExitMultiplayerDialogProps) {
     super(props);
     this.title = 'Exit Multiplayer?';
@@ -70,6 +78,10 @@ interface DeleteSavedQuestDialogProps extends BaseDialogProps {
 }
 
 export class DeleteSavedQuestDialog extends ConfirmationDialog<DeleteSavedQuestDialogProps> {
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   constructor(props: DeleteSavedQuestDialogProps) {
     super(props);
     this.title = 'Delete saved quest?';
@@ -96,6 +108,10 @@ interface MultiplayerStatusDialogProps extends React.Props<any> {
 }
 
 export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDialogProps, {}> {
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   public render(): JSX.Element {
 
     const stats = <ul>{
@@ -130,6 +146,10 @@ interface MultiplayerPeersDialogProps extends React.Props<any> {
 }
 
 export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDialogProps, {}> {
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   public render(): JSX.Element {
     const peers = Object.keys(this.props.multiplayer.clientStatus).map((k, i: number) => {
       const c = this.props.multiplayer.clientStatus[k];
@@ -159,6 +179,10 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
 }
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
+  public shouldComponentUpdate(nextProps: ExpansionSelectDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
   public render(): JSX.Element {
     return (
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
@@ -194,6 +218,10 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
 
   public onSubmit() {
     throw new Error('Unimplemented');
+  }
+
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
   }
 
   public render(): JSX.Element {

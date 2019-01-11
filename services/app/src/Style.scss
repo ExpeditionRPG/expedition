@@ -1317,7 +1317,7 @@ body.android .dialog .textfield:focus-within {
     .timing {
       opacity: 0.65;
       margin-top: size(small);
-      margin-right: fontsize(flavor);
+      margin-right: fontsize(small);
       font-size: fontsize(flavor);
       display: inline-block;
       .inline_icon {
@@ -1389,6 +1389,24 @@ body.android .dialog .textfield:focus-within {
           border-radius: 4px;
           display: inline-block;
         }
+      }
+      .twoLinesMax {
+         overflow: hidden;
+         text-overflow: ellipsis;
+         display: -webkit-box;
+         -webkit-box-orient: vertical;
+         -webkit-line-clamp: 2; /* number of lines to show */
+         line-height: 1em;        /* fallback */
+         max-height: 1em*2;       /* fallback */
+      }
+      .threeLinesMax {
+         overflow: hidden;
+         text-overflow: ellipsis;
+         display: -webkit-box;
+         -webkit-box-orient: vertical;
+         -webkit-line-clamp: 3; /* number of lines to show */
+         line-height: 1em;        /* fallback */
+         max-height: 1em*3;       /* fallback */
       }
     }
   }
