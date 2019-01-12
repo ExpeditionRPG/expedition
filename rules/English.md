@@ -232,6 +232,7 @@ When you level up, all adventurers may learn a new ability:
 - You _may_ choose to discard an ability.
 
 _If playing with The Horror_: Instead of learning an ability, you may also choose to increase your Persona 2 levels.
+
 _If playing with The Future_: Instead of learning an ability, you may also choose to learn a skill (draw 3, keep 1) or increase the level of an existing skill by sliding it one mark to the right.
 
 ### Defeat
