@@ -58,7 +58,7 @@ interface Versions {
 
 function getAndroidVersion(): Bluebird<string | null> {
   return request(
-    'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
+    'https://play.google.com/store/apps/details?id=io.fabricate.expedition'
   )
     .then((body: string) => {
       const $ = cheerio.load(body);
@@ -73,7 +73,7 @@ function getAndroidVersion(): Bluebird<string | null> {
 
 function getIosVersion(): Bluebird<string | null> {
   return request(
-    'http://itunes.apple.com/lookup?bundleId=io.fabricate.expedition',
+    'http://itunes.apple.com/lookup?bundleId=io.fabricate.expedition'
   )
     .then((body: string) => {
       const version = JSON.parse(body).results[0].version;
@@ -100,7 +100,7 @@ function getVersions(date: string): Bluebird<Versions> {
     getAndroidVersion(),
     getIosVersion(),
     getWebVersion(),
-  ]).then(values => {
+  ]).then((values) => {
     return {
       android: values[0] || values[1] || '1.0.0', // Android scraping is fragile; fall back to iOS
       ios: values[1] || '1.0.0',
@@ -147,7 +147,7 @@ export interface QuestSearchResponse {
 function doSearch(
   db: Database,
   userId: string,
-  params: QuestSearchParams,
+  params: QuestSearchParams
 ): Bluebird<QuestSearchResponse> {
   return searchQuests(db, userId, params)
     .then((quests: QuestInstance[]) => {
@@ -163,7 +163,7 @@ function doSearch(
       console.log(
         `Found ${
           quests.length
-        } quests for user ${userId}, params: ${JSON.stringify(params)}`,
+        } quests for user ${userId}, params: ${JSON.stringify(params)}`
       );
       return {
         error: null,
@@ -183,7 +183,7 @@ function doSearch(
 export function search(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   let body: any;
   try {
@@ -210,7 +210,7 @@ export function search(
     showPrivate: body.showPrivate,
   };
 
-  return doSearch(db, res.locals.id, params).then(result => {
+  return doSearch(db, res.locals.id, params).then((result) => {
     res.status(result.error ? 500 : 200).end(JSON.stringify(result));
   });
 }
@@ -218,7 +218,7 @@ export function search(
 export function questXMLHandler(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   db.renderedQuests
     .findOne({
@@ -239,7 +239,7 @@ export function questXMLHandler(
             res.header('Content-Type', 'text/xml');
             res.header('Location', url);
             res.status(301).end();
-          },
+          }
         );
       }
       res.header('Content-Type', 'text/xml');
@@ -254,13 +254,13 @@ export function questXMLHandler(
 export function loadQuestData(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return claimNewestQuestData(
     db,
     req.params.quest,
     res.locals.id,
-    new Date(parseInt(req.params.edittime, 10)),
+    new Date(parseInt(req.params.edittime, 10))
   )
     .then((instance: QuestData | null) => {
       if (!instance) {
@@ -271,7 +271,7 @@ export function loadQuestData(
           data: instance.data,
           notes: instance.notes,
           metadata: JSON.parse(instance.metadata),
-        }),
+        })
       );
     })
     .catch((e: Error) => {
@@ -283,7 +283,7 @@ export function loadQuestData(
 export function saveQuestData(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   let parsed: {
     data: string;
@@ -311,7 +311,7 @@ export function saveQuestData(
       metadata: JSON.stringify(parsed.metadata || {}),
       created: new Date(),
       edittime: parsed.edittime,
-    }),
+    })
   )
     .then(() => {
       res.status(200).end('ok');
@@ -322,7 +322,7 @@ export function saveQuestData(
         return res
           .status(409)
           .send(
-            'quest is being edited elsewhere. Reload to take over the editing session.',
+            'quest is being edited elsewhere. Reload to take over the editing session.'
           );
       }
       return res.status(500).end(GENERIC_ERROR_MESSAGE);
@@ -333,7 +333,7 @@ export function publish(
   db: Database,
   mail: MailService,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   const quest = Quest.create({
     author: req.query.author,
@@ -373,7 +373,7 @@ export function publish(
 export function unpublish(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return unpublishQuest(db, Partition.expeditionPublic, req.params.quest)
     .then(() => {
@@ -388,7 +388,7 @@ export function unpublish(
 export function postAnalyticsEvent(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   let body: any;
   try {
@@ -410,7 +410,7 @@ export function postAnalyticsEvent(
         questVersion: body.questversion,
         userID: body.userid,
         version: body.version,
-      }),
+      })
     )
     .then(() => {
       res.status(200).end('ok');
@@ -425,7 +425,7 @@ export function feedback(
   db: Database,
   mail: MailService,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ): Bluebird<any> {
   let body: any;
   try {
@@ -466,7 +466,7 @@ export function feedback(
   const action: Bluebird<any> = maybeGetUserByEmail(db, data.email);
   switch (req.params.type as FeedbackType) {
     case 'feedback':
-      action.then(user =>
+      action.then((user) =>
         submitFeedback(
           db,
           mail,
@@ -474,15 +474,15 @@ export function feedback(
           data,
           platformDump,
           consoleDump,
-          user,
-        ),
+          user
+        )
       );
       break;
     case 'rating':
-      action.then(user => submitRating(db, mail, data, user));
+      action.then((user) => submitRating(db, mail, data, user));
       break;
     case 'report_error':
-      action.then(user =>
+      action.then((user) =>
         submitFeedback(
           db,
           mail,
@@ -490,13 +490,13 @@ export function feedback(
           data,
           platformDump,
           consoleDump,
-          user,
-        ),
+          user
+        )
       );
       break;
     case 'report_quest':
-      action.then(user =>
-        submitReportQuest(db, mail, data, platformDump, user),
+      action.then((user) =>
+        submitReportQuest(db, mail, data, platformDump, user)
       );
       break;
     default:
@@ -518,7 +518,7 @@ export function feedback(
 export function userQuests(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return getUserQuests(db, res.locals.id)
     .then((userQuests: UserQuestsType) => {
@@ -537,7 +537,7 @@ export function subscribe(
   mailchimp: any,
   listId: string,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     req.body = JSON.parse(req.body);
@@ -570,7 +570,7 @@ export function subscribe(
               const status = (err as any).status;
               if (status === 400) {
                 console.log(
-                  `Mailchimp 400 subscribing ${email}: ${(err as any).detail}`,
+                  `Mailchimp 400 subscribing ${email}: ${(err as any).detail}`
                 );
                 return res.status(200).end(); // Already on the list - but that's ok!
               } else {
@@ -580,21 +580,21 @@ export function subscribe(
             }
             console.log(email + ' subscribed as pending to player list');
             return res.status(200).end();
-          },
+          }
         );
       }
-    },
+    }
   );
 }
 
 export function userFeedbacks(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return getUserFeedbacks(db, res.locals.id)
     .then((feedbacks: IUserFeedback[]) =>
-      res.status(200).end(JSON.stringify(feedbacks)),
+      res.status(200).end(JSON.stringify(feedbacks))
     )
     .catch((e: Error) => {
       console.error(e);

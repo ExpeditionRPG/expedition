@@ -43,7 +43,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     this.props.onSubscribe(this.boundHandleMultiplayerEvent);
     if (this.props.lazy) {
       // Event listener registration is expensive (several milliseconds per call to addEventListener).
-      // TODO: handle logic to add additional event listeners on user action
+      // This won't show any moves or "up" events.
       this.listeners = {
         mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
         touchstart: (e: TouchEvent) => this.touchEvent(e),

@@ -7,7 +7,7 @@ export interface MailService {
     subject: string,
     htmlMessage: string,
     sendCopy?: boolean,
-    sendMail?: any,
+    sendMail?: any
   ) => Promise<any>;
 }
 
@@ -18,7 +18,7 @@ if (Config.get('MAIL_EMAIL') && Config.get('MAIL_PASSWORD')) {
       Config.get('MAIL_EMAIL') +
       ':' +
       Config.get('MAIL_PASSWORD') +
-      '@smtp.gmail.com',
+      '@smtp.gmail.com'
   );
 } else {
   console.warn('Mail transport not set up; config details missing');
@@ -35,7 +35,7 @@ export function send(
   subject: string,
   htmlMessage: string,
   sendCopy: boolean = true,
-  sendMail?: any,
+  sendMail?: any
 ): Promise<any> {
   sendMail = sendMail || transporter.sendMail.bind(transporter);
   if (!sendMail) {
