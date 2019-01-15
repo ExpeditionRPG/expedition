@@ -4,7 +4,7 @@ Diese Regeln sind dazu gedacht, das Spiel ohne ein elektronisches Gerät zu spie
 
 Wenn man die aktuellste und beste Version von Expedition spielen möchte (einschließlich von dutzenden beinhalteten Abenteuern), welchen keinen SL benötigen, ist es möglich eine Webseiten, Android oder iOS Applikation auf [ExpeditionGame.com/app](http://ExpeditionGame.com/app) zu nutzen.
 
-*Dieses Dokument basiert auf der Version Expedition App v1.13.8. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden.*
+*Dieses Dokument basiert auf der Version Expedition App v1.20.1. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden.*
 
 ## Vorbereitungen
 
@@ -31,31 +31,32 @@ Sobald man bereit ist, sollten alle Spieler außer dem SL folgendes tun:
 
 **Befestige** eine Heftklammer auf der Abenteurerkarte und setze deine Gesundheit auf (12).
 
-*Wenn man mit nur einem normalen Spieler spielt*: Ziehe die Karten und bereite zwei Abenteurer vor.
+_Wenn ein Spieler ohne Spielleiter spielt_: Plane für zwei Abenteurer und ziehe die Karten entsprechend.
 
 ### Fähigkeiten
 
-**Ziehe** die Startfähigkeiten, welche auf deiner Abenteurer Karte aufgelistet sind.
+**Ziehe** die aufgelisteten Start-Fertigkeiten für deinen Abenteurer.
 
-*Horror Erweiterung im Spiel*: Ziehe zusätzlich eine Einfluss Fähigkeit und mische diese in deinen Fähigkeiten Stapel (7 Startfähigkeiten).
+_Wenn Horror Erweiterung im Spiel ist_ : Ziehe eine zusätzliche Einfluss Fähigkeit und mische diese in den Fähigkeiten Stapel (Starte mit 7 Fähigkeiten).
 
-**Lese** dir deine Fähigkeiten durch. Es ist möglich alle Fähigkeiten einmal komplett neu zu ziehen, sofern der Spieler dies wünscht.
+**Lese** alle deine Fähigkeiten durch. Es ist möglich, einmal alle Karten abzuwerfen und neu zu ziehen.
 
-**Mische** deine Fähigkeiten und lege den Stapel verdeckt vor dich.
+**Mische** diese in einem Stapel und lege diesen verdeckt vor dich.
 
 ### Hilfsmittel
 
-**Ziehe** eine Helfer Karte. Lege den D20 Würfel in die Mitte. Wenn man zusätzliche D20 Würfel hat, kann jeder Spieler einen eigenen Würfel verwenden.
+**Ziehe** eine Helfer-Karte. Platziere den D20-Würfel in der Mitte.a Helper card. Wenn du zusätzliche D20-Würfel besitzt, kan jeweils einer an die anderen Spieler verteilt werden. in the center.
 
 ## Das Abenteuer
+Ohne die App spielt sich Expedition wie ein traditionelles Brettspiel RPG. Ein Spieler fungiert als Spielleiter, welcher die Geschichte erzählt und die Ergebnisse aller Entscheidungen den Spielern mitteilt.
 
-Ohne die App funktioniert Expedition wie ein traditionelles Rollenspiel. Ein Spieler agiert als SL, erzählt die Geschichte und erzählt den Spielern das Ergebnis ihrer Entscheidungen.
+Expedition ist besonders, wenn der Spielleiter die Fertigkeiten prüft (Skill Check) (z.B. Sich an einer Wache vorbei schleichen), kann der Spieler den Versuch mit eigenen Fertigkeiten modifizieren.
 
-Speziell bei Expedition, wenn der SL die Fähigkeiten Prüfung (z.B. an einem Wächter vorbei schleichen) durchführt, kann er es dem Spieler ermöglichen den Versuch mit den Fähigkeiten zu beeinflussen.
+_Wenn die Future Erweiterung im Spiel ist_ : Ausgegebene Fertigkeiten Karten und deren Arten (Athletik, Ausstrahlung, Wissen) können auf die Fertigkeiten Prüfung angewendet werden. Spieler können ihren Wurf erhöhen, indem sie die höchste Stufe von einer beliebigen Fertigkeit in ihrem Besitz, auf ihren Wurf anrechnen.
 
-Zum Beispiel können diese ihren Wurf um +1 erhöhen, wenn sie mehrere Fähigkeiten dergleichen Art haben:
+Zum Beispiel, ermöglicht dies eine Erhöhung des Wurfes um +1 für jede Fähigkeit der jeweiligen Kartenart im Besitz des SPielers:
 
-| Fähigkeitenklasse | Vorteile der Arten bei Fähigkeiten Prüfung |
+| Fähigkeiten Klasse | Arten von Fertigkeits-Prüfungen für Vorteile |
 | ----- | ----- |
 | Nahkampf | Stärke, Ausdauer, Konstitution, Einschüchtern |
 | Fernkampf | Geschick, Schleichen, Wahrnehmung, Klettern, Akrobatik, stehlen |
@@ -203,33 +204,36 @@ Ihr gewinnt den Kampf, wenn alle Gegner 0 Gesundheit haben. Danach ist folgendes
 
 Alle Abenteurer erlangen volle Gesundheit (selbst wenn die Gesundheit 0 ist), außer der SL entscheidet anders.
 
-**Beute**: Die Gruppe zieht nun Beute - nutze die folgende Tabelle um die Gesamtmenge an gewonnener Beute festzulegen. Die Gruppe sollte die obersten Karten vom Beutestapel (gemischt) ziehen, bis die Gesamtzahl dem Wert entspricht, welcher in der Tabelle vermerkt ist. Beim Ziehen der Beute sollte jede gezogene Karte übersprungen werden, wenn die Stufe höher ist als die zu ziehende Karte. (Zum Beispiel, wenn die Gruppe eine Gesamtstufe der Beute von 2 erhalten soll, überspringe alle Stufe 3 Karten und lege sie unter den Beute Stapel.)
+**Beute**: Die Gruppe zieht nun die Beute - Nutze die folgende Tabelle, um die Gesamtmenge der auszuteilenden Beute zu bestimmen. Die Gruppe sollte von der oberen Seite des gemischten Beute Stapels ziehen, bis die Gesamt Stufe der Beute mit der Tabelle übereinstimmt, aber alle Karten mit einer zu hohen Beutestufe werden übersprungen (zum Beispiel, Wenn die Belohnung Stufe 2 Beute ist, müssen alle Karten der Stufe 3 Beute unter den Stapel gelegt werden).
 
-Verteile die Beute unter den Abenteurern. Die Beute kann jederzeit genutzt werden und zählt nicht als Aktion (außer es ist anderweitig festgelegt).
+Teile die Beute unter den Abenteurern auf. Diese Beute kann jederzeit ausgespielt werden und benötigt keine Aktion (außer es wurde anderweitig festgelegt).
 
-| Kampfstufe | Beute Belohnung |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| Kampf Stufe | Beute Belohnung |
+| ----------- | ----------------|
+| 1           | 1               |
+| 2           | 1               |
+| 3           | 2               |
+| 4           | 3               |
+| 5           | 3               |
+| 6           | 4               |
+| 7           | 4               |
+| 8+          | 5               |
 
-**Stufenaufstieg**: Die Gruppe sammelt Erfahrung gleich der Kampfstufen Summe. Vermerke die Erfahrungspunkte auf der Rückseite einer Gefecht Karte oder einem Blatt Papier. Auf der Rückseite jeder Gefecht Karte, können die Erfahrungspunkte vermerkt werden, welche für den Aufstieg benötigt werden. Der erste Aufstieg beginnt bei 4 und steigt bei jedem Stufenaufstieg um 1.
+**Stufenaufstieg**: Die Gruppe erhält Erfahrung gleich der Summe der Kampf Stufe. Notiere die Erfahrung auf einem Blatt Papier. Auf einem weiteren Blatt sollte die benötigte Erfahrung für den Aufstieg vermerkt werden. Diese startet mit 4 und steigt um +1 bei jedem Stufenaufstieg.
 
-Wenn die Spieler aufsteigen, können sie eine neue Fähigkeit erlernen:
+Beim Stufenaufstieg können alle Abenteurer eine neue Fähigkeit erlernen:
+- Ziehe 3 Fähigkeiten von den Stapeln, entsprechend der Abenteurer Karte. _Wenn Horror Erweiterung im Spiel ist_ : Alle Abenteurer können zusätzlich eine Einfluss Karte ziehen.
+- Füge 1 deinem Fähigkeiten Stapel hinzu und lege die anderen 2 Karten unter den jeweiligen Ziehstapel.
+- Du _kannst_ eine Fähigkeit abwerfen.
 
-* Ziehe 3 Fähigkeiten von einem der auf der Abenteurerkarte vermerkten Stapel. *Horror Erweiterung im Spiel*: Alle Abenteurer können vom Einfluss Stapel ziehen.
-* Füge 1 Fähigkeiten Karte deinem Fähigkeiten Stapel hinzu und lege die anderen 2 Karten unter den jeweiligen Stapel, von welchem diese gezogen wurden.
-* Es ist möglich eine Fähigkeit abzulegen.
+_Wenn Horror Erweiterung im Spiel ist_ : Anstatt eine Fähigkeit zu erlernen, kannst du auch deine Rollenstufe um 2 Stufen erhöhen.
+
+_Wenn die Future Erweiterung im Spiel ist_ : Anstatt eine Fähigkeit zu erlernen, kannst du eine Fertigkeit erlernen (Ziehe 3, behalte 1) oder die Stufe einer existierenden Fertigkeit um eine Markierung nach rechts zu schieben.
 
 ### Niederlage
 
-Wenn die Gesundheit aller Abenteurer auf 0 gesunken ist, ist der Kampf verloren. Nun entscheidet der SL was mit den Abenteurern passiert. Zum Beispiel, ob ihr gefangen genommen werdet, ohnmächtig in einem einstürzenden Tunnel liegt oder das Abenteuer vorbei ist.
+Eine Niederlage tritt ein, wenn die Gesundheit aller Abenteurer auf 0 sinkt. Nun entscheidet der Spielleiter, was mit euch passiert - zum Beispiel, könnt ihr gefangen genommen werden, bewusstlos irgendwo liegen bleiben oder das Abenteuer ist vorbei.
 
 ## Ende
 
-Mehr ist nicht nötig um Expedition zu spielen! Sollten Fragen oder Verbesserungsvorschläge bestehen, könnt ihr diese gerne an uns per Email senden Expedition@Fabricate.io!
+So einfach ist das um Expedition zu spielen! Bei Fragen und Anregungen kannst du uns gerne eine Email schreiben Expedition@Fabricate.io!
