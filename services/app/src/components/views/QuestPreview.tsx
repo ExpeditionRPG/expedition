@@ -129,7 +129,7 @@ const QuestPreview = (props: Props): JSX.Element => {
         <div>{quest.summary}</div>
         <div className="author">by {quest.author}</div>
         {lastSaved !== null && <div className="summary">Last saved {Moment(lastSaved).fromNow()}</div>}
-        {(quest.ratingcount && quest.ratingcount >= 1 && quest.ratingcount < 10000) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
+        {(quest.ratingcount && quest.ratingcount >= 1) ? <StarRating readOnly={true} value={+ratingAvg} quantity={quest.ratingcount}/> : ''}
         <div className="indicators">
           {isNew && <div className="inline_icon"><img className="inline_icon" src="images/seedling_small.svg"/> Published Recently</div>}
           {offlineTS && <div className="inline_icon"><img className="inline_icon" src="images/offline_small.svg"/> Available Offline</div>}
