@@ -73,7 +73,7 @@ prodbuild() {
     ./zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk platforms/android/app/build/outputs/apk/release/expedition.apk
 
     # iOS
-    cordova build ios
+    cordova build ios --buildFlag="-UseModernBuildSystem=0"
   else
     echo "Skipping building Cordova apps"
 

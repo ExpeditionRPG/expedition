@@ -5,11 +5,11 @@
   </roleplay>
   <roleplay id="start" title="Test" data-line="8">
     <p>{{one=1}}</p>
-    <p>{{foo="a"}}</p>
+    <p>{{foo='a'}}</p>
     <p>You should see an error notification, but everything should work. Random: {{random()}}, {{random()}}.</p>
     <p>You face choices. Here's the value of one: {{one}}. And a symbol: ☞ and icon :roll:. There should be one paragraph below:</p>
-    <p>{{true}} One paragraph</p>
-    <p>{{false}} Two paragraph - you shouldn't see this!</p>
+    <p if="1==1">One paragraph</p>
+    <p if="1==2">Two paragraph - you shouldn't see this!</p>
     <choice text=":fae: Fight">
       <combat data-line="24">
         <e>Thief</e>
