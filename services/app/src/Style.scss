@@ -1396,8 +1396,8 @@ body.android .dialog .textfield:focus-within {
          display: -webkit-box;
          -webkit-box-orient: vertical;
          -webkit-line-clamp: 2; /* number of lines to show */
-         line-height: 1em;        /* fallback */
-         max-height: 1em*2;       /* fallback */
+         line-height: 1.2em;        /* fallback */
+         max-height: 1.2em*2;       /* fallback */
       }
       .threeLinesMax {
          overflow: hidden;
@@ -1405,8 +1405,8 @@ body.android .dialog .textfield:focus-within {
          display: -webkit-box;
          -webkit-box-orient: vertical;
          -webkit-line-clamp: 3; /* number of lines to show */
-         line-height: 1em;        /* fallback */
-         max-height: 1em*3;       /* fallback */
+         line-height: 1.2em;        /* fallback */
+         max-height: 1.2em*3;       /* fallback */
       }
     }
   }
