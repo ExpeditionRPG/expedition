@@ -182,8 +182,12 @@ label {
   }
 }
 
-body .olark-launch-button { /*must be more specifc than olark styles */
-  bottom: 32px !important;
+body #olark-wrapper button.olark-launch-button { /*must be more specifc than olark styles */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  position: fixed !important;
+  top: 10px !important;
+  left: 50% !important;
 }
 
 .splash {
