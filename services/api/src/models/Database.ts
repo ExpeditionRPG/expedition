@@ -115,7 +115,7 @@ export class Database {
           },
         ],
         timestamps: false, // TODO: eventually switch to sequelize timestamps
-      },
+      }
     );
 
     const userSpec = toSequelize(new User({ id: '' }));
@@ -126,7 +126,7 @@ export class Database {
     });
 
     const questSpec = toSequelize(
-      new Quest({ id: '', partition: Partition.expeditionPublic }),
+      new Quest({ id: '', partition: Partition.expeditionPublic })
     );
     this.quests = this.sequelize.define('quests', questSpec, {
       ...standardOptions,
@@ -156,7 +156,7 @@ export class Database {
         notes: '',
         metadata: '',
         edittime: new Date(0),
-      }),
+      })
     );
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
@@ -168,7 +168,7 @@ export class Database {
         partition: Partition.expeditionPublic,
         questid: '',
         userid: '',
-      }),
+      })
     );
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {
       ...standardOptions,
@@ -181,12 +181,12 @@ export class Database {
         partition: Partition.expeditionPublic,
         id: '',
         questversion: 0,
-      }),
+      })
     );
     this.renderedQuests = this.sequelize.define(
       'renderedquests',
       renderedQuestSpec,
-      standardOptions,
+      standardOptions
     );
 
     const eventSpec = toSequelize(
@@ -198,26 +198,26 @@ export class Database {
         id: 0,
         type: '',
         json: '',
-      }),
+      })
     );
     this.events = this.sequelize.define('events', eventSpec, standardOptions);
 
     const sessionClientSpec = toSequelize(
-      new SessionClient({ session: 0, client: '', secret: '' }),
+      new SessionClient({ session: 0, client: '', secret: '' })
     );
     this.sessionClients = this.sequelize.define(
       'sessionclients',
       sessionClientSpec,
-      standardOptions,
+      standardOptions
     );
 
     const sessionSpec = toSequelize(
-      new Session({ id: 0, secret: '', eventCounter: 0, locked: false }),
+      new Session({ id: 0, secret: '', eventCounter: 0, locked: false })
     );
     this.sessions = this.sequelize.define(
       'sessions',
       sessionSpec,
-      standardOptions,
+      standardOptions
     );
 
     // This doesn't need an independent spec - it is used by connect-session-sequelize

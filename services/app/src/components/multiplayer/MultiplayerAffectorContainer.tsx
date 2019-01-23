@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps 
     className: ownProps.className,
     includeLocalInteractions: ownProps.includeLocalInteractions,
     onInteraction: ownProps.onInteraction,
+    lazy: ownProps.lazy,
   };
 };
 

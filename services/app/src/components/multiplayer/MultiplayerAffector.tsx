@@ -8,6 +8,7 @@ export interface StateProps {
   className?: string;
   includeLocalInteractions?: boolean;
   onInteraction?: (client: string, event: InteractionEvent) => any;
+  lazy?: boolean;
 }
 
 export interface DispatchProps {
@@ -27,6 +28,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
   private boundHandleMultiplayerEvent: (e: MultiplayerEvent) => void;
   private mouseDown: boolean;
   private ref: HTMLElement;
+  private boundingRect: any;
 
   constructor(props: Props) {
     super(props);
@@ -39,14 +41,24 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     this.mouseDown = false;
     this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
     this.props.onSubscribe(this.boundHandleMultiplayerEvent);
-    this.listeners = {
-      mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
-      mousemove: (e: MouseEvent) => this.mouseMoveEvent(e),
-      mouseup: () => this.mouseUpEvent(),
-      touchend: (e: TouchEvent) => this.touchEvent(e),
-      touchmove: (e: TouchEvent) => this.touchEvent(e),
-      touchstart: (e: TouchEvent) => this.touchEvent(e),
-    };
+    if (this.props.lazy) {
+      // Event listener registration is expensive (several milliseconds per call to addEventListener).
+      // This won't show any moves or "up" events.
+      this.listeners = {
+        mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
+        touchstart: (e: TouchEvent) => this.touchEvent(e),
+      };
+    } else {
+      this.listeners = {
+        mousedown: (e: MouseEvent) => this.mouseDownEvent(e),
+        mousemove: (e: MouseEvent) => this.mouseMoveEvent(e),
+        mouseup: () => this.mouseUpEvent(),
+        touchend: (e: TouchEvent) => this.touchEvent(e),
+        touchmove: (e: TouchEvent) => this.touchEvent(e),
+        touchstart: (e: TouchEvent) => this.touchEvent(e),
+      };
+    }
+    this.boundingRect = null;
   }
 
   private handleMultiplayerEvent(e: MultiplayerEvent) {
@@ -100,10 +112,9 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
   }
 
   private processInput(type: string, positions: {[id: string]: number[]}) {
-    const boundingRect = this.ref.getBoundingClientRect();
     for (const k of Object.keys(positions)) {
-      positions[k][0] = Math.floor((positions[k][0] - boundingRect.left) / this.ref.offsetWidth * 1000);
-      positions[k][1] = Math.floor((positions[k][1] - boundingRect.top) / this.ref.offsetHeight * 1000);
+      positions[k][0] = Math.floor((positions[k][0] - this.boundingRect.left) / this.ref.offsetWidth * 1000);
+      positions[k][1] = Math.floor((positions[k][1] - this.boundingRect.top) / this.ref.offsetHeight * 1000);
     }
     const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.id || '', event: type};
 
@@ -119,16 +130,26 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
   }
 
   public onRef(r: HTMLElement|null) {
-    if (r === null) {
+    if (r === null || r === this.ref) {
       return;
     }
     this.ref = r;
-    for (const k of Object.keys(this.listeners)) {
-      // The `true` arg ensures touch events are propagated here during
-      // the "capture" phase of event flow.
-      // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
-      this.ref.addEventListener(k, this.listeners[k], true);
-    }
+
+    // Get the bounding rectangle and register listeners after render loop
+    // ~15ms savings from bounding rect, plus 4ms per event listener per object on screen
+    window.requestAnimationFrame(() => {
+      if (this.ref !== r) {
+        return; // Preempted
+      }
+
+      for (const k of Object.keys(this.listeners)) {
+        // The `true` arg ensures touch events are propagated here during
+        // the "capture" phase of event flow.
+        // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+        this.ref.addEventListener(k, this.listeners[k], true);
+      }
+      this.boundingRect = this.ref.getBoundingClientRect();
+    });
   }
 
   public componentWillUnmount() {

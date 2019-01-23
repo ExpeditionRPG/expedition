@@ -41,17 +41,23 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     }
 
     if (numFingers > 0) {
+      let isDoubleTap = false;
       if (numFingers > this.state.touchCount) {
         // Double tap to set manually
         if (numFingers === 1 && Date.now() - this.state.lastTouchTime < DOUBLE_TAP_MS) {
-          this.props.onDoubleTap();
+          isDoubleTap = true;
         }
         this.setState({lastTouchTime: Date.now()});
       }
-      this.setState({transitionTimeout: setTimeout(() => {
-        this.props.onPlayerCountSelect(numFingers);
-      }, this.props.transitionMillis)});
-      this.animate();
+
+      if (isDoubleTap) {
+        this.props.onDoubleTap();
+      } else if (numFingers > 0) {
+        this.setState({transitionTimeout: setTimeout(() => {
+          this.props.onPlayerCountSelect(numFingers);
+        }, this.props.transitionMillis)});
+        this.animate();
+      }
     }
     this.setState({touchCount: numFingers, maxTouches: Math.max(this.state.maxTouches, numFingers)});
   }

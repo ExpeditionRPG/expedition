@@ -33,7 +33,6 @@ _Pokud hrajete s rozšířením The Horror_: Lízněte si kartu Osobnosti, polo�
 
 _Pokud hraješ hru jen s jedním hráčem mimo vypravěče_: Vyber si a vylož dva dobrodruhy.
 
-
 ### Dovednosti
 
 **Lízni si** počáteční dovednosti uvedené na svém dobrodruhovi.
@@ -55,12 +54,12 @@ Unikátní v Expedici, když vypravěč spravuje kontrolu dovedností (jako nap�
 
 Například, může zvýšit tvůj hod o 1 za každou relevantní dovednost, kterou máš:
 
-| Třída dovednosti | Typ schopnosti, které by mohli pomoci                         |
-| ------------- | -------------------------------------------------------------- |
-| Boj zblízka         | Síla, vytrvalost, duševní zdraví, zastrašování                |
-| Boj zdálky        | Obratnost, plížení, vnímání, lezení, akrobacie, krádež |
-| Magie         | Inteligence, znalosti, tradice, historie, moudrost                 |
-| Hudba        | Charizma, diplomacie, přesvědčení, vyjednávání                   |
+| Třída dovednosti | Typ schopnosti, které by mohli pomoci                  |
+| ---------------- | ------------------------------------------------------ |
+| Boj zblízka      | Síla, vytrvalost, duševní zdraví, zastrašování         |
+| Boj zdálky       | Obratnost, plížení, vnímání, lezení, akrobacie, krádež |
+| Magie            | Inteligence, znalosti, tradice, historie, moudrost     |
+| Hudba            | Charizma, diplomacie, přesvědčení, vyjednávání         |
 
 Vypravěč ti také může povolit použití tvojí specifické schopnosti jako "zkratku" - například, místo použití hrubé síly na rozbití dveří, můžeš zkusit použít Ohnivou kouli.
 
@@ -131,72 +130,72 @@ Pokud chcete jednoduší souboj, použijte tabulku pro o jednoho hráče míň. 
 ##### 1 - 2 hráči (2 dobrodruzi)
 
 | Součet úrovně | Hod: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (průměr) |
-| -------- | --------- | --- | ---- | ----- | ----- | --------- |
-| 1        | 0         | 0   | 0    | 1     | 2     | 0.6       |
-| 2        | 0         | 1   | 1    | 1     | 2     | 1         |
-| 3        | 0         | 1   | 2    | 2     | 3     | 1.6       |
-| 4        | 1         | 2   | 2    | 2     | 3     | 2         |
-| 5        | 2         | 2   | 2    | 3     | 4     | 2.6       |
-| 6        | 2         | 2   | 3    | 4     | 4     | 3         |
-| 7        | 2         | 3   | 4    | 4     | 5     | 3.6       |
-| 8        | 3         | 3   | 4    | 5     | 5     | 4         |
-| 9+       | 4         | 4   | 4    | 5     | 6     | 4.6       |
+| ------------- | -------- | --- | ---- | ----- | ----- | -------- |
+| 1             | 0        | 0   | 0    | 1     | 2     | 0.6      |
+| 2             | 0        | 1   | 1    | 1     | 2     | 1        |
+| 3             | 0        | 1   | 2    | 2     | 3     | 1.6      |
+| 4             | 1        | 2   | 2    | 2     | 3     | 2        |
+| 5             | 2        | 2   | 2    | 3     | 4     | 2.6      |
+| 6             | 2        | 2   | 3    | 4     | 4     | 3        |
+| 7             | 2        | 3   | 4    | 4     | 5     | 3.6      |
+| 8             | 3        | 3   | 4    | 5     | 5     | 4        |
+| 9+            | 4        | 4   | 4    | 5     | 6     | 4.6      |
 
 ##### 3 hráči
 
 | Součet úrovně | Hod: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (průměr) |
-| -------- | --------- | --- | ---- | ----- | ----- | --------- |
-| 1        | 0         | 0   | 1    | 1     | 2     | 0.8       |
-| 2        | 1         | 1   | 1    | 2     | 2     | 1.4       |
-| 3        | 1         | 2   | 2    | 3     | 3     | 2.2       |
-| 4        | 1         | 2   | 3    | 3     | 4     | 2.6       |
-| 5        | 3         | 3   | 3    | 4     | 4     | 3.4       |
-| 6        | 3         | 3   | 4    | 4     | 5     | 3.8       |
-| 7        | 3         | 4   | 5    | 5     | 5     | 4.4       |
-| 8        | 4         | 4   | 5    | 5     | 6     | 4.8       |
-| 9+       | 5         | 5   | 5    | 6     | 6     | 5.4       |
+| ------------- | -------- | --- | ---- | ----- | ----- | -------- |
+| 1             | 0        | 0   | 1    | 1     | 2     | 0.8      |
+| 2             | 1        | 1   | 1    | 2     | 2     | 1.4      |
+| 3             | 1        | 2   | 2    | 3     | 3     | 2.2      |
+| 4             | 1        | 2   | 3    | 3     | 4     | 2.6      |
+| 5             | 3        | 3   | 3    | 4     | 4     | 3.4      |
+| 6             | 3        | 3   | 4    | 4     | 5     | 3.8      |
+| 7             | 3        | 4   | 5    | 5     | 5     | 4.4      |
+| 8             | 4        | 4   | 5    | 5     | 6     | 4.8      |
+| 9+            | 5        | 5   | 5    | 6     | 6     | 5.4      |
 
 ##### 4 hráči
 
 | Součet úrovně | Hod: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (průměr) |
-| -------- | --------- | --- | ---- | ----- | ----- | --------- |
-| 1        | 0         | 1   | 1    | 1     | 2     | 1         |
-| 2        | 1         | 1   | 2    | 2     | 2     | 1.6       |
-| 3        | 2         | 2   | 2    | 3     | 3     | 2.4       |
-| 4        | 2         | 2   | 3    | 4     | 4     | 3         |
-| 5        | 3         | 3   | 4    | 4     | 4     | 3.6       |
-| 6        | 3         | 4   | 4    | 5     | 5     | 4.2       |
-| 7        | 4         | 4   | 5    | 5     | 6     | 4.8       |
-| 8        | 5         | 5   | 5    | 6     | 6     | 5.4       |
-| 9+       | 5         | 6   | 6    | 6     | 7     | 6         |
+| ------------- | -------- | --- | ---- | ----- | ----- | -------- |
+| 1             | 0        | 1   | 1    | 1     | 2     | 1        |
+| 2             | 1        | 1   | 2    | 2     | 2     | 1.6      |
+| 3             | 2        | 2   | 2    | 3     | 3     | 2.4      |
+| 4             | 2        | 2   | 3    | 4     | 4     | 3        |
+| 5             | 3        | 3   | 4    | 4     | 4     | 3.6      |
+| 6             | 3        | 4   | 4    | 5     | 5     | 4.2      |
+| 7             | 4        | 4   | 5    | 5     | 6     | 4.8      |
+| 8             | 5        | 5   | 5    | 6     | 6     | 5.4      |
+| 9+            | 5        | 6   | 6    | 6     | 7     | 6        |
 
 ##### 5 hráčů
 
 | Součet úrovně | Hod: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (průměr) |
-| -------- | --------- | --- | ---- | ----- | ----- | --------- |
-| 1        | 0         | 1   | 1    | 1     | 2     | 1         |
-| 2        | 1         | 1   | 2    | 2     | 3     | 1.8       |
-| 3        | 2         | 2   | 2    | 3     | 4     | 2.6       |
-| 4        | 2         | 2   | 3    | 4     | 5     | 3.2       |
-| 5        | 3         | 3   | 4    | 4     | 5     | 3.8       |
-| 6        | 3         | 4   | 4    | 5     | 6     | 4.4       |
-| 7        | 4         | 5   | 5    | 5     | 6     | 5         |
-| 8        | 5         | 6   | 6    | 6     | 6     | 5.8       |
-| 9+       | 6         | 6   | 6    | 7     | 7     | 6.4       |
+| ------------- | -------- | --- | ---- | ----- | ----- | -------- |
+| 1             | 0        | 1   | 1    | 1     | 2     | 1        |
+| 2             | 1        | 1   | 2    | 2     | 3     | 1.8      |
+| 3             | 2        | 2   | 2    | 3     | 4     | 2.6      |
+| 4             | 2        | 2   | 3    | 4     | 5     | 3.2      |
+| 5             | 3        | 3   | 4    | 4     | 5     | 3.8      |
+| 6             | 3        | 4   | 4    | 5     | 6     | 4.4      |
+| 7             | 4        | 5   | 5    | 5     | 6     | 5        |
+| 8             | 5        | 6   | 6    | 6     | 6     | 5.8      |
+| 9+            | 6        | 6   | 6    | 7     | 7     | 6.4      |
 
 ##### 6 hráčů
 
 | Součet úrovně | Hod: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (průměr) |
-| -------- | --------- | --- | ---- | ----- | ----- | --------- |
-| 1        | 1         | 1   | 1    | 1     | 2     | 1.2       |
-| 2        | 1         | 2   | 2    | 2     | 3     | 2         |
-| 3        | 2         | 2   | 3    | 3     | 4     | 2.8       |
-| 4        | 3         | 3   | 3    | 4     | 5     | 3.6       |
-| 5        | 4         | 4   | 4    | 4     | 5     | 4.2       |
-| 6        | 4         | 4   | 5    | 5     | 6     | 4.8       |
-| 7        | 5         | 5   | 6    | 6     | 6     | 5.6       |
-| 8        | 6         | 6   | 6    | 7     | 7     | 6.4       |
-| 9+       | 6         | 7   | 7    | 7     | 8     | 7         |
+| ------------- | -------- | --- | ---- | ----- | ----- | -------- |
+| 1             | 1        | 1   | 1    | 1     | 2     | 1.2      |
+| 2             | 1        | 2   | 2    | 2     | 3     | 2        |
+| 3             | 2        | 2   | 3    | 3     | 4     | 2.8      |
+| 4             | 3        | 3   | 3    | 4     | 5     | 3.6      |
+| 5             | 4        | 4   | 4    | 4     | 5     | 4.2      |
+| 6             | 4        | 4   | 5    | 5     | 6     | 4.8      |
+| 7             | 5        | 5   | 6    | 6     | 6     | 5.6      |
+| 8             | 6        | 6   | 6    | 7     | 7     | 6.4      |
+| 9+            | 6        | 7   | 7    | 7     | 8     | 7        |
 
 ### Vítězství
 
@@ -208,18 +207,18 @@ Všichni dobrodruzi doplní zdraví zpět na plný počet (i v případě že kl
 
 **Odměna**: Vaše skupina si lízne odměny - použijte tabulku níže k určení množství odměn, které získáte. Skupina by měla dolízávat karty z vrchu (zamíchaného) balíčku odměn, dokud nebude součet úrovně odměn roven hodnotě z tabulky. Přeskočte všechny odměny, jejichž úroveň bude vyšší, než hodnota úrovně získané odměny. (například, pokud jste získali odměnu úrovně 2, přeskočte všechny odměny úrovně 3 a vložte je do spod balíčku).
 
-Rozdělte odměny mezi dobrodruhy.  Odměna může být použita kdykoliv a nepočítá se jako tah. (pokud není řečeno jinak).
+Rozdělte odměny mezi dobrodruhy. Odměna může být použita kdykoliv a nepočítá se jako tah. (pokud není řečeno jinak).
 
 | Úroveň souboje | Odměna |
-| ----------- | ----------- |
-| 1           | 1           |
-| 2           | 1           |
-| 3           | 2           |
-| 4           | 3           |
-| 5           | 3           |
-| 6           | 4           |
-| 7           | 4           |
-| 8+          | 5           |
+| -------------- | ------ |
+| 1              | 1      |
+| 2              | 1      |
+| 3              | 2      |
+| 4              | 3      |
+| 5              | 3      |
+| 6              | 4      |
+| 7              | 4      |
+| 8+             | 5      |
 
 **Zvyšování úrovně**: Skupina získá zkušenosti rovné součtu úrovně souboje. Zaznamenávejte získané zkušenosti na zadní straně karty nepřátel nebo na kus papíru. Na jiné kartě nepřátel nebo papíře, si poznamenejte množství zkušeností potřebné ke zvýšení úrovně. To začína na 4 a zvyšuje se o 1 pokaždé, kdy postoupíte o úroveň.
 

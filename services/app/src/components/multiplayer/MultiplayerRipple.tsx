@@ -100,6 +100,7 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
       <MultiplayerAffectorContainer
         id={this.props.id}
         className={this.props.className}
+        lazy={true}
         onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i); }}>
         <TouchRipple innerRef={(ref) => this.onRippleRef(ref)} children={null} component="span" classes={{child: `ripplep${this.state.activePlayer}`}} />
         {this.props.children}
