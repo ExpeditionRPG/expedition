@@ -60,7 +60,8 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(6, 'days')
+        created: Moment().subtract(6, 'days'),
+        official: false,
       })
     }).e.html();
     expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
@@ -70,7 +71,8 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment().subtract(30, 'days'),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(20, 'days')
+        created: Moment().subtract(20, 'days'),
+        official: false,
       })
     }).e.html();
     expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
@@ -79,7 +81,10 @@ describe('QuestButton', () => {
   test('displays "new" icon if quest has fewer than 5 ratings', () => {
     const html = setup({
       lastLogin: Moment(),
-      quest: new Quest({...TUTORIAL_QUESTS[0], ratingcount: 4}),
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        ratingcount: 4,
+        official: false
+      }),
     }).e.html();
     expect(html).toContain(NEW_QUEST_ICON_SUBSTR);
   });
@@ -88,7 +93,9 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(30, 'days')
+        created: Moment().subtract(30, 'days'),
+        ratingcount: 6,
+        official: false,
       })
     }).e.html();
     expect(html).not.toContain(NEW_QUEST_ICON_SUBSTR);
@@ -100,6 +107,16 @@ describe('QuestButton', () => {
       lastPlayed: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
         created: Moment(),
+        official: false,
+      })
+    }).e.html();
+    expect(html).not.toContain(NEW_QUEST_ICON_SUBSTR);
+  });
+
+  test('does not display "new" icon if quest is official', () => {
+    const html = setup({
+      quest: new Quest({...TUTORIAL_QUESTS[0],
+        official: true,
       })
     }).e.html();
     expect(html).not.toContain(NEW_QUEST_ICON_SUBSTR);
