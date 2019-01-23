@@ -53,6 +53,8 @@ Without the app, Expedition works like a traditional tabletop RPG. One player ac
 
 Unique to Expedition, when the GM handles skill checks (such as attempting to sneak past a guard), they may let you use your skills to modify your attempt.
 
+_If playing with The Future_: You can use the provided Skill cards and their types (Athletics, Charisma, Knowledge) for your skill checks. Players would then increase their roll by the highest level of any skill they have of that type.
+
 For example, they might let you increase your roll by +1 for each ability of a relevant type you have:
 
 | Ability class | Types of skill checks it could benefit                         |
@@ -228,6 +230,10 @@ When you level up, all adventurers may learn a new ability:
 - Draw 3 abilties from one of the decks listed on your adventurer card. _If you are playing with The Horror_: All adventurers may also draw from the influence deck.
 - Add 1 to your ability deck, and place the remaining 2 at the bottom of the deck you drew from.
 - You _may_ choose to discard an ability.
+
+_If playing with The Horror_: Instead of learning an ability, you may also choose to increase your Persona 2 levels.
+
+_If playing with The Future_: Instead of learning an ability, you may also choose to learn a skill (draw 3, keep 1) or increase the level of an existing skill by sliding it one mark to the right.
 
 ### Defeat
 

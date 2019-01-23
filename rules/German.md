@@ -4,7 +4,7 @@ Diese Regeln sind dazu gedacht, das Spiel ohne ein elektronisches Gerät zu spie
 
 Wenn man die aktuellste und beste Version von Expedition spielen möchte (einschließlich von dutzenden beinhalteten Abenteuern), welchen keinen SL benötigen, ist es möglich eine Webseiten, Android oder iOS Applikation auf [ExpeditionGame.com/app](http://ExpeditionGame.com/app) zu nutzen.
 
-*Dieses Dokument basiert auf der Version Expedition App v1.13.8. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden.*
+_Dieses Dokument basiert auf der Version Expedition App v1.20.1. Die aktuelle Version der App kann man in den "Einstellungen" die Versionssnummer am Ende der Seite finden._
 
 ## Vorbereitungen
 
@@ -12,8 +12,8 @@ Zum Spielen benötigt man die Expedition Spielkarten.
 
 2 Möglichkeiten:
 
-* Kaufe eine Version vom Spiel auf der Expedition Webseite ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) oder auf Amazon.
-* Oder drucke das Spiel aus und benutze deine eigenen Karten auf [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). Wenn man das Spiel ausdruckt, benötigt man einen D20 Würfel und 12 Heftklammern.
+- Kaufe eine Version vom Spiel auf der Expedition Webseite ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) oder auf Amazon.
+- Oder drucke das Spiel aus und benutze deine eigenen Karten auf [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). Wenn man das Spiel ausdruckt, benötigt man einen D20 Würfel und 12 Heftklammern.
 
 Ebenso sollte man diese Regeln als Hilfestellung ausdrucken.
 
@@ -27,40 +27,42 @@ Sobald man bereit ist, sollten alle Spieler außer dem SL folgendes tun:
 
 **Wähle** eine Abenteurerklasse aus dem Stapel und lege sie offen vor dich. Danach gebe den Stapel n den nächsten Spieler weiter.
 
-*Horror Erweiterung im Spiel*: Ziehe eine Rollen Karte und lege diese offen vor dich hin. Eine Heftklammer sollte an der Karte auf "Basis" angeheftet werden.
+_Horror Erweiterung im Spiel_: Ziehe eine Rollen Karte und lege diese offen vor dich hin. Eine Heftklammer sollte an der Karte auf "Basis" angeheftet werden.
 
 **Befestige** eine Heftklammer auf der Abenteurerkarte und setze deine Gesundheit auf (12).
 
-*Wenn man mit nur einem normalen Spieler spielt*: Ziehe die Karten und bereite zwei Abenteurer vor.
+_Wenn ein Spieler ohne Spielleiter spielt_: Plane für zwei Abenteurer und ziehe die Karten entsprechend.
 
 ### Fähigkeiten
 
-**Ziehe** die Startfähigkeiten, welche auf deiner Abenteurer Karte aufgelistet sind.
+**Ziehe** die aufgelisteten Start-Fertigkeiten für deinen Abenteurer.
 
-*Horror Erweiterung im Spiel*: Ziehe zusätzlich eine Einfluss Fähigkeit und mische diese in deinen Fähigkeiten Stapel (7 Startfähigkeiten).
+_Wenn Horror Erweiterung im Spiel ist_ : Ziehe eine zusätzliche Einfluss Fähigkeit und mische diese in den Fähigkeiten Stapel (Starte mit 7 Fähigkeiten).
 
-**Lese** dir deine Fähigkeiten durch. Es ist möglich alle Fähigkeiten einmal komplett neu zu ziehen, sofern der Spieler dies wünscht.
+**Lese** alle deine Fähigkeiten durch. Es ist möglich, einmal alle Karten abzuwerfen und neu zu ziehen.
 
-**Mische** deine Fähigkeiten und lege den Stapel verdeckt vor dich.
+**Mische** diese in einem Stapel und lege diesen verdeckt vor dich.
 
 ### Hilfsmittel
 
-**Ziehe** eine Helfer Karte. Lege den D20 Würfel in die Mitte. Wenn man zusätzliche D20 Würfel hat, kann jeder Spieler einen eigenen Würfel verwenden.
+**Ziehe** eine Helfer-Karte. Platziere den D20-Würfel in der Mitte.a Helper card. Wenn du zusätzliche D20-Würfel besitzt, kan jeweils einer an die anderen Spieler verteilt werden. in the center.
 
 ## Das Abenteuer
 
-Ohne die App funktioniert Expedition wie ein traditionelles Rollenspiel. Ein Spieler agiert als SL, erzählt die Geschichte und erzählt den Spielern das Ergebnis ihrer Entscheidungen.
+Ohne die App spielt sich Expedition wie ein traditionelles Brettspiel RPG. Ein Spieler fungiert als Spielleiter, welcher die Geschichte erzählt und die Ergebnisse aller Entscheidungen den Spielern mitteilt.
 
-Speziell bei Expedition, wenn der SL die Fähigkeiten Prüfung (z.B. an einem Wächter vorbei schleichen) durchführt, kann er es dem Spieler ermöglichen den Versuch mit den Fähigkeiten zu beeinflussen.
+Expedition ist besonders, wenn der Spielleiter die Fertigkeiten prüft (Skill Check) (z.B. Sich an einer Wache vorbei schleichen), kann der Spieler den Versuch mit eigenen Fertigkeiten modifizieren.
 
-Zum Beispiel können diese ihren Wurf um +1 erhöhen, wenn sie mehrere Fähigkeiten dergleichen Art haben:
+_Wenn die Future Erweiterung im Spiel ist_ : Ausgegebene Fertigkeiten Karten und deren Arten (Athletik, Ausstrahlung, Wissen) können auf die Fertigkeiten Prüfung angewendet werden. Spieler können ihren Wurf erhöhen, indem sie die höchste Stufe von einer beliebigen Fertigkeit in ihrem Besitz, auf ihren Wurf anrechnen.
 
-| Fähigkeitenklasse | Vorteile der Arten bei Fähigkeiten Prüfung |
-| ----- | ----- |
-| Nahkampf | Stärke, Ausdauer, Konstitution, Einschüchtern |
-| Fernkampf | Geschick, Schleichen, Wahrnehmung, Klettern, Akrobatik, stehlen |
-| Magie | Intelligenz, Wissen, Kunde, Geschichte, Weisheit |
-| Musik | Charisma, Diplomatie, Überzeugen, Verhandeln |
+Zum Beispiel, ermöglicht dies eine Erhöhung des Wurfes um +1 für jede Fähigkeit der jeweiligen Kartenart im Besitz des SPielers:
+
+| Fähigkeiten Klasse | Arten von Fertigkeits-Prüfungen für Vorteile                    |
+| ------------------ | --------------------------------------------------------------- |
+| Nahkampf           | Stärke, Ausdauer, Konstitution, Einschüchtern                   |
+| Fernkampf          | Geschick, Schleichen, Wahrnehmung, Klettern, Akrobatik, stehlen |
+| Magie              | Intelligenz, Wissen, Kunde, Geschichte, Weisheit                |
+| Musik              | Charisma, Diplomatie, Überzeugen, Verhandeln                    |
 
 Der SL kann es dem Spieler auch erlauben eine spezielle Fähigkeiten Karte als "Abkürzung" zu nutzen - Zum Beispiel, um eine Tür aufzubrechen, kann man statt roher Gewalt auch einen Feuerball auf diese schleudern.
 
@@ -90,15 +92,15 @@ Jeder Spieler sollte zeitgleich:
 
 Wenn man mit einem Timer arbeitet:
 
-* **Die Handkarten ziehen** von 3 Fähigkeiten und verdeckt hinlegen. Schaue dir diese Karten erst an, wenn der Timer gestartet wird.
-* **Starte den Timer**.
-* **Spiele 1 Fähigkeit** von deiner Hand.
-* Wenn der Timer abläuft, multipliziere den erlittenen Schaden dieser Runde mit 1,5 (Aufrunden).
+- **Die Handkarten ziehen** von 3 Fähigkeiten und verdeckt hinlegen. Schaue dir diese Karten erst an, wenn der Timer gestartet wird.
+- **Starte den Timer**.
+- **Spiele 1 Fähigkeit** von deiner Hand.
+- Wenn der Timer abläuft, multipliziere den erlittenen Schaden dieser Runde mit 1,5 (Aufrunden).
 
 Wenn man ohne einen Timer spielt:
 
-* **Die Handkarten ziehen** von 3 Fähigkeiten,
-* **Spiele 1 Fähigkeit** von deiner Hand.
+- **Die Handkarten ziehen** von 3 Fähigkeiten,
+- **Spiele 1 Fähigkeit** von deiner Hand.
 
 #### Gegenschläge
 
@@ -110,7 +112,7 @@ Gegenschlag Effekte werden vor den Fähigkeiten ausgeführt. Fähigkeiten mit de
 
 ### Würfeln & Ausführen
 
-*Horror Erweiterung im Spiel*: Abenteurer mit der Rolle auf "Min" müssen den Rollen Effekt ausführen und die Rolle auf "Basis" zurücksetzen, bevor die Fähigkeiten ausgeführt werden. Abenteurer mit einer Rolle auf "Max" können selbst entscheiden, wann sie ihren Rollen Effekt ausführen wollen.
+_Horror Erweiterung im Spiel_: Abenteurer mit der Rolle auf "Min" müssen den Rollen Effekt ausführen und die Rolle auf "Basis" zurücksetzen, bevor die Fähigkeiten ausgeführt werden. Abenteurer mit einer Rolle auf "Max" können selbst entscheiden, wann sie ihren Rollen Effekt ausführen wollen.
 
 **Würfeln**: Jeder Abenteurer würfelt für jede zu spielende Fähigkeit. Wenn der Wurf ≥ X zeigt, ist die Fähigkeit erfolgreich. Fähigkeiten Karten können zusätzliche Effekte haben, welche ausgeführt werden müssen, wenn der Wurf fehlschlägt.
 
@@ -131,69 +133,72 @@ Wenn der Kampf leichter sein soll, nutze die Tabelle für einen Spieler weniger.
 ##### 1 - 2 Spieler
 
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
-| 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
-| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
+| ------------ | --------- | --- | ---- | ----- | ----- | -------------- |
+| 1            | 0         | 0   | 0    | 1     | 2     | 0.6            |
+| 2            | 0         | 1   | 1    | 1     | 2     | 1              |
+| 3            | 0         | 1   | 2    | 2     | 3     | 1.6            |
+| 4            | 1         | 2   | 2    | 2     | 3     | 2              |
+| 5            | 2         | 2   | 2    | 3     | 4     | 2.6            |
+| 6            | 2         | 2   | 3    | 4     | 4     | 3              |
+| 7            | 2         | 3   | 4    | 4     | 5     | 3.6            |
+| 8            | 3         | 3   | 4    | 5     | 5     | 4              |
+| 9+           | 4         | 4   | 4    | 5     | 6     | 4.6            |
 
 ##### 3 Spieler
+
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
-| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
-| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
-| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
-| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
-| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| ------------ | --------- | --- | ---- | ----- | ----- | -------------- |
+| 1            | 0         | 0   | 1    | 1     | 2     | 0.8            |
+| 2            | 1         | 1   | 1    | 2     | 2     | 1.4            |
+| 3            | 1         | 2   | 2    | 3     | 3     | 2.2            |
+| 4            | 1         | 2   | 3    | 3     | 4     | 2.6            |
+| 5            | 3         | 3   | 3    | 4     | 4     | 3.4            |
+| 6            | 3         | 3   | 4    | 4     | 5     | 3.8            |
+| 7            | 3         | 4   | 5    | 5     | 5     | 4.4            |
+| 8            | 4         | 4   | 5    | 5     | 6     | 4.8            |
+| 9+           | 5         | 5   | 5    | 6     | 6     | 5.4            |
 
 ##### 4 Spieler
 
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
-| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
-| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
-| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
-| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
-| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
+| ------------ | --------- | --- | ---- | ----- | ----- | -------------- |
+| 1            | 0         | 1   | 1    | 1     | 2     | 1              |
+| 2            | 1         | 1   | 2    | 2     | 2     | 1.6            |
+| 3            | 2         | 2   | 2    | 3     | 3     | 2.4            |
+| 4            | 2         | 2   | 3    | 4     | 4     | 3              |
+| 5            | 3         | 3   | 4    | 4     | 4     | 3.6            |
+| 6            | 3         | 4   | 4    | 5     | 5     | 4.2            |
+| 7            | 4         | 4   | 5    | 5     | 6     | 4.8            |
+| 8            | 5         | 5   | 5    | 6     | 6     | 5.4            |
+| 9+           | 5         | 6   | 6    | 6     | 7     | 6              |
 
 ##### 5 Spieler
+
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
-| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
-| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
-| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
-| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
-| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| ------------ | --------- | --- | ---- | ----- | ----- | -------------- |
+| 1            | 0         | 1   | 1    | 1     | 2     | 1              |
+| 2            | 1         | 1   | 2    | 2     | 3     | 1.8            |
+| 3            | 2         | 2   | 2    | 3     | 4     | 2.6            |
+| 4            | 2         | 2   | 3    | 4     | 5     | 3.2            |
+| 5            | 3         | 3   | 4    | 4     | 5     | 3.8            |
+| 6            | 3         | 4   | 4    | 5     | 6     | 4.4            |
+| 7            | 4         | 5   | 5    | 5     | 6     | 5              |
+| 8            | 5         | 6   | 6    | 6     | 6     | 5.8            |
+| 9+           | 6         | 6   | 6    | 7     | 7     | 6.4            |
 
 ##### 6 Spieler
+
 | Stufen Summe | Wurf: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (Durchschnitt) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
-| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
-| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
-| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
-| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
-| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
+| ------------ | --------- | --- | ---- | ----- | ----- | -------------- |
+| 1            | 1         | 1   | 1    | 1     | 2     | 1.2            |
+| 2            | 1         | 2   | 2    | 2     | 3     | 2              |
+| 3            | 2         | 2   | 3    | 3     | 4     | 2.8            |
+| 4            | 3         | 3   | 3    | 4     | 5     | 3.6            |
+| 5            | 4         | 4   | 4    | 4     | 5     | 4.2            |
+| 6            | 4         | 4   | 5    | 5     | 6     | 4.8            |
+| 7            | 5         | 5   | 6    | 6     | 6     | 5.6            |
+| 8            | 6         | 6   | 6    | 7     | 7     | 6.4            |
+| 9+           | 6         | 7   | 7    | 7     | 8     | 7              |
 
 ### Sieg
 
@@ -203,33 +208,37 @@ Ihr gewinnt den Kampf, wenn alle Gegner 0 Gesundheit haben. Danach ist folgendes
 
 Alle Abenteurer erlangen volle Gesundheit (selbst wenn die Gesundheit 0 ist), außer der SL entscheidet anders.
 
-**Beute**: Die Gruppe zieht nun Beute - nutze die folgende Tabelle um die Gesamtmenge an gewonnener Beute festzulegen. Die Gruppe sollte die obersten Karten vom Beutestapel (gemischt) ziehen, bis die Gesamtzahl dem Wert entspricht, welcher in der Tabelle vermerkt ist. Beim Ziehen der Beute sollte jede gezogene Karte übersprungen werden, wenn die Stufe höher ist als die zu ziehende Karte. (Zum Beispiel, wenn die Gruppe eine Gesamtstufe der Beute von 2 erhalten soll, überspringe alle Stufe 3 Karten und lege sie unter den Beute Stapel.)
+**Beute**: Die Gruppe zieht nun die Beute - Nutze die folgende Tabelle, um die Gesamtmenge der auszuteilenden Beute zu bestimmen. Die Gruppe sollte von der oberen Seite des gemischten Beute Stapels ziehen, bis die Gesamt Stufe der Beute mit der Tabelle übereinstimmt, aber alle Karten mit einer zu hohen Beutestufe werden übersprungen (zum Beispiel, Wenn die Belohnung Stufe 2 Beute ist, müssen alle Karten der Stufe 3 Beute unter den Stapel gelegt werden).
 
-Verteile die Beute unter den Abenteurern. Die Beute kann jederzeit genutzt werden und zählt nicht als Aktion (außer es ist anderweitig festgelegt).
+Teile die Beute unter den Abenteurern auf. Diese Beute kann jederzeit ausgespielt werden und benötigt keine Aktion (außer es wurde anderweitig festgelegt).
 
-| Kampfstufe | Beute Belohnung |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| Kampf Stufe | Beute Belohnung |
+| ----------- | --------------- |
+| 1           | 1               |
+| 2           | 1               |
+| 3           | 2               |
+| 4           | 3               |
+| 5           | 3               |
+| 6           | 4               |
+| 7           | 4               |
+| 8+          | 5               |
 
-**Stufenaufstieg**: Die Gruppe sammelt Erfahrung gleich der Kampfstufen Summe. Vermerke die Erfahrungspunkte auf der Rückseite einer Gefecht Karte oder einem Blatt Papier. Auf der Rückseite jeder Gefecht Karte, können die Erfahrungspunkte vermerkt werden, welche für den Aufstieg benötigt werden. Der erste Aufstieg beginnt bei 4 und steigt bei jedem Stufenaufstieg um 1.
+**Stufenaufstieg**: Die Gruppe erhält Erfahrung gleich der Summe der Kampf Stufe. Notiere die Erfahrung auf einem Blatt Papier. Auf einem weiteren Blatt sollte die benötigte Erfahrung für den Aufstieg vermerkt werden. Diese startet mit 4 und steigt um +1 bei jedem Stufenaufstieg.
 
-Wenn die Spieler aufsteigen, können sie eine neue Fähigkeit erlernen:
+Beim Stufenaufstieg können alle Abenteurer eine neue Fähigkeit erlernen:
 
-* Ziehe 3 Fähigkeiten von einem der auf der Abenteurerkarte vermerkten Stapel. *Horror Erweiterung im Spiel*: Alle Abenteurer können vom Einfluss Stapel ziehen.
-* Füge 1 Fähigkeiten Karte deinem Fähigkeiten Stapel hinzu und lege die anderen 2 Karten unter den jeweiligen Stapel, von welchem diese gezogen wurden.
-* Es ist möglich eine Fähigkeit abzulegen.
+- Ziehe 3 Fähigkeiten von den Stapeln, entsprechend der Abenteurer Karte. _Wenn Horror Erweiterung im Spiel ist_ : Alle Abenteurer können zusätzlich eine Einfluss Karte ziehen.
+- Füge 1 deinem Fähigkeiten Stapel hinzu und lege die anderen 2 Karten unter den jeweiligen Ziehstapel.
+- Du _kannst_ eine Fähigkeit abwerfen.
+
+_Wenn Horror Erweiterung im Spiel ist_ : Anstatt eine Fähigkeit zu erlernen, kannst du auch deine Rollenstufe um 2 Stufen erhöhen.
+
+_Wenn die Future Erweiterung im Spiel ist_ : Anstatt eine Fähigkeit zu erlernen, kannst du eine Fertigkeit erlernen (Ziehe 3, behalte 1) oder die Stufe einer existierenden Fertigkeit um eine Markierung nach rechts zu schieben.
 
 ### Niederlage
 
-Wenn die Gesundheit aller Abenteurer auf 0 gesunken ist, ist der Kampf verloren. Nun entscheidet der SL was mit den Abenteurern passiert. Zum Beispiel, ob ihr gefangen genommen werdet, ohnmächtig in einem einstürzenden Tunnel liegt oder das Abenteuer vorbei ist.
+Eine Niederlage tritt ein, wenn die Gesundheit aller Abenteurer auf 0 sinkt. Nun entscheidet der Spielleiter, was mit euch passiert - zum Beispiel, könnt ihr gefangen genommen werden, bewusstlos irgendwo liegen bleiben oder das Abenteuer ist vorbei.
 
 ## Ende
 
-Mehr ist nicht nötig um Expedition zu spielen! Sollten Fragen oder Verbesserungsvorschläge bestehen, könnt ihr diese gerne an uns per Email senden Expedition@Fabricate.io!
+So einfach ist das um Expedition zu spielen! Bei Fragen und Anregungen kannst du uns gerne eine Email schreiben Expedition@Fabricate.io!
