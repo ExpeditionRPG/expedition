@@ -520,7 +520,7 @@ You can embed inline icons to make your quest more visually interesting! Simply 
 
 We recommend using icons as unique symbols, not as a replacement for words. (i.e. DON'T: use the d20 icon instead of the word die, such as in `> Roll a die`. DO: use the bandit icon to show what the thief's tatoo looks like). You can also replace the default instruction icon to make it clearer what the instruction is about; for example `> :loot: Draw one tier II loot` or `> :roll: Roll a die to try to sneak past the guards`.
 
-[Here's the list of available icons](https://github.com/expeditionrpg/expedition-art#icons)
+[Here's the list of available icons](https://github.com/ExpeditionRPG/expedition/tree/master/shared/images#icons-available)
 
 ### Instructions
 
@@ -533,7 +533,7 @@ You can also display helpful instructional callouts in the card via **instructio
 
 ### Art
 
-You can embed large images in cards for visually important things, such as showing off a symbol found on a lock. Simply add `[art_name]` to a roleplaying card's contents. By default, art takes up 50% of the width of the card, reducing the amount players need to scroll. If it's important for the art to take up the full width of the card, you can append `_full` to the end, such as `[art_name_full]`. You can use any icon listed in the **Icons** section. You can also use [the art files listed here](https://github.com/ExpeditionRPG/expedition-art/tree/master/art) - note that because those files are PNG extension, you'll need to add `_png` after the file name and before `_full`, for example `[darker_at_dawn_png_full]`
+You can embed large images in cards for visually important things, such as showing off a symbol found on a lock. Simply add `[art_name]` to a roleplaying card's contents. By default, art takes up 50% of the width of the card, reducing the amount players need to scroll. If it's important for the art to take up the full width of the card, you can append `_full` to the end, such as `[art_name_full]`. You can use any icon listed in the **Icons** section. You can also use [the art files listed here](https://github.com/ExpeditionRPG/expedition/tree/master/shared/images/art) - note that because those files are PNG extension, you'll need to add `_png` after the file name and before `_full`, for example `[darker_at_dawn_png_full]`
 
 ### Context
 
@@ -633,7 +633,7 @@ If your quest is missing a metadata field (say, it was created before a feature 
 
 **familyFriendly**: Set to true if your quest meets the following quidelines for being family-friendly. Quests that claim to be family friendly but violate these guidelines may be removed. Repeated violations will lead to further disciplenary action - but in general we will give you the benefit of the doubt and work with you to correct the mistake.
 
-Quests are considered "family friendly" IF: (based on guidelines set forth by the (MPAA)[https://en.wikipedia.org/wiki/Motion_Picture_Association_of_America_film_rating_system#Rating_components])
+Quests are considered "family friendly" IF: (based on guidelines set forth by the [MPAA](https://en.wikipedia.org/wiki/Motion_Picture_Association_of_America_film_rating_system#Rating_components))
 
 - there is no or limited foul language; sexually-derived words are not allowed.
 - there are no references to intense or realistic violence; limited reference to comedic violence is acceptable.
