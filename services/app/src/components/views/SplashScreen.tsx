@@ -17,8 +17,9 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     maxTouches: number;
     tip: string;
     touchCount: number;
-    transitionTimeout: any;
+    transitionTimeout: number|null;
     progress: number;
+    animFrameReq: number|null;
   };
 
   constructor(props: PlayerCounterProps) {
@@ -62,15 +63,30 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     this.setState({touchCount: numFingers, maxTouches: Math.max(this.state.maxTouches, numFingers)});
   }
 
+  public componentWillUnmount() {
+    // Clear timeout on unmount (prevents action if user holds tap after double tap has cleared)
+    if (this.state.transitionTimeout) {
+      clearTimeout(this.state.transitionTimeout);
+      this.state.transitionTimeout = null;
+    }
+    // Clear animation frames on unmount (or we get stuck rendering nothing endlessly)
+    if (this.state.animFrameReq) {
+      window.cancelAnimationFrame(this.state.animFrameReq);
+      this.state.animFrameReq = null;
+    }
+  }
+
   private animate() {
     if (this.state.transitionTimeout === null) {
+      this.setState({animFrameReq: null});
       return;
     }
     const progress = Math.min(100, (Date.now() - this.state.lastTouchTime) / (this.props.transitionMillis) * 100);
+
+    const animFrameReq = window.requestAnimationFrame(() => this.animate());
     if (progress !== this.state.progress) {
-      this.setState({progress});
+      this.setState({progress, animFrameReq});
     }
-    window.requestAnimationFrame(() => this.animate());
   }
 
   public render() {
@@ -111,7 +127,7 @@ export interface DispatchProps {
   onPlayerManualSelect: () => any;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const SplashScreen = (props: Props): JSX.Element => {
   const announcementVisible = (props.announcement && props.announcement.open && props.announcement.message !== '');
