@@ -31,6 +31,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       touchCount: 0,
       transitionTimeout: null,
       progress: 0,
+      animFrameReq: null,
     };
   }
 
