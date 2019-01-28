@@ -1,4 +1,5 @@
 import {Context} from 'shared/parse/Context';
+import {Node} from 'shared/parse/Node';
 import {CrawlEntry, CrawlerBase, CrawlEvent} from 'shared/parse/Crawler';
 
 export interface CrawlerStats {
@@ -15,6 +16,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
   protected statsById: {[id: string]: CrawlerStats};
   protected statsByLine: {[line: number]: CrawlerStats};
   protected statsByEvent: {[event: string]: Array<{line: number, id: string, fromAction: string|number}>};
+  protected root: Node<Context>;
 
   constructor() {
     super();
@@ -31,6 +33,13 @@ export class StatsCrawler extends CrawlerBase<Context> {
       IMPLICIT_END: [],
       INVALID: [],
     };
+  }
+
+  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
+    if (!this.root && root) {
+      this.root = root;
+    }
+    super.crawl(root, timeLimitMillis, depthLimit);
   }
 
   // Retrieves stats for a given node ID.
@@ -62,10 +71,23 @@ export class StatsCrawler extends CrawlerBase<Context> {
     return Object.keys(this.statsById).filter((k: string) => (k !== 'START'));
   }
 
+  private lineWithinCombatRound(line: number): bool {
+    let n = this.root.elem.find(`[data-line=${line}]`);
+    console.log(n);
+    return n.closest('event[on="round"]').length > 0;
+  }
+
   protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
     if (e === 'MAX_DEPTH_EXCEEDED' || e === 'ALREADY_SEEN') {
       return;
     }
+
+    if (e === 'IMPLICIT_END' && this.lineWithinCombatRound(q.prevLine)) {
+      // When within a combat round, "implicit end" events are captured by
+      // combat logic and return to the combat base node.
+      return;
+    }
+
     this.statsById[q.prevId].outputs.add(e);
     this.statsByLine[q.prevLine].outputs.add(e);
     this.statsByEvent[e].push({line: q.prevLine, id: q.prevId, fromAction: q.fromAction});
