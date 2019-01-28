@@ -35,11 +35,11 @@ export class StatsCrawler extends CrawlerBase<Context> {
     };
   }
 
-  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
+  public crawl(root?: Node<Context>, timeLimitMillis = 500, depthLimit = 50): boolean {
     if (!this.root && root) {
       this.root = root;
     }
-    super.crawl(root, timeLimitMillis, depthLimit);
+    return super.crawl(root, timeLimitMillis, depthLimit);
   }
 
   // Retrieves stats for a given node ID.
@@ -71,7 +71,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
     return Object.keys(this.statsById).filter((k: string) => (k !== 'START'));
   }
 
-  private lineWithinCombatRound(line: number): bool {
+  private lineWithinCombatRound(line: number): boolean {
     let n = this.root.elem.find(`[data-line=${line}]`);
     console.log(n);
     return n.closest('event[on="round"]').length > 0;
