@@ -1,6 +1,6 @@
 import {Context} from 'shared/parse/Context';
-import {Node} from 'shared/parse/Node';
 import {CrawlEntry, CrawlerBase, CrawlEvent} from 'shared/parse/Crawler';
+import {Node} from 'shared/parse/Node';
 
 export interface CrawlerStats {
   inputs: Set<string>;
@@ -72,7 +72,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   private lineWithinCombatRound(line: number): boolean {
-    let n = this.root.elem.find(`[data-line=${line}]`);
+    const n = this.root.elem.find(`[data-line=${line}]`);
     console.log(n);
     return n.closest('event[on="round"]').length > 0;
   }
