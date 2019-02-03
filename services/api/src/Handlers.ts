@@ -33,6 +33,7 @@ import {
   QuestSearchParams,
   searchQuests,
   unpublishQuest,
+  updateQuestRatings,
 } from './models/Quests';
 import {
   getUserFeedbacks,
@@ -599,5 +600,24 @@ export function userFeedbacks(
     .catch((e: Error) => {
       console.error(e);
       return res.status(500).end(GENERIC_ERROR_MESSAGE);
+    });
+}
+
+export function recalculateRatings(
+  db: Database,
+  req: express.Request,
+  res: express.Response,
+) {
+  return db.quests
+    .findAll()
+    .then((qs: QuestInstance[]) => {
+      const updates: Array<Bluebird<any>> = [];
+      for (const q of qs) {
+        updates.push(updateQuestRatings(db, q.get('partition'), q.get('id')));
+      }
+      return Promise.all(updates);
+    })
+    .then(() => {
+      res.status(200).end('All quest ratings updated');
     });
 }
