@@ -2,8 +2,8 @@ import { object } from 'joi';
 import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
-import { searchQuests } from './Quests';
-import { quests as q, testingDBWithState } from './TestData';
+import { getQuest, searchQuests, updateQuestRatings } from './Quests';
+import { feedback as f, quests as q, testingDBWithState } from './TestData';
 
 const Moment = require('moment');
 
@@ -349,8 +349,26 @@ describe('quest', () => {
   });
 
   describe('updateQuestRatings', () => {
-    test.skip('calculates the count and average of multiple ratings', () => {
-      /* TODO */
+    test('calculates the count and average of multiple ratings', done => {
+      const q1 = new Quest({
+        ...q.basic,
+        partition: Partition.expeditionPublic,
+        id: f.rating.questid,
+        created: Moment().subtract(1, 'month'),
+      });
+      let db: any;
+      testingDBWithState([q1, f.rating])
+        .then(tdb => {
+          db = tdb;
+          return updateQuestRatings(db, q1.partition, q1.id);
+        })
+        .then(() => getQuest(db, q1.partition, q1.id))
+        .then(result => {
+          expect(result.ratingcount).toEqual(1);
+          expect(result.ratingavg).toEqual(4);
+          done();
+        })
+        .catch(done.fail);
     });
 
     test.skip('excludes ratings from quest versions before the last major release', () => {

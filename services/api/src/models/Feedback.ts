@@ -1,35 +1,61 @@
 import * as Promise from 'bluebird';
-import {Feedback} from 'shared/schema/Feedback';
-import {Quest} from 'shared/schema/Quests';
-import {PLACEHOLDER_DATE} from 'shared/schema/SchemaBase';
-import {User} from 'shared/schema/Users';
-import {MailService} from '../Mail';
-import {Database, FeedbackInstance, QuestInstance} from './Database';
-import {getQuest, updateQuestRatings} from './Quests';
-import {prepare} from './Schema';
+import { Feedback } from 'shared/schema/Feedback';
+import { Quest } from 'shared/schema/Quests';
+import { PLACEHOLDER_DATE } from 'shared/schema/SchemaBase';
+import { User } from 'shared/schema/Users';
+import { MailService } from '../Mail';
+import { Database, FeedbackInstance, QuestInstance } from './Database';
+import { getQuest, updateQuestRatings } from './Quests';
+import { prepare } from './Schema';
 
 export const FabricateFeedbackEmail = 'expedition+feedback@fabricate.io';
 export const FabricateReportQuestEmail = 'expedition+apperror@fabricate.io';
-export const FabricateQuestFeedbackEmail = 'expedition+questfeedback@fabricate.io';
+export const FabricateQuestFeedbackEmail =
+  'expedition+questfeedback@fabricate.io';
 
-export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
+export type FeedbackType =
+  | 'feedback'
+  | 'rating'
+  | 'report_error'
+  | 'report_quest';
 
-export function getFeedback(db: Database, partition: string, questid: string, userid: string): Promise<FeedbackInstance|null> {
-  return db.feedback.findOne({where: {partition, questid, userid}});
+export function getFeedback(
+  db: Database,
+  partition: string,
+  questid: string,
+  userid: string,
+): Promise<FeedbackInstance | null> {
+  return db.feedback.findOne({ where: { partition, questid, userid } });
 }
 
-export function getFeedbackByQuestId(db: Database, partition: string, questid: string): Promise<FeedbackInstance[]> {
-  return db.feedback.findAll({where: {partition, questid, rating: {$gt: 0}}});
+export function getFeedbackByQuestId(
+  db: Database,
+  partition: string,
+  questid: string,
+): Promise<FeedbackInstance[]> {
+  return db.feedback.findAll({
+    where: { partition, questid, rating: { $gt: 0 } },
+  });
 }
 
-function formatUserMetadata(user: User|null) {
+function formatUserMetadata(user: User | null) {
   if (!user || !user.created || !user.loginCount) {
     return '';
   }
-  return `User joined on ${user.created} and has logged in ${user.loginCount} time(s)`;
+  return `User joined on ${user.created} and has logged in ${
+    user.loginCount
+  } time(s)`;
 }
 
-function mailFeedbackToAdmin(mail: MailService, type: FeedbackType, quest: Quest|null, feedback: Feedback, platformDump: string, consoleDump: string[], user: User|null) {
+function mailFeedbackToAdmin(
+  mail: MailService,
+  type: FeedbackType,
+  quest: Quest | null,
+  feedback: Feedback,
+  platformDump: string,
+  consoleDump: string[],
+  user: User | null,
+) {
   const subject = `Feedback (${feedback.platform} v${feedback.version})`;
   let message = `
     <p>Feedback type: ${type}</p>
@@ -42,7 +68,9 @@ function mailFeedbackToAdmin(mail: MailService, type: FeedbackType, quest: Quest
     message += `
       <p>Quest: ${quest.title}</p>
       <p>Author email: <a href="mailto:${quest.email}">${quest.email}</a></p>
-      <p>Quest creator link: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+      <p>Quest creator link: <a href="https://quests.expeditiongame.com/#${
+        feedback.questid
+      }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
     `;
     if (feedback.questline > 0) {
       message += `<p>Quest Line #: ${feedback.questline}</p>`;
@@ -52,9 +80,13 @@ function mailFeedbackToAdmin(mail: MailService, type: FeedbackType, quest: Quest
   }
 
   message += `
-    <p>User settings: ${feedback.players} adventurers on ${feedback.difficulty} difficulty.</p>
+    <p>User settings: ${feedback.players} adventurers on ${
+    feedback.difficulty
+  } difficulty.</p>
     <p>Raw platform string: ${platformDump}</p>
-    <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+    <p>User email that reported it: <a href="mailto:${feedback.email}">${
+    feedback.email
+  }</a></p>
     <p>${formatUserMetadata(user)}</p>
     <p>Multiplayer stats: ${feedback.stats}</p>
   `;
@@ -88,7 +120,15 @@ function mailFeedbackThanksToUser(mail: MailService, feedback: Feedback) {
   return mail.send(to, subject, message, false);
 }
 
-export function submitFeedback(db: Database, mail: MailService, type: FeedbackType, feedback: Feedback, platformDump: string, consoleDump: string[], user: User|null): Promise<any> {
+export function submitFeedback(
+  db: Database,
+  mail: MailService,
+  type: FeedbackType,
+  feedback: Feedback,
+  platformDump: string,
+  consoleDump: string[],
+  user: User | null,
+): Promise<any> {
   return Promise.resolve()
     .then(() => {
       if (feedback.partition && feedback.questid) {
@@ -96,8 +136,16 @@ export function submitFeedback(db: Database, mail: MailService, type: FeedbackTy
       }
       return null as any;
     })
-    .then((q: Quest|null) => {
-      return mailFeedbackToAdmin(mail, type, q, feedback, platformDump, consoleDump, user);
+    .then((q: Quest | null) => {
+      return mailFeedbackToAdmin(
+        mail,
+        type,
+        q,
+        feedback,
+        platformDump,
+        consoleDump,
+        user,
+      );
     })
     .then(() => {
       if (!feedback.email) {
@@ -107,7 +155,12 @@ export function submitFeedback(db: Database, mail: MailService, type: FeedbackTy
     });
 }
 
-function mailFirstRating(mail: MailService, feedback: Feedback, quest: Quest, user: User|null) {
+function mailFirstRating(
+  mail: MailService,
+  feedback: Feedback,
+  quest: Quest,
+  user: User | null,
+) {
   const emails = [];
   if (quest.email) {
     emails.push(quest.email);
@@ -124,14 +177,23 @@ function mailFirstRating(mail: MailService, feedback: Feedback, quest: Quest, us
     message += `<p>User feedback:</p><p>"${feedback.text}"</p>`;
   }
   if (feedback.email && !feedback.anonymous) {
-    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
+    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${
+      feedback.email
+    }</a></p>`;
   }
   message += `<p>${formatUserMetadata(user)}</p>`;
-  message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
+  message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
+    feedback.questid
+  }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
   return mail.send(emails, subject, message);
 }
 
-function mailNewRating(mail: MailService, feedback: Feedback, quest: Quest, user: User|null) {
+function mailNewRating(
+  mail: MailService,
+  feedback: Feedback,
+  quest: Quest,
+  user: User | null,
+) {
   const emails = [];
   if (quest.email) {
     emails.push(quest.email);
@@ -143,19 +205,32 @@ function mailNewRating(mail: MailService, feedback: Feedback, quest: Quest, user
   let message = `<p>User feedback:</p>
     <p>"${feedback.text}"</p>
     <p>${feedback.rating} out of 5 stars</p>
-    <p>New quest overall rating: ${quest.ratingavg.toFixed(1)} out of 5 across ${quest.ratingcount} ratings.</p>
+    <p>New quest overall rating: ${quest.ratingavg.toFixed(
+      1,
+    )} out of 5 across ${quest.ratingcount} ratings.</p>
     <p>Was submitted for ${quest.title} by ${quest.author}</p>
-    <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
-    <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+    <p>They played with ${feedback.players} adventurers on ${
+    feedback.difficulty
+  } difficulty on ${feedback.platform} v${feedback.version}.</p>
+    <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
+      feedback.questid
+    }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
   `;
   if (feedback.email && !feedback.anonymous) {
-    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
+    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${
+      feedback.email
+    }</a></p>`;
   }
   message += `<p>${formatUserMetadata(user)}</p>`;
   return mail.send(emails, subject, message);
 }
 
-export function submitRating(db: Database, mail: MailService, feedback: Feedback, user: User|null): Promise<any> {
+export function submitRating(
+  db: Database,
+  mail: MailService,
+  feedback: Feedback,
+  user: User | null,
+): Promise<any> {
   return getQuest(db, feedback.partition, feedback.questid)
     .catch((e: Error) => {
       throw new Error('no such quest');
@@ -164,33 +239,61 @@ export function submitRating(db: Database, mail: MailService, feedback: Feedback
       feedback.questversion = quest.questversion;
       return db.feedback.upsert(prepare(feedback));
     })
-    .then((created: boolean) => updateQuestRatings(db, feedback.partition, feedback.questid))
+    .then(() => {
+      return updateQuestRatings(db, feedback.partition, feedback.questid);
+    })
     .then((questInstance: QuestInstance) => {
       const quest = new Quest(questInstance.dataValues);
       if (quest.ratingcount === 1) {
         mailFirstRating(mail, feedback, quest, user);
-      } else if (feedback.text && feedback.text.length > 0 && !feedback.text.endsWith('Details: --')) {
+      } else if (
+        feedback.text &&
+        feedback.text.length > 0 &&
+        !feedback.text.endsWith('Details: --')
+      ) {
         // New high quest ratings end with "Details: --" when no details are given.
         mailNewRating(mail, feedback, quest, user);
       }
     });
 }
 
-export function suppressFeedback(db: Database, partition: string, questid: string, userid: string, suppress: boolean): Promise<any> {
-  return db.feedback.update({tombstone: (suppress) ? new Date() : PLACEHOLDER_DATE} as any, {where: {partition, questid, userid}, limit: 1})
+export function suppressFeedback(
+  db: Database,
+  partition: string,
+  questid: string,
+  userid: string,
+  suppress: boolean,
+): Promise<any> {
+  return db.feedback
+    .update({ tombstone: suppress ? new Date() : PLACEHOLDER_DATE } as any, {
+      where: { partition, questid, userid },
+      limit: 1,
+    })
     .then(() => {
       return updateQuestRatings(db, partition, questid);
     });
 }
 
-function mailReportToAdmin(mail: MailService, feedback: Feedback, quest: Quest, platformDump: string, user: User|null) {
+function mailReportToAdmin(
+  mail: MailService,
+  feedback: Feedback,
+  quest: Quest,
+  platformDump: string,
+  user: User | null,
+) {
   const subject = `Quest reported: ${quest.title}`;
   let message = `<p>Message: ${feedback.text}</p>
-    <p>They played with ${feedback.players} adventurers on ${feedback.difficulty} difficulty on ${feedback.platform} v${feedback.version}.</p>
+    <p>They played with ${feedback.players} adventurers on ${
+    feedback.difficulty
+  } difficulty on ${feedback.platform} v${feedback.version}.</p>
     <p>Raw platform string: ${platformDump}</p>
-    <p>User email that reported it: <a href="mailto:${feedback.email}">${feedback.email}</a></p>
+    <p>User email that reported it: <a href="mailto:${feedback.email}">${
+    feedback.email
+  }</a></p>
     <p>${formatUserMetadata(user)}</p>
-    <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+    <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
+      feedback.questid
+    }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
   `;
   if (feedback.questline > 0) {
     message += `<p>Quest Line #: ${feedback.questline}</p>`;
@@ -200,9 +303,16 @@ function mailReportToAdmin(mail: MailService, feedback: Feedback, quest: Quest, 
   return mail.send(to, subject, message);
 }
 
-export function submitReportQuest(db: Database, mail: MailService, feedback: Feedback, platformDump: string, user: User|null): Promise<any> {
-  return getQuest(db, feedback.partition, feedback.questid)
-    .then((quest: Quest) => {
+export function submitReportQuest(
+  db: Database,
+  mail: MailService,
+  feedback: Feedback,
+  platformDump: string,
+  user: User | null,
+): Promise<any> {
+  return getQuest(db, feedback.partition, feedback.questid).then(
+    (quest: Quest) => {
       return mailReportToAdmin(mail, feedback, quest, platformDump, user);
-    });
+    },
+  );
 }
