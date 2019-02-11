@@ -54,11 +54,11 @@ class Account extends React.Component<IProps, {}> {
   public renderUserBadges(badges: Badge[]) {
     const results: JSX.Element[] = [];
     for (let i = 0; i < badges.length; i++) {
-      results.push(<tr key={i}><td><img className="inline_icon" src={`images/${badges[i].toLowerCase()}_small.svg`} /> {BADGE_DESC[badges[i]]}</td></tr>);
+      results.push(<tr key={i}><td colSpan={2}><img className="inline_icon" src={`images/${badges[i].toLowerCase()}_small.svg`} /> {BADGE_DESC[badges[i]]}</td></tr>);
     }
 
     if (results.length > 0) {
-      results.unshift(<tr key="badges"><th>Badges:</th></tr>);
+      results.unshift(<tr key="badges"><th colSpan={2}>Badges:</th></tr>);
     }
     return results;
   }
