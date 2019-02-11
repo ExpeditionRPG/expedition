@@ -9,6 +9,7 @@ import { QuestData } from 'shared/schema/QuestData';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { PLACEHOLDER_DATE, SchemaBase } from 'shared/schema/SchemaBase';
+import { UserBadge } from 'shared/schema/UserBadges';
 import { User } from 'shared/schema/Users';
 import { Database } from './Database';
 import { prepare } from './Schema';
@@ -45,6 +46,13 @@ export const users = {
     lastLogin: TEST_NOW,
     lootPoints: 0,
     name: 'Test Testerson',
+  }),
+};
+
+export const userBadges = {
+  basic: new UserBadge({
+    userid: 'test',
+    badge: 'backer1',
   }),
 };
 
@@ -221,12 +229,13 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
       dialect: 'sqlite',
       logging: false,
       storage: ':memory:',
-    })
+    }),
   );
 
   return Promise.all([
     db.analyticsEvent.sync(),
     db.users.sync(),
+    db.userBadges.sync(),
     db.quests.sync(),
     db.questData.sync(),
     db.feedback.sync(),
@@ -237,12 +246,15 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
   ])
     .then(() =>
       Promise.all(
-        state.map((entry) => {
+        state.map(entry => {
           if (entry instanceof AnalyticsEvent) {
             return db.analyticsEvent.create(prepare(entry)).then(() => null);
           }
           if (entry instanceof User) {
             return db.users.create(prepare(entry)).then(() => null);
+          }
+          if (entry instanceof UserBadge) {
+            return db.userBadges.create(prepare(entry)).then(() => null);
           }
           if (entry instanceof Quest) {
             return db.quests.create(prepare(entry)).then(() => null);
@@ -266,8 +278,8 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
             return db.sessions.create(prepare(entry)).then(() => null);
           }
           throw new Error('Unsupported entry for testingDBWithState');
-        })
-      )
+        }),
+      ),
     )
     .then(() => db);
 }

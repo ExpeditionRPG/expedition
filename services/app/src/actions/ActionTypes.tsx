@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
+import {Badge} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {
@@ -139,6 +140,11 @@ export interface UserLogoutAction extends Redux.Action {
 export interface UserFeedbacksAction extends Redux.Action {
   type: 'USER_FEEDBACKS';
   feedbacks: IUserFeedback[];
+}
+
+export interface UserBadgesAction extends Redux.Action {
+  type: 'USER_BADGES';
+  badges: Badge[];
 }
 
 export interface UserQuestsAction extends Redux.Action {

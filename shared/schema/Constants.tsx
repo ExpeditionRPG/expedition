@@ -102,3 +102,14 @@ export const AUTH_SETTINGS = {
 };
 
 /* tslint:enable object-literal-sort-keys */
+
+export enum Badge {
+  backer1 = 'backer1',
+  backer2 = 'backer2',
+  backer3 = 'backer3',
+}
+export const BADGE_DESC: {[key in Badge]: string} = {
+  [Badge.backer1]: 'Backed the first Expedition Kickstarter!',
+  [Badge.backer2]: 'Backed the second Expedition Kickstarter!',
+  [Badge.backer3]: 'Backed the third Expedition Kickstarter!',
+};

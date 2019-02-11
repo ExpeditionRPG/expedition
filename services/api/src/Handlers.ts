@@ -5,7 +5,7 @@ import * as Joi from 'joi';
 import * as memoize from 'memoizee';
 import * as request from 'request-promise';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
-import { Partition } from 'shared/schema/Constants';
+import { Badge, Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
 import { QuestData } from 'shared/schema/QuestData';
 import { Quest } from 'shared/schema/Quests';
@@ -36,6 +36,7 @@ import {
   updateQuestRatings,
 } from './models/Quests';
 import {
+  getUserBadges,
   getUserFeedbacks,
   getUserQuests,
   IUserFeedback,
@@ -597,6 +598,19 @@ export function userFeedbacks(
     .then((feedbacks: IUserFeedback[]) =>
       res.status(200).end(JSON.stringify(feedbacks)),
     )
+    .catch((e: Error) => {
+      console.error(e);
+      return res.status(500).end(GENERIC_ERROR_MESSAGE);
+    });
+}
+
+export function userBadges(
+  db: Database,
+  req: express.Request,
+  res: express.Response,
+) {
+  return getUserBadges(db, res.locals.id)
+    .then((badges: Badge[]) => res.status(200).end(JSON.stringify(badges)))
     .catch((e: Error) => {
       console.error(e);
       return res.status(500).end(GENERIC_ERROR_MESSAGE);

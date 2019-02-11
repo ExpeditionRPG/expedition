@@ -5,6 +5,7 @@ import {UserState as UserStateAuth} from 'shared/auth/UserState';
 import {loggedOutUser} from 'shared/auth/UserState';
 import {loginWeb as loginWebBase, silentLoginWeb as silentLoginWebBase} from 'shared/auth/Web';
 import {handleFetchErrors} from 'shared/requests';
+import {Badge} from 'shared/schema/Constants';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
 import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
@@ -109,6 +110,19 @@ function fetchUserFeedbacks(): Promise<IUserFeedback[]> {
   .then((feedbacks: IUserFeedback[]) => feedbacks);
 }
 
+function fetchUserBadges(): Promise<Badge[]> {
+  return fetch(AUTH_SETTINGS.URL_BASE + '/user/badges', {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    method: 'GET',
+  })
+  .then(handleFetchErrors)
+  .then((response: Response) => response.json())
+  .then((badges: Badge[]) => badges);
+}
+
 type TReduxThunk<ReturnType> = (dispatch: Redux.Dispatch<any>, getState: () => AppState) => ReturnType;
 
 export function logoutUser(): TReduxThunk<Promise<void>> {
@@ -158,5 +172,16 @@ export function getUserFeedBacks(): TReduxThunk<Promise<any>> {
     return fetchUserFeedbacks()
     .then((feedbacks: IUserFeedback[]) => dispatch({type: 'USER_FEEDBACKS', feedbacks}))
     .catch(() => dispatch({type: 'USER_FEEDBACKS', feedbacks: []}));
+  };
+}
+
+export function getUserBadges(): TReduxThunk<Promise<any>> {
+  return (dispatch) => {
+    return fetchUserBadges()
+    .then((badges: Badge[]) => {
+      console.log(badges);
+      return dispatch({type: 'USER_BADGES', badges});
+    })
+    .catch(() => dispatch({type: 'USER_BADGES', badges: []}));
   };
 }

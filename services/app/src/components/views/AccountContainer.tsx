@@ -3,7 +3,7 @@ import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {toPrevious} from '../../actions/Card';
 import {previewQuest} from '../../actions/Quest';
-import {getUserFeedBacks, logoutUser} from '../../actions/User';
+import {getUserBadges, getUserFeedBacks, logoutUser} from '../../actions/User';
 import {NAV_CARDS} from '../../Constants';
 import {AppState, CardName} from '../../reducers/StateTypes';
 import Account, {IDispatchProps, IStateProps} from './Account';
@@ -17,6 +17,7 @@ const mapStateToProps = (state: AppState): IStateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): IDispatchProps =>  ({
   logoutUser: () => dispatch(logoutUser()),
   getUserFeedBacks: () => dispatch(getUserFeedBacks()),
+  getUserBadges: () => dispatch(getUserBadges()),
   onReturn: () => {
     dispatch(toPrevious({
       skip: NAV_CARDS.map((c) => ({name: c as CardName})),
