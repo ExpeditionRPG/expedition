@@ -32,4 +32,14 @@ describe('User actions', () => {
 
     test.skip('loads user quest info on success', () => { /* TODO */ });
   });
+
+  describe('getUserFeedBacks', () => {
+    test.skip('gets feedbacks', () => { /* TODO */ });
+    test.skip('fails silently', () => { /* TODO */ });
+  });
+
+  describe('getUserBadges', () => {
+    test.skip('gets badges', () => { /* TODO */ });
+    test.skip('fails silently', () => { /* TODO */ });
+  });
 });

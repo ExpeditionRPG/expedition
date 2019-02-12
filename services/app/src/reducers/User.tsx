@@ -1,6 +1,6 @@
 import Redux from 'redux';
 import {loggedOutUser} from 'shared/auth/UserState';
-import {UserFeedbacksAction, UserLoginAction} from '../actions/ActionTypes';
+import {UserBadgesAction, UserFeedbacksAction, UserLoginAction} from '../actions/ActionTypes';
 import {UserState} from './StateTypes';
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
@@ -11,6 +11,8 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
       return loggedOutUser;
     case 'USER_FEEDBACKS':
       return {...state, feedbacks: (action as UserFeedbacksAction).feedbacks};
+    case 'USER_BADGES':
+      return {...state, badges: (action as UserBadgesAction).badges};
     default:
       return state;
   }

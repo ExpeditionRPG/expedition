@@ -110,6 +110,9 @@ export function installRoutes(db: Database, router: express.Router) {
   router.get('/user/feedbacks', limitCors, requireAuth, (req, res) => {
     Handlers.userFeedbacks(db, req, res);
   });
+  router.get('/user/badges', limitCors, requireAuth, (req, res) => {
+    Handlers.userBadges(db, req, res);
+  });
   router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {
     MultiplayerHandlers.user(db, req, res);
   });

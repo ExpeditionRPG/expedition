@@ -1,5 +1,6 @@
 import Divider from '@material-ui/core/Divider';
 import * as React from 'react';
+import {Badge, BADGE_DESC} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {IUserFeedback, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
@@ -16,6 +17,7 @@ export interface IStateProps {
 export interface IDispatchProps {
   logoutUser: () => void;
   getUserFeedBacks: () => void;
+  getUserBadges: () => void;
   onReturn: () => any;
   onQuestSelect: (quest: Quest) => void;
 }
@@ -28,6 +30,7 @@ class Account extends React.Component<IProps, {}> {
   }
   public componentDidMount() {
     this.props.getUserFeedBacks();
+    this.props.getUserBadges();
   }
   public renderUserFeedbacks(feedbacks: IUserFeedback[]) {
     if (feedbacks.length === 0) {
@@ -47,12 +50,25 @@ class Account extends React.Component<IProps, {}> {
       );
     });
   }
+
+  public renderUserBadges(badges: Badge[]) {
+    const results: JSX.Element[] = [];
+    for (let i = 0; i < badges.length; i++) {
+      results.push(<tr key={i}><td colSpan={2}><img className="inline_icon" src={`images/${badges[i].toLowerCase()}_small.svg`} /> {BADGE_DESC[badges[i]]}</td></tr>);
+    }
+
+    if (results.length > 0) {
+      results.unshift(<tr key="badges"><th colSpan={2}>Badges:</th></tr>);
+    }
+    return results;
+  }
+
   public render() {
     const {user, logoutUser, onReturn} = this.props;
     if (!user.loggedIn) {
       return <SearchContainer />;
     }
-    if (user.feedbacks === undefined) {
+    if (user.feedbacks === undefined || user.badges === undefined) {
       return renderLoading(onReturn);
     }
     return (
@@ -63,6 +79,7 @@ class Account extends React.Component<IProps, {}> {
               {user.name && <tr><th>Name</th><td>{user.name}</td></tr>}
               <tr><th>Email</th><td>{user.email}</td></tr>
               <tr><th>Loot Points</th><td>{user.lootPoints || 'No points'}</td></tr>
+              {this.renderUserBadges(user.badges || [])}
             </tbody>
           </table>
           <Button id="logout" onClick={logoutUser}>Log Out</Button>

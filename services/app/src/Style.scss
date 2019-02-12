@@ -1268,6 +1268,9 @@ body.android .dialog .textfield:focus-within {
     &.draw_enemies {
       span.meta {
         display: inline-block;
+        img {
+          padding-bottom: size(small);
+        }
       }
     }
   }

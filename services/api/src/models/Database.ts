@@ -9,6 +9,7 @@ import { QuestData } from 'shared/schema/QuestData';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { PLACEHOLDER_DATE } from 'shared/schema/SchemaBase';
+import { UserBadge } from 'shared/schema/UserBadges';
 import { User } from 'shared/schema/Users';
 import { toSequelize } from './Schema';
 
@@ -25,6 +26,12 @@ export interface UserInstance extends Sequelize.Instance<Partial<User>> {
   dataValues: User;
 }
 export type UserModel = Sequelize.Model<UserInstance, User>;
+
+export interface UserBadgeInstance
+  extends Sequelize.Instance<Partial<UserBadge>> {
+  dataValues: UserBadge;
+}
+export type UserBadgeModel = Sequelize.Model<UserBadgeInstance, UserBadge>;
 
 export interface QuestInstance extends Sequelize.Instance<Partial<Quest>> {
   dataValues: Quest;
@@ -82,6 +89,7 @@ export class Database {
 
   public analyticsEvent: AnalyticsEventModel;
   public users: UserModel;
+  public userBadges: UserBadgeModel;
   public quests: QuestModel;
   public questData: QuestDataModel;
   public feedback: FeedbackModel;
@@ -115,7 +123,7 @@ export class Database {
           },
         ],
         timestamps: false, // TODO: eventually switch to sequelize timestamps
-      }
+      },
     );
 
     const userSpec = toSequelize(new User({ id: '' }));
@@ -125,8 +133,17 @@ export class Database {
       underscored: undefined,
     });
 
+    const userBadgeSpec = toSequelize(
+      new UserBadge({ userid: '', badge: 'backer1' }),
+    );
+    this.userBadges = this.sequelize.define('userbadges', userBadgeSpec, {
+      ...standardOptions,
+      timestamps: false, // TODO: eventually switch to sequelize timestamps
+      underscored: undefined,
+    });
+
     const questSpec = toSequelize(
-      new Quest({ id: '', partition: Partition.expeditionPublic })
+      new Quest({ id: '', partition: Partition.expeditionPublic }),
     );
     this.quests = this.sequelize.define('quests', questSpec, {
       ...standardOptions,
@@ -156,7 +173,7 @@ export class Database {
         notes: '',
         metadata: '',
         edittime: new Date(0),
-      })
+      }),
     );
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
@@ -168,7 +185,7 @@ export class Database {
         partition: Partition.expeditionPublic,
         questid: '',
         userid: '',
-      })
+      }),
     );
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {
       ...standardOptions,
@@ -181,12 +198,12 @@ export class Database {
         partition: Partition.expeditionPublic,
         id: '',
         questversion: 0,
-      })
+      }),
     );
     this.renderedQuests = this.sequelize.define(
       'renderedquests',
       renderedQuestSpec,
-      standardOptions
+      standardOptions,
     );
 
     const eventSpec = toSequelize(
@@ -198,26 +215,26 @@ export class Database {
         id: 0,
         type: '',
         json: '',
-      })
+      }),
     );
     this.events = this.sequelize.define('events', eventSpec, standardOptions);
 
     const sessionClientSpec = toSequelize(
-      new SessionClient({ session: 0, client: '', secret: '' })
+      new SessionClient({ session: 0, client: '', secret: '' }),
     );
     this.sessionClients = this.sequelize.define(
       'sessionclients',
       sessionClientSpec,
-      standardOptions
+      standardOptions,
     );
 
     const sessionSpec = toSequelize(
-      new Session({ id: 0, secret: '', eventCounter: 0, locked: false })
+      new Session({ id: 0, secret: '', eventCounter: 0, locked: false }),
     );
     this.sessions = this.sequelize.define(
       'sessions',
       sessionSpec,
-      standardOptions
+      standardOptions,
     );
 
     // This doesn't need an independent spec - it is used by connect-session-sequelize
