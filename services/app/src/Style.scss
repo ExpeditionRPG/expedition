@@ -1320,7 +1320,7 @@ body.android .dialog .textfield:focus-within {
     .timing {
       opacity: 0.65;
       margin-top: size(small);
-      margin-right: fontsize(small);
+      margin-right: size(small);
       font-size: fontsize(flavor);
       display: inline-block;
       .inline_icon {
