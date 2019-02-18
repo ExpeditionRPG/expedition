@@ -22,8 +22,6 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 export default function drawEnemies(props: Props): JSX.Element {
-  const nextCard = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
-
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
@@ -68,7 +66,7 @@ export default function drawEnemies(props: Props): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onClick={() => props.onNext(nextCard)}>Next</Button>
+      <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );

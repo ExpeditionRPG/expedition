@@ -1,5 +1,5 @@
 import {getContentSets, numAdventurers} from 'app/actions/Settings';
-import {AppStateWithHistory, CardState, CardThemeType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardState, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
@@ -39,7 +39,7 @@ export function initCardTemplate(node: ParserNode) {
   };
 }
 
-export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Element {
+export function renderCardTemplate(card: CardState, node: ParserNode, settings: SettingsType): JSX.Element {
   const phase = card.phase || 'ROLEPLAY';
   switch (phase) {
     case 'ROLEPLAY':
@@ -53,7 +53,14 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
     case 'DRAW_ENEMIES':
       return <DrawEnemiesContainer node={node}/>;
     case 'PREPARE':
-      return <PrepareTimerContainer node={node}/>;
+      // Must handle conditional display of timer vs no timer here to
+      // allow for timer length changes on the "prepare" card to dynamically
+      // change which screen is shown.
+      if (!settings.timerSeconds) {
+        return <NoTimerContainer node={node}/>;
+      } else {
+        return <PrepareTimerContainer node={node}/>;
+      }
     case 'TIMER':
       return <TimerCardContainer node={node}/>;
     case 'SURGE':
@@ -66,14 +73,12 @@ export function renderCardTemplate(card: CardState, node: ParserNode): JSX.Eleme
       return <VictoryContainer node={node}/>;
     case 'DEFEAT':
       return <DefeatContainer node={node}/>;
-    case 'NO_TIMER':
-      return <NoTimerContainer node={node}/>;
     case 'MID_COMBAT_ROLEPLAY':
       return <MidCombatRoleplayContainer node={node}/>;
     case 'MID_COMBAT_DECISION':
     case 'MID_COMBAT_DECISION_TIMER':
       const combat = node.ctx.templates.combat;
-      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node);
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node, settings);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -89,7 +94,6 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case 'RESOLVE_DAMAGE':
     case 'VICTORY':
     case 'DEFEAT':
-    case 'NO_TIMER':
     case 'MID_COMBAT_ROLEPLAY':
     case 'MID_COMBAT_DECISION':
     case 'MID_COMBAT_DECISION_TIMER':

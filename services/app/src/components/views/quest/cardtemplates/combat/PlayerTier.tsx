@@ -32,8 +32,6 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 export default function playerTier(props: Props): JSX.Element {
-  const nextCard: CombatPhase = (props.settings.timerSeconds) ? 'PREPARE' : 'NO_TIMER';
-
   let shouldRunDecision = false;
   if (props.contentSets.has('future')) {
     shouldRunDecision = (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
@@ -81,7 +79,7 @@ export default function playerTier(props: Props): JSX.Element {
       <Button
         className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}
-        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(nextCard)}>Next</Button>
+        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext('PREPARE')}>Next</Button>
       <Button
         className={(props.tier !== 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 && props.tier > 0}
