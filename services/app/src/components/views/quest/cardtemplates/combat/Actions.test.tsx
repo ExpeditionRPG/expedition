@@ -141,7 +141,7 @@ describe('Combat actions', () => {
     const runTest = (overrides: any) => {
       const node = newCombatNode(); // Caution: this reset the multiplayer connection
       const conn = fakeConnection();
-      const store = newMockStore({multiplayer: initialMultiplayer}, conn);
+      const store = newMockStore({multiplayer: m.s2p5}, conn);
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
         node,

@@ -157,8 +157,15 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[toClientKey(multiplayer.client, multiplayer.instance)]);
     const storeClient = multiplayer && multiplayer.client;
     const storeInstance = multiplayer && multiplayer.instance;
-    client = client || storeClient || '';
-    instance = instance || storeInstance || '';
+    client = client || storeClient;
+    instance = instance || storeInstance;
+
+    // Typically happens during initial setup, when the client and instance
+    // have not yet been populated. In this case we're still setting up,
+    // so it's OK to silently ignore this call.
+    if (!client || !instance) {
+      return Promise.resolve();
+    }
 
     // Send remote if we're the origin
     if (client === storeClient && instance === storeInstance) {
