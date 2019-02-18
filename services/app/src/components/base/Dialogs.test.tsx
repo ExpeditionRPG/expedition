@@ -92,7 +92,12 @@ describe('Dialogs', () => {
       expect(e.find('DialogContent').render().text()).toContain('Test Content');
     });
     test('updates text state', () => {
-      const {e} = setup();
+      const {e, props} = setup();
+      // Because we're testing with enzyme, renders don't happen typical to
+      // component lifecycle. Here we check that a rerender should occur
+      // (i.e. the update is not suppressed when the text input value changes).
+      expect(e.instance().shouldComponentUpdate(props, {text: 'asdf'})).toEqual(true);
+
       e.find('TextField').prop('onChange')({target: {value: 'asdf'}});
       e.find('#submitButton').hostNodes().prop('onClick')();
       expect(e.instance().onSubmitSpy).toHaveBeenCalledWith({text: 'asdf'});
