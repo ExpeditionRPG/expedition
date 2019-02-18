@@ -220,8 +220,8 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
     throw new Error('Unimplemented');
   }
 
-  public shouldComponentUpdate(nextProps: BaseDialogProps) {
-    return nextProps.open !== this.props.open;
+  public shouldComponentUpdate(nextProps: BaseDialogProps, nextState: {text: string}) {
+    return nextProps.open !== this.props.open || nextState.text !== this.state.text;
   }
 
   public render(): JSX.Element {
