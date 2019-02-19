@@ -200,6 +200,14 @@ describe('Multiplayer actions', () => {
       const {c, actions} = doTest();
       expect(c.sendEvent).toHaveBeenCalledTimes(1);
     });
+    test('does nothing when empty client', () => {
+      const {c, actions} = doTest(null, multiplayer.instance, undefined, {multiplayer: {...multiplayer, client: null, instance: null}});
+      expect(c.sendEvent).not.toHaveBeenCalled();
+    });
+    test('does nothing when empty instance', () => {
+      const {c, actions} = doTest(multiplayer.client, null, undefined, {multiplayer: {...multiplayer, client: null, instance: null}});
+      expect(c.sendEvent).not.toHaveBeenCalled();
+    });
     test('does not send to remote clients if not self status', () => {
       const {c, actions} = doTest("nnn", "mmm");
       expect(c.sendEvent).not.toHaveBeenCalled();

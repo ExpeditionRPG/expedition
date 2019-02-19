@@ -25,16 +25,18 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
   basic: {...initialMultiplayer},
   s2p5: {
     ...initialMultiplayer,
+    client: 'abc',
+    instance: 'def',
     session: {id: 123, secret: 'def'},
     clientStatus: {
-      1: {
+      'abc|def': {
         connected: true,
         contentSets: ['horror', 'future'],
         numLocalPlayers: 3,
         aliveAdventurers: 3,
         type: 'STATUS',
       },
-      2: {
+      '2': {
         connected: true,
         contentSets: ['horror'],
         numLocalPlayers: 2,
@@ -45,15 +47,17 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
   },
   s2p2a1: {
     ...initialMultiplayer,
+    client: 'abc',
+    instance: 'def',
     session: {id: 123, secret: 'def'},
     clientStatus: {
-      1: {
+      'abc|def': {
         connected: true,
         numLocalPlayers: 1,
         aliveAdventurers: 0,
         type: 'STATUS',
       },
-      2: {
+      '2': {
         connected: true,
         numLocalPlayers: 1,
         aliveAdventurers: 1,
