@@ -135,9 +135,6 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post('/stripe/checkout', limitCors, (req, res) => {
     Stripe.checkout(req, res);
   });
-  router.get('/admin/recalcratings', limitCors, (req, res) => {
-    Handlers.recalculateRatings(db, req, res);
-  });
 
   installAdminRoutes(db, router);
   installOAuthRoutes(db, router);

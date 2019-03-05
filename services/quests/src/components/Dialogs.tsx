@@ -204,7 +204,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <InputLabel htmlFor="minplayers-select">Minimum players</InputLabel>
             <Select
               inputProps={{id: 'minplayers-select'}}
-              value={metadata.get('minplayers')}
+              value={metadata.get('minplayers') || MIN_PLAYERS}
               onChange={(e: any) => { handleMetadataChange(quest, 'minplayers', e.target.value); }}
             >
               {playerItems}
@@ -214,7 +214,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <InputLabel htmlFor="maxplayers-select">Maximum players</InputLabel>
             <Select
               inputProps={{id: 'maxplayers-select'}}
-              value={metadata.get('maxplayers')}
+              value={metadata.get('maxplayers') || MAX_PLAYERS}
               onChange={(e: any) => { handleMetadataChange(quest, 'maxplayers', e.target.value); }}
             >
               {playerItems}
@@ -224,7 +224,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <InputLabel htmlFor="mintimeminutes-select">Minimum play time</InputLabel>
             <Select
               inputProps={{id: 'mintimeminutes-select'}}
-              value={metadata.get('mintimeminutes')}
+              value={metadata.get('mintimeminutes') || 10}
               onChange={(e: any) => { handleMetadataChange(quest, 'mintimeminutes', e.target.value); }}
             >
               <MenuItem value={10}>10 minutes</MenuItem>
@@ -243,7 +243,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <InputLabel htmlFor="maxtimeminutes-select">Maximum play time</InputLabel>
             <Select
               inputProps={{id: 'maxtimeminutes-select'}}
-              value={metadata.get('maxtimeminutes')}
+              value={metadata.get('maxtimeminutes') || 999}
               onChange={(e: any) => { handleMetadataChange(quest, 'maxtimeminutes', e.target.value); }}
             >
               <MenuItem value={10}>10 minutes</MenuItem>
@@ -293,7 +293,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               className="ratingSelect"
               inputProps={{id: 'contentrating-select'}}
-              value={metadata.get('contentrating')}
+              value={metadata.get('contentrating') || ''}
               onChange={(e: any) => { handleMetadataChange(quest, 'contentrating', e.target.value); }}
             >
               {ratings}
