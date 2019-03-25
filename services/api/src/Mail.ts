@@ -7,7 +7,7 @@ export interface MailService {
     subject: string,
     htmlMessage: string,
     sendCopy?: boolean,
-    sendMail?: any
+    sendMail?: any,
   ) => Promise<any>;
 }
 
@@ -18,7 +18,7 @@ if (Config.get('MAIL_EMAIL') && Config.get('MAIL_PASSWORD')) {
       Config.get('MAIL_EMAIL') +
       ':' +
       Config.get('MAIL_PASSWORD') +
-      '@smtp.gmail.com'
+      '@smtp.gmail.com',
   );
 } else {
   console.warn('Mail transport not set up; config details missing');
@@ -35,7 +35,8 @@ export function send(
   subject: string,
   htmlMessage: string,
   sendCopy: boolean = true,
-  sendMail?: any
+  isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
+  sendMail?: any,
 ): Promise<any> {
   sendMail = sendMail || transporter.sendMail.bind(transporter);
   if (!sendMail) {
@@ -46,7 +47,7 @@ export function send(
     bcc: sendCopy ? 'todd@fabricate.io' : undefined,
     from: '"Expedition" <expedition@fabricate.io>', // sender address
     html: htmlMessage, // html body
-    subject,
+    subject: isBeta ? `[BETA] ${subject}` : subject,
     text: htmlMessage.replace(/<\/p>/g, '\r\n\r\n').replace(HTML_REGEX, ''), // plaintext body
     to: to.join(','),
   };
@@ -54,8 +55,8 @@ export function send(
   if (Config.get('NODE_ENV') === 'dev') {
     console.log('DEV: email not sent (mocked). Email:');
     console.log('TO: ' + mailOptions.to);
-    console.log('Subject: ' + subject);
-    console.log('Text: ' + htmlMessage);
+    console.log('Subject: ' + mailOptions.subject);
+    console.log('Text: ' + mailOptions.html);
     return Promise.resolve({ response: '' });
   } else {
     return sendMail(mailOptions);
