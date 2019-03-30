@@ -38,20 +38,20 @@ export interface QuestSearchParams {
 export function getQuest(
   db: Database,
   partition: string,
-  id: string
+  id: string,
 ): Bluebird<Quest> {
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
       (result: QuestInstance | null) =>
-        new Quest(result ? result.dataValues : {})
+        new Quest(result ? result.dataValues : {}),
     );
 }
 
 export function searchQuests(
   db: Database,
   userId: string,
-  params: QuestSearchParams
+  params: QuestSearchParams,
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
   const where: Sequelize.WhereOptions<Partial<Quest>> = {
@@ -132,16 +132,21 @@ export function searchQuests(
 
   if (params.order) {
     if (params.order === '+ratingavg') {
-      // Default sort - also show very new quests on top
+      // Default sort - also show very new & unrated quests on top
       order.push(
         Sequelize.literal(
-          `created >= '${Moment()
+          `(created >= '${Moment()
             .subtract(7, 'day')
-            .format('YYYY-MM-DD HH:mm:ss')}' DESC`
+            .format('YYYY-MM-DD HH:mm:ss')}' AND ratingcount < 5) DESC`,
         ),
-        Sequelize.literal('ratingcount < 5 DESC')
       );
+      // NULL values are ordered first by default - for ordering by rating,
+      // this is the opposite of what we want.
+      // "ORDER BY rating IS NULL" is a sqlite and postgres compatible
+      // way to order non-null items first, then null items.
+      order.push(Sequelize.literal('ratingavg IS NULL'));
       order.push(['ratingavg', 'DESC']);
+      order.push(Sequelize.literal('ratingcount IS NULL'));
       order.push(['ratingcount', 'DESC']);
     } else {
       order.push([
@@ -174,7 +179,7 @@ export function searchQuests(
 
   const limit = Math.min(
     Math.max(params.limit || MAX_SEARCH_LIMIT, 0),
-    MAX_SEARCH_LIMIT
+    MAX_SEARCH_LIMIT,
   );
 
   return db.quests.findAll({ where, order, limit });
@@ -223,7 +228,7 @@ export function publishQuest(
   userid: string,
   majorRelease: boolean,
   quest: Quest,
-  xml: string
+  xml: string,
 ): Bluebird<QuestInstance> {
   // TODO: Validate XML via crawler
   if (!userid) {
@@ -283,7 +288,7 @@ export function publishQuest(
             partition: quest.partition,
             questversion: updateValues.questversion,
             xml,
-          })
+          }),
         )
         .then(() => {
           console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
@@ -296,7 +301,7 @@ export function publishQuest(
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update(
     { tombstone: new Date() },
-    { where: { partition, id }, limit: 1 }
+    { where: { partition, id }, limit: 1 },
   );
 }
 
@@ -310,7 +315,7 @@ export function republishQuest(db: Database, partition: string, id: string) {
 export function updateQuestRatings(
   db: Database,
   partition: string,
-  id: string
+  id: string,
 ): Bluebird<QuestInstance> {
   let quest: QuestInstance;
   return db.quests
