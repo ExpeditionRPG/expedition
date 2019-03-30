@@ -85,7 +85,7 @@ describe('StatsCrawler', () => {
       expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
     });
 
-    test.only('ignores implicit ends within combat "on round" event triggers', () => {
+    test('ignores implicit ends within combat "on round" event triggers', () => {
       const xml = cheerio.load(`<quest>
         <roleplay data-line="1"><p>prefixing with roleplay sometimes causes errors</p></roleplay>
         <combat title="A1" id="A1" data-line="2">
