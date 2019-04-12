@@ -55,7 +55,7 @@ export function saveQuestForOffline(details: Quest) {
       return dispatch(openSnackbar('Saved for offline play.'));
     })
     .catch((e: Error) => {
-      return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
+      return dispatch(openSnackbar(Error('Network error saving quest: Please check your connection'), true));
     });
   };
 }

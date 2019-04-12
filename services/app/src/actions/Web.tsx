@@ -57,7 +57,7 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(a: FetchQuestXMLAr
     return dispatch(loadQuestXML({details: a.details, questNode, ctx}));
   })
   .catch((e: Error) => {
-    return dispatch(openSnackbar(Error('Network error: Please check your connection.')));
+    return dispatch(openSnackbar(Error('Network error fetching quest: Please check your connection.'), true));
   });
 
   return {...a, seed: ctx.seed, promise};
