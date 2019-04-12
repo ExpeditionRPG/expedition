@@ -86,15 +86,17 @@ describe('StatsCrawler', () => {
     });
 
     test('ignores implicit ends within combat "on round" event triggers', () => {
-      const xml = cheerio.load(`<combat title="A1" id="A1" data-line="2">
+      const xml = cheerio.load(`<quest>
+        <roleplay data-line="1"><p>prefixing with roleplay sometimes causes errors</p></roleplay>
+        <combat title="A1" id="A1" data-line="2">
         <event on="round">
-          <roleplay data-line="3"></roleplay>
+          <roleplay data-line="3"><p>asdf</p></roleplay>
         </event>
-      </roleplay>`)(':first-child');
+        </combat>
+      </quest>`)('quest > :first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
-
-      expect(Array.from(crawler.getStatsForLine(2).outputs)).not.toContain(['IMPLICIT_END']);
+      expect(Array.from(crawler.getStatsByEvent('IMPLICIT_END'))).toEqual([]);
     });
 
     test('safely handles nodes without line annotations', () => {
