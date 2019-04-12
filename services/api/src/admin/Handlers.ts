@@ -1,5 +1,6 @@
 import * as Bluebird from 'bluebird';
 import * as express from 'express';
+import Sequelize from 'sequelize';
 import { Quest } from 'shared/schema/Quests';
 import {
   Database,
@@ -16,6 +17,8 @@ import {
 } from '../models/Quests';
 import { setLootPoints } from '../models/Users';
 import * as QT from './QueryTypes';
+
+const { Op } = Sequelize;
 
 const QUERY_ROW_LIMIT = 100;
 
@@ -77,16 +80,16 @@ export function queryFeedback(
     }
     if (q.rating) {
       where.rating = {
-        $eq: q.rating.condition === '=' ? q.rating.value : undefined,
-        $gt: q.rating.condition === '>' ? q.rating.value : undefined,
-        $lt: q.rating.condition === '<' ? q.rating.value : undefined,
+        [Op.eq]: q.rating.condition === '=' ? q.rating.value : undefined,
+        [Op.gt]: q.rating.condition === '>' ? q.rating.value : undefined,
+        [Op.lt]: q.rating.condition === '<' ? q.rating.value : undefined,
       };
     }
     if (q.substring) {
-      where.$or = [
-        { text: { $regexp: q.substring } },
-        { email: { $regexp: q.substring } },
-        { name: { $regexp: q.substring } },
+      where[Op.or] = [
+        { text: { [Op.regexp]: q.substring } },
+        { email: { [Op.regexp]: q.substring } },
+        { name: { [Op.regexp]: q.substring } },
       ];
     }
 
@@ -194,9 +197,9 @@ export function queryQuest(
       where.userid = q.userid;
     }
     if (q.substring) {
-      where.$or = [
-        { title: { $regexp: q.substring } },
-        { summary: { $regexp: q.substring } },
+      where[Op.or] = [
+        { title: { [Op.regexp]: q.substring } },
+        { summary: { [Op.regexp]: q.substring } },
       ];
     }
 
@@ -286,9 +289,9 @@ export function queryUser(
       where.userid = q.userid;
     }
     if (q.substring) {
-      where.$or = [
-        { email: { $regexp: q.substring } },
-        { name: { $regexp: q.substring } },
+      where[Op.or] = [
+        { email: { [Op.regexp]: q.substring } },
+        { name: { [Op.regexp]: q.substring } },
       ];
     }
 

@@ -93,6 +93,7 @@ export const quests = {
     expansionhorror: true,
     id: 'questidhorror',
     summary: 'This be a horror quest! AHHH!',
+    author: 'horrorauthor',
     title: 'Horror Quest',
     userid: 'testuser',
   }),

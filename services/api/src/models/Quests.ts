@@ -55,7 +55,7 @@ export function searchQuests(
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
   const where: Sequelize.WhereOptions<Partial<Quest>> = {
-    published: { $ne: null } as any,
+    published: { [Op.ne]: null } as any,
     tombstone: null,
   };
   const order = [];
@@ -81,37 +81,36 @@ export function searchQuests(
   }
 
   if (params.players) {
-    where.minplayers = { $lte: params.players };
-    where.maxplayers = { $gte: params.players };
+    where.minplayers = { [Op.lte]: params.players };
+    where.maxplayers = { [Op.gte]: params.players };
   }
 
-  // DEPRECATED from app 6/10/17 (also in schemas.js)
   if (params.text && params.text !== '') {
     const text = '%' + params.text.toLowerCase() + '%';
-    (where as Sequelize.AnyWhereOptions).$or = [
+    (where as Sequelize.AnyWhereOptions)[Op.or] = [
       Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
-        $like: text,
+        [Op.like]: text,
       }),
       Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {
-        $like: text,
+        [Op.like]: text,
       }),
     ];
   }
 
   if (params.age) {
     where.published = {
-      $gt: Moment()
+      [Op.gt]: Moment()
         .subtract(params.age, 'seconds')
         .format('YYYY-MM-DD HH:mm:ss'),
     };
   }
 
   if (params.mintimeminutes) {
-    where.mintimeminutes = { $gte: params.mintimeminutes };
+    where.mintimeminutes = { [Op.gte]: params.mintimeminutes };
   }
 
   if (params.maxtimeminutes) {
-    where.maxtimeminutes = { $lte: params.maxtimeminutes };
+    where.maxtimeminutes = { [Op.lte]: params.maxtimeminutes };
   }
 
   if (params.contentrating) {
@@ -165,11 +164,11 @@ export function searchQuests(
         params.expansions.indexOf('future') === -1)
     ) {
       // No expansions
-      where.expansionhorror = { $not: true };
-      where.expansionfuture = { $not: true };
+      where.expansionhorror = { [Op.not]: true };
+      where.expansionfuture = { [Op.not]: true };
     } else if (params.expansions.indexOf('future') === -1) {
       // Only the Horror
-      where.expansionfuture = { $not: true };
+      where.expansionfuture = { [Op.not]: true };
       order.push(['expansionhorror', 'DESC']);
     } else {
       // All
