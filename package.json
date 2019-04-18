@@ -100,7 +100,7 @@
     "request-promise": "^4.2.2",
     "sass-loader": "^7.0.3",
     "seedrandom": "^2.4.3",
-    "semver": "~5.6.0",
+    "semver": "~5.7.0",
     "send": "^0.16.2",
     "sequelize": "^4.37.10",
     "sinon": "^6.0.0",
