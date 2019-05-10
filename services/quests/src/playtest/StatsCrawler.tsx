@@ -63,6 +63,10 @@ export class StatsCrawler extends CrawlerBase<Context> {
     return this.statsByLine[line];
   }
 
+  public getStatsByEvent(evt: string) {
+    return this.statsByEvent[evt];
+  }
+
   public getLines(): number[] {
     return Object.keys(this.statsByLine).filter((k: string) => (k !== '-1')).map((s: string) => parseInt(s, 10));
   }
@@ -72,8 +76,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   private lineWithinCombatRound(line: number): boolean {
-    const n = this.root.elem.find(`[data-line=${line}]`);
-    console.log(n);
+    const n = this.root.elem.closest('quest').find(`[data-line=${line}]`);
     return n.closest('event[on="round"]').length > 0;
   }
 

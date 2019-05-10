@@ -1,4 +1,5 @@
 import * as Promise from 'bluebird';
+import Sequelize from 'sequelize';
 import { Feedback } from 'shared/schema/Feedback';
 import { Quest } from 'shared/schema/Quests';
 import { PLACEHOLDER_DATE } from 'shared/schema/SchemaBase';
@@ -7,6 +8,8 @@ import { MailService } from '../Mail';
 import { Database, FeedbackInstance, QuestInstance } from './Database';
 import { getQuest, updateQuestRatings } from './Quests';
 import { prepare } from './Schema';
+
+const { Op } = Sequelize;
 
 export const FabricateFeedbackEmail = 'expedition+feedback@fabricate.io';
 export const FabricateReportQuestEmail = 'expedition+apperror@fabricate.io';
@@ -34,7 +37,7 @@ export function getFeedbackByQuestId(
   questid: string,
 ): Promise<FeedbackInstance[]> {
   return db.feedback.findAll({
-    where: { partition, questid, rating: { $gt: 0 } },
+    where: { partition, questid, rating: { [Op.gt]: 0 } },
   });
 }
 

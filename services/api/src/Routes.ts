@@ -126,11 +126,7 @@ export function installRoutes(db: Database, router: express.Router) {
     },
   );
   router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {
-    MultiplayerHandlers.connect(
-      db,
-      req,
-      res,
-    );
+    MultiplayerHandlers.connect(db, req, res);
   });
   router.post('/stripe/checkout', limitCors, (req, res) => {
     Stripe.checkout(req, res);

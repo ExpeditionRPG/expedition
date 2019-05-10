@@ -1,6 +1,6 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import Config from './config';
-import {Database, QuestInstance} from './models/Database';
+import { Database, QuestInstance } from './models/Database';
 
 const request = require('request');
 
@@ -15,9 +15,15 @@ function doFn(quest: QuestInstance) {
   }
   // Fetch XML
   request(quest.get('publishedurl'), {}, (err: Error, res: any, body: any) => {
-    console.log(`${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`);
+    console.log(
+      `${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`,
+    );
     if (!body.startsWith('<quest')) {
-      return console.error(`${quest.get('id')}: "${quest.get('title')}" points to invalid XML: ${body}`);
+      return console.error(
+        `${quest.get('id')}: "${quest.get(
+          'title',
+        )}" points to invalid XML: ${body}`,
+      );
     }
 
     // TODO: Your Code Here
@@ -26,19 +32,21 @@ function doFn(quest: QuestInstance) {
 }
 
 function main() {
-  const db = new Database(new Sequelize(Config.get('DATABASE_URL'), {
-    dialectOptions: {
-      ssl: true,
-    },
-    logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
-  }));
+  const db = new Database(
+    new Sequelize(Config.get('DATABASE_URL'), {
+      dialectOptions: {
+        ssl: true,
+      },
+      logging: Config.get('SEQUELIZE_LOGGING') === 'true',
+    }),
+  );
 
   db.quests.findAll().then((quests: QuestInstance[]) => {
-      console.log('Running job over ' + quests.length + ' quests');
-      quests.map((q: QuestInstance) => {
-        doFn(q);
-      });
+    console.log('Running job over ' + quests.length + ' quests');
+    quests.map((q: QuestInstance) => {
+      doFn(q);
     });
+  });
 }
 
 main();

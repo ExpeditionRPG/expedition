@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import * as Sequelize from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
 import { Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
@@ -14,73 +14,75 @@ import { User } from 'shared/schema/Users';
 import { toSequelize } from './Schema';
 
 export interface AnalyticsEventInstance
-  extends Sequelize.Instance<Partial<AnalyticsEvent>> {
+  extends Sequelize.Model<Partial<AnalyticsEvent>> {
   dataValues: AnalyticsEvent;
 }
-export type AnalyticsEventModel = Sequelize.Model<
-  AnalyticsEventInstance,
-  AnalyticsEvent
->;
+type AnalyticsEventModel = {
+  new (): AnalyticsEventInstance;
+} & typeof Sequelize.Model;
 
-export interface UserInstance extends Sequelize.Instance<Partial<User>> {
+export interface UserInstance extends Sequelize.Model<Partial<User>> {
   dataValues: User;
 }
-export type UserModel = Sequelize.Model<UserInstance, User>;
+export type UserModel = {
+  new (): UserInstance;
+} & typeof Sequelize.Model;
 
-export interface UserBadgeInstance
-  extends Sequelize.Instance<Partial<UserBadge>> {
+export interface UserBadgeInstance extends Sequelize.Model<Partial<UserBadge>> {
   dataValues: UserBadge;
 }
-export type UserBadgeModel = Sequelize.Model<UserBadgeInstance, UserBadge>;
+export type UserBadgeModel = {
+  new (): UserBadgeInstance;
+} & typeof Sequelize.Model;
 
-export interface QuestInstance extends Sequelize.Instance<Partial<Quest>> {
+export interface QuestInstance extends Sequelize.Model<Partial<Quest>> {
   dataValues: Quest;
 }
-export type QuestModel = Sequelize.Model<QuestInstance, Partial<Quest>>;
+export type QuestModel = {
+  new (): QuestInstance;
+} & typeof Sequelize.Model;
 
-export interface QuestDataInstance
-  extends Sequelize.Instance<Partial<QuestData>> {
+export interface QuestDataInstance extends Sequelize.Model<Partial<QuestData>> {
   dataValues: QuestData;
 }
-export type QuestDataModel = Sequelize.Model<
-  QuestDataInstance,
-  Partial<QuestData>
->;
+export type QuestDataModel = {
+  new (): QuestDataInstance;
+} & typeof Sequelize.Model;
 
-export interface FeedbackInstance
-  extends Sequelize.Instance<Partial<Feedback>> {
+export interface FeedbackInstance extends Sequelize.Model<Partial<Feedback>> {
   dataValues: Feedback;
 }
-export type FeedbackModel = Sequelize.Model<
-  FeedbackInstance,
-  Partial<Feedback>
->;
+export type FeedbackModel = {
+  new (): FeedbackInstance;
+} & typeof Sequelize.Model;
 
 export interface RenderedQuestInstance
-  extends Sequelize.Instance<Partial<RenderedQuest>> {}
-export type RenderedQuestModel = Sequelize.Model<
-  RenderedQuestInstance,
-  Partial<RenderedQuest>
->;
+  extends Sequelize.Model<Partial<RenderedQuest>> {}
+export type RenderedQuestModel = {
+  new (): RenderedQuestInstance;
+} & typeof Sequelize.Model;
 
-export interface EventInstance extends Sequelize.Instance<Partial<Event>> {
+export interface EventInstance extends Sequelize.Model<Partial<Event>> {
   dataValues: Event;
 }
-export type EventModel = Sequelize.Model<EventInstance, Partial<Event>>;
+export type EventModel = {
+  new (): EventInstance;
+} & typeof Sequelize.Model;
 
 export interface SessionClientInstance
-  extends Sequelize.Instance<Partial<SessionClient>> {
+  extends Sequelize.Model<Partial<SessionClient>> {
   dataValues: SessionClient;
 }
-export type SessionClientModel = Sequelize.Model<
-  SessionClientInstance,
-  Partial<SessionClient>
->;
+export type SessionClientModel = {
+  new (): SessionClientInstance;
+} & typeof Sequelize.Model;
 
-export interface SessionInstance extends Sequelize.Instance<Session> {
+export interface SessionInstance extends Sequelize.Model<Session> {
   dataValues: Session;
 }
-export type SessionModel = Sequelize.Model<SessionInstance, Session>;
+export type SessionModel = {
+  new (): SessionInstance;
+} & typeof Sequelize.Model;
 
 export const AUTH_SESSION_TABLE = 'AuthSession';
 
@@ -124,14 +126,14 @@ export class Database {
         ],
         timestamps: false, // TODO: eventually switch to sequelize timestamps
       },
-    );
+    ) as AnalyticsEventModel;
 
     const userSpec = toSequelize(new User({ id: '' }));
     this.users = this.sequelize.define('users', userSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: undefined,
-    });
+    }) as UserModel;
 
     const userBadgeSpec = toSequelize(
       new UserBadge({ userid: '', badge: 'backer1' }),
@@ -140,7 +142,7 @@ export class Database {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: undefined,
-    });
+    }) as UserBadgeModel;
 
     const questSpec = toSequelize(
       new Quest({ id: '', partition: Partition.expeditionPublic }),
@@ -163,7 +165,7 @@ export class Database {
           ],
         },
       ],
-    });
+    }) as QuestModel;
 
     const questDataSpec = toSequelize(
       new QuestData({
@@ -178,7 +180,7 @@ export class Database {
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
-    });
+    }) as QuestDataModel;
 
     const feedbackSpec = toSequelize(
       new Feedback({
@@ -191,7 +193,7 @@ export class Database {
       ...standardOptions,
       freezeTableName: true,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
-    });
+    }) as FeedbackModel;
 
     const renderedQuestSpec = toSequelize(
       new RenderedQuest({
@@ -204,7 +206,7 @@ export class Database {
       'renderedquests',
       renderedQuestSpec,
       standardOptions,
-    );
+    ) as RenderedQuestModel;
 
     const eventSpec = toSequelize(
       new Event({
@@ -217,7 +219,11 @@ export class Database {
         json: '',
       }),
     );
-    this.events = this.sequelize.define('events', eventSpec, standardOptions);
+    this.events = this.sequelize.define(
+      'events',
+      eventSpec,
+      standardOptions,
+    ) as EventModel;
 
     const sessionClientSpec = toSequelize(
       new SessionClient({ session: 0, client: '', secret: '' }),
@@ -226,7 +232,7 @@ export class Database {
       'sessionclients',
       sessionClientSpec,
       standardOptions,
-    );
+    ) as SessionClientModel;
 
     const sessionSpec = toSequelize(
       new Session({ id: 0, secret: '', eventCounter: 0, locked: false }),
@@ -235,7 +241,7 @@ export class Database {
       'sessions',
       sessionSpec,
       standardOptions,
-    );
+    ) as SessionModel;
 
     // This doesn't need an independent spec - it is used by connect-session-sequelize
     // https://www.npmjs.com/package/connect-session-sequelize
