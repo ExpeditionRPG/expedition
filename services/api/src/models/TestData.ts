@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
 import { Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
@@ -93,6 +93,7 @@ export const quests = {
     expansionhorror: true,
     id: 'questidhorror',
     summary: 'This be a horror quest! AHHH!',
+    author: 'horrorauthor',
     title: 'Horror Quest',
     userid: 'testuser',
   }),

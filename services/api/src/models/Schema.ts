@@ -1,11 +1,11 @@
 import * as Sequelize from 'sequelize';
-import {NOW, PLACEHOLDER_DATE, SchemaBase} from 'shared/schema/SchemaBase';
+import { NOW, PLACEHOLDER_DATE, SchemaBase } from 'shared/schema/SchemaBase';
 
 export function toSequelize(s: SchemaBase) {
-  const result: Sequelize.DefineAttributes = {};
+  const result: Sequelize.ModelAttributes = {};
   for (const k of Object.keys(s.optionsMap)) {
     const m = s.optionsMap[k];
-    let type: Sequelize.DataTypeAbstract;
+    let type: Sequelize.DataType;
     switch (m.type) {
       case 'String':
         if (m.maxLength === undefined) {
@@ -31,14 +31,20 @@ export function toSequelize(s: SchemaBase) {
         type = Sequelize.INTEGER;
         break;
       default:
-        throw new Error('Could not map field ' + k + ' (type ' + (m.type || '').toString() + ') to Sequelize type');
+        throw new Error(
+          'Could not map field ' +
+            k +
+            ' (type ' +
+            (m.type || '').toString() +
+            ') to Sequelize type',
+        );
     }
     if (m.extra === 'DECIMAL_4_2') {
       type = Sequelize.DECIMAL(4, 2);
     } else if (m.extra === 'BIGINT') {
       type = Sequelize.BIGINT;
     }
-    const r: Sequelize.DefineAttributeColumnOptions = {type};
+    const r: Sequelize.ModelAttributeColumnOptions = { type };
     if (m.column !== undefined) {
       r.field = m.column;
     }

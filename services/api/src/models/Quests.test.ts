@@ -43,6 +43,44 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
+    test('matches title', done => {
+      testingDBWithState(quests)
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: Partition.expeditionPublic,
+            text: 'Future',
+            expansions: ['horror', 'future'],
+          });
+        })
+        .then(results => {
+          expect(results.length).toEqual(1);
+          expect((results[0] as any).dataValues).toEqual(
+            jasmine.objectContaining({ id: q.future.id }),
+          );
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('matches author', done => {
+      testingDBWithState(quests)
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: Partition.expeditionPublic,
+            text: 'horrorauthor',
+            expansions: ['horror', 'future'],
+          });
+        })
+        .then(results => {
+          expect(results.length).toEqual(1);
+          expect((results[0] as any).dataValues).toEqual(
+            jasmine.objectContaining({ id: q.horror.id }),
+          );
+          done();
+        })
+        .catch(done.fail);
+    });
+
     test('does not return expansions if unspecified', done => {
       testingDBWithState(quests)
         .then(tdb => {

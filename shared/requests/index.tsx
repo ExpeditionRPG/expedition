@@ -23,6 +23,9 @@ export function fetchLocal(url: string) {
     request.onerror = () => {
       reject(new Error('network error'));
     };
+    request.onabort = () => {
+      reject(new Error('connection aborted'));
+    };
     request.open('GET', url);
     request.send();
   });

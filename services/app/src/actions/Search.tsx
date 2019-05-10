@@ -72,7 +72,7 @@ export function searchInternal(a: DoSearchParams, dispatch: Redux.Dispatch<any>,
       type: 'SEARCH_RESPONSE',
     } as SearchResponseAction);
   }).catch((error: Error) => {
-    dispatch(openSnackbar(Error('Network error: Please check your connection.')));
+    dispatch(openSnackbar(Error('Network error on search: Please check your connection.'), true));
   });
 
   return {...a, promise};
@@ -117,7 +117,7 @@ export function searchAndPlayInternal(id: string, dispatch: Redux.Dispatch<any>,
       dispatch(previewQuest({ quest: response.quests[0] }));
     }
   }).catch((error: Error) => {
-    dispatch(openSnackbar(Error('Network error: Please check your connection.')));
+    dispatch(openSnackbar(Error('Network error fetching quest: Please check your connection.'), true));
   });
   return {...params, promise};
 }
