@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
 import { Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';

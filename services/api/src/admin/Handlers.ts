@@ -1,6 +1,6 @@
 import * as Bluebird from 'bluebird';
 import * as express from 'express';
-import Sequelize from 'sequelize';
+import * as Sequelize from 'sequelize';
 import { Quest } from 'shared/schema/Quests';
 import {
   Database,

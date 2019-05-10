@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird';
-import Sequelize from 'sequelize';
+import Sequelize, { OrderItem, WhereOptions } from 'sequelize';
 import { Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
@@ -54,11 +54,11 @@ export function searchQuests(
   params: QuestSearchParams,
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
-  const where: Sequelize.WhereOptions<Partial<Quest>> = {
+  const where: WhereOptions = {
     published: { [Op.ne]: null } as any,
     tombstone: null,
   };
-  const order = [];
+  const order: OrderItem[] = [];
 
   if (params.showPrivate === true) {
     (where as any)[Op.or] = [
@@ -87,7 +87,7 @@ export function searchQuests(
 
   if (params.text && params.text !== '') {
     const text = '%' + params.text.toLowerCase() + '%';
-    (where as Sequelize.AnyWhereOptions)[Op.or] = [
+    (where as any)[Op.or] = [
       Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
         [Op.like]: text,
       }),

@@ -1,5 +1,6 @@
 import * as Bluebird from 'bluebird';
-import Sequelize, { Op } from 'sequelize';
+import { Sequelize, WhereOptions } from 'sequelize';
+import { Op } from 'sequelize';
 import { Badge, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { User } from 'shared/schema/Users';
@@ -69,7 +70,7 @@ export function getUserQuests(
   id: string,
   questIds?: string[],
 ): Bluebird<UserQuestsType> {
-  const where = {
+  const where: WhereOptions = {
     userID: id,
     category: 'quest',
     action: 'end',

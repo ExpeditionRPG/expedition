@@ -3,27 +3,29 @@ import * as express from 'express';
 import * as session from 'express-session';
 import * as http from 'http';
 import * as passport from 'passport';
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 // initalize sequelize with session store
 const SessionStore = require('connect-session-sequelize')(session.Store);
 
 import Config from './config';
 import logging from './lib/logging';
-import {AUTH_SESSION_TABLE, Database} from './models/Database';
-import {setupWebsockets} from './multiplayer/Websockets';
-import {installRoutes} from './Routes';
+import { AUTH_SESSION_TABLE, Database } from './models/Database';
+import { setupWebsockets } from './multiplayer/Websockets';
+import { installRoutes } from './Routes';
 
 function setupDB() {
   if (!Config.get('DATABASE_URL')) {
     throw new Error('No DATABASE_URL defined in config');
   }
-  return new Database(new Sequelize(Config.get('DATABASE_URL'), {
-    dialectOptions: {
-      ssl: Config.get('SEQUELIZE_SSL'),
-    },
-    logging: (Config.get('SEQUELIZE_LOGGING') === 'true'),
-  }));
+  return new Database(
+    new Sequelize(Config.get('DATABASE_URL'), {
+      dialectOptions: {
+        ssl: Config.get('SEQUELIZE_SSL'),
+      },
+      logging: Config.get('SEQUELIZE_LOGGING') === 'true',
+    }),
+  );
 }
 
 function setupSession(db: Database, app: express.Express) {
@@ -96,7 +98,9 @@ function init() {
   // Issue / discussion: https://github.com/ExpeditionRPG/expedition-quest-creator/issues/228
   // app.use(bodyParser.json({ type:'json/*' }));
   // app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
-  app.use(bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any));
+  app.use(
+    bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any),
+  );
 
   // Prevent caching of resources
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
