@@ -57,5 +57,8 @@ describe('MultiplayerRipple', () => {
     root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
     expect(e.instance().start).toHaveBeenCalledTimes(1);
   });
+  test('Ends one ripple event before starting another', () => {
+    // TODO
+  });
   test.skip('Persists ending ripple event', () => { /* TODO */ });
 });
