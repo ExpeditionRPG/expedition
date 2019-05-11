@@ -51,5 +51,11 @@ describe('MultiplayerRipple', () => {
     e.instance().handle('a', {event: 'touchstart', positions: [[0, 0]], id: 'otherripple'});
     expect(e.instance().start).toHaveBeenCalledTimes(0);
   });
+  test('Handles touchstart with empty position data', () => {
+    const {root} = setup();
+    spyOn(e.instance(), 'start');
+    root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
+    expect(e.instance().start).toHaveBeenCalledTimes(1);
+  });
   test.skip('Persists ending ripple event', () => { /* TODO */ });
 });

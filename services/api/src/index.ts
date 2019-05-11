@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as session from 'express-session';
 import * as http from 'http';
 import * as passport from 'passport';
-import { Sequelize } from 'sequelize';
+import { Options as DBOptions, Sequelize } from 'sequelize';
 
 // initalize sequelize with session store
 const SessionStore = require('connect-session-sequelize')(session.Store);
@@ -20,11 +20,12 @@ function setupDB() {
   }
   return new Database(
     new Sequelize(Config.get('DATABASE_URL'), {
+      dialectModule: require('pg'),
       dialectOptions: {
         ssl: Config.get('SEQUELIZE_SSL'),
       },
-      logging: Config.get('SEQUELIZE_LOGGING') === 'true',
-    }),
+      logging: Config.get('SEQUELIZE_LOGGING') === 'true' ? console.log : false,
+    } as DBOptions),
   );
 }
 

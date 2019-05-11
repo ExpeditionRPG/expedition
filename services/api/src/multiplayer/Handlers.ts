@@ -1,22 +1,46 @@
 import * as Promise from 'bluebird';
 import * as express from 'express';
 import * as http from 'http';
-import {ClientID, MultiEvent, MultiplayerEvent, StatusEvent} from 'shared/multiplayer/Events';
-import {toClientKey} from 'shared/multiplayer/Session';
+import {
+  ClientID,
+  MultiEvent,
+  MultiplayerEvent,
+  StatusEvent,
+} from 'shared/multiplayer/Events';
+import { toClientKey } from 'shared/multiplayer/Session';
 import * as url from 'url';
 import * as WebSocket from 'ws';
 import Config from '../config';
-import {Database, EventInstance, SessionClientInstance, SessionInstance} from '../models/Database';
-import {commitEvent, getLargestEventID, getLastEvent, getOrderedEventsAfter} from '../models/multiplayer/Events';
-import {getClientSessions, verifySessionClient} from '../models/multiplayer/SessionClients';
-import {createSession, getSessionBySecret, getSessionQuestTitle} from '../models/multiplayer/Sessions';
-import {maybeChaosDB, maybeChaosWS} from './Chaos';
-import {getSession, initSessionClient, rmSessionClient, setClientStatus} from './Sessions';
 import {
-  handleWaitingOnReview,
-  handleWaitingOnTimer,
-} from './WaitingOn';
-import {broadcast} from './Websockets';
+  Database,
+  EventInstance,
+  SessionClientInstance,
+  SessionInstance,
+} from '../models/Database';
+import {
+  commitEvent,
+  getLargestEventID,
+  getLastEvent,
+  getOrderedEventsAfter,
+} from '../models/multiplayer/Events';
+import {
+  getClientSessions,
+  verifySessionClient,
+} from '../models/multiplayer/SessionClients';
+import {
+  createSession,
+  getSessionBySecret,
+  getSessionQuestTitle,
+} from '../models/multiplayer/Sessions';
+import { maybeChaosDB, maybeChaosWS } from './Chaos';
+import {
+  getSession,
+  initSessionClient,
+  rmSessionClient,
+  setClientStatus,
+} from './Sessions';
+import { handleWaitingOnReview, handleWaitingOnTimer } from './WaitingOn';
+import { broadcast } from './Websockets';
 
 export interface MultiplayerSessionMeta {
   id: number;
@@ -26,58 +50,84 @@ export interface MultiplayerSessionMeta {
   secret: string;
 }
 
-export function user(db: Database, req: express.Request, res: express.Response) {
-  return getClientSessions(db, res.locals.id).then((sessions: SessionClientInstance[]) => {
-    return Promise.all(sessions.map((sci: SessionClientInstance) => {
-      const id = sci.get('session');
-      const peerCount = Object.keys(getSession(id) || {}).length;
-      const meta: Partial<MultiplayerSessionMeta> = {
-        id,
-        peerCount,
-        secret: sci.get('secret'),
-      };
+export function user(
+  db: Database,
+  req: express.Request,
+  res: express.Response,
+) {
+  return getClientSessions(db, res.locals.id)
+    .then((sessions: SessionClientInstance[]) => {
+      return Promise.all(
+        sessions.map((sci: SessionClientInstance) => {
+          const id = sci.get('session');
+          const peerCount = Object.keys(getSession(id) || {}).length;
+          const meta: Partial<MultiplayerSessionMeta> = {
+            id,
+            peerCount,
+            secret: sci.get('secret'),
+          };
 
-      if (meta.peerCount === undefined || meta.peerCount <= 0) {
-        return null;
-      }
-
-      // Get last action on this session
-      return getLastEvent(db, id)
-        .then((e: EventInstance) => {
-          if (e === null) {
+          if (meta.peerCount === undefined || meta.peerCount <= 0) {
             return null;
           }
-          meta.lastAction = e.get('timestamp');
-          return getSessionQuestTitle(db, id);
-        })
-        .then((q: string|null) => {
-          if (q === null) {
-            return null;
-          }
-          meta.questTitle = q;
-          return meta;
-        });
-    }));
-  })
-  .filter((m: MultiplayerSessionMeta|null) => m !== null)
-  .then((history: MultiplayerSessionMeta[]) => {
-    res.status(200).end(JSON.stringify({history}));
-  })
-  .catch((e: Error) => {
-    return res.status(500).end(JSON.stringify({error: 'Error looking up user details: ' + e.toString()}));
-  });
+
+          // Get last action on this session
+          return getLastEvent(db, id)
+            .then((e: EventInstance) => {
+              if (e === null) {
+                return null;
+              }
+              meta.lastAction = e.get('timestamp');
+              return getSessionQuestTitle(db, id);
+            })
+            .then((q: string | null) => {
+              if (q === null) {
+                return null;
+              }
+              meta.questTitle = q;
+              return meta;
+            });
+        }),
+      );
+    })
+    .filter((m: MultiplayerSessionMeta | null) => m !== null)
+    .then((history: MultiplayerSessionMeta[]) => {
+      res.status(200).end(JSON.stringify({ history }));
+    })
+    .catch((e: Error) => {
+      return res
+        .status(500)
+        .end(
+          JSON.stringify({
+            error: 'Error looking up user details: ' + e.toString(),
+          }),
+        );
+    });
 }
 
-export function newSession(db: Database, req: express.Request, res: express.Response) {
-  return createSession(db).then((s: SessionInstance) => {
-    res.status(200).end(JSON.stringify({secret: s.get('secret')}));
-  })
-  .catch((e: Error) => {
-    return res.status(500).end(JSON.stringify({error: 'Error creating session: ' + e.toString()}));
-  });
+export function newSession(
+  db: Database,
+  req: express.Request,
+  res: express.Response,
+) {
+  return createSession(db)
+    .then((s: SessionInstance) => {
+      res.status(200).end(JSON.stringify({ secret: s.get('secret') }));
+    })
+    .catch((e: Error) => {
+      return res
+        .status(500)
+        .end(
+          JSON.stringify({ error: 'Error creating session: ' + e.toString() }),
+        );
+    });
 }
 
-export function connect(db: Database, req: express.Request, res: express.Response) {
+export function connect(
+  db: Database,
+  req: express.Request,
+  res: express.Response,
+) {
   let body: any;
   try {
     body = JSON.parse(req.body);
@@ -100,13 +150,17 @@ export function connect(db: Database, req: express.Request, res: express.Respons
       });
     })
     .then(() => {
-      return res.status(200).end(JSON.stringify({session: session.get('id')}));
+      return res
+        .status(200)
+        .end(JSON.stringify({ session: session.get('id') }));
     })
     .catch((e: Error) => {
       if (e) {
-        return res.status(500).end(JSON.stringify({
-          error: 'Could not join session: ' + e.toString(),
-        }));
+        return res.status(500).end(
+          JSON.stringify({
+            error: 'Could not join session: ' + e.toString(),
+          }),
+        );
       }
       return null;
     });
@@ -119,7 +173,9 @@ interface WebsocketSessionParams {
   session: number;
 }
 
-function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null {
+function wsParamsFromReq(
+  req: http.IncomingMessage,
+): WebsocketSessionParams | null {
   if (!req || !req.url) {
     console.error('req.url not defined', req);
     return null;
@@ -129,10 +185,14 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
     console.error('failed to parse url ', req.url);
     return null;
   }
-  const splitPath = parsedURL.pathname.match(/\/ws\/multiplayer\/v1\/session\/(\d+).*/);
+  const splitPath = parsedURL.pathname.match(
+    /\/ws\/multiplayer\/v1\/session\/(\d+).*/,
+  );
 
   if (splitPath === null) {
-    console.error('Invalid upgrade request path, cancelling websocket connection.');
+    console.error(
+      'Invalid upgrade request path, cancelling websocket connection.',
+    );
     return null;
   }
 
@@ -144,7 +204,11 @@ function wsParamsFromReq(req: http.IncomingMessage): WebsocketSessionParams|null
   };
 }
 
-export function verifyWebsocket(db: Database, info: {origin: string, secure: boolean, req: http.IncomingMessage}, cb: (result: boolean) => any) {
+export function verifyWebsocket(
+  db: Database,
+  info: { origin: string; secure: boolean; req: http.IncomingMessage },
+  cb: (result: boolean) => any,
+) {
   const params = wsParamsFromReq(info.req);
   if (params === null) {
     return cb(false);
@@ -154,30 +218,41 @@ export function verifyWebsocket(db: Database, info: {origin: string, secure: boo
       return cb(verified);
     })
     .catch((e: Error) => {
-      console.error(e);
+      console.error('WS verify error:', e);
       cb(false);
     });
 }
 
 function makeMultiEvent(db: Database, session: number, lastEventID: number) {
-  return getOrderedEventsAfter(db, session, lastEventID).then((eventInstances: (EventInstance[]|null)) => {
-    if (eventInstances === null) {
-      return;
-    }
-    let lastId = 0;
-    const events = eventInstances.filter((e: EventInstance) => {
-        // For now, only return action events when fast-forwarding.
-        return e.get('id') !== null;
-      }).map((e: EventInstance) => {
-        lastId = Math.max(lastId, e.get('id'));
-        return e.get('json');
-      });
-    return {type: 'MULTI_EVENT', events, lastId};
-  });
+  return getOrderedEventsAfter(db, session, lastEventID).then(
+    (eventInstances: EventInstance[] | null) => {
+      if (eventInstances === null) {
+        return;
+      }
+      let lastId = 0;
+      const events = eventInstances
+        .filter((e: EventInstance) => {
+          // For now, only return action events when fast-forwarding.
+          return e.get('id') !== null;
+        })
+        .map((e: EventInstance) => {
+          lastId = Math.max(lastId, e.get('id'));
+          return e.get('json');
+        });
+      return { type: 'MULTI_EVENT', events, lastId };
+    },
+  );
 }
 
 // Identify most recent event and fast forward the client if they're behind
-function maybeFastForwardClient(db: Database, session: number, client: ClientID, instance: string, lastEventID: number, ws: WebSocket) {
+function maybeFastForwardClient(
+  db: Database,
+  session: number,
+  client: ClientID,
+  instance: string,
+  lastEventID: number,
+  ws: WebSocket,
+) {
   getLargestEventID(db, session).then((dbLastEventID: number) => {
     if (lastEventID >= dbLastEventID) {
       return;
@@ -186,22 +261,35 @@ function maybeFastForwardClient(db: Database, session: number, client: ClientID,
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
-      ws.send(JSON.stringify({
-        client: 'SERVER',
-        event,
-        id: null,
-        instance: Config.get('NODE_ENV'),
-      } as MultiplayerEvent), (e: Error) => {
-        console.error(e);
-      });
+      ws.send(
+        JSON.stringify({
+          client: 'SERVER',
+          event,
+          id: null,
+          instance: Config.get('NODE_ENV'),
+        } as MultiplayerEvent),
+        (e: Error) => {
+          console.error('WS FF error:', e);
+        },
+      );
     });
   });
 }
 
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
-function handleClientStatus(db: Database, session: number, client: ClientID, instance: string, ev: StatusEvent, ws: WebSocket) {
-  console.log(toClientKey(client, instance) + ': ' + JSON.stringify(ev));
+function handleClientStatus(
+  db: Database,
+  session: number,
+  client: ClientID,
+  instance: string,
+  ev: StatusEvent,
+  ws: WebSocket,
+) {
+  console.log(
+    'Client key:',
+    toClientKey(client, instance) + ': ' + JSON.stringify(ev),
+  );
 
   setClientStatus(session, client, instance, ws, ev);
   handleWaitingOnTimer(db, session, client, instance);
@@ -214,27 +302,38 @@ function handleClientStatus(db: Database, session: number, client: ClientID, ins
 }
 
 function sendError(ws: WebSocket, e: string) {
-  console.error(e);
-  ws.send(JSON.stringify({
-    client: 'SERVER',
-    event: {
-      error: e,
-      type: 'ERROR',
+  console.error('WS Error:', e);
+  ws.send(
+    JSON.stringify({
+      client: 'SERVER',
+      event: {
+        error: e,
+        type: 'ERROR',
+      },
+      id: null,
+      instance: Config.get('NODE_ENV'),
+    } as MultiplayerEvent),
+    (err: Error) => {
+      console.error('WS sendError error:', err);
     },
-    id: null,
-    instance: Config.get('NODE_ENV'),
-  } as MultiplayerEvent), (err: Error) => {
-    console.error(err);
-  });
+  );
 }
 
-export function websocketSession(db: Database, ws: WebSocket, req: http.IncomingMessage) {
+export function websocketSession(
+  db: Database,
+  ws: WebSocket,
+  req: http.IncomingMessage,
+) {
   const params = wsParamsFromReq(req);
   if (params === null) {
     throw new Error('Null params, session not validated correctly');
   }
 
-  console.log(`Client ${params.client} connected to session ${params.session} with secret ${params.secret}`);
+  console.log(
+    `Client ${params.client} connected to session ${
+      params.session
+    } with secret ${params.secret}`,
+  );
 
   // Setup chaos handlers (if configured)
   db = maybeChaosDB(db, params.session, ws);
@@ -242,9 +341,9 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
 
   initSessionClient(params.session, params.client, params.instance, ws);
 
+  // Replay latest client statuses to the new socket so they know
+  // who is connected.
   if (ws.readyState === WebSocket.OPEN) {
-    // Replay latest client statuses to the new socket so they know
-    // who is connected.
     const s = getSession(params.session);
     if (s) {
       for (const k of Object.keys(s)) {
@@ -253,21 +352,24 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
         }
         console.log('Initial notify of status for ' + k);
 
-        ws.send(JSON.stringify({
-          client: s[k].client,
-          event: s[k].status,
-          id: null,
-          instance: s[k].instance,
-        } as MultiplayerEvent), (e: Error) => {
-          console.error(e);
-        });
+        ws.send(
+          JSON.stringify({
+            client: s[k].client,
+            event: s[k].status,
+            id: null,
+            instance: s[k].instance,
+          } as MultiplayerEvent),
+          (e: Error) => {
+            console.error('WS send error:', e);
+          },
+        );
       }
     }
   }
 
   ws.on('message', (msg: WebSocket.Data) => {
-    if (typeof(msg) !== 'string') {
-      sendError(ws, 'Invalid type for inbound message: ' + typeof(msg));
+    if (typeof msg !== 'string') {
+      sendError(ws, 'Invalid type for inbound message: ' + typeof msg);
       return;
     }
 
@@ -275,12 +377,18 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
     try {
       event = JSON.parse(msg);
     } catch (e) {
-      sendError(ws, 'Could not parse inbound event starting with: ' + msg.substr(0, 32));
+      sendError(
+        ws,
+        'Could not parse inbound event starting with: ' + msg.substr(0, 32),
+      );
       return;
     }
 
     if (!event || !event.event || !event.event.type) {
-      sendError(ws, 'No parsed type for event starting with: ' + msg.substr(0, 32));
+      sendError(
+        ws,
+        'No parsed type for event starting with: ' + msg.substr(0, 32),
+      );
       return;
     }
 
@@ -288,7 +396,14 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
     if (event.event.type !== 'ACTION') {
       broadcast(params.session, msg);
       if (event.event.type === 'STATUS') {
-        handleClientStatus(db, params.session, event.client, event.instance, event.event, ws);
+        handleClientStatus(
+          db,
+          params.session,
+          event.client,
+          event.instance,
+          event.event,
+          ws,
+        );
       }
       return;
     }
@@ -300,29 +415,43 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
       return;
     }
 
-    commitEvent(db, params.session, params.client, params.instance, eventID, event.event.type, msg)
-      .then((result: number|null) => {
+    commitEvent(
+      db,
+      params.session,
+      params.client,
+      params.instance,
+      eventID,
+      event.event.type,
+      msg,
+    )
+      .then((result: number | null) => {
         broadcast(params.session, msg);
       })
       .catch((error: Error) => {
-        console.error(error);
-        let multiEvent: MultiEvent|null = null;
-        makeMultiEvent(db, params.session, eventID).then((e: MultiEvent) => {
-          multiEvent = e;
-        }).catch((e: Error) => {
-          sendError(ws, e.toString());
-        }).finally(() => {
-          ws.send(JSON.stringify({
-            client: 'SERVER',
-            event: multiEvent,
-            id: null,
-            instance: Config.get('NODE_ENV'),
-          } as MultiplayerEvent), (e?: Error) => {
-            if (e) {
-              sendError(ws, e.toString());
-            }
+        console.error('WS commit error:', error);
+        let multiEvent: MultiEvent | null = null;
+        makeMultiEvent(db, params.session, eventID)
+          .then((e: MultiEvent) => {
+            multiEvent = e;
+          })
+          .catch((e: Error) => {
+            sendError(ws, e.toString());
+          })
+          .finally(() => {
+            ws.send(
+              JSON.stringify({
+                client: 'SERVER',
+                event: multiEvent,
+                id: null,
+                instance: Config.get('NODE_ENV'),
+              } as MultiplayerEvent),
+              (e?: Error) => {
+                if (e) {
+                  sendError(ws, e.toString());
+                }
+              },
+            );
           });
-        });
       });
   });
 
@@ -330,14 +459,17 @@ export function websocketSession(db: Database, ws: WebSocket, req: http.Incoming
     rmSessionClient(params.session, params.client, params.instance);
 
     // Notify other clients this client has disconnected
-    broadcast(params.session, JSON.stringify({
-      client: params.client,
-      event: {
-        connected: false,
-        type: 'STATUS',
-      },
-      id: null,
-      instance: params.instance,
-    } as MultiplayerEvent));
+    broadcast(
+      params.session,
+      JSON.stringify({
+        client: params.client,
+        event: {
+          connected: false,
+          type: 'STATUS',
+        },
+        id: null,
+        instance: params.instance,
+      } as MultiplayerEvent),
+    );
   });
 }

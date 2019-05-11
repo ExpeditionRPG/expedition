@@ -54,7 +54,10 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     }
     switch (e.event) {
       case 'touchstart':
-        return this.start(e.positions[0][0], e.positions[0][1], activePlayer);
+        return this.start(
+          (e.positions && e.positions[0] && e.positions[0][0]) || 500,
+          (e.positions && e.positions[0] && e.positions[0][1]) || 500,
+          activePlayer);
       case 'touchend':
         return this.end();
       default:
