@@ -5,6 +5,7 @@ import {getOnlineState} from '../Globals';
 import {counterAdd, resetCounters} from './Counters';
 
 const CONNECTION_LOOP_MS = 200;
+const CONNECTION_CHECK_MS = 5000;
 const RETRY_DELAY_MS = 2000;
 const MAX_RETRIES = 2;
 
@@ -32,13 +33,33 @@ export class Connection extends ClientBase {
   private secret: string;
   private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
 
-  private getOnlineState: () => boolean;
+  private getOnlineState: () => Promise<boolean>;
 
   constructor(onlineState = getOnlineState) {
     super();
     this.resetState();
     this.getOnlineState = onlineState;
+    this.sessionID = '';
+    this.secret = '';
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
+    setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
+  }
+
+  public checkOnlineState(): Promise<void> {
+    return this.getOnlineState().then((isOnline) => {
+      if (!this.sessionID && this.isConnected()) {
+        // If we recently disconnected (i.e. sessionID is "")
+        // then our connection check shouldn't indicate the
+        // multiplayer link is live, regardless of connectivity.
+        this.connected = false;
+      } else if (this.sessionID && this.isConnected() !== isOnline) {
+        this.connected = isOnline;
+      } else {
+        return;
+      }
+      console.warn('online state changed to', isOnline);
+      this.handler.onConnectionChange(this.connected);
+    });
   }
 
   public registerHandler(handler: ConnectionHandler) {
@@ -55,6 +76,9 @@ export class Connection extends ClientBase {
     super.resetState();
     this.messageBuffer = [];
     this.reconnectAttempts = 0;
+    this.sessionID = '';
+    this.secret = '';
+
     resetCounters();
   }
 
@@ -74,12 +98,6 @@ export class Connection extends ClientBase {
   }
 
   private connectionLoop() {
-    const isOnline = this.getOnlineState();
-    if (this.sessionID && this.isConnected() !== isOnline) {
-      this.connected = isOnline;
-      this.handler.onConnectionChange(this.connected);
-    }
-
     if (!this.isConnected()) {
       return;
     }
@@ -178,7 +196,7 @@ export class Connection extends ClientBase {
         }
         break;
       default:  // Abnormal closure
-        console.error('WS: abnormal closure');
+        console.error('WS: abnormal closure evt', ev.code, ev.reason);
         this.reconnect();
         break;
     }

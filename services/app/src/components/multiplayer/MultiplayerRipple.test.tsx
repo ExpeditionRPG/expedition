@@ -2,6 +2,8 @@ import * as React from 'react';
 import {mount, mountRoot, unmountAll} from 'app/Testing';
 import MultiplayerRipple, {Props} from './MultiplayerRipple';
 
+jest.useFakeTimers();
+
 export const testMultiplayer: MultiplayerState = {
   clientStatus: {
     "a": {connected: true, numLocalPlayers: 3},
@@ -51,5 +53,29 @@ describe('MultiplayerRipple', () => {
     e.instance().handle('a', {event: 'touchstart', positions: [[0, 0]], id: 'otherripple'});
     expect(e.instance().start).toHaveBeenCalledTimes(0);
   });
-  test.skip('Persists ending ripple event', () => { /* TODO */ });
+  test('Handles touchstart with empty position data', () => {
+    const {root} = setup();
+    const e = root.find('MultiplayerRipple');
+    spyOn(e.instance(), 'start');
+    root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
+    expect(e.instance().start).toHaveBeenCalledTimes(1);
+  });
+  test('Ends one ripple event before starting another', () => {
+    const {root} = setup();
+    const e = root.find('MultiplayerRipple');
+    spyOn(e.instance(), 'end').and.callThrough();
+    root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
+    root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
+    expect(e.instance().end).toHaveBeenCalledTimes(1);
+  });
+  test('Times out ripple after started', () => {
+    const {root} = setup();
+    const e = root.find('MultiplayerRipple');
+    spyOn(e.instance(), 'end').and.callThrough();
+    root.find('MultiplayerRipple').instance().handle('a', {event: 'touchstart', positions: [], id: TEST_ID});
+    root.update();
+    expect(e.instance().end).not.toHaveBeenCalled();
+    jest.runOnlyPendingTimers();
+    expect(e.instance().end).toHaveBeenCalledTimes(1);
+  });
 });

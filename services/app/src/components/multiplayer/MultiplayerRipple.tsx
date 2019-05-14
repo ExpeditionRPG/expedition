@@ -6,6 +6,8 @@ import * as ReactDOM from 'react-dom';
 import {InteractionEvent} from 'shared/multiplayer/Events';
 import MultiplayerAffectorContainer from './MultiplayerAffectorContainer';
 
+const DEFAULT_RIPPLE_TIMEOUT_MS = 500;
+
 // MultiplayerRipple is copied with modifications from
 // https://github.com/callemall/material-ui/blob/master/src/internal/TouchRipple.js
 export interface Props {
@@ -20,11 +22,11 @@ export interface State {
   hasRipple: boolean;
   nextKey: number;
   activePlayer: number;
+  endTimer: number|null;
 }
 
 export default class MultiplayerRipple extends React.Component<Props, State> {
   private ripple: any;
-
   constructor(props: Props) {
     super(props);
 
@@ -34,12 +36,11 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
       hasRipple: false,
       nextKey: 0,
       activePlayer: 1,
+      endTimer: null,
     };
   }
 
   public handle(client: string, e: InteractionEvent) {
-    // TODO keep start/end hashed by client, apply client color
-
     let activePlayer = 1;
     const order = playerOrder(this.props.multiplayer.session && this.props.multiplayer.session.secret || '');
     const clients = Object.keys(this.props.multiplayer.clientStatus).sort();
@@ -54,7 +55,10 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     }
     switch (e.event) {
       case 'touchstart':
-        return this.start(e.positions[0][0], e.positions[0][1], activePlayer);
+        return this.start(
+          (e.positions && e.positions[0] && e.positions[0][0]) || 500,
+          (e.positions && e.positions[0] && e.positions[0][1]) || 500,
+          activePlayer);
       case 'touchend':
         return this.end();
       default:
@@ -83,12 +87,30 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
       clientX: rect.left + realX,
       clientY: rect.top + realY,
     };
-    this.setState({activePlayer});
+    if (this.state.hasRipple) {
+      this.end();
+    }
+    const endTimer = setTimeout(() => {
+      this.end();
+    }, DEFAULT_RIPPLE_TIMEOUT_MS);
+    this.setState({activePlayer, hasRipple: true, endTimer});
     this.ripple.start(event);
   }
 
+  public componentWillUnmount() {
+    if (this.state.endTimer) {
+      clearTimeout(this.state.endTimer);
+    }
+  }
+
   public end() {
-    this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
+    if (this.ripple) {
+      this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
+    }
+    if (this.state.endTimer) {
+      clearTimeout(this.state.endTimer);
+    }
+    this.setState({hasRipple: false, endTimer: null});
   }
 
   public onRippleRef(node: any) {

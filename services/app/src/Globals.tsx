@@ -1,3 +1,5 @@
+import {API_HOST} from 'shared/schema/Constants';
+
 declare var device: any;
 declare var ga: any;
 declare var gapi: any;
@@ -134,8 +136,27 @@ export function getAudioContext(): AudioContext|null {
   return refs.audioContext;
 }
 
-export function getOnlineState(): boolean {
-  return navigator.onLine;
+// https://github.com/github/fetch/issues/175#issuecomment-216791333
+function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error('promise timeout'));
+    }, ms);
+    promise.then(
+      (res) => {
+        clearTimeout(timeoutId);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timeoutId);
+        reject(err);
+      }
+    );
+  });
+}
+
+export function getOnlineState(): Promise<boolean> {
+  return timeoutPromise(500, fetch(API_HOST + '/healthcheck')).then(() => true).catch(() => false);
 }
 
 export function openWindow(url: string): any {
