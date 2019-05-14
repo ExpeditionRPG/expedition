@@ -28,35 +28,45 @@ describe('Connection', () => {
         onEvent: jasmine.createSpy('onEvent'),
         connected: true, // Edit this to change connection state
       };
-      const c = new Connection(() => handler.connected);
+      const c = new Connection(() => Promise.resolve(handler.connected));
       c.registerHandler(handler);
       c.configure('testid', 'testinstance');
       c.connect('testsession', 'scrt');
       return {c, handler};
     }
 
-    test('triggers onConnectionChange when connecting for the first time', () => {
+    test('triggers onConnectionChange when connecting for the first time', (done) => {
       const {c, handler} = setup();
-      jest.runOnlyPendingTimers();
-      expect(handler.onConnectionChange).toHaveBeenCalledWith(true);
+      c.checkOnlineState().then(() => {
+        expect(handler.onConnectionChange).toHaveBeenCalledWith(true);
+        done();
+      }).catch(done.fail);
+
     });
-    test('triggers onConnectionChange when disconnected', () => {
+    test('triggers onConnectionChange when disconnected', (done) => {
       const {c, handler} = setup();
-      jest.runOnlyPendingTimers(); // Initial connection
-      handler.onConnectionChange.calls.reset();
-      handler.connected = false;
-      jest.runOnlyPendingTimers();
-      expect(handler.onConnectionChange).toHaveBeenCalledWith(false);
+      c.checkOnlineState().then(() => {
+        handler.onConnectionChange.calls.reset();
+        handler.connected = false;
+        return c.checkOnlineState();
+      }).then(() => {
+        expect(handler.onConnectionChange).toHaveBeenCalledWith(false);
+        done();
+      }).catch(done.fail);
     });
-    test('triggers onConnectionChange when reconnected', () => {
+    test('triggers onConnectionChange when reconnected', (done) => {
       const {c, handler} = setup();
-      jest.runOnlyPendingTimers(); // Initial connection
-      handler.connected = false;
-      jest.runOnlyPendingTimers();
-      handler.onConnectionChange.calls.reset();
-      handler.connected = true;
-      jest.runOnlyPendingTimers();
-      expect(handler.onConnectionChange).toHaveBeenCalledWith(true);
+      c.checkOnlineState().then(() => {
+        handler.connected = false;
+        return c.checkOnlineState();
+      }).then(() => {
+        handler.onConnectionChange.calls.reset();
+        handler.connected = true;
+        return c.checkOnlineState();
+      }).then(() => {
+        expect(handler.onConnectionChange).toHaveBeenCalledWith(true);
+        done();
+      }).catch(done.fail);
     });
   });
 });

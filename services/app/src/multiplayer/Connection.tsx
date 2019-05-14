@@ -42,22 +42,24 @@ export class Connection extends ClientBase {
     this.sessionID = '';
     this.secret = '';
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
-    setInterval(() => {
-      this.getOnlineState().then((isOnline) => {
-        if (!this.sessionID && this.isConnected()) {
-          // If we recently disconnected (i.e. sessionID is "")
-          // then our connection check shouldn't indicate the
-          // multiplayer link is live, regardless of connectivity.
-          this.connected = false;
-        } else if (this.sessionID && this.isConnected() !== isOnline) {
-          this.connected = isOnline;
-        } else {
-          return;
-        }
-        console.warn('online state changed to', isOnline);
-        this.handler.onConnectionChange(this.connected);
-      });
-    }, CONNECTION_CHECK_MS);
+    setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
+  }
+
+  public checkOnlineState(): Promise<void> {
+    return this.getOnlineState().then((isOnline) => {
+      if (!this.sessionID && this.isConnected()) {
+        // If we recently disconnected (i.e. sessionID is "")
+        // then our connection check shouldn't indicate the
+        // multiplayer link is live, regardless of connectivity.
+        this.connected = false;
+      } else if (this.sessionID && this.isConnected() !== isOnline) {
+        this.connected = isOnline;
+      } else {
+        return;
+      }
+      console.warn('online state changed to', isOnline);
+      this.handler.onConnectionChange(this.connected);
+    });
   }
 
   public registerHandler(handler: ConnectionHandler) {

@@ -21,7 +21,7 @@ interface MockStore extends Redux.Store {
   getActions: any;
 }
 
-export function newMockStore(state: object, client= new Connection()): MockStore {
+export function newMockStore(state: object, client= new Connection(() => Promise.resolve(false))): MockStore {
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(state as any as AppStateWithHistory);
   (store as any).multiplayerClient = client;

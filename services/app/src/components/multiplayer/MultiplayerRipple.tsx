@@ -90,19 +90,27 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     if (this.state.hasRipple) {
       this.end();
     }
-    this.setState({activePlayer, hasRipple: true, endTimer: setTimeout(() => {
+    const endTimer = setTimeout(() => {
       this.end();
-    }, DEFAULT_RIPPLE_TIMEOUT_MS)});
+    }, DEFAULT_RIPPLE_TIMEOUT_MS);
+    this.setState({activePlayer, hasRipple: true, endTimer});
     this.ripple.start(event);
   }
 
+  public componentWillUnmount() {
+    if (this.state.endTimer) {
+      clearTimeout(this.state.endTimer);
+    }
+  }
+
   public end() {
-    this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
+    if (this.ripple) {
+      this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
+    }
     if (this.state.endTimer) {
       clearTimeout(this.state.endTimer);
     }
     this.setState({hasRipple: false, endTimer: null});
-
   }
 
   public onRippleRef(node: any) {

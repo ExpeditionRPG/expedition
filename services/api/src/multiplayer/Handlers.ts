@@ -95,13 +95,11 @@ export function user(
       res.status(200).end(JSON.stringify({ history }));
     })
     .catch((e: Error) => {
-      return res
-        .status(500)
-        .end(
-          JSON.stringify({
-            error: 'Error looking up user details: ' + e.toString(),
-          }),
-        );
+      return res.status(500).end(
+        JSON.stringify({
+          error: 'Error looking up user details: ' + e.toString(),
+        }),
+      );
     });
 }
 
