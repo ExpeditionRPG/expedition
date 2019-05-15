@@ -133,6 +133,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         contentSets: {
           horror: quest.expansionhorror,
           future: quest.expansionfuture,
+          scarredlands: quest.expansionscarredlands,
         },
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
@@ -157,11 +158,13 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         partition: 'expedition-private',
         expansionhorror: quest.expansionhorror,
         expansionfuture: quest.expansionfuture,
+        expansionscarredlands: quest.expansionscarredlands,
       })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),
         expansionfuture: Boolean(quest.expansionfuture),
+        expansionscarredlands: Boolean(quest.expansionscarredlands),
       }));
     });
   };

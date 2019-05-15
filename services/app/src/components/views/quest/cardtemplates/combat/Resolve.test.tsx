@@ -4,6 +4,7 @@ import Resolve, { Props } from './Resolve';
 import {initialSettings} from 'app/reducers/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {TUTORIAL_QUESTS} from '../../Constants';
+import {Expansion} from 'shared/schema/Constants';
 
 const PERSONA_SUBSTR = 'resolve their persona';
 
@@ -14,7 +15,7 @@ describe('Combat Resolve', () => {
     const props: Props = {
       settings: initialSettings,
       mostRecentRolls: [],
-      contentSets: new Set(['horror']),
+      contentSets: new Set(Expansion.horror]),
       onNext: jasmine.createSpy('onNext'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,

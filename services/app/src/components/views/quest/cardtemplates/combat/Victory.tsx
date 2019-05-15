@@ -1,9 +1,10 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {CONTENT_SET_FULL_NAMES, Expansion, MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters, Loot} from 'app/reducers/QuestTypes';
 import {CardThemeType, ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
 import {capitalizeFirstLetter, formatImg, numberToWord, NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {CombatState} from './Types';

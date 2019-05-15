@@ -2,6 +2,7 @@ import {mount, unmountAll} from 'app/Testing';
 import * as React from 'react';
 import PlayerTier, { Props } from './PlayerTier';
 import {initialSettings} from 'app/reducers/Settings';
+import {Expansion} from 'shared/schema/Constants';
 
 describe('PlayerTier', () => {
   afterEach(unmountAll);
@@ -45,7 +46,7 @@ describe('Combat PlayerTier', () => {
     const {e} = setup({
       adventurers: 3,
       localAliveAdventurers: 2,
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
     });
     expect(e.text()).toContain('reset your persona');
   });

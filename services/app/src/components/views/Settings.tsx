@@ -1,8 +1,8 @@
 import Button from '@material-ui/core/Button';
 import {getContentSets, numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
-import {VERSION} from 'shared/schema/Constants';
-import {CONTENT_SET_FULL_NAMES, Expansion, URLS} from '../../Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, VERSION} from 'shared/schema/Constants';
+import {URLS} from '../../Constants';
 import {openWindow} from '../../Globals';
 import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';

@@ -64,6 +64,7 @@ const basicQuest = new Quest({
   engineversion: '1.0.0',
   expansionhorror: false,
   expansionfuture: false,
+  expansionscarredlands: false,
   familyfriendly: false,
   genre: 'Comedy',
   id: 'questid',

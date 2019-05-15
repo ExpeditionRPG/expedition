@@ -1,6 +1,6 @@
 import * as React from 'react';
+import {Expansion} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
-import {Expansion} from '../../Constants';
 import {ContentSetsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';

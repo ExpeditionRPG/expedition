@@ -342,6 +342,7 @@ export function publish(
     email: req.query.email,
     expansionhorror: req.query.expansionhorror || false,
     expansionfuture: req.query.expansionfuture || false,
+    expansionscarredlands: req.query.expansionscarredlands || false,
     genre: req.query.genre,
     id: req.params.id,
     language: req.query.language || 'English',

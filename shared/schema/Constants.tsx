@@ -2,6 +2,19 @@ export function enumValues<T>(e: T): Array<T[keyof T]> {
   return Object.keys(e).map((k: keyof T) => e[k]);
 }
 
+export enum Expansion {
+  base = 'base',
+  horror = 'horror',
+  future = 'future',
+  scarredlands = 'scarredlands',
+}
+export const CONTENT_SET_FULL_NAMES: {[key in Expansion]: string} = {
+  [Expansion.base]: 'Expedition',
+  [Expansion.horror]: 'The Horror',
+  [Expansion.future]: 'The Future',
+  [Expansion.scarredlands]: 'Scarred Lands',
+};
+
 export enum Difficulty {
   easy = 'EASY',
   normal = 'NORMAL',

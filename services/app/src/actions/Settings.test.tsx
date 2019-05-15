@@ -2,6 +2,7 @@ import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {initialSettings} from 'app/reducers/Settings';
 import {MultiplayerState} from 'app/reducers/StateTypes';
 import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers, numLocalAdventurers, getContentSets} from './Settings';
+import {Expansion} from 'shared/schema/Constants';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
@@ -84,12 +85,12 @@ describe('Settings action', () => {
       clientStatus: {
         1: {
           connected: true,
-          contentSets: ['horror', 'future'],
+          contentSets: [Expansion.horror, Expansion.future],
           type: 'STATUS',
         },
         2: {
           connected: true,
-          contentSets: ['horror'],
+          contentSets: [Expansion.horror],
           type: 'STATUS',
         },
       },
@@ -101,25 +102,25 @@ describe('Settings action', () => {
       clientStatus: {
         1: {
           connected: true,
-          contentSets: ['future'],
+          contentSets: [Expansion.future],
           type: 'STATUS',
         },
         2: {
           connected: true,
-          contentSets: ['horror'],
+          contentSets: [Expansion.horror],
           type: 'STATUS',
         },
       },
     };
 
     test('computes multiplayer intersection, ignoring local settings', () => {
-      expect([...getContentSets(hf, mpHorror)]).toEqual(['horror']);
+      expect([...getContentSets(hf, mpHorror)]).toEqual([Expansion.horror]);
     });
     test('computes multiplayer intersection down to base game, ignoring local settings', () => {
       expect([...getContentSets(hf, mpBase)]).toEqual([]);
     });
     test('computes content set from local when no multiplayer session', () => {
-      expect([...getContentSets(hf, initialMultiplayer)]).toEqual(['horror', 'future']);
+      expect([...getContentSets(hf, initialMultiplayer)]).toEqual([Expansion.horror, Expansion.future]);
       expect([...getContentSets(b, initialMultiplayer)]).toEqual([]);
     });
   });

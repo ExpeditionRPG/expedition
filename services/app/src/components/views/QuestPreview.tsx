@@ -1,8 +1,7 @@
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {CONTENT_SET_FULL_NAMES, Expansion} from 'app/Constants';
 import * as React from 'react';
-import {Partition} from 'shared/schema/Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
 import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';

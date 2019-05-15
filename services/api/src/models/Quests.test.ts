@@ -1,5 +1,5 @@
 import { object } from 'joi';
-import { Partition } from 'shared/schema/Constants';
+import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
 import { getQuest, searchQuests, updateQuestRatings } from './Quests';
@@ -49,7 +49,7 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             text: 'Future',
-            expansions: ['horror', 'future'],
+            expansions: [Expansion.horror, Expansion.future],
           });
         })
         .then(results => {
@@ -68,7 +68,7 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             text: 'horrorauthor',
-            expansions: ['horror', 'future'],
+            expansions: [Expansion.horror, Expansion.future],
           });
         })
         .then(results => {
@@ -103,7 +103,7 @@ describe('quest', () => {
         .then(tdb =>
           searchQuests(tdb, '', {
             partition: Partition.expeditionPublic,
-            expansions: ['horror'],
+            expansions: [Expansion.horror],
           }),
         )
         .then(results => {

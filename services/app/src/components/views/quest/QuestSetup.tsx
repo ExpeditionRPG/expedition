@@ -1,6 +1,6 @@
-import {CONTENT_SET_FULL_NAMES, Expansion} from 'app/Constants';
 import {ContentSetsType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
 import Button from '../../base/Button';
 import Callout from '../../base/Callout';
 import Card from '../../base/Card';

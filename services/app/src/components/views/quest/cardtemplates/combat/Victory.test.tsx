@@ -4,6 +4,7 @@ import {MAX_ADVENTURER_HEALTH, CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import {resolveCombat} from '../Params';
 import {render} from 'app/Testing';
 import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
+import {Expansion} from 'shared/schema/Constants';
 
 const HEAL_SUBSTR = 'Heal';
 const LOOT_SUBSTR = 'Draw Loot';
@@ -77,7 +78,7 @@ describe('Combat victory', () => {
   test('shows horror tips if horror expansion', () => {
     expect(setup({
       settings: {showHelp: true},
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
     }).e.text()).toContain(HORROR_SUBSTR);
   });
   test('shows future tips if future expansion', () => {

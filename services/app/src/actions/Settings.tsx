@@ -1,6 +1,7 @@
-import {Expansion, MAX_ADVENTURERS} from 'app/Constants';
+import {MAX_ADVENTURERS} from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
+import {Expansion} from 'shared/schema/Constants';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ContentSetsType, MultiplayerState, SettingsType} from '../reducers/StateTypes';
 import {sendStatus} from './Multiplayer';

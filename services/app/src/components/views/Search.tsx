@@ -1,7 +1,8 @@
 import {CardName, ContentSetsType, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {Expansion} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
-import {BUNDLED_QUESTS, Expansion} from '../../Constants';
+import {BUNDLED_QUESTS} from '../../Constants';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';

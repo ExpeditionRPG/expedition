@@ -8,6 +8,7 @@ import {testLoggedInUser} from '../../reducers/User.test';
 import {render, mount, unmountAll} from 'app/Testing';
 import Search, {Props} from './Search';
 import {TEST_SEARCH} from '../../reducers/TestData';
+import {Expansion} from 'shared/schema/Constants';
 
 const Moment = require('moment');
 
@@ -19,7 +20,7 @@ describe('Search', () => {
     const props: Props = {
       params: TEST_SEARCH,
       settings: initialSettings,
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
       user: loggedOutUser,
       results: [],
       searching: false,

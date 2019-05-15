@@ -77,6 +77,7 @@ export interface QuestType {
   saveError?: string;
   expansionhorror?: boolean;
   expansionfuture?: boolean;
+  expansionscarredlands?: boolean;
   language?: Language;
   theme?: Theme;
   requirespenpaper?: boolean;
@@ -141,6 +142,7 @@ export interface PlaytestSettings {
   [key: string]: any;
   expansionhorror: boolean;
   expansionfuture: boolean;
+  expansionscarredlands: boolean;
 }
 
 export type ValidState = boolean;

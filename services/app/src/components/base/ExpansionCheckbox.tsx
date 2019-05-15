@@ -3,7 +3,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
-import {ALL_CONTENT_SETS, CONTENT_SET_FULL_NAMES, Expansion} from '../../Constants';
+import {CONTENT_SET_FULL_NAMES, enumValues, Expansion} from 'shared/schema/Constants';
 import {ContentSetsType} from '../../reducers/StateTypes';
 
 interface ExpansionCheck {
@@ -53,7 +53,7 @@ class ExpansionCheckbox extends React.Component<Props, {}> {
   }
 
   public render() {
-    const expansions: ExpansionCheck[] = ALL_CONTENT_SETS.map((cs: Expansion) => {
+    const expansions: ExpansionCheck[] = enumValues(Expansion).map((cs: Expansion) => {
       return {
         value: cs,
         checked: (this.props.value.indexOf(cs) !== -1),
