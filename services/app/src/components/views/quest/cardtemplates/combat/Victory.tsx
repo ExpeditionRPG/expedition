@@ -1,6 +1,6 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {CONTENT_SET_FULL_NAMES, MAX_ADVENTURER_HEALTH} from 'app/Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, MAX_ADVENTURER_HEALTH} from 'app/Constants';
 import {EventParameters, Loot} from 'app/reducers/QuestTypes';
 import {CardThemeType, ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
@@ -39,7 +39,7 @@ function renderHealing(props: Props): JSX.Element|null {
 }
 
 function maybeRenderPersona(props: Props): JSX.Element|null {
-  if (!props.contentSets.has('horror')) {
+  if (!props.contentSets.has(Expansion.horror)) {
     return null;
   }
 
@@ -81,7 +81,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
       {props.settings.showHelp && <span>
         <ul>
           <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
-            {props.contentSets.has('horror') && <ul>
+            {props.contentSets.has(Expansion.horror) && <ul>
               <li>
                 <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />
                 <strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> All adventurers may also draw from the Influence deck.
@@ -91,7 +91,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
           <li>You <i>may</i> choose to discard an ability.</li>
         </ul>
       </span>}
-      {props.contentSets.has('future') && <span>
+      {props.contentSets.has(Expansion.future) && <span>
         <p>
           <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />
           <strong>The Future:</strong> Adventurers can learn or advance a skill instead of learning an ability.

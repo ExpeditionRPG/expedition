@@ -4,7 +4,7 @@ import SignalWifiOff from '@material-ui/icons/SignalWifiOff';
 import * as React from 'react';
 import {SessionID} from 'shared/multiplayer/Session';
 import {numPlayers} from '../../actions/Settings';
-import {CONTENT_SET_FULL_NAMES, MAX_ADVENTURERS} from '../../Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, MAX_ADVENTURERS} from '../../Constants';
 import {ContentSetsType, MultiplayerPhase, MultiplayerSessionMeta, MultiplayerState, SettingsType, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
@@ -91,7 +91,7 @@ export function renderLobby(props: Props): JSX.Element {
         <h2>Content Sets</h2>
         <p>These are the content sets that every device has, and thus will be enabled in the session:</p>
         <ul id="contentsets">
-          {[...props.contentSets].map((c: string, i: number) => {
+          {[...props.contentSets].map((c: Expansion, i: number) => {
             return <li key={i}>{CONTENT_SET_FULL_NAMES[c] || c}</li>;
           })}
         </ul>

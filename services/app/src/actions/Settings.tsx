@@ -1,4 +1,4 @@
-import {MAX_ADVENTURERS} from 'app/Constants';
+import {Expansion, MAX_ADVENTURERS} from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
@@ -84,7 +84,7 @@ export function getContentSets(settings: SettingsType, mp?: MultiplayerState): S
     return getContentSetIntersection(mp);
   }
   const cs = settings && settings.contentSets || {};
-  return new Set(Object.keys(cs).filter((s) => cs[s]));
+  return new Set(Object.keys(cs).filter((s: Expansion) => cs[s]) as Expansion[]);
 }
 
 // Get the content sets supported by all connected devices.

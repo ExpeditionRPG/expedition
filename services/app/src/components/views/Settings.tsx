@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button';
 import {getContentSets, numPlayers} from 'app/actions/Settings';
 import * as React from 'react';
 import {VERSION} from 'shared/schema/Constants';
-import {CONTENT_SET_FULL_NAMES, URLS} from '../../Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, URLS} from '../../Constants';
 import {openWindow} from '../../Globals';
 import {DifficultyType, FontSizeType, MultiplayerState, SettingsType} from '../../reducers/StateTypes';
 import Card from '../base/Card';
@@ -51,8 +51,8 @@ const timerText: { [v: string]: any } = [
 ];
 export const timerValues: Array<number|null> = [null, 30, 15, 10, 6];
 
-function stringifyContentSet(cs: string[]): string {
-  return ['base', ...cs].map((name) => CONTENT_SET_FULL_NAMES[name]).join(' + ');
+function stringifyContentSet(cs: Expansion[]): string {
+  return [Expansion.base, ...cs].map((name: Expansion) => CONTENT_SET_FULL_NAMES[name]).join(' + ');
 }
 
 const Settings = (props: Props): JSX.Element => {
@@ -60,7 +60,7 @@ const Settings = (props: Props): JSX.Element => {
   const fontSizeIdx = fontSizeValues.indexOf(props.settings.fontSize);
   const timerIdx = props.settings.timerSeconds ? timerValues.indexOf(props.settings.timerSeconds) : 0;
   const allPlayers = numPlayers(props.settings, props.multiplayer);
-  const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets).filter((k) => props.settings.contentSets[k]));
+  const localExpansions = stringifyContentSet(Object.keys(props.settings.contentSets).filter((k: Expansion) => props.settings.contentSets[k]) as Expansion[]);
   const globalExpansions = stringifyContentSet([...getContentSets(props.settings, props.multiplayer)]);
 
   const expansions = (props.multiplayer.session)

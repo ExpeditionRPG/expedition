@@ -138,6 +138,10 @@ export class Quest extends SchemaBase {
   }) public expansionfuture: boolean;
 
   @field({
+    default: false,
+  }) public expansionscarredlands: boolean;
+
+  @field({
     default: 'English',
     maxLength: 128,
     valid: enumValues(Language),

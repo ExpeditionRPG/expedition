@@ -7,6 +7,7 @@ import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
 import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {Expansion} from '../Constants';
 
 export interface AnnouncementState {
   open: boolean;
@@ -78,7 +79,7 @@ export interface SearchParams {
   players?: number;
   owner?: string;
   partition?: Partition;
-  expansions?: ExpansionsType[];
+  expansions?: Expansion[];
   language?: Language;
   showPrivate: boolean;
 }
@@ -86,12 +87,7 @@ export interface SearchParams {
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
 export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
-export type ExpansionsType = 'horror';
-export interface ContentSetsType {
-  [index: string]: boolean;
-  horror: boolean;
-  future: boolean;
-}
+export type ContentSetsType = Partial<{[index in Expansion]: boolean}>;
 
 export interface SettingsType {
   [index: string]: any;

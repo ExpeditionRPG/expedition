@@ -4,6 +4,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'app/Constants';
 import * as React from 'react';
 import {Quest} from 'shared/schema/Quests';
 import {getContentSets, numPlayers} from '../../actions/Settings';
@@ -188,13 +189,14 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
       <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
         <DialogTitle>Choose game</DialogTitle>
         <DialogContent className="dialog">
-          <Button id="base" className="primary large" onClick={() => this.props.onExpansionSelect({horror: false, future: false})}>Base Game</Button>
+          <Button id={Expansion.base} className="primary large" onClick={() => this.props.onExpansionSelect({horror: false, future: false})}>Base Game</Button>
           <br/>
           <br/>
-          <Button id="horror" className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: false})}>Base + Horror</Button>
+          <Button id={Expansion.horror} className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: false})}>Base + Horror</Button>
           <br/>
           <br/>
-          <Button id="future" className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
+          <Button id={Expansion.future} className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
+          <Button id={Expansion.scarredlands} className="primary large" onClick={() => this.props.onExpansionSelect({scarredlands: true})}>Scarred Lands</Button>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can change it at any time in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
         </DialogContent>
@@ -360,11 +362,14 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
       </div>;
 
     let expansionErr = '';
-    const contentSets = new Set(getContentSets(this.props.settings, this.props.multiplayer));
-    if (quest.expansionhorror && !contentSets.has('horror')) {
-      expansionErr = 'Horror';
-    } else if (quest.expansionfuture && !contentSets.has('future')) {
-      expansionErr = 'Future';
+    const contentSets = new Set<Expansion>(getContentSets(this.props.settings, this.props.multiplayer));
+
+    if (quest.expansionhorror && !contentSets.has(Expansion.horror)) {
+      expansionErr = CONTENT_SET_FULL_NAMES.horror;
+    } else if (quest.expansionfuture && !contentSets.has(Expansion.future)) {
+      expansionErr = CONTENT_SET_FULL_NAMES.future;
+    } else if (quest.expansionscarredlands && !contentSets.has(Expansion.scarredlands)) {
+      expansionErr = CONTENT_SET_FULL_NAMES.scarredlands;
     }
     if (expansionErr) {
       contents = <div className="error">

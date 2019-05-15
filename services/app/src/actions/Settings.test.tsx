@@ -76,8 +76,8 @@ describe('Settings action', () => {
   });
 
   describe('getContentSets', () => {
-    const hf = {...initialSettings, contentSets: {horror: true, future: true}};
-    const b = {...initialSettings, contentSets: {horror: false, future: false}};
+    const hf = {...initialSettings, contentSets: {horror: true, future: true, scarredlands: false}};
+    const b = {...initialSettings, contentSets: {horror: false, future: false, scarredlands: false}};
     const mpHorror = {
       ...initialMultiplayer,
       session: {id: 'adsf', secret: 'ghjk'},

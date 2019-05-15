@@ -2,7 +2,7 @@ import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
-import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'app/Constants';
 import {ContentSetsType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {ParserNode} from '../TemplateTypes';
@@ -33,13 +33,13 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function playerTier(props: Props): JSX.Element {
   let shouldRunDecision = false;
-  if (props.contentSets.has('future')) {
+  if (props.contentSets.has(Expansion.future)) {
     shouldRunDecision = (props.combat.roundCount % 5 === 0 || props.combat.roundCount % 5 === 3);
   }
 
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
-  const theHorror = (props.contentSets.has('horror') === true);
+  const theHorror = (props.contentSets.has(Expansion.horror) === true);
   const injured = props.localAliveAdventurers < props.adventurers;
 
   if (props.settings.showHelp) {

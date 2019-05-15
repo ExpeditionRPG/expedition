@@ -23,10 +23,10 @@ import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
 import {silentLogin} from './actions/User';
-import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
+import {AUTH_SETTINGS, Expansion, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
-import {SettingsType} from './reducers/StateTypes';
+import {ContentSetsType, SettingsType} from './reducers/StateTypes';
 import {createAppStore, getStore} from './Store';
 import theme from './Theme';
 
@@ -225,9 +225,9 @@ function setupStorage(document: Document) {
 
 function setupSettings(settings: SettingsType) {
   if (settings) {
-    const contentSets = (settings || {}).contentSets;
+    const contentSets: ContentSetsType = (settings || {}).contentSets;
     for (const set in contentSets) {
-      if (contentSets[set] === null) {
+      if (contentSets[set as Expansion] === null) {
         getStore().dispatch(setDialog('EXPANSION_SELECT'));
         break;
       }

@@ -8,6 +8,7 @@ export const Settings: {[k: string]: SettingsType} = {
     contentSets: {
       horror: false,
       future: false,
+      scarredlands: false,
     },
     difficulty: 'NORMAL' as DifficultyType,
     experimental: false,

@@ -3,7 +3,7 @@ import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multip
 import {toClientKey} from 'shared/multiplayer/Session';
 import {handleFetchErrors} from 'shared/requests';
 import {openSnackbar} from '../actions/Snackbar';
-import {MULTIPLAYER_SETTINGS} from '../Constants';
+import {Expansion, MULTIPLAYER_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
 import {ConnectionHandler, getMultiplayerConnection} from '../multiplayer/Connection';
 import {getMultiplayerAction} from '../multiplayer/Remoteify';
@@ -179,7 +179,7 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
         type: 'STATUS',
         waitingOn: (selfStatus && selfStatus.waitingOn),
         name: user && user.email,
-        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k) => settings.contentSets[k]),
+        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k: Expansion) => settings.contentSets[k]),
         ...(partialStatus || {}),
       };
 

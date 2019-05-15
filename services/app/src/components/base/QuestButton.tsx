@@ -46,6 +46,7 @@ export default class QuestButton extends React.Component<Props, {}> {
             {this.props.isOffline && <img className="inline_icon" src="images/offline_small.svg"/>}
             {quest.expansionhorror && <img className="inline_icon" src="images/horror_small.svg"/>}
             {quest.expansionfuture && <img className="inline_icon" src="images/future_small.svg"/>}
+            {quest.expansionscarredlands && <img className="inline_icon" src="images/scarredlands_small.svg"/>}
           </span>
           <span className="rightcell">
             {isNew && <img className="inline_icon" src="images/seedling_small.svg"/>}
