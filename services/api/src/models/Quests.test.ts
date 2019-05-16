@@ -9,7 +9,14 @@ const Moment = require('moment');
 
 describe('quest', () => {
   describe('searchQuests', () => {
-    const quests = [q.basic, q.private, q.privateUser2, q.horror, q.future];
+    const quests = [
+      q.basic,
+      q.private,
+      q.privateUser2,
+      q.horror,
+      q.future,
+      q.scarredlands,
+    ];
 
     test('returns an empty array if no results', done => {
       testingDBWithState(quests)
@@ -111,6 +118,32 @@ describe('quest', () => {
           expect((results[0] as any).dataValues).toEqual(
             jasmine.objectContaining({ id: 'questidhorror' }),
           );
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test.only('returns more compatible expansion quests first', done => {
+      testingDBWithState(quests)
+        .then(tdb =>
+          searchQuests(tdb, '', {
+            partition: Partition.expeditionPublic,
+            expansions: [
+              Expansion.horror,
+              Expansion.future,
+              Expansion.scarredlands,
+            ],
+          }),
+        )
+        .then(results => {
+          console.log(results.map(r => r.dataValues.id));
+          expect(results.length).toEqual(4);
+          expect(results.map(r => r.dataValues.id)).toEqual([
+            'questidscarredlands',
+            'questidfuture',
+            'questidhorror',
+            'questid',
+          ]);
           done();
         })
         .catch(done.fail);

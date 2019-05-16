@@ -107,6 +107,7 @@ export class SearchSettings extends React.Component<Props, {}> {
               <option value="-created">Newest</option>
               <option value="+title">Title (A-Z)</option>
               <option value="-title">Title (Z-A)</option>
+              <option value="">Compatibility</option>
             </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft ranged">

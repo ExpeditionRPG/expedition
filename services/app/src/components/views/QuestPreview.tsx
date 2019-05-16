@@ -41,7 +41,7 @@ function renderRequirementsRow(quest: Quest): JSX.Element|null {
     requires.push(<div key={Expansion.future}><img className="inline_icon" src="images/future_small.svg"/>{CONTENT_SET_FULL_NAMES.future}</div>);
   }
   if (quest.expansionscarredlands) {
-    requires.push(<div key={Expansion.scarredlands}><img className="inline_icon" src="images/scarredlands_small.svg"/>{CONTENT_SET_FULL_NAMES.scarredlands}</div>);
+    requires.push(<div key={Expansion.scarredlands}><img className="inline_icon" src="images/titanspawn_small.svg"/>{CONTENT_SET_FULL_NAMES.scarredlands}</div>);
   }
   if (quest.requirespenpaper) {
     requires.push(<div key="penpaper"><img className="inline_icon" src="images/book_small.svg"/>Pen and Paper</div>);

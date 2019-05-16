@@ -107,6 +107,16 @@ export const quests = {
     title: 'Future Quest',
     userid: 'testuser',
   }),
+  scarredlands: new Quest({
+    ...basicQuest,
+    expansionhorror: true,
+    expansionfuture: true,
+    expansionscarredlands: true,
+    id: 'questidscarredlands',
+    summary: 'This be a scarred lands quest! AHHH!',
+    title: 'Scarred Lands Quest',
+    userid: 'testuser',
+  }),
   private: new Quest({
     ...basicQuest,
     partition: Partition.expeditionPrivate,

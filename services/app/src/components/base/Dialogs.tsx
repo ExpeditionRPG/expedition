@@ -175,13 +175,14 @@ export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDial
 }
 
 interface ExpansionSelectDialogProps extends React.Props<any> {
-  onExpansionSelect: (contentSets: ContentSetsType) => void;
+  onExpansionSelect: (contentSets: ContentSetsType, close?: boolean) => void;
+  settings: SettingsType;
   open: boolean;
 }
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   public shouldComponentUpdate(nextProps: ExpansionSelectDialogProps) {
-    return nextProps.open !== this.props.open;
+    return nextProps.open !== this.props.open || nextProps.settings.contentSets.scarredlands != this.props.settings.contentSets.scarredlands;
   }
 
   public render(): JSX.Element {
@@ -196,7 +197,9 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
           <br/>
           <br/>
           <Button id={Expansion.future} className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
-          <Button id={Expansion.scarredlands} className="primary large" onClick={() => this.props.onExpansionSelect({scarredlands: true})}>Scarred Lands</Button>
+          <br/>
+          <br/>
+          <Checkbox id={Expansion.scarredlands} label="Scarred Lands" value={this.props.settings.contentSets.scarredlands || false} onChange={(v) => this.props.onExpansionSelect({scarredlands: v}, false)}/>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can change it at any time in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
         </DialogContent>
@@ -409,7 +412,7 @@ export interface DispatchProps {
   onDeleteSavedQuest: (savedQuest: SavedQuestMeta) => void;
   onExitMultiplayer: () => void;
   onExitQuest: (quest: QuestState, settings: SettingsType, user: UserState, text: string) => Promise<any>;
-  onExpansionSelect: (contentSets: ContentSetsType) => void;
+  onExpansionSelect: (contentSets: ContentSetsType, close?: boolean) => void;
   onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => void;
   onMultitouchChange: (v: boolean) => void;
   onPlayerChange: (numLocalPlayers: number) => void;
@@ -437,7 +440,8 @@ const Dialogs = (props: Props): JSX.Element => {
       />
       <ExpansionSelectDialog
         open={props.dialog && props.dialog.open === 'EXPANSION_SELECT'}
-        onExpansionSelect={(contentSets: ContentSetsType) => props.onExpansionSelect(contentSets)}
+        settings={props.settings}
+        onExpansionSelect={props.onExpansionSelect}
       />
       <ExitMultiplayerDialog
         open={props.dialog && props.dialog.open === 'EXIT_REMOTE_PLAY'}

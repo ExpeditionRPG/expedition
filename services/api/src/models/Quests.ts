@@ -1,6 +1,6 @@
 import * as Bluebird from 'bluebird';
 import Sequelize, { OrderItem, WhereOptions } from 'sequelize';
-import { Expansion, Partition } from 'shared/schema/Constants';
+import { enumValues, Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { User } from 'shared/schema/Users';
@@ -158,25 +158,19 @@ export function searchQuests(
   // Hide expansion if searching & not specified, otherwise prioritize results
   // that have the expansion as a secondary sort
   if (!params.id) {
-    if (
-      !params.expansions ||
-      (params.expansions.indexOf(Expansion.horror) === -1 &&
-        params.expansions.indexOf(Expansion.future) === -1 &&
-        params.expansions.indexOf(Expansion.scarredlands) === -1)
-    ) {
-      // No expansions
-      where.expansionhorror = { [Op.not]: true };
-      where.expansionfuture = { [Op.not]: true };
-      where.expansionscarredlands = { [Op.not]: true };
-    } else if (params.expansions.indexOf(Expansion.future) === -1) {
-      // Only the Horror
-      where.expansionfuture = { [Op.not]: true };
-      order.push(['expansionhorror', 'DESC']);
-    } else {
-      // All
-      order.push(['expansionfuture', 'DESC']);
+    const missingExpansions = enumValues(Expansion).filter(
+      (e: Expansion) =>
+        (params.expansions || []).indexOf(e) === -1 && e !== 'base',
+    );
+    for (const m of missingExpansions) {
+      where['expansion' + m] = { [Op.not]: true };
     }
-    // TODO refactor
+    // Order by the weight of compatible expansions
+    const orderStr = enumValues(Expansion)
+      .filter((e: Expansion) => e !== 'base')
+      .map(e => `(CASE WHEN expansion${e} THEN 1 ELSE 0 END)`)
+      .reduce((a, b) => `${a} + ${b}`);
+    order.push([Sequelize.literal(orderStr), 'DESC']);
   }
 
   const limit = Math.min(
