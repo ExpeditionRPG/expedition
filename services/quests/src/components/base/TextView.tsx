@@ -251,10 +251,12 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
     }
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED,
-      (event: any) => { this.onTextInserted(event); });
-    newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED,
-      (event: any) => { this.onTextDeleted(event); });
+    if (gapi.drive.realtime) {
+      newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED,
+        (event: any) => { this.onTextInserted(event); });
+      newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED,
+        (event: any) => { this.onTextDeleted(event); });
+    }
 
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
