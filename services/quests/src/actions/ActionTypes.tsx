@@ -14,6 +14,11 @@ export type QuestActionType = 'NEW_QUEST' | 'LOAD_QUEST' | 'SAVE_QUEST' | 'PUBLI
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
 
+export interface SetFatalAction extends Redux.Action {
+  type: 'SET_FATAL';
+  error: string|null;
+}
+
 export interface AnnouncementSetAction extends Redux.Action {
   type: 'ANNOUNCEMENT_SET';
   open: boolean;

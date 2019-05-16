@@ -99,6 +99,7 @@ export interface EditorState {
   showLineNumbers: boolean;
   wordCount: number;
   worker: Worker|null;
+  fatalError: string|null;
 }
 
 export interface DialogsState {

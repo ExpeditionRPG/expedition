@@ -23,7 +23,6 @@ import Spellcheck from '../../Spellcheck';
 // I suspect this can be fixed by upgrading Ace, but that's likely to break other things.
 // See https://github.com/ExpeditionRPG/expedition-quest-creator/issues/466
 
-declare var gapi: any;
 declare var window: any;
 
 const AceEditor = AceEditorOrig as any;
@@ -250,12 +249,6 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // Ensure we're registered to the newest realtime value.
     if (this.props.realtime) {
       this.props.realtime.removeAllEventListeners();
-    }
-    if (gapi.drive.realtime) {
-      newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED,
-        (event: any) => { this.onTextInserted(event); });
-      newProps.realtime.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED,
-        (event: any) => { this.onTextDeleted(event); });
     }
 
     // If we've been supplied with a different line number, scroll to it
