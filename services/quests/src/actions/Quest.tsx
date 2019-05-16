@@ -371,6 +371,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       email: quest.email,
       expansionhorror: quest.expansionhorror,
       expansionfuture: quest.expansionfuture,
+      expansionscarredlands: quest.expansionfuture,
       genre: quest.genre,
       language: quest.language,
       majorRelease,
