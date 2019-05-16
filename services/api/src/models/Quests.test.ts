@@ -136,7 +136,6 @@ describe('quest', () => {
           }),
         )
         .then(results => {
-          console.log(results.map(r => r.dataValues.id));
           expect(results.length).toEqual(4);
           expect(results.map(r => r.dataValues.id)).toEqual([
             'questidscarredlands',
