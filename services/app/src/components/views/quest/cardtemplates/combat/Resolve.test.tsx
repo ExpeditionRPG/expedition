@@ -15,7 +15,7 @@ describe('Combat Resolve', () => {
     const props: Props = {
       settings: initialSettings,
       mostRecentRolls: [],
-      contentSets: new Set(Expansion.horror]),
+      contentSets: new Set([Expansion.horror]),
       onNext: jasmine.createSpy('onNext'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,

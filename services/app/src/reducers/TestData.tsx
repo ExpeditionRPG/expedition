@@ -1,7 +1,7 @@
 import {ContentRating, Genre, Language} from 'shared/schema/Constants';
+import {Expansion} from 'shared/schema/Constants';
 import {initialMultiplayer} from './Multiplayer';
 import {DifficultyType, FontSizeType, MultiplayerState, SearchParams, SettingsType} from './StateTypes';
-import {Expansion} from 'shared/schema/Constants';
 export const Settings: {[k: string]: SettingsType} = {
   basic: {
     audioEnabled: false,

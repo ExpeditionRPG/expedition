@@ -182,7 +182,7 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   public shouldComponentUpdate(nextProps: ExpansionSelectDialogProps) {
-    return nextProps.open !== this.props.open || nextProps.settings.contentSets.scarredlands != this.props.settings.contentSets.scarredlands;
+    return nextProps.open !== this.props.open || nextProps.settings.contentSets.scarredlands !== this.props.settings.contentSets.scarredlands;
   }
 
   public render(): JSX.Element {

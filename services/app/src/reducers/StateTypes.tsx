@@ -1,7 +1,7 @@
 import {UserState as UserStateBase} from 'shared/auth/UserState';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
-import {Expansion, Badge, ContentRating, Genre, Language, Partition} from 'shared/schema/Constants';
+import {Badge, ContentRating, Expansion, Genre, Language, Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';

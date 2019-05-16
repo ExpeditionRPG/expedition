@@ -123,7 +123,7 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test.only('returns more compatible expansion quests first', done => {
+    test('returns more compatible expansion quests first', done => {
       testingDBWithState(quests)
         .then(tdb =>
           searchQuests(tdb, '', {
