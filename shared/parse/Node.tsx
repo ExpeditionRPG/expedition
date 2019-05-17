@@ -1,5 +1,6 @@
-import {Context, evaluateContentOps, updateContext} from './Context';
+import {evaluateOp, Context, evaluateContentOps, updateContext} from './Context';
 
+const seedrandom = require('seedrandom');
 const Clone = require('clone');
 const Math = require('mathjs');
 
@@ -29,6 +30,7 @@ export class Node<C extends Context> {
   public elem: Cheerio;
   public ctx: C;
   private renderedChildren: Array<{rendered: Cheerio, original: Cheerio}>;
+  private rng: () => number;
 
   // Certain fail-safe events are fine under normal behavior, but we may want to
   // strictly check them when crawling for errors.
@@ -42,6 +44,7 @@ export class Node<C extends Context> {
     if (seed) {
       this.ctx.seed = seed;
     }
+    this.rng = seedrandom.alea(this.ctx.seed);
     this.renderChildren();
   }
 
@@ -263,9 +266,7 @@ export class Node<C extends Context> {
 
     try {
       // Operate on copied scope - checking for enablement should never change the current context.
-      // TODO(scott): Make this use Context.tsx (evaluateOp?)
-      const visible = Math.eval(ifExpr, Clone(this.ctx.scope));
-
+      const visible = evaluateOp(ifExpr, Clone(this.ctx.scope), this.rng);
       // We check for truthiness here, so nonzero numbers are true, etc.
       return Boolean(visible);
     } catch (e) {

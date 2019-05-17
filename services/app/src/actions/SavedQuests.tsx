@@ -72,12 +72,13 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): S
   // Save the quest state
   const xml = node.getRootElem() + '';
   const path = node.ctx.path;
+  const seed = node.ctx.seed;
 
   if (!xml || !path) {
     throw new Error('Could not save quest.');
   }
 
-  setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path} as SavedQuest);
+  setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
   return {type: 'SAVED_QUEST_STORED', savedQuests};
 }
 
@@ -136,9 +137,14 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
   return {nextNode: node, i};
 }
 
-export function recreateNodeFromPath(xml: string, path: string|number[]): {node: ParserNode, complete: boolean} {
-  // TODO: Return partially-loaded quest if it fails at all.
+export function recreateNodeFromPath(xml: string, path: string|number[], seed?: string): {node: ParserNode, complete: boolean} {
   let node = initQuestNode(getCheerio().load(xml)('quest'), defaultContext());
+  if (seed) {
+    node.ctx.seed = seed;
+  } else {
+    console.warn('Recreating node without saved seed; RNG failures may cause partial load');
+  }
+
   for (let i = 0; i < path.length; i++) {
     const action = path[i];
     // TODO: Also save random seed with path in context
@@ -187,7 +193,7 @@ export function loadSavedQuest(id: string, ts: number) {
     if (!data.xml || !data.path) {
       throw new Error('Could not load quest - invalid save data');
     }
-    const {node, complete} = recreateNodeFromPath(data.xml, data.path);
+    const {node, complete} = recreateNodeFromPath(data.xml, data.path, data.seed);
     if (!complete) {
       dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
     }

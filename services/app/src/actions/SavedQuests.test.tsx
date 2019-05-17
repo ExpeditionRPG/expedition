@@ -46,7 +46,7 @@ describe('SavedQuest actions', () => {
     });
     test('stores xml and context path', () => {
       storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
-      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual({xml: (quest + ''), path: [0]});
+      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual(jasmine.objectContaining({xml: (quest + ''), path: [0]}));
     });
   });
 
@@ -120,11 +120,23 @@ describe('SavedQuest actions', () => {
         <roleplay>expected</roleplay>
         <combat>
           <e>Bandit</e>
-          <event on="round" if="_.currentCombatRound() == 4">
+          <event on="round" if="false">
             <roleplay>never get here</roleplay>
           </event>
         </combat>
       </quest>`, [0, '|3', 'round']);
+      expect(node.elem.text()).toEqual('expected');
+    });
+    test('uses saved seed', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay></roleplay>
+        <combat>
+          <e>Bandit</e>
+          <event on="round" if="randomInt(100) == 71">
+            <roleplay>expected</roleplay>
+          </event>
+        </combat>
+      </quest>`, [0, '|3', 'round'], 'asdg');
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles exiting of combat (win/lose)', () => {
