@@ -76,7 +76,7 @@ if (questId !== '') {
 // 10/10/2017: Also avoids popup blockers by making future login attempts
 // Trigger directly from the user action, rather than needing to load files
 if (window.gapi) {
-  window.gapi.load('client,drive-realtime,drive-share', () => {
+  window.gapi.load('client,drive-share', () => {
     store.dispatch(loginUser(false, questId));
   });
 }

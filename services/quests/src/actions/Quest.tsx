@@ -3,7 +3,6 @@ import {UserState} from 'shared/auth/UserState';
 import {renderXML} from 'shared/render/QDLParser';
 import {API_HOST} from 'shared/schema/Constants';
 import {Partition} from 'shared/schema/Constants';
-import {realtimeUtils} from '../Auth';
 import {
   METADATA_DEFAULTS,
   NEW_QUEST_TEMPLATE,
@@ -20,26 +19,11 @@ import {
   RequestQuestSaveAction, RequestQuestUnpublishAction,
 } from './ActionTypes';
 import {pushError, pushHTTPError} from './Dialogs';
-import {startPlaytestWorker, updateDirtyState} from './Editor';
+import {setFatal, startPlaytestWorker, updateDirtyState} from './Editor';
 import {setSnackbar} from './Snackbar';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
-
-// Override realtime api error handling, which by default
-// calls alert() and sets window.href to "/" whenever an error occurs.
-if (realtimeUtils) {
-  realtimeUtils.__proto__.onError = (error: any) => {
-    if (error.type === window.gapi.drive.realtime.ErrorType
-        .TOKEN_REFRESH_REQUIRED) {
-      realtimeUtils.authorizer.authorize(() => {
-        console.log('Error, auth refreshed');
-      }, false);
-    } else {
-      console.error(error);
-    }
-  };
-}
 
 // Loaded on index.html
 declare var window: any;
@@ -181,13 +165,7 @@ function getPublishedQuestMeta(publishedId: string): Promise<QuestType|null> {
   });
 }
 
-function createDocNotes(model: any) {
-  const str = model.createString();
-  model.getRoot().set('notes', str);
-  return str;
-}
-
-function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<{data: string, notes: string, metadata: any, edittime: Date}|null> {
+function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
   return fetch(`${API_HOST}/qdl/${docid}/${edittime.getTime()}`, {
         credentials: 'include',
         headers: {
@@ -206,21 +184,15 @@ function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promi
         metadata: json.metadata || {},
         edittime: json.edittime || edittime,
       };
-    }).catch((error) => {
-      console.error(error);
-      return null;
     });
 }
 
-export function loadQuest(user: UserState, docid?: string, edittime: Date = new Date(), fromRealtime: any = loadQuestFromRealtime) {
+export function loadQuest(user: UserState, docid?: string, edittime: Date = new Date()) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (docid === undefined) {
       return dispatch(newQuest(user));
     }
     return loadQuestFromAPI(user, docid, edittime)
-      .then((result) => {
-        return result || fromRealtime(user, docid);
-      })
       .then((result) => {
         window.location.hash = docid;
         const md = new EditableString('md', result.data);
@@ -285,58 +257,11 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
             expansionfuture: Boolean(quest.expansionfuture),
           })), 0);
         });
+      })
+      .catch((e: Error) => {
+        dispatch(setFatal(e.toString()));
       });
   };
-}
-
-export function loadQuestFromRealtime(user: UserState, docid: string): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
-  return new Promise((resolve, reject) => {
-    realtimeUtils.load(docid, (doc: any) => {
-      doc.addEventListener('collaborator_joined', (e: any) => {
-        ReactGA.event({
-          action: 'COLLABORATOR_JOINED',
-          category: 'Background',
-          label: docid,
-        });
-      });
-      const md = doc.getModel().getRoot().get('markdown');
-      const notes = doc.getModel().getRoot().get('notes') || '';
-      const metadata = doc.getModel().getRoot().get('metadata');
-
-      const metaRaw: any = {
-        ...METADATA_DEFAULTS,
-        author: user.name,
-        email: user.email,
-        language: 'English',
-        maxplayers: 6,
-        minplayers: 1,
-        summary: '',
-      };
-
-      if (metadata) {
-        metadata.keys().map((k: string) => {
-          metaRaw[k] = metadata.get(k);
-        });
-      }
-
-      resolve({
-        data: md.getText(),
-        notes: notes.getText(),
-        metadata: metaRaw,
-        edittime: new Date(),
-      });
-    },
-    (model: any) => {
-      const str = model.createString();
-      // Don't allow user undo, since it would revert everything back to a blank page.
-      // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
-      model.beginCompoundOperation('', false);
-      str.setText(NEW_QUEST_TEMPLATE);
-      model.endCompoundOperation();
-      model.getRoot().set('markdown', str);
-      createDocNotes(model);
-    });
-  });
 }
 
 export function questMetadataChange(quest: QuestType, key: string, value: any):

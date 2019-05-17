@@ -154,16 +154,24 @@ label {
   font-family: $fontFamilyHeader;
   font-weight: bold;
 
-  .slowLoadPrompt {
+  .loadPrompt {
     opacity: 0;
     padding-top: 2*$padBase;
     font-family: $fontFamilyBase;
     font-weight: normal;
     max-width: 720px;
     margin: 0 auto;
-    animation: fadein 1s;
-    animation-delay: 5s;
-    animation-fill-mode: forwards;
+    user-select: text;
+
+    &.delayLoad {
+      animation: fadein 1s;
+      animation-delay: 5s;
+      animation-fill-mode: forwards;
+    }
+
+    &.visible {
+      opacity: 1.0;
+    }
   }
 }
 

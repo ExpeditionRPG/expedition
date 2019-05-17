@@ -41,17 +41,20 @@ class Main extends React.Component<Props, {hasError: Error|null}> {
   }
 
   public render() {
-    if (this.state.hasError) {
-      return (<span style={{color: 'white'}}>
-          <div>Oh no, an error has occured! Try reloading the page - if the error persists, please email contact@expeditiongame.com with the current page URL + below error message:</div>
-          <div>Error: {this.state.hasError.toString()}</div>
-        </span>);
+    if (this.state.hasError || this.props.editor.fatalError) {
+      return (<div className="main loading">
+          Error!
+          <div className="loadPrompt visible">
+            <div>Try reloading the page - if the error persists, please email contact@expeditiongame.com with this page's URL and error message:</div>
+            <div>Error: {(this.state.hasError || this.props.editor.fatalError || '').toString()}</div>
+          </div>
+        </div>);
     }
     if (this.props.editor.loadingQuest) {
       return (
         <div className="main loading">
           Loading Expedition Quest Creator...
-          <div className="slowLoadPrompt">
+          <div className="loadPrompt delayLoad">
             Not loading? Try disabling your ad blocker.
             If that doesn't work, hit the "Contact Us" button in the bottom right -
             make sure to include the title of your quest.

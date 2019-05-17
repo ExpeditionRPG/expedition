@@ -7,11 +7,15 @@ import {renderXML} from 'shared/render/QDLParser';
 import {Quest} from 'shared/schema/Quests';
 import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes';
 import {store} from '../Store';
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes';
+import {SetDirtyAction, SetDirtyTimeoutAction, SetFatalAction, SetLineAction, SetWordCountAction} from './ActionTypes';
 import {pushError} from './Dialogs';
 import {saveQuest} from './Quest';
 
 declare var window: any;
+
+export function setFatal(error: string|null): SetFatalAction {
+  return {type: 'SET_FATAL', error};
+}
 
 export function setDirty(isDirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', isDirty};

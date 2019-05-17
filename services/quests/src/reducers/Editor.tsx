@@ -5,6 +5,7 @@ import {
   QuestRenderAction,
   SetDirtyAction,
   SetDirtyTimeoutAction,
+  SetFatalAction,
   SetLineAction,
   SetOpInitAction,
   SetWordCountAction
@@ -27,6 +28,7 @@ export const defaultState: EditorState = {
   showLineNumbers: false,
   wordCount: 0,
   worker: null,
+  fatalError: null,
 };
 
 export function editor(state: EditorState = defaultState, action: Redux.Action): EditorState {
@@ -73,6 +75,8 @@ export function editor(state: EditorState = defaultState, action: Redux.Action):
       return {...state, worker: null};
     case 'LINE_NUMBERS_TOGGLE':
       return {...state, showLineNumbers: !state.showLineNumbers};
+    case 'SET_FATAL':
+      return {...state, fatalError: (action as SetFatalAction).error};
     default:
       return state;
   }
