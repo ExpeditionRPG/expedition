@@ -232,6 +232,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
             email: metadata.get('email'),
             expansionhorror: metadata.get('expansionhorror') || false,
             expansionfuture: metadata.get('expansionfuture') || false,
+            expansionscarredlands: metadata.get('expansionscarredlands') || false,
             genre: metadata.get('genre'),
             id: docid,
             language: metadata.get('language') || 'English',
@@ -255,6 +256,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
           setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
             expansionhorror: Boolean(quest.expansionhorror),
             expansionfuture: Boolean(quest.expansionfuture),
+            expansionscarredlands: Boolean(quest.expansionscarredlands),
           })), 0);
         });
       })
@@ -294,6 +296,7 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       email: quest.email,
       expansionhorror: quest.expansionhorror,
       expansionfuture: quest.expansionfuture,
+      expansionscarredlands: quest.expansionfuture,
       genre: quest.genre,
       language: quest.language,
       majorRelease,

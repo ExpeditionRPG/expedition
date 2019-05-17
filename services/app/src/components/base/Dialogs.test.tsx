@@ -161,6 +161,7 @@ describe('Dialogs', () => {
     function setup(overrides?: Partial<ExpansionSelectDialogProps>) {
       const props: Props = {
         onExpansionSelect: jasmine.createSpy('onExpansionSelect');
+        settings: {contentSets: []},
         open: true,
         ...overrides,
       };

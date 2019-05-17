@@ -6,12 +6,13 @@ import { loggedOutUser } from '../../reducers/User';
 import SearchSettings, { Props } from './SearchSettings';
 import { Quest } from 'shared/schema/Quests';
 import {TEST_SEARCH} from '../../reducers/TestData';
+import {Expansion} from 'shared/schema/Constants';
 
 describe('SearchSettings', () => {
   function setup(overrides: Partial<Props>) {
     const props: Props = {
       user: loggedOutUser,
-      contentSets: new Set(['horror', 'future']),
+      contentSets: new Set([Expansion.horror, Expansion.future]),
       settings: initialSettings,
       params: initialSearch.params,
       onChangeParams: jest.fn(),

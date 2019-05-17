@@ -21,6 +21,7 @@ export const MAX_PLAYERS = 6;
 export const METADATA_DEFAULTS = {
   expansionhorror: false,
   expansionfuture: false,
+  expansionscarredlands: false,
   maxplayers: MAX_PLAYERS,
   minplayers: MIN_PLAYERS,
   requirespenpaper: false,

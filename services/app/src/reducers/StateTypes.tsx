@@ -1,7 +1,7 @@
 import {UserState as UserStateBase} from 'shared/auth/UserState';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
-import {Badge, ContentRating, Genre, Language, Partition} from 'shared/schema/Constants';
+import {Badge, ContentRating, Expansion, Genre, Language, Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
@@ -78,7 +78,7 @@ export interface SearchParams {
   players?: number;
   owner?: string;
   partition?: Partition;
-  expansions?: ExpansionsType[];
+  expansions?: Expansion[];
   language?: Language;
   showPrivate: boolean;
 }
@@ -86,12 +86,7 @@ export interface SearchParams {
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
 export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
-export type ExpansionsType = 'horror';
-export interface ContentSetsType {
-  [index: string]: boolean;
-  horror: boolean;
-  future: boolean;
-}
+export type ContentSetsType = Partial<{[index in Expansion]: boolean}>;
 
 export interface SettingsType {
   [index: string]: any;

@@ -2,6 +2,7 @@ import * as React from 'react';
 import {TUTORIAL_QUESTS} from '../../Constants';
 import {initialSettings} from '../../reducers/Settings';
 import QuestListCard, {Props} from './QuestListCard';
+import {Expansion} from 'shared/schema/Constants';
 import {render} from 'app/Testing';
 import {loggedOutUser} from 'shared/auth/UserState';
 
@@ -25,7 +26,7 @@ describe('QuestListCard', () => {
   test('Shows quests', () => {
     const text = setup({
       settings: initialSettings,
-      contentSets: new Set(['horror', 'future']),
+      contentSets: new Set([Expansion.horror, Expansion.future]),
       }).e.text();
     expect(text).toContain(HORROR_SUBSTR);
     expect(text).toContain(FUTURE_SUBSTR);
@@ -34,7 +35,7 @@ describe('QuestListCard', () => {
   test('Filters out Horror quests if Horror disabled', () => {
     const text = setup({
       settings: initialSettings,
-      contentSets: new Set(['future']),
+      contentSets: new Set([Expansion.future]),
     }).e.text();
     expect(text).toContain("Learning");
     expect(text).not.toContain(HORROR_SUBSTR);
@@ -43,7 +44,7 @@ describe('QuestListCard', () => {
   test('Filters out Future quests if Future disabled', () => {
     const text = setup({
       settings: initialSettings,
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
     }).e.text();
     expect(text).toContain("Learning");
     expect(text).not.toContain(FUTURE_SUBSTR);

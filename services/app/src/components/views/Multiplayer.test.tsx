@@ -4,6 +4,7 @@ import renderLobby, { Props } from './Multiplayer';
 import {initialSettings} from '../../reducers/Settings';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
 import {loggedOutUser} from 'shared/auth/UserState';
+import {Expansion} from 'shared/schema/Constants';
 
 describe('Multiplayer lobby', () => {
   afterEach(unmountAll);
@@ -42,7 +43,7 @@ describe('Multiplayer lobby', () => {
         connected: true,
         session: {id: 'abc', secret: 'def'},
       },
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
     });
     const result = elem.find('#contentsets').text();
     expect(result).toContain('The Horror');

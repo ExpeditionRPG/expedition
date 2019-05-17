@@ -1,5 +1,6 @@
 import {CardName, ContentSetsType, SearchParams, SettingsType, UserState} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {Expansion} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {BUNDLED_QUESTS} from '../../Constants';
 import Button from '../base/Button';
@@ -144,9 +145,10 @@ export class Search extends React.Component<Props, {}> {
             disabled={true}>
               {this.props.results.length} quests for {this.props.players}
               <img className="inline_icon" src="images/adventurer_small.svg"/>
-              {(this.props.contentSets.has('horror') || this.props.contentSets.has('future')) && <span> with </span>}
-              {this.props.contentSets.has('horror') && <img className="inline_icon" id="searching_horror" src="images/horror_small.svg"/>}
-              {this.props.contentSets.has('future') && <img className="inline_icon" id="searching_future" src="images/future_small.svg"/>}
+              {(this.props.contentSets.has(Expansion.horror) || this.props.contentSets.has(Expansion.future)) && <span> with </span>}
+              {this.props.contentSets.has(Expansion.horror) && <img className="inline_icon" id="searching_horror" src="images/horror_small.svg"/>}
+              {this.props.contentSets.has(Expansion.future) && <img className="inline_icon" id="searching_future" src="images/future_small.svg"/>}
+              {this.props.contentSets.has(Expansion.scarredlands) && <img className="inline_icon" id="searching_scarredlands" src="images/titanspawn_small.svg"/>}
           </Button>
           <Button
             className="filter_button"

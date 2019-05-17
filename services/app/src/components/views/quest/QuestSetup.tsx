@@ -1,6 +1,6 @@
-import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import {ContentSetsType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
 import Button from '../../base/Button';
 import Callout from '../../base/Callout';
 import Card from '../../base/Card';
@@ -31,13 +31,13 @@ const QuestSetup = (props: Props): JSX.Element => {
       {singlePlayer && <p><strong>Solo play:</strong> Select two adventurers of your choice and set them face up in front of you.</p>}
       {multiPlayer && <p><strong>Select</strong> one adventurer of your choice from the deck, set it face up in front of you and pass the deck along.</p>}
       {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players:</strong> We do not recommend using adventurers with music abilities.</Callout>}
-      {props.contentSets.has('horror') && <Callout icon="horror"><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Draw a persona card, set it face up in front of you, and attach a clip at "Base".</Callout>}
+      {props.contentSets.has(Expansion.horror) && <Callout icon={Expansion.horror}><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Draw a persona card, set it face up in front of you, and attach a clip at "Base".</Callout>}
       <p><strong>Clip</strong> a health tracker onto your adventurer at full health (12).</p>
 
       <h2>Abilities</h2>
       <p><strong>Draw</strong> the starting abilities listed on your adventurer.</p>
       {twoAdventurer && <Callout icon="adventurer"><strong>1-2 players & returning players:</strong> Draft pick abilities (for each ability: draw three, keep one, return the other two to the bottom of the deck).</Callout>}
-      {props.contentSets.has('horror') && <Callout icon="horror"><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).</Callout>}
+      {props.contentSets.has(Expansion.horror) && <Callout icon={Expansion.horror}><strong>{CONTENT_SET_FULL_NAMES.horror}:</strong> Draw an additional Influence ability and shuffle it into your ability pile (start with 7 abilities).</Callout>}
       <p><strong>Read</strong> through your abilities. You may mulligan (redraw all) once if desired.</p>
       <p><strong>Shuffle</strong> them into a stack face-down in front of you.</p>
 

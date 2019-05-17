@@ -22,7 +22,15 @@ export const initialSettings: SettingsType = {
 export function settings(state: SettingsType = initialSettings, action: Redux.Action): SettingsType {
   switch (action.type) {
     case 'CHANGE_SETTINGS':
-      const changes = (action as ChangeSettingsAction).settings || {};
+      const csa = action as ChangeSettingsAction;
+      const changes = csa.settings || {};
+
+      // Merge contentSets delta, if any
+      if (csa && csa.settings.contentSets) {
+        changes.contentSets = {...state.contentSets, ...csa.settings.contentSets};
+      }
+
+      // Update stored values
       Object.keys(changes).forEach((key: string) => {
         setStorageKeyValue(key, changes[key]);
       });

@@ -128,6 +128,7 @@ describe('handlers', () => {
             email: q.basic.email,
             expansionhorror: q.basic.expansionhorror,
             expansionfuture: q.basic.expansionfuture,
+            expansionscarredlands: q.basic.expansionscarredlands,
             genre: q.basic.genre,
             language: q.basic.language,
             majorRelease: true,

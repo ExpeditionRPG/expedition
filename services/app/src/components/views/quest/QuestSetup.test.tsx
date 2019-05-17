@@ -5,6 +5,7 @@ import {initialSettings} from 'app/reducers/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
 import {loggedOutUser} from 'shared/auth/UserState';
 import {TUTORIAL_QUESTS} from 'app/Constants';
+import {Expansion} from 'shared/schema/Constants';
 
 const PERSONA_SUBSTR1 = 'Draw a persona card';
 const PERSONA_SUBSTR2 = 'Draw an additional Influence';
@@ -16,7 +17,7 @@ describe('QuestSetup', () => {
     const props: Props = {
       quests: TUTORIAL_QUESTS,
       settings: initialSettings,
-      contentSets: new Set(['horror']),
+      contentSets: new Set([Expansion.horror]),
       onQuestSelect: jasmine.createSpy('onQuestSelect'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,

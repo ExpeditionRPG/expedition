@@ -16,7 +16,7 @@ function mockContext() {
   const populateScopeFn = () => {
     return {
       contentSets(): {[content: string]: boolean} {
-        return {horror: true, future: true};
+        return {horror: true, future: true, scarredlands: true};
       },
       numAdventurers(): number {
         return 3;
