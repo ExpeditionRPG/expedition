@@ -115,6 +115,18 @@ describe('SavedQuest actions', () => {
       </quest>`, [0, '|3', 'round']);
       expect(node.elem.text()).toEqual('expected');
     });
+    test('handles error on mid-combat roleplay', () => {
+      const {node} = recreateNodeFromPath(`<quest>
+        <roleplay>expected</roleplay>
+        <combat>
+          <e>Bandit</e>
+          <event on="round" if="_.currentCombatRound() == 4">
+            <roleplay>never get here</roleplay>
+          </event>
+        </combat>
+      </quest>`, [0, '|3', 'round']);
+      expect(node.elem.text()).toEqual('expected');
+    });
     test('handles exiting of combat (win/lose)', () => {
       const {node} = recreateNodeFromPath(`<quest>
         <roleplay></roleplay>

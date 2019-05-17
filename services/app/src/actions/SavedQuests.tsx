@@ -106,7 +106,8 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
       if (typeof action !== 'number') {
         const handled = node.handleAction(action);
         if (handled === null) {
-          throw Error('Failed to load quest (invalid combat action)');
+          console.warn(`Failed to load quest (invalid combat action '${action}' for node ${i} along path '${node.ctx.path}')`);
+          return {nextNode: null, i};
         }
         node = handled;
         if (action === 'win' || action === 'lose') {
@@ -144,7 +145,7 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
     let next: ParserNode|null;
     next = node.handleAction(action);
     if (!next) {
-      console.warn('Failed to load quest (action #' + i + '), returning early');
+      console.warn(`Failed to load quest (action #${i} for node along path '${node.ctx.path}'), returning early`);
       return {node, complete: false};
     }
 
@@ -167,7 +168,6 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
 }
 
 export function loadSavedQuest(id: string, ts: number) {
-  console.log('Gonna load that svaed quets');
   return (dispatch: Redux.Dispatch<any>) => {
     const savedQuests = getSavedQuestMeta();
     let details: Quest|null = null;
@@ -185,7 +185,7 @@ export function loadSavedQuest(id: string, ts: number) {
     logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
     const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
     if (!data.xml || !data.path) {
-      throw new Error('Could not load quest.');
+      throw new Error('Could not load quest - invalid save data');
     }
     const {node, complete} = recreateNodeFromPath(data.xml, data.path);
     if (!complete) {
