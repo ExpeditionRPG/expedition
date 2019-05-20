@@ -94,7 +94,7 @@ For **elements** (including listing combat enemies), you can add IF statements t
 * {{ gold >= 10 }} Buy a potion for 10 gold
 **{{ food <= 0 }} end**
 **{{ hasKey == true }} goto openSafe**
-- {{ killedTheArcher == false}} Archer
+* {{ killedTheArcher == false}} Archer
 ```
 
 ## Branches
@@ -221,11 +221,11 @@ _combat_
 
   > Is the Lich dead?
 
-  - Yes
+  * Yes
 
     **win**
 
-  - No
+  * No
 
     The Lich engulfs your party in frost!
 
@@ -247,13 +247,13 @@ _combat_
 
 ...
 
-- {{_.currentCombatRound() % 2 == 1}} on round
+* {{_.currentCombatRound() % 2 == 1}} on round
 
   This happens on every two rounds, starting with 1 (i.e. rounds 1, 3, 5, etc.).
 
   The first round is round 1.
 
-- {{_.currentCombatRound() == 4}} on round
+* {{_.currentCombatRound() == 4}} on round
 
   This happens once, on the 4th round.
 ```
@@ -265,7 +265,7 @@ _combat_
 
 ...
 
-- {{_.isCombatSurgeRound()}} on round
+* {{_.isCombatSurgeRound()}} on round
 
   Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
@@ -273,15 +273,15 @@ _combat_
 You can also have mid-combat choices lead to the end of combat by having them use the win / lose triggers outside of the normal combat flow. For example:
 
 ```markdown
-- on round
+* on round
 
   Did you kill the Lich?
 
-  - Yes
+  * Yes
 
     **win**
 
-  - No
+  * No
 
     The battle continues...
 ```
@@ -345,23 +345,23 @@ _decision_
 
 This text will be shown as users are getting ready to make a decision.
 
-- on athletics
+* on athletics
 
   This is one athletics outcome.
 
-- on athletics
+* on athletics
 
   This is another athletics outcome!
 
-- on knowledge
+* on knowledge
 
   This is a knowledge outcome.
 
-- on charisma
+* on charisma
 
   This is a charisma outcome.
 
-- on failure
+* on failure
 
   Failure!
 ```
@@ -381,31 +381,31 @@ _decision_
 
 Truly a fancy decision.
 
-- on light athletics failure
+* on light athletics failure
 
   Light athletics failed!
 
-- on light athletics interrupted
+* on light athletics interrupted
 
   Light athletics interrupted!
 
-- on light athletics success
+* on light athletics success
 
   Light athletics succeeded!
 
-- on dark athletics
+* on dark athletics
 
   Dark athletics succeeded!
 
-- on knowledge
+* on knowledge
 
   Knowledge succeeded!
 
-- on interrupted
+* on interrupted
 
   Interrupted!
 
-- on failure
+* on failure
 
   Failure!
 ```
@@ -426,14 +426,14 @@ _title_
 
 {{gold == 0}} You have no gold!
 
-- {{ gold >= 5 }} Buy the potion
+* {{ gold >= 5 }} Buy the potion
 
   {{ hasPotion = true }}
   {{ gold = gold - 5 }}
 
   You purchase the potion. You now have a potion, and {{ gold }} gold.
 
-- Continue walking
+* Continue walking
 
   You decide not to purchase the potion.
 
