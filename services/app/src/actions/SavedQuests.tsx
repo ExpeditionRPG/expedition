@@ -15,7 +15,7 @@ import {openSnackbar} from './Snackbar';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
-declare interface SavedQuest {xml: string; path: number[]; }
+declare interface SavedQuest {xml: string; path: number[]; seed: string; }
 
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 

@@ -89,7 +89,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
-      const evalResult = evaluateOp(op, ctx, rng);
+      const evalResult = evaluateOp(op, ctx.scope, rng);
       if (evalResult || evalResult === 0) {
         result += evalResult;
       }
@@ -104,7 +104,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.random): any {
+export function evaluateOp(op: string, scope: Object, rng: () => number = Math.random): any {
   let parsed;
   let evalResult;
 
@@ -127,7 +127,7 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
 
   try {
     parsed = MathJS.parse(HtmlDecode(op));
-    evalResult = parsed.compile().eval(ctx.scope);
+    evalResult = parsed.compile().eval(scope);
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';
     if (self && !self.document) { // webworker
