@@ -61,8 +61,10 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
       }
       return Promise.resolve();
     },
-    onExpansionSelect: (contentSets: ContentSetsType) => {
-      dispatch(setDialog(null));
+    onExpansionSelect: (contentSets: ContentSetsType, close: boolean = true) => {
+      if (close) {
+        dispatch(setDialog(null));
+      }
       dispatch(changeSettings({contentSets}));
     },
     onFeedbackSubmit: (type: FeedbackType, quest: QuestState, settings: SettingsType, user: UserState, text: string) => {

@@ -1,8 +1,8 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import {ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
 import {CombatPhase} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
@@ -23,7 +23,7 @@ export default function resolve(props: Props): JSX.Element {
   if (props.settings.showHelp) {
     helpText = (
       <span>
-        {props.contentSets.has('horror') && <div>
+        {props.contentSets.has(Expansion.horror) && <div>
           <h2>{CONTENT_SET_FULL_NAMES.horror} <img className="inline_icon" src="images/horror_white_small.svg"></img></h2>
           <p>Adventurers at Min persona must resolve their persona effect and reset to Base persona before resolving abilities. Adventurers at Max persona may choose to resolve and reset now or in a later round.</p>
         </div>}

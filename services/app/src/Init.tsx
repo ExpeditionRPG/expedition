@@ -13,7 +13,7 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 
-import {NODE_ENV, VERSION} from 'shared/schema/Constants';
+import {Expansion, NODE_ENV, VERSION} from 'shared/schema/Constants';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
 import {setDialog} from './actions/Dialog';
@@ -26,7 +26,7 @@ import {silentLogin} from './actions/User';
 import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
-import {SettingsType} from './reducers/StateTypes';
+import {ContentSetsType, SettingsType} from './reducers/StateTypes';
 import {createAppStore, getStore} from './Store';
 import theme from './Theme';
 
@@ -225,9 +225,9 @@ function setupStorage(document: Document) {
 
 function setupSettings(settings: SettingsType) {
   if (settings) {
-    const contentSets = (settings || {}).contentSets;
+    const contentSets: ContentSetsType = (settings || {}).contentSets;
     for (const set in contentSets) {
-      if (contentSets[set] === null) {
+      if (contentSets[set as Expansion] === null) {
         getStore().dispatch(setDialog('EXPANSION_SELECT'));
         break;
       }

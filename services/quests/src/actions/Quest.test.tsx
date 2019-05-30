@@ -1,4 +1,4 @@
-import {loadQuest} from './Quest';
+import {loadQuest, LoadResult, QUEST_NOTES_HEADER} from './Quest';
 import {API_HOST} from 'shared/schema/Constants';
 import {loggedOutUser} from '../reducers/User';
 import {Action} from '../Testing';
@@ -45,9 +45,12 @@ describe('quest actions', () => {
   });
 
   describe('loadQuest', () => {
-    const LOAD_RESULT = {data: 'quest data', notes: 'quest notes', metadata: {genre: 'DRAMA'}};
+    const qid = 'testquestid';
+    const edittime = new Date();
+    const LOAD_RESULT = {data: '#title\n\nquest data', notes: 'quest notes', metadata: {genre: 'DRAMA'}, edittime};
+    const testUser = {...loggedOutUser, name: 'Test User', email: 'testuser@test.com'};
 
-    function validateReceiveQuestLoad(results: any[]) {
+    function validateReceiveQuestLoad(results: any[], cb: ()=>any) {
       expect(results).toContainEqual(jasmine.objectContaining({
         type: 'RECEIVE_QUEST_LOAD',
       }));
@@ -55,39 +58,45 @@ describe('quest actions', () => {
         if (r.type !== 'RECEIVE_QUEST_LOAD') {
           continue;
         }
-        expect(r.quest).toEqual(jasmine.objectContaining({
-          genre: 'DRAMA',
-        }));
-        expect(r.quest.mdRealtime.getValue()).toEqual(LOAD_RESULT.data);
-        expect(r.quest.notesRealtime.getValue()).toEqual(LOAD_RESULT.notes);
-        expect(r.quest.metadataRealtime.getValue()).toEqual(LOAD_RESULT.metadata);
+        cb(r);
+        break;
       }
     }
 
-    test('loads from API first', (done) => {
-      const qid = 'testquestid';
-      const edittime = new Date();
+    test('loads from API', (done) => {
       const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
       fetchMock.get(matcher, JSON.stringify({...LOAD_RESULT, edittime}));
       fetchMock.post(/.*/, {});
-      Action(loadQuest, {}).execute(loggedOutUser, qid, edittime).then((results) => {
+      Action(loadQuest, {}).execute(testUser, qid, edittime).then((results) => {
         expect(fetchMock.called(matcher)).toEqual(true);
-        validateReceiveQuestLoad(results);
+        validateReceiveQuestLoad(results, (r) => {
+          expect(r.quest).toEqual(jasmine.objectContaining({
+            genre: 'DRAMA',
+          }));
+          expect(r.quest.mdRealtime.getValue()).toEqual(LOAD_RESULT.data);
+          expect(r.quest.notesRealtime.getValue()).toEqual(LOAD_RESULT.notes);
+          expect(r.quest.metadataRealtime.getValue()).toEqual(LOAD_RESULT.metadata);
+        });
         done();
       }).catch(done.fail);
     });
 
-    test('loads from realtime if API fails', (done) => {
-      const qid = 'testquestid';
-      const edittime = new Date();
-      const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
-      fetchMock.get(matcher, 404);
-      fetchMock.post(/.*/, {});
-      const lqfr = jasmine.createSpy('loadQuestFromRealtime').and.returnValue({...LOAD_RESULT, edittime});
-      Action(loadQuest, {}).execute(loggedOutUser, qid, edittime, lqfr).then((results) => {
-        expect(fetchMock.called(matcher)).toEqual(true);
-        expect(lqfr).toHaveBeenCalledTimes(1);
-        validateReceiveQuestLoad(results);
+    test('falls back to Drive API & published metadata', (done) =>{
+      const apiMatcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
+      const driveMatcher = `https://www.googleapis.com/drive/v2/files/${qid}?alt=media`;
+      const metaMatcher = `${API_HOST}/quests`;
+      fetchMock.get(apiMatcher, 500);
+      window.gapi.client.request = (args: any) => fetch(args.path);
+      fetchMock.get(driveMatcher, {body: LOAD_RESULT.data+QUEST_NOTES_HEADER+'// '+LOAD_RESULT.notes});
+      fetchMock.post(metaMatcher, {quests: [LOAD_RESULT.metadata]});
+      Action(loadQuest, {}).execute(testUser, qid, edittime).then((results) => {
+        expect(fetchMock.called(apiMatcher)).toEqual(true);
+        expect(fetchMock.called(driveMatcher)).toEqual(true);
+        validateReceiveQuestLoad(results, (r) => {
+          expect(r.quest.mdRealtime.getValue()).toEqual(LOAD_RESULT.data);
+          expect(r.quest.notesRealtime.getValue()).toEqual(LOAD_RESULT.notes);
+          expect(r.quest.metadataRealtime.getValue()).toEqual(LOAD_RESULT.metadata);
+        });
         done();
       }).catch(done.fail);
     });

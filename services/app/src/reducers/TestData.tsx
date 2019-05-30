@@ -1,4 +1,5 @@
 import {ContentRating, Genre, Language} from 'shared/schema/Constants';
+import {Expansion} from 'shared/schema/Constants';
 import {initialMultiplayer} from './Multiplayer';
 import {DifficultyType, FontSizeType, MultiplayerState, SearchParams, SettingsType} from './StateTypes';
 export const Settings: {[k: string]: SettingsType} = {
@@ -8,6 +9,7 @@ export const Settings: {[k: string]: SettingsType} = {
     contentSets: {
       horror: false,
       future: false,
+      scarredlands: false,
     },
     difficulty: 'NORMAL' as DifficultyType,
     experimental: false,
@@ -31,14 +33,14 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
     clientStatus: {
       'abc|def': {
         connected: true,
-        contentSets: ['horror', 'future'],
+        contentSets: [Expansion.horror, Expansion.future],
         numLocalPlayers: 3,
         aliveAdventurers: 3,
         type: 'STATUS',
       },
       '2': {
         connected: true,
-        contentSets: ['horror'],
+        contentSets: [Expansion.horror],
         numLocalPlayers: 2,
         aliveAdventurers: 2,
         type: 'STATUS',

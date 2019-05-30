@@ -31,7 +31,12 @@ describe('QuestButton', () => {
   }
 
   test('displays no expansion icons when quest has no expansions', () => {
-    const html = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: false, expansionfuture: false})}).e.html();
+    const html = setup({quest: new Quest({
+      ...TUTORIAL_QUESTS[0],
+      expansionhorror: false,
+      expansionfuture: false,
+      expansionscarredlands: false,
+    })}).e.html();
     expect(html).not.toContain('horror_small.svg');
     expect(html).not.toContain('future_small.svg');
   });

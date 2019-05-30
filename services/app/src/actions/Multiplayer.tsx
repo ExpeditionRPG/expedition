@@ -2,6 +2,7 @@ import Redux from 'redux';
 import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
 import {toClientKey} from 'shared/multiplayer/Session';
 import {handleFetchErrors} from 'shared/requests';
+import {Expansion} from 'shared/schema/Constants';
 import {openSnackbar} from '../actions/Snackbar';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {logEvent} from '../Logging';
@@ -179,7 +180,7 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
         type: 'STATUS',
         waitingOn: (selfStatus && selfStatus.waitingOn),
         name: user && user.email,
-        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k) => settings.contentSets[k]),
+        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k: Expansion) => settings.contentSets[k]),
         ...(partialStatus || {}),
       };
 

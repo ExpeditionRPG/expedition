@@ -7,11 +7,15 @@ import {renderXML} from 'shared/render/QDLParser';
 import {Quest} from 'shared/schema/Quests';
 import {PanelType, PlaytestSettings, QuestType} from '../reducers/StateTypes';
 import {store} from '../Store';
-import {SetDirtyAction, SetDirtyTimeoutAction, SetLineAction, SetWordCountAction} from './ActionTypes';
+import {SetDirtyAction, SetDirtyTimeoutAction, SetFatalAction, SetLineAction, SetWordCountAction} from './ActionTypes';
 import {pushError} from './Dialogs';
 import {saveQuest} from './Quest';
 
 declare var window: any;
+
+export function setFatal(error: string|null): SetFatalAction {
+  return {type: 'SET_FATAL', error};
+}
 
 export function setDirty(isDirty: boolean): SetDirtyAction {
   return {type: 'SET_DIRTY', isDirty};
@@ -133,6 +137,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         contentSets: {
           horror: quest.expansionhorror,
           future: quest.expansionfuture,
+          scarredlands: quest.expansionscarredlands,
         },
         difficulty: 'NORMAL',
         fontSize: 'SMALL',
@@ -157,11 +162,13 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         partition: 'expedition-private',
         expansionhorror: quest.expansionhorror,
         expansionfuture: quest.expansionfuture,
+        expansionscarredlands: quest.expansionscarredlands,
       })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),
         expansionfuture: Boolean(quest.expansionfuture),
+        expansionscarredlands: Boolean(quest.expansionscarredlands),
       }));
     });
   };

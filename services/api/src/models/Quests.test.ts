@@ -1,5 +1,5 @@
 import { object } from 'joi';
-import { Partition } from 'shared/schema/Constants';
+import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
 import { getQuest, searchQuests, updateQuestRatings } from './Quests';
@@ -9,7 +9,14 @@ const Moment = require('moment');
 
 describe('quest', () => {
   describe('searchQuests', () => {
-    const quests = [q.basic, q.private, q.privateUser2, q.horror, q.future];
+    const quests = [
+      q.basic,
+      q.private,
+      q.privateUser2,
+      q.horror,
+      q.future,
+      q.scarredlands,
+    ];
 
     test('returns an empty array if no results', done => {
       testingDBWithState(quests)
@@ -49,7 +56,7 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             text: 'Future',
-            expansions: ['horror', 'future'],
+            expansions: [Expansion.horror, Expansion.future],
           });
         })
         .then(results => {
@@ -68,7 +75,7 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             text: 'horrorauthor',
-            expansions: ['horror', 'future'],
+            expansions: [Expansion.horror, Expansion.future],
           });
         })
         .then(results => {
@@ -103,7 +110,7 @@ describe('quest', () => {
         .then(tdb =>
           searchQuests(tdb, '', {
             partition: Partition.expeditionPublic,
-            expansions: ['horror'],
+            expansions: [Expansion.horror],
           }),
         )
         .then(results => {
@@ -111,6 +118,31 @@ describe('quest', () => {
           expect((results[0] as any).dataValues).toEqual(
             jasmine.objectContaining({ id: 'questidhorror' }),
           );
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('returns more compatible expansion quests first', done => {
+      testingDBWithState(quests)
+        .then(tdb =>
+          searchQuests(tdb, '', {
+            partition: Partition.expeditionPublic,
+            expansions: [
+              Expansion.horror,
+              Expansion.future,
+              Expansion.scarredlands,
+            ],
+          }),
+        )
+        .then(results => {
+          expect(results.length).toEqual(4);
+          expect(results.map(r => r.dataValues.id)).toEqual([
+            'questidscarredlands',
+            'questidfuture',
+            'questidhorror',
+            'questid',
+          ]);
           done();
         })
         .catch(done.fail);

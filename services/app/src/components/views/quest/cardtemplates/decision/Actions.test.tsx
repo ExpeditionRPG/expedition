@@ -29,6 +29,16 @@ const TEST_NODE = new ParserNode(cheerio.load(`
     <event on="interrupted"></event>
   </decision>`)('decision'), defaultContext());
 
+const TEST_NODE_MAX_2 = new ParserNode(cheerio.load(`
+  <decision maxrolls="2">
+    <p>Decision text</p>
+    <event on="light athletics"></event>
+    <event on="dark athletics"></event>
+    <event on="charisma"></event>
+    <event on="failure"><roleplay>failure node reached</roleplay></event>
+    <event on="interrupted"></event>
+  </decision>`)('decision'), defaultContext());
+
 // Parsed from TEST_NODE
 const testDecision = (requiredSuccesses: number) => {
   return {
@@ -122,6 +132,9 @@ describe('Decision actions', () => {
     });
     test('computes interrupted', () => {
       expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.interrupted);
+    });
+    test('computes interrupted when over max rolls', () => {
+      expect(computeOutcome([20, 10], selected, s.basic, TEST_NODE_MAX_2, m.s2p5)).toEqual(Outcome.interrupted);
     });
     test('computes retry', () => {
       expect(computeOutcome([20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.retry);

@@ -1,8 +1,7 @@
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {CONTENT_SET_FULL_NAMES} from 'app/Constants';
 import * as React from 'react';
-import {Partition} from 'shared/schema/Constants';
+import {CONTENT_SET_FULL_NAMES, Expansion, Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {formatPlayPeriod} from '../../Format';
 import {SavedQuestMeta, SettingsType} from '../../reducers/StateTypes';
@@ -36,10 +35,13 @@ export interface Props extends StateProps, DispatchProps {}
 function renderRequirementsRow(quest: Quest): JSX.Element|null {
   const requires = [];
   if (quest.expansionhorror) {
-    requires.push(<div key="horror"><img className="inline_icon" src="images/horror_small.svg"/>{CONTENT_SET_FULL_NAMES.horror}</div>);
+    requires.push(<div key={Expansion.horror}><img className="inline_icon" src="images/horror_small.svg"/>{CONTENT_SET_FULL_NAMES.horror}</div>);
   }
   if (quest.expansionfuture) {
-    requires.push(<div key="future"><img className="inline_icon" src="images/future_small.svg"/>{CONTENT_SET_FULL_NAMES.future}</div>);
+    requires.push(<div key={Expansion.future}><img className="inline_icon" src="images/future_small.svg"/>{CONTENT_SET_FULL_NAMES.future}</div>);
+  }
+  if (quest.expansionscarredlands) {
+    requires.push(<div key={Expansion.scarredlands}><img className="inline_icon" src="images/titanspawn_small.svg"/>{CONTENT_SET_FULL_NAMES.scarredlands}</div>);
   }
   if (quest.requirespenpaper) {
     requires.push(<div key="penpaper"><img className="inline_icon" src="images/book_small.svg"/>Pen and Paper</div>);
