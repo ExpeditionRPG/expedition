@@ -25,6 +25,10 @@ import {setSnackbar} from './Snackbar';
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
 
+export type LoadResult {data: string, notes: string, metadata: any, edittime: Date};
+
+export const QUEST_NOTES_HEADER = '\n\n// QUEST NOTES\n';
+
 // Loaded on index.html
 declare var window: any;
 
@@ -34,6 +38,40 @@ function receiveQuestLoad(quest: QuestType): ReceiveQuestLoadAction {
 
 export function questLoading(): QuestLoadingAction {
   return {type: 'QUEST_LOADING'};
+}
+
+function formatNotes(notes: string) {
+  return notes.split('\n').map((l) => {
+    if (l.startsWith('// ')) {
+      return l.substr(3);
+    }
+    return l;
+  }).reduce((a, b) => `${a}\n${b}`);
+}
+
+function loadQuestFromDrive(fileId: string, edittime: Date): Promise<LoadResult> {
+  return Promise.resolve().then(() => {
+    return window.gapi.client.request({
+      method: 'GET',
+      path: `https://www.googleapis.com/drive/v2/files/${fileId}?alt=media`,
+    });
+  }).then((json: any) => {
+    if (!json.body) {
+      throw new Error(`Could not read from Drive API (${json.status}): ${json.statusText}`);
+    }
+
+    const dataStart = json.body.indexOf('#');
+    const dataEnd = json.body.indexOf(QUEST_NOTES_HEADER);
+
+    return {
+      data: json.body.substr(dataStart, (dataEnd >= 0) ? (dataEnd - dataStart) : undefined),
+      notes: (dataEnd >= 0) ? formatNotes(json.body.substr(dataEnd + QUEST_NOTES_HEADER.length)) : '',
+      metadata: {}, // Metadata not saved to quests
+      edittime,
+    };
+  }, (json: any) => {
+    throw new Error(json.result.error);
+  });
 }
 
 function updateDriveFile(fileId: string, fileMetadata: any, text: string, callback: (err: any, result?: any) => any) {
@@ -165,7 +203,7 @@ function getPublishedQuestMeta(publishedId: string): Promise<QuestType|null> {
   });
 }
 
-function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<{data: string, notes: string, metadata: any, edittime: Date}> {
+function loadQuestFromAPI(user: UserState, docid: string, edittime: Date): Promise<LoadResult> {
   return fetch(`${API_HOST}/qdl/${docid}/${edittime.getTime()}`, {
         credentials: 'include',
         headers: {
@@ -193,6 +231,11 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
       return dispatch(newQuest(user));
     }
     return loadQuestFromAPI(user, docid, edittime)
+      .catch((e) => {
+        // Fall back to Drive API if we get an API error
+        console.error(e);
+        return loadQuestFromDrive(docid, edittime);
+      })
       .then((result) => {
         window.location.hash = docid;
         const md = new EditableString('md', result.data);
@@ -377,7 +420,7 @@ function saveQuestInternal(id: string|undefined, data: string, notes: string, me
     return Promise.reject(new Error('Undefined quest ID'));
   }
 
-  const notesCommented = '\n\n// QUEST NOTES\n// ' + notes.replace(/\n/g, '\n// ');
+  const notesCommented = QUEST_NOTES_HEADER + '// ' + notes.replace(/\n/g, '\n// ');
   const text: string = data + notesCommented;
   const xmlResult = renderXML(text);
   const meta = xmlResult.getMeta();
