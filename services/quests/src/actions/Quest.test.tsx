@@ -81,19 +81,21 @@ describe('quest actions', () => {
       }).catch(done.fail);
     });
 
-    test('falls back to Drive API', (done) =>{
+    test('falls back to Drive API & published metadata', (done) =>{
       const apiMatcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
       const driveMatcher = `https://www.googleapis.com/drive/v2/files/${qid}?alt=media`;
+      const metaMatcher = `${API_HOST}/quests`;
       fetchMock.get(apiMatcher, 500);
       window.gapi.client.request = (args: any) => fetch(args.path);
       fetchMock.get(driveMatcher, {body: LOAD_RESULT.data+QUEST_NOTES_HEADER+'// '+LOAD_RESULT.notes});
-      fetchMock.post(/.*/, {});
+      fetchMock.post(metaMatcher, {quests: [LOAD_RESULT.metadata]});
       Action(loadQuest, {}).execute(testUser, qid, edittime).then((results) => {
         expect(fetchMock.called(apiMatcher)).toEqual(true);
         expect(fetchMock.called(driveMatcher)).toEqual(true);
         validateReceiveQuestLoad(results, (r) => {
           expect(r.quest.mdRealtime.getValue()).toEqual(LOAD_RESULT.data);
           expect(r.quest.notesRealtime.getValue()).toEqual(LOAD_RESULT.notes);
+          expect(r.quest.metadataRealtime.getValue()).toEqual(LOAD_RESULT.metadata);
         });
         done();
       }).catch(done.fail);

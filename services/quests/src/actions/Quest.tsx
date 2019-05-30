@@ -45,6 +45,31 @@ export function questLoading(): QuestLoadingAction {
   return {type: 'QUEST_LOADING'};
 }
 
+function loadMetadataFromPublished(fileId: string): Promise<QuestType> {
+  return fetch(`${API_HOST}/quests`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'text/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        id: fileId,
+        showPrivate: true,
+      }),
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  }).then((json: any) => {
+    if (json.quests.length !== 1) {
+      console.error('Could not find matching metadata for quest - got ' + JSON.stringify(json.quests));
+      return {};
+    }
+    return json.quests[0];
+  });
+}
+
 function formatNotes(notes: string) {
   return notes.split('\n').map((l) => {
     if (l.startsWith('// ')) {
@@ -239,9 +264,19 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
       .catch((e) => {
         // Fall back to Drive API if we get an API error
         console.error(e);
-        return loadQuestFromDrive(docid, edittime);
+        let result: LoadResult = {data: '', notes: '', metadata: {}, edittime};
+        return loadQuestFromDrive(docid, edittime).then((r) => {
+          result = r;
+          return loadMetadataFromPublished(docid);
+        }).then((metadata) => {
+          return {...result, metadata};
+        }).catch((e2) => {
+          // Proceed even if we can't find published metadata.
+          console.error(e2);
+          return result;
+        });
       })
-      .then((result) => {
+      .then((result: LoadResult) => {
         window.location.hash = docid;
         const md = new EditableString('md', result.data);
         const notes = new EditableString('notes', result.notes);
