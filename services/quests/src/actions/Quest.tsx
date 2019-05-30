@@ -25,7 +25,12 @@ import {setSnackbar} from './Snackbar';
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
 
-export type LoadResult {data: string, notes: string, metadata: any, edittime: Date};
+export interface LoadResult {
+  data: string;
+  notes: string;
+  metadata: any;
+  edittime: Date;
+}
 
 export const QUEST_NOTES_HEADER = '\n\n// QUEST NOTES\n';
 
