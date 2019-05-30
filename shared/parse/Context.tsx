@@ -104,7 +104,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, scope: Object, rng: () => number = Math.random): any {
+export function evaluateOp(op: string, scope: any, rng: () => number = Math.random): any {
   let parsed;
   let evalResult;
 

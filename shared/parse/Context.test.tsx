@@ -34,72 +34,72 @@ describe('Context', () => {
         .toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
     });
     test('returns value and updates context', () => {
-      const ctx = {scope: {b: '1'} as any};
-      expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
-      expect(ctx.scope).toEqual({a: 2, b: '1'});
+      const scope = {b: '1'};
+      expect(evaluateOp('a=b+1;a', scope)).toEqual(2);
+      expect(scope).toEqual({a: 2, b: '1'});
     });
     test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', {})).toEqual(null);
     });
     test('generates varied random numbers', () => {
-      const ctx = {};
+      const scope = {};
       const rng = () => Math.random();
       const output = [];
       for (let i = 0; i < 50; i++) {
-        output.push(evaluateOp('random()', ctx, rng));
+        output.push(evaluateOp('random()', scope, rng));
       }
       expect(arrayUniques(output).length).toBeGreaterThan(20);
     });
     test('has repeatable random() behavior based on seed', () => {
-      const ctx = {};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('random()', ctx, rng);
+      const expected = evaluateOp('random()', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('random()', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('random()', scope, rng)).toEqual(expected);
       }
-      expect(evaluateOp('random(100)', ctx, rng)).toEqual(evaluateOp('random(100)', ctx, rng));
-      expect(evaluateOp('random(10, 100)', ctx, rng)).toEqual(evaluateOp('random(10, 100)', ctx, rng));
+      expect(evaluateOp('random(100)', scope, rng)).toEqual(evaluateOp('random(100)', scope, rng));
+      expect(evaluateOp('random(10, 100)', scope, rng)).toEqual(evaluateOp('random(10, 100)', scope, rng));
     });
     test('has repeatable randomInt() behavior based on seed', () => {
-      const ctx = {};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('randomInt()', ctx, rng);
+      const expected = evaluateOp('randomInt()', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('randomInt()', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('randomInt()', scope, rng)).toEqual(expected);
       }
-      expect(evaluateOp('randomInt(100)', ctx, rng)).toEqual(evaluateOp('randomInt(100)', ctx, rng));
-      expect(evaluateOp('randomInt(10, 100)', ctx, rng)).toEqual(evaluateOp('randomInt(10, 100)', ctx, rng));
+      expect(evaluateOp('randomInt(100)', scope, rng)).toEqual(evaluateOp('randomInt(100)', scope, rng));
+      expect(evaluateOp('randomInt(10, 100)', scope, rng)).toEqual(evaluateOp('randomInt(10, 100)', scope, rng));
     });
     test('has repeatable pickRandom() behavior based on seed', () => {
-      const ctx = {};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('pickRandom([1,2,3])', ctx, rng);
+      const expected = evaluateOp('pickRandom([1,2,3])', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('pickRandom([1,2,3])', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('pickRandom([1,2,3])', scope, rng)).toEqual(expected);
       }
     });
   });
 
   describe('evaluateContentOps', () => {
     test('persists state', () => {
-      const ctx = {};
+      const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}', ctx)).toEqual('');
       expect(evaluateContentOps('{{text}}', ctx)).toEqual('TEST');
     });
 
     test('handles multiple ops in one string', () => {
-      const ctx = {};
+      const ctx = defaultContext();
       expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual('TEST');
     });
 
     test('varies results when random() called in same set of ops', () => {
-      const ctx = {};
+      const ctx = defaultContext();
       const result = evaluateContentOps('{{random()}}\n{{random()}}', ctx).split('\n');
       expect(result[1]).not.toEqual(result[2]);
     });
 
     test('changes random result for different contexts', () => {
-      let ctx = {};
+      let ctx = defaultContext();
       const r1 = evaluateContentOps('{{random()}}', ctx);
       ctx = {};
       const r2 = evaluateContentOps('{{random()}}', ctx);
@@ -111,7 +111,7 @@ describe('Context', () => {
     const dummyElem = cheerio.load('<combat></combat>')('combat');
 
     test('appends to path', () => {
-      const ctx = {};
+      const ctx = defaultContext();
       expect(ctx.path).toEqual([]);
       const ctx2 = updateContext(dummyElem, ctx, 2);
       expect(ctx2.path).toEqual([2]);
@@ -121,13 +121,13 @@ describe('Context', () => {
       expect(ctx4.path).toEqual([2, 'win', '#testID']);
     });
     test('does not affect other contexts', () => {
-      const ctx = {};
+      const ctx = defaultContext();
       updateContext(dummyElem, ctx, 2);
       expect(ctx.path).not.toEqual([2]);
     });
     test('updates view count', () => {
       const dummyElem = cheerio.load('<roleplay id="1234"></roleplay>')('roleplay');
-      const ctx = updateContext(dummyElem, {}, 0);
+      const ctx = updateContext(dummyElem, defaultContext(), 0);
       expect(ctx.views['1234']).toEqual(1);
     });
   });
