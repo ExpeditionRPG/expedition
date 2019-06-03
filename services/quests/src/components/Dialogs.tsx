@@ -342,7 +342,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
               onChange={(checked: boolean) => { this.setState({privatePublish: checked}); }}>
             </Checkbox>
             {this.state.privatePublish && <div>Your private quest will be visible only to you
-              in the Expedition App (Tools > Private Quests).</div>}
+              in the Expedition App (in Quests, when "Also show my private quests" is checked in the search options).</div>}
           </FormControl>
         </DialogContent>
         <DialogActions>
