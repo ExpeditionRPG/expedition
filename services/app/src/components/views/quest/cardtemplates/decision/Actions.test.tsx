@@ -212,6 +212,22 @@ describe('Decision actions', () => {
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
       expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
     });
+    test('goes to interrupted state when in combat', () => {
+      // TODO
+      const actions = Action(handleDecisionRoll, {
+        card: {phase: 'MID_COMBAT_DECISION'},
+        settings: s.basic,
+        multiplayer: m.s2p5
+      }).execute({node: setup(), roll: 10});
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
+      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
+    });
+    test('goes to interrupted state when non-combat decision has interrupted event', () => {
+      // TODO
+    });
+    test('goes to success state when non-combat decision has no interrupted event', () => {
+      // TODO
+    });
   });
   describe('toDecisionCard', () => {
     test('goes to MID_COMBAT_DECISION if in combat', () => {
