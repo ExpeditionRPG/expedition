@@ -39,7 +39,13 @@ deploy() {
     read -p "Did you test on beta? (y/N) " -n 1
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-      ./deploy.sh prod
+      read -p "Are you on the master branch? (y/N) " -n 1
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        ./deploy.sh prod
+      else
+        echo "Prod build cancelled until on master branch."
+      fi
     else
       echo "Prod build cancelled until tested on beta."
     fi
