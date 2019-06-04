@@ -15,7 +15,7 @@ import {openSnackbar} from './Snackbar';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
-declare interface SavedQuest {xml: string; path: number[]; }
+declare interface SavedQuest {xml: string; path: number[]; seed: string; }
 
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 
@@ -72,12 +72,13 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): S
   // Save the quest state
   const xml = node.getRootElem() + '';
   const path = node.ctx.path;
+  const seed = node.ctx.seed;
 
   if (!xml || !path) {
     throw new Error('Could not save quest.');
   }
 
-  setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path} as SavedQuest);
+  setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
   return {type: 'SAVED_QUEST_STORED', savedQuests};
 }
 
@@ -106,7 +107,8 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
       if (typeof action !== 'number') {
         const handled = node.handleAction(action);
         if (handled === null) {
-          throw Error('Failed to load quest (invalid combat action)');
+          console.warn(`Failed to load quest (invalid combat action '${action}' for node ${i} along path '${node.ctx.path}')`);
+          return {nextNode: null, i};
         }
         node = handled;
         if (action === 'win' || action === 'lose') {
@@ -135,16 +137,21 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
   return {nextNode: node, i};
 }
 
-export function recreateNodeFromPath(xml: string, path: string|number[]): {node: ParserNode, complete: boolean} {
-  // TODO: Return partially-loaded quest if it fails at all.
+export function recreateNodeFromPath(xml: string, path: string|number[], seed?: string): {node: ParserNode, complete: boolean} {
   let node = initQuestNode(getCheerio().load(xml)('quest'), defaultContext());
+  if (seed) {
+    node.ctx.seed = seed;
+  } else {
+    console.warn('Recreating node without saved seed; RNG failures may cause partial load');
+  }
+
   for (let i = 0; i < path.length; i++) {
     const action = path[i];
     // TODO: Also save random seed with path in context
     let next: ParserNode|null;
     next = node.handleAction(action);
     if (!next) {
-      console.warn('Failed to load quest (action #' + i + '), returning early');
+      console.warn(`Failed to load quest (action #${i} for node along path '${node.ctx.path}'), returning early`);
       return {node, complete: false};
     }
 
@@ -167,7 +174,6 @@ export function recreateNodeFromPath(xml: string, path: string|number[]): {node:
 }
 
 export function loadSavedQuest(id: string, ts: number) {
-  console.log('Gonna load that svaed quets');
   return (dispatch: Redux.Dispatch<any>) => {
     const savedQuests = getSavedQuestMeta();
     let details: Quest|null = null;
@@ -185,9 +191,9 @@ export function loadSavedQuest(id: string, ts: number) {
     logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
     const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
     if (!data.xml || !data.path) {
-      throw new Error('Could not load quest.');
+      throw new Error('Could not load quest - invalid save data');
     }
-    const {node, complete} = recreateNodeFromPath(data.xml, data.path);
+    const {node, complete} = recreateNodeFromPath(data.xml, data.path, data.seed);
     if (!complete) {
       dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
     }

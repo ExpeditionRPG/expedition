@@ -18,64 +18,64 @@ describe('Context', () => {
 
   describe('evaluateOp', () => {
     test('handles string equality', () => {
-      expect(evaluateOp('"abc" == "abc"', defaultContext())).toEqual(true);
-      expect(evaluateOp('"abc" == "123"', defaultContext())).toEqual(false);
+      expect(evaluateOp('"abc" == "abc"', {})).toEqual(true);
+      expect(evaluateOp('"abc" == "123"', {})).toEqual(false);
     });
     test('throws error on invalid parse', () => {
-      evaluateOp('foo==\'a\'', defaultContext());
+      evaluateOp('foo==\'a\'', {});
       expect(window.onerror)
         .toHaveBeenCalledWith(
           'Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')',
           'shared/parse/context');
     });
     test('throws error on invalid eval', () => {
-      evaluateOp('asdf', defaultContext());
+      evaluateOp('asdf', {});
       expect(window.onerror)
         .toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
     });
     test('returns value and updates context', () => {
-      const ctx = {...defaultContext(), scope: {b: '1'} as any};
-      expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
-      expect(ctx.scope).toEqual({a: 2, b: '1'});
+      const scope = {b: '1'};
+      expect(evaluateOp('a=b+1;a', scope)).toEqual(2);
+      expect(scope).toEqual({a: 2, b: '1'});
     });
     test('does not return if last operation assigns a value', () => {
-      expect(evaluateOp('a=1', defaultContext())).toEqual(null);
+      expect(evaluateOp('a=1', {})).toEqual(null);
     });
     test('generates varied random numbers', () => {
-      const ctx = {...defaultContext()};
+      const scope = {};
       const rng = () => Math.random();
       const output = [];
       for (let i = 0; i < 50; i++) {
-        output.push(evaluateOp('random()', ctx, rng));
+        output.push(evaluateOp('random()', scope, rng));
       }
       expect(arrayUniques(output).length).toBeGreaterThan(20);
     });
     test('has repeatable random() behavior based on seed', () => {
-      const ctx = {...defaultContext()};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('random()', ctx, rng);
+      const expected = evaluateOp('random()', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('random()', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('random()', scope, rng)).toEqual(expected);
       }
-      expect(evaluateOp('random(100)', ctx, rng)).toEqual(evaluateOp('random(100)', ctx, rng));
-      expect(evaluateOp('random(10, 100)', ctx, rng)).toEqual(evaluateOp('random(10, 100)', ctx, rng));
+      expect(evaluateOp('random(100)', scope, rng)).toEqual(evaluateOp('random(100)', scope, rng));
+      expect(evaluateOp('random(10, 100)', scope, rng)).toEqual(evaluateOp('random(10, 100)', scope, rng));
     });
     test('has repeatable randomInt() behavior based on seed', () => {
-      const ctx = {...defaultContext()};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('randomInt()', ctx, rng);
+      const expected = evaluateOp('randomInt()', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('randomInt()', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('randomInt()', scope, rng)).toEqual(expected);
       }
-      expect(evaluateOp('randomInt(100)', ctx, rng)).toEqual(evaluateOp('randomInt(100)', ctx, rng));
-      expect(evaluateOp('randomInt(10, 100)', ctx, rng)).toEqual(evaluateOp('randomInt(10, 100)', ctx, rng));
+      expect(evaluateOp('randomInt(100)', scope, rng)).toEqual(evaluateOp('randomInt(100)', scope, rng));
+      expect(evaluateOp('randomInt(10, 100)', scope, rng)).toEqual(evaluateOp('randomInt(10, 100)', scope, rng));
     });
     test('has repeatable pickRandom() behavior based on seed', () => {
-      const ctx = {...defaultContext()};
+      const scope = {};
       const rng = () => 0.1;
-      const expected = evaluateOp('pickRandom([1,2,3])', ctx, rng);
+      const expected = evaluateOp('pickRandom([1,2,3])', scope, rng);
       for (let i = 0; i < 50; i++) {
-        expect(evaluateOp('pickRandom([1,2,3])', ctx, rng)).toEqual(expected);
+        expect(evaluateOp('pickRandom([1,2,3])', scope, rng)).toEqual(expected);
       }
     });
   });
@@ -101,7 +101,7 @@ describe('Context', () => {
     test('changes random result for different contexts', () => {
       let ctx = defaultContext();
       const r1 = evaluateContentOps('{{random()}}', ctx);
-      ctx = defaultContext();
+      ctx = {};
       const r2 = evaluateContentOps('{{random()}}', ctx);
       expect(r1).not.toEqual(r2);
     });
