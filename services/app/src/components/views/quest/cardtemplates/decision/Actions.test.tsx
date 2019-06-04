@@ -26,7 +26,7 @@ const TEST_NODE = new ParserNode(cheerio.load(`
     <event on="dark athletics"></event>
     <event on="charisma"></event>
     <event on="failure"><roleplay>failure node reached</roleplay></event>
-    <event on="interrupted"></event>
+    <event on="interrupted"><roleplay>interrupted node reached</roleplay></event>
   </decision>`)('decision'), defaultContext());
 
 const TEST_NODE_MAX_2 = new ParserNode(cheerio.load(`
@@ -38,6 +38,16 @@ const TEST_NODE_MAX_2 = new ParserNode(cheerio.load(`
     <event on="failure"><roleplay>failure node reached</roleplay></event>
     <event on="interrupted"></event>
   </decision>`)('decision'), defaultContext());
+
+const TEST_NODE_NO_INTERRUPTED = new ParserNode(cheerio.load(`
+  <decision>
+    <p>Decision text</p>
+    <event on="light athletics"><roleplay>success node reached</roleplay></event>
+    <event on="dark athletics"></event>
+    <event on="charisma"></event>
+    <event on="failure"></event>
+  </decision>`)('decision'), defaultContext());
+
 
 // Parsed from TEST_NODE
 const testDecision = (requiredSuccesses: number) => {
@@ -54,11 +64,11 @@ const testDecision = (requiredSuccesses: number) => {
 
 describe('Decision actions', () => {
 
-  function setup(): ParserNode {
+  function setup(copyNode: ParserNode = TEST_NODE): ParserNode {
     const node = Action(initDecision, {
       settings: s.basic,
       multiplayer: m.s2p5,
-    }).execute({node: TEST_NODE.clone()})[1].node;
+    }).execute({node: copyNode.clone()})[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
     node.ctx.templates.combat = {decisionPhase: 'RESOLVE_DECISION'}; // Ignored if non-combat, used if mid-combat
@@ -125,22 +135,25 @@ describe('Decision actions', () => {
     const selected = {difficulty: 'medium', requiredSuccesses: 5};
 
     test('computes success', () => {
-      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.success);
+      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.success);
     });
     test('computes failure', () => {
-      expect(computeOutcome([1], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.failure);
+      expect(computeOutcome([1], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.failure);
     });
     test('computes interrupted', () => {
-      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.interrupted);
+      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.interrupted);
     });
     test('computes interrupted when over max rolls', () => {
-      expect(computeOutcome([20, 10], selected, s.basic, TEST_NODE_MAX_2, m.s2p5)).toEqual(Outcome.interrupted);
+      expect(computeOutcome([20, 10], selected, s.basic, TEST_NODE_MAX_2, m.s2p5, true)).toEqual(Outcome.interrupted);
+    });
+    test('computes success when over max rolls and no interrupted state', () => {
+      expect(computeOutcome([10, 10, 10, 10, 10], selected, s.basic, TEST_NODE_NO_INTERRUPTED, m.s2p5, false)).toEqual(Outcome.success);
     });
     test('computes retry', () => {
-      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(Outcome.retry);
+      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.retry);
     });
     test('returns null when no rolls', () => {
-      expect(computeOutcome([], selected, s.basic, TEST_NODE, m.s2p5)).toEqual(null);
+      expect(computeOutcome([], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(null);
     });
 
   });
@@ -212,21 +225,25 @@ describe('Decision actions', () => {
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
       expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
     });
-    test('goes to interrupted state when in combat', () => {
-      // TODO
+    test('goes to interrupted state when non-combat decision has interrupted event', () => {
+      const node = setup();
+      node.ctx.templates.decision.rolls = [10, 10, 10, 10];
       const actions = Action(handleDecisionRoll, {
-        card: {phase: 'MID_COMBAT_DECISION'},
+        card: {phase: ''},
         settings: s.basic,
         multiplayer: m.s2p5
-      }).execute({node: setup(), roll: 10});
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
-      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
-    });
-    test('goes to interrupted state when non-combat decision has interrupted event', () => {
-      // TODO
+      }).execute({node, roll: 10});
+      expect(actions[1].node.elem.text()).toEqual('interrupted node reached');
     });
     test('goes to success state when non-combat decision has no interrupted event', () => {
-      // TODO
+      const node = setup(TEST_NODE_NO_INTERRUPTED);
+      node.ctx.templates.decision.rolls = [10, 10, 10, 10];
+      const actions = Action(handleDecisionRoll, {
+        card: {phase: ''},
+        settings: s.basic,
+        multiplayer: m.s2p5
+      }).execute({node, roll: 10});
+      expect(actions[1].node.elem.text()).toEqual('success node reached');
     });
   });
   describe('toDecisionCard', () => {
