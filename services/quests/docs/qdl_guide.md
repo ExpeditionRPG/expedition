@@ -221,11 +221,11 @@ _combat_
 
   > Is the Lich dead?
 
-  * Yes
+  - Yes
 
     **win**
 
-  * No
+  - No
 
     The Lich engulfs your party in frost!
 
@@ -247,13 +247,13 @@ _combat_
 
 ...
 
-* {{_.currentCombatRound() % 2 == 1}} on round
+- {{_.currentCombatRound() % 2 == 1}} on round
 
   This happens on every two rounds, starting with 1 (i.e. rounds 1, 3, 5, etc.).
 
   The first round is round 1.
 
-* {{_.currentCombatRound() == 4}} on round
+- {{_.currentCombatRound() == 4}} on round
 
   This happens once, on the 4th round.
 ```
@@ -265,7 +265,7 @@ _combat_
 
 ...
 
-* {{_.isCombatSurgeRound()}} on round
+- {{_.isCombatSurgeRound()}} on round
 
   Extra surge dialogue! Perhaps your allies also surge for a bonus, or you take damage from the room collapsing.
 ```
@@ -273,15 +273,15 @@ _combat_
 You can also have mid-combat choices lead to the end of combat by having them use the win / lose triggers outside of the normal combat flow. For example:
 
 ```markdown
-* on round
+- on round
 
   Did you kill the Lich?
 
-  * Yes
+  - Yes
 
     **win**
 
-  * No
+  - No
 
     The battle continues...
 ```
@@ -341,29 +341,33 @@ Decisions can be made when when users have Skill cards that they can use to affe
 When out of combat, skill checks look sort of like a special roleplay card:
 
 ```markdown
-_decision_
+_decision_ {"maxrolls": 4}
 
 This text will be shown as users are getting ready to make a decision.
 
-* on athletics
+- on athletics
 
   This is one athletics outcome.
 
-* on athletics
+- on athletics
 
   This is another athletics outcome!
 
-* on knowledge
+- on knowledge
 
   This is a knowledge outcome.
 
-* on charisma
+- on charisma
 
   This is a charisma outcome.
 
-* on failure
+- on failure
 
   Failure!
+
+- on interrupted
+
+  Interrupted!
 ```
 
 - Notice that there's multiple outcomes - similar to roleplay "choices" - three of these will be shown to users in the timed phase, so there needs to be at least 3 distinct kinds of outcome for users to select from.
@@ -371,8 +375,9 @@ This text will be shown as users are getting ready to make a decision.
 - If you want to get fancy, you can also add a persona alignment ("light" or "dark") that gives players bonus points if they have that particular kind of persona. If you reference persona, you must mark your quest as requiring The Horror expansion (otherwise users won't benefit from it).
 - Unless specified, your outcome describes what happens when the user succeeds in rolling for the outcome. You can also add "success", "failure", or "interrupted" to describe specifically what happens when users roll to high, too low, or not significantly in either direction.
   - If you want to reuse the same failure text for every outcome, you can specify an "on failure" node that is used for any skill and persona alignment that doesn't have a more specific failure outcome.
-  - If you don't add any "interrupted" outcomes, the app will generate some generic "interrupted" text and use it.
+  - If you don't add any "interrupted" outcomes, the only options will be "success" or "failure".
   - There _must_ be a success and failure for every outcome - whether it's specified in two outcomes, or using a generic failure outcome is up to you.
+- The `{"maxrolls": 4}` part is totally optional - if left out, users will be able to keep rolling until all adventurers have had a turn. But sometimes you want to limit the number of chances if you only want one player to roll, or if you want to make the decision harder, and so `maxrolls` will limit the maximum number of rolls even if there are more adventurers.
 
 Whew, that's a lot of options! You can get as fancy as you want with this - here's a valid decision that uses all kinds of different outcomes:
 
@@ -381,31 +386,31 @@ _decision_
 
 Truly a fancy decision.
 
-* on light athletics failure
+- on light athletics failure
 
   Light athletics failed!
 
-* on light athletics interrupted
+- on light athletics interrupted
 
   Light athletics interrupted!
 
-* on light athletics success
+- on light athletics success
 
   Light athletics succeeded!
 
-* on dark athletics
+- on dark athletics
 
   Dark athletics succeeded!
 
-* on knowledge
+- on knowledge
 
   Knowledge succeeded!
 
-* on interrupted
+- on interrupted
 
   Interrupted!
 
-* on failure
+- on failure
 
   Failure!
 ```
@@ -426,14 +431,14 @@ _title_
 
 {{gold == 0}} You have no gold!
 
-* {{ gold >= 5 }} Buy the potion
+- {{ gold >= 5 }} Buy the potion
 
   {{ hasPotion = true }}
   {{ gold = gold - 5 }}
 
   You purchase the potion. You now have a potion, and {{ gold }} gold.
 
-* Continue walking
+- Continue walking
 
   You decide not to purchase the potion.
 

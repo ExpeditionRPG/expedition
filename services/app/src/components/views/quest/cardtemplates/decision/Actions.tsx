@@ -90,15 +90,16 @@ export function selectChecks(cs: LeveledSkillCheck[], rng: () => number): Levele
     });
 }
 
-export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, node: ParserNode, rp: MultiplayerState): (keyof typeof Outcome)|null {
+export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, settings: SettingsType, node: ParserNode, rp: MultiplayerState, hasInterrupted: boolean): (keyof typeof Outcome)|null {
   // Compute the outcome from the most recent roll (if any)
   const aliveAdventurers = numAliveAdventurers(settings, node, rp);
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
   const maxRolls = parseInt(node.elem.attr('maxrolls'), 10);
+
   let outcome: (keyof typeof Outcome)|null = null;
-  if (successes >= selected.requiredSuccesses) {
+  if (successes >= selected.requiredSuccesses || (rolls.length >= aliveAdventurers && !hasInterrupted)) {
     outcome = Outcome.success;
   } else if (failures > 0) {
     outcome = Outcome.failure;
@@ -139,7 +140,6 @@ export function generateLeveledChecks(aliveAdventurers: number, rng: () => numbe
 }
 
 function parseDecisionChecks(aliveAdventurers: number, rng: () => number, node?: ParserNode): LeveledSkillCheck[] {
-  console.log(aliveAdventurers);
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -206,9 +206,9 @@ function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppSta
   decision.rolls.push(roll);
 
   // Based on the outcome, navigate to a roleplay card
-  const settings = getState().settings;
-  const rp = getState().multiplayer;
-  const outcome = computeOutcome(decision.rolls, selected, settings, node, rp);
+  const {settings, multiplayer, card} = getState();
+  const hasInterrupted = (card.phase === 'MID_COMBAT_DECISION') || (node.getVisibleKeys().filter((k) => k === 'interrupted').length > 0);
+  const outcome = computeOutcome(decision.rolls, selected, settings, node, multiplayer, hasInterrupted);
 
   // In all cases except for retry and just having chosen the check,
   // there's a chance we need to follow an event bullet.
