@@ -140,7 +140,6 @@ export function generateLeveledChecks(aliveAdventurers: number, rng: () => numbe
 }
 
 function parseDecisionChecks(aliveAdventurers: number, rng: () => number, node?: ParserNode): LeveledSkillCheck[] {
-  console.log(aliveAdventurers);
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -208,7 +207,6 @@ function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppSta
 
   // Based on the outcome, navigate to a roleplay card
   const {settings, multiplayer, card} = getState();
-  console.log(node.getVisibleKeys());
   const hasInterrupted = (card.phase === 'MID_COMBAT_DECISION') || (node.getVisibleKeys().filter((k) => k === 'interrupted').length > 0);
   const outcome = computeOutcome(decision.rolls, selected, settings, node, multiplayer, hasInterrupted);
 
