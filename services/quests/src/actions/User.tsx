@@ -16,7 +16,7 @@ export function setProfileMeta(user: UserState): SetProfileMetaAction {
 
 export function loginUser(showPrompt: boolean, quest?: boolean | string): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    return loginWebBase(window.gapi, AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES + ' https://www.googleapis.com/auth/drive.file')
+    return loginWebBase(window.gapi, AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES + ' https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install')
       .then((r) => {
         return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, r);
       })
