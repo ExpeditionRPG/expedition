@@ -10,11 +10,11 @@ class CrawlTest extends CrawlerBase<Context> {
 
   constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null,
               onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null,
-              onWarnings: ((q: CrawlEntry<Context>, warnings: Error[], line: number) => any)|null) {
+              onErrors: ((q: CrawlEntry<Context>, errors: Error[], line: number) => any)|null) {
     super();
     this.efn = onEvent;
     this.nfn = onNode;
-    this.wfn = onWarnings;
+    this.wfn = onErrors;
   }
 
   protected onEvent(q: CrawlEntry<Context>, e: CrawlEvent) {
@@ -27,7 +27,7 @@ class CrawlTest extends CrawlerBase<Context> {
       this.nfn(q, nodeStr, id, line);
     }
   }
-  protected onWarnings(q: CrawlEntry<Context>, warnings: Error[], line: number) {
+  protected onErrors(q: CrawlEntry<Context>, errors: Error[], line: number) {
     if (this.wfn) {
       this.wfn(q, warnings, line);
     }
@@ -290,20 +290,28 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
-    test('handles warnings', () => {
+    test('handles errors in conditionals', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice if="notavar"><roleplay></roleplay></choice>
         </roleplay>`)(':first-child');
-      let foundWarnings = false;
-      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, warnings: Error[], line: number) => {
-        foundWarnings = true;
-        expect(warnings[0].toString()).toContain('notavar');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
         expect(line).toEqual(2);
       });
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(foundWarnings).toEqual(true);
+      expect(foundErrors).toEqual(true);
+    });
+
+    test('handles errors in body', () => {
+      // TODO
+    });
+
+    test('handles errors in attributes', () => {
+      // TODO
     });
   });
 });

@@ -96,7 +96,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
     this.statsByEvent[e].push({line: q.prevLine, id: q.prevId, fromAction: q.fromAction});
   }
 
-  protected onWarnings(q: StatsCrawlEntry, warnings: Error[], line: number) {
+  protected onErrors(q: StatsCrawlEntry, errors: Error[], line: number) {
     // Do nothing, but required as implementation of abstract class.
   }
 

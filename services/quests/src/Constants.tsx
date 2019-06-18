@@ -24,6 +24,8 @@ export const METADATA_DEFAULTS = {
   expansionscarredlands: false,
   maxplayers: MAX_PLAYERS,
   minplayers: MIN_PLAYERS,
+  mintimeminutes: 10,
+  maxtimeminutes: 999,
   requirespenpaper: false,
   theme: 'base',
 };

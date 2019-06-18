@@ -34,11 +34,11 @@ export class Node<C extends Context> {
 
   // Certain fail-safe events are fine under normal behavior, but we may want to
   // strictly check them when crawling for errors.
-  private warnings: Error[];
+  private errors: Error[];
 
   constructor(elem: Cheerio, ctx: C, action?: string|number, seed?: string) {
     this.elem = elem;
-    this.warnings = [];
+    this.errors = [];
     this.ctx = this.updateContext(elem, ctx, action);
     // Overwrite seed after updateContext, which generates one otherwise.
     if (seed) {
@@ -61,8 +61,8 @@ export class Node<C extends Context> {
     return new (this.constructor as any)(this.elem, this.ctx, null, this.ctx.seed);
   }
 
-  public getWarnings(): Error[] {
-    return this.warnings;
+  public getErrors(): Error[] {
+    return this.errors;
   }
 
   public getTag(): string|null {
@@ -145,12 +145,21 @@ export class Node<C extends Context> {
       // Evaluate ops in attributes
       const attribs = getNodeAttributes(c);
       for (const attrib of Object.keys(attribs)) {
-        c.attr(attrib, evaluateContentOps(attribs[attrib], this.ctx));
+        try {
+          c.attr(attrib, evaluateContentOps(attribs[attrib], this.ctx));
+        } catch (e) {
+          this.errors.push(new Error(`Failed to evaluate op in attribute ${attrib}: ${e.toString()}`));
+        }
       }
 
       // Evaluate all non-control node bodies
       if (!this.isElemControl(c)) {
-        const evaluated = evaluateContentOps(c.html() || '', this.ctx);
+        let evaluated = '';
+        try {
+          evaluated = evaluateContentOps(c.html() || '', this.ctx);
+        } catch (e) {
+          this.errors.push(new Error(`Failed to evaluate op section: ${e.toString()}`));
+        }
         if (evaluated === '') {
           continue;
         }
@@ -273,7 +282,7 @@ export class Node<C extends Context> {
       // If we fail to evaluate (e.g. symbol not defined), display the element
       // so that the quest is still playable - better too many options
       // than not being able to finish.
-      this.warnings.push(new Error('Failed to evaluate conditional on element: ' + e.toString()));
+      this.errors.push(new Error('Failed to evaluate conditional on element: ' + e.toString()));
       return true;
     }
   }

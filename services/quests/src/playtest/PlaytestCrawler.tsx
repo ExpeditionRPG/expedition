@@ -89,9 +89,9 @@ export class PlaytestCrawler extends StatsCrawler {
     }
   }
 
-  protected onWarnings(q: StatsCrawlEntry, warnings: Error[], line: number) {
-    for (const w of warnings) {
-      this.logger.warn(w.toString(), '427', line);
+  protected onErrors(q: StatsCrawlEntry, errors: Error[], line: number) {
+    for (const e of errors) {
+      this.logger.err(e.toString(), '427', line);
     }
   }
 
