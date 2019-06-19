@@ -260,7 +260,7 @@ export function publishQuest(
       }
 
       const updateValues: Partial<Quest> = {
-        ...quest,
+        ...quest.withoutDefaults(),
         published: new Date(),
         publishedurl: `http://quests.expeditiongame.com/raw/${
           quest.partition
@@ -271,12 +271,9 @@ export function publishQuest(
         userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
-        console.log('Detected major release, updating last major version');
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
       }
-
-      console.log(quest);
 
       // Publish to RenderedQuests
       db.renderedQuests
@@ -291,8 +288,6 @@ export function publishQuest(
         .then(() => {
           console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
         });
-
-      console.log(updateValues);
 
       return instance.update(updateValues);
     });
