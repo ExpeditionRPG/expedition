@@ -28,6 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
       dispatch(setDialog(dialog, false));
     },
     onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean): void => {
+      console.log('major release:', majorRelease);
       Joi.validate(quest, {
         author: Joi.string().min(2).max(100),
         contentrating: Joi.string().valid(enumValues(ContentRating)),

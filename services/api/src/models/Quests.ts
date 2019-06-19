@@ -271,6 +271,7 @@ export function publishQuest(
         userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
+        console.log('Detected major release, updating last major version');
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
       }
@@ -290,6 +291,8 @@ export function publishQuest(
         .then(() => {
           console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
         });
+
+      console.log(updateValues);
 
       return instance.update(updateValues);
     });
