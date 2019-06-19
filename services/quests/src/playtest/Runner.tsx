@@ -1,3 +1,7 @@
+// This file is a quick hack and not used by external users!
+// When loaded, it does a default search and runs the playtest code against all results,
+// displaying any playtest errors as well as a link to the quest and the author's contact details.
+
 import {fetchSearchResults} from 'app/actions/Search';
 import {initialSearch} from 'app/reducers/Search';
 import * as React from 'react';
@@ -69,7 +73,6 @@ function startSearching() {
         }
       };
 
-      // TODO proper settings
       worker.postMessage({type: 'RUN', xml: q.xml, settings: {
         expansionhorror: true,
         expansionfuture: true,
