@@ -37,7 +37,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   a.node = a.node.clone();
   const settings = getState().settings;
   const aliveAdventurers = numAliveAdventurers(settings, a.node, a.mp);
-  const maxRolls = parseInt(a.node.elem.attr('maxrolls') || 999, 10);
+  const maxRolls = parseInt(a.node.elem.attr('maxrolls') || '999', 10);
   const leveledChecks = parseDecisionChecks(Math.min(aliveAdventurers, maxRolls), seedrandom.alea(a.node.ctx.seed), a.node);
   if (leveledChecks.length === 0) {
     throw new Error('No valid choices for skill check');
