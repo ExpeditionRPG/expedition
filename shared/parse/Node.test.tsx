@@ -65,7 +65,7 @@ describe('Node', () => {
       }
       expect(next.elem.text()).toEqual('expected');
     });
-    test('safely handles failing to eval conditional choice, logs warning', () => {
+    test('safely handles failing to eval conditional choice, logs error', () => {
       const quest = cheerio.load('<quest><roleplay><choice if="notavalue"><roleplay>expected</roleplay></choice><choice><roleplay>bad</roleplay></choice></roleplay></quest>')('quest');
       const pnode = new Node(quest.children().eq(0), defaultContext());
       const next = pnode.getNext(0);

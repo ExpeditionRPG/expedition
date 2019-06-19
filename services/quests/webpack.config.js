@@ -5,17 +5,12 @@ const shared = require('../../shared/webpack.shared');
 
 const options = {
   entry: {
-    bundle: [
-      './src/React.tsx',
-      './src/Style.scss',
-      '../app/src/Style.scss',
-    ],
-    playtest: [
-      './src/playtest/PlaytestWorker.tsx',
-    ],
+    bundle: ['./src/React.tsx', './src/Style.scss', '../app/src/Style.scss'],
+    playtest: ['./src/playtest/PlaytestWorker.tsx'],
+    runner: ['./src/playtest/Runner.tsx'],
   },
   output: {
-    globalObject: "this", // Fixes web workers - https://github.com/webpack/webpack/issues/6642
+    globalObject: 'this', // Fixes web workers - https://github.com/webpack/webpack/issues/6642
   },
   plugins: [
     new Webpack.DefinePlugin({
@@ -23,10 +18,19 @@ const options = {
     }),
     new CopyWebpackPlugin([
       { from: 'src/index.html' },
+      { from: 'src/runner.html' },
       { from: 'src/assets' },
       { from: '../app/src/images', to: 'images' },
-      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: './images' },
+      {
+        from: { glob: '../../shared/images/icons/*.svg' },
+        flatten: true,
+        to: './images',
+      },
+      {
+        from: { glob: '../../shared/images/art/*.png' },
+        flatten: true,
+        to: './images',
+      },
     ]),
   ],
 };
