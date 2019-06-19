@@ -421,7 +421,7 @@ describe('quest', () => {
       .catch(done.fail);
   });
 
-  describe.only('publishQuest', () => {
+  describe('publishQuest', () => {
     const q1 = new Quest({
       ...q.basic,
       id: 'q1',
