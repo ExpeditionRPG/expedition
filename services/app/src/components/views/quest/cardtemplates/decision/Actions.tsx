@@ -98,7 +98,7 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
-  const maxRolls = parseInt(node.elem.attr('maxrolls') || 999, 10);
+  const maxRolls = parseInt(node.elem.attr('maxrolls') || '999', 10);
 
   let outcome: (keyof typeof Outcome)|null = null;
   if (successes >= selected.requiredSuccesses || (rolls.length >= aliveAdventurers && !hasInterrupted)) {
