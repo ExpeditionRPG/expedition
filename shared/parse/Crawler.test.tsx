@@ -29,7 +29,7 @@ class CrawlTest extends CrawlerBase<Context> {
   }
   protected onErrors(q: CrawlEntry<Context>, errors: Error[], line: number) {
     if (this.wfn) {
-      this.wfn(q, warnings, line);
+      this.wfn(q, errors, line);
     }
   }
 }
@@ -290,7 +290,7 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
-    test('handles errors in conditionals', () => {
+    test('handles errors in attributes', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice if="notavar"><roleplay></roleplay></choice>
@@ -307,11 +307,33 @@ describe('CrawlerBase', () => {
     });
 
     test('handles errors in body', () => {
-      // TODO
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <p>{{notavar}}</p>
+        </roleplay>`)(':first-child');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
+        expect(line).toEqual(2);
+      });
+      crawler.crawl(new Node(xml, defaultContext()));
+      expect(foundErrors).toEqual(true);
     });
 
-    test('handles errors in attributes', () => {
-      // TODO
+    test('handles errors in trigger', () => {
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <trigger>{{notavar}}</trigger>
+        </roleplay>`)(':first-child');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
+        expect(line).toEqual(2);
+      });
+      crawler.crawl(new Node(xml, defaultContext()));
+      expect(foundErrors).toEqual(true);
     });
   });
 });

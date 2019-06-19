@@ -73,7 +73,7 @@ describe('Node', () => {
         throw new Error('getNext returned null node');
       }
       expect(next.elem.text()).toEqual('expected');
-      expect(pnode.getWarnings()[0].toString()).toContain('notavalue');
+      expect(pnode.getErrors()[0].toString()).toContain('notavalue');
     });
   });
 

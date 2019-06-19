@@ -147,8 +147,8 @@ describe('PlaytestCrawler', () => {
         <trigger>end</trigger>
       </quest>`)('quest > :first-child'));
 
-      expect(msgs.warning.length).toEqual(1);
-      expect(msgs.warning[0].text).toContain('notavar');
+      expect(msgs.error.length).toEqual(1);
+      expect(msgs.error[0].text).toContain('notavar');
     });
 
     test.skip('logs if quest length is too varied', () => { /* TODO */ });
