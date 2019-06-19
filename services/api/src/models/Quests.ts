@@ -240,8 +240,9 @@ export function publishQuest(
   return db.quests
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
-      isNew = true; // !Boolean(i);
+      isNew = !Boolean(i);
       instance = i || db.quests.build(prepare(quest));
+
       if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
 
@@ -273,21 +274,19 @@ export function publishQuest(
       if (majorRelease) {
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
+        updateValues.ratingavg = 0;
+        updateValues.ratingcount = 0;
       }
 
-      // Publish to RenderedQuests
-      db.renderedQuests
-        .create(
-          new RenderedQuest({
-            id: quest.id,
-            partition: quest.partition,
-            questversion: updateValues.questversion,
-            xml,
-          }),
-        )
-        .then(() => {
-          console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
-        });
+      // Publish to RenderedQuests (async)
+      db.renderedQuests.create(
+        new RenderedQuest({
+          id: quest.id,
+          partition: quest.partition,
+          questversion: updateValues.questversion,
+          xml,
+        }),
+      );
 
       return instance.update(updateValues);
     });
