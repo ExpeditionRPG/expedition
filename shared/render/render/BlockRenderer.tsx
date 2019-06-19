@@ -151,7 +151,7 @@ export class BlockRenderer {
 
   public toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
-      log.internal('trigger found with multiple blocks', '502');
+      log.err('trigger found with indented section - check your starting whitespace', '415');
     }
 
     let extracted: any;
