@@ -5,6 +5,6 @@
   "homepage": "http://quests.expeditiongame.com",
   "scripts": {
     "start": "webpack-dev-server --progress",
-    "build": "node --max-old-space-size=8192 ../../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dist.config.js"
+    "build": "SKIP_RUNNER=true webpack --config webpack.dist.config.js"
   }
 }

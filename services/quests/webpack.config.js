@@ -3,12 +3,17 @@ const Webpack = require('webpack');
 const Merge = require('webpack-merge');
 const shared = require('../../shared/webpack.shared');
 
+const entry = {
+  bundle: ['./src/React.tsx', './src/Style.scss', '../app/src/Style.scss'],
+  playtest: ['./src/playtest/PlaytestWorker.tsx'],
+};
+
+if (process.env.SKIP_RUNNER !== 'true') {
+  entry.runner = ['./src/playtest/Runner.tsx'];
+}
+
 const options = {
-  entry: {
-    bundle: ['./src/React.tsx', './src/Style.scss', '../app/src/Style.scss'],
-    playtest: ['./src/playtest/PlaytestWorker.tsx'],
-    runner: ['./src/playtest/Runner.tsx'],
-  },
+  entry,
   output: {
     globalObject: 'this', // Fixes web workers - https://github.com/webpack/webpack/issues/6642
   },
@@ -22,13 +27,13 @@ const options = {
       { from: 'src/assets' },
       { from: '../app/src/images', to: 'images' },
       {
-        from: { glob: '../../shared/images/icons/*.svg' },
         flatten: true,
+        from: { glob: '../../shared/images/icons/*.svg' },
         to: './images',
       },
       {
-        from: { glob: '../../shared/images/art/*.png' },
         flatten: true,
+        from: { glob: '../../shared/images/art/*.png' },
         to: './images',
       },
     ]),
