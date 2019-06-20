@@ -36,7 +36,9 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
 
   a.node = a.node.clone();
   const settings = getState().settings;
-  const leveledChecks = parseDecisionChecks(numAliveAdventurers(settings, a.node, a.mp), seedrandom.alea(a.node.ctx.seed), a.node);
+  const aliveAdventurers = numAliveAdventurers(settings, a.node, a.mp);
+  const maxRolls = parseInt(a.node.elem.attr('maxrolls') || '999', 10);
+  const leveledChecks = parseDecisionChecks(Math.min(aliveAdventurers, maxRolls), seedrandom.alea(a.node.ctx.seed), a.node);
   if (leveledChecks.length === 0) {
     throw new Error('No valid choices for skill check');
   }
@@ -96,7 +98,7 @@ export function computeOutcome(rolls: number[], selected: LeveledSkillCheck, set
   const retryThreshold = RETRY_THRESHOLD_MAP[selected.difficulty || 'Medium'];
   const successes = computeSuccesses(rolls, selected);
   const failures = rolls.reduce((acc, r) => (r < retryThreshold) ? acc + 1 : acc, 0);
-  const maxRolls = parseInt(node.elem.attr('maxrolls'), 10);
+  const maxRolls = parseInt(node.elem.attr('maxrolls') || '999', 10);
 
   let outcome: (keyof typeof Outcome)|null = null;
   if (successes >= selected.requiredSuccesses || (rolls.length >= aliveAdventurers && !hasInterrupted)) {
@@ -115,18 +117,18 @@ function choose<T>(l: T[], rng: () => number): T {
   return l[Math.floor(rng() * l.length)];
 }
 
-function generateRequiredSuccesses(aliveAdventurers: number, rng: () => number): number {
-  return Math.max(MIN_REQUIRED_SUCCESSES, Math.min(MAX_REQUIRED_SUCCESSES, Math.floor(rng() * aliveAdventurers)));
+function generateRequiredSuccesses(maxRequiredSuccesses: number, rng: () => number): number {
+  return Math.max(MIN_REQUIRED_SUCCESSES, Math.min(MAX_REQUIRED_SUCCESSES, Math.floor(rng() * maxRequiredSuccesses)));
 }
 
-export function generateLeveledChecks(aliveAdventurers: number, rng: () => number): LeveledSkillCheck[] {
+export function generateLeveledChecks(maxRequiredSuccesses: number, rng: () => number): LeveledSkillCheck[] {
   const results: LeveledSkillCheck[] = [];
   while (results.length < 3) {
     const gen = {
       persona: choose<keyof typeof Persona>(Object.keys(Persona) as any, rng),
       skill: choose<keyof typeof Skill>(Object.keys(Skill) as any, rng),
       difficulty: choose<keyof typeof Difficulty>(Object.keys(Difficulty) as any, rng),
-      requiredSuccesses: generateRequiredSuccesses(aliveAdventurers, rng),
+      requiredSuccesses: generateRequiredSuccesses(maxRequiredSuccesses, rng),
     };
 
     for (const r of results) {
@@ -139,7 +141,7 @@ export function generateLeveledChecks(aliveAdventurers: number, rng: () => numbe
   return results;
 }
 
-function parseDecisionChecks(aliveAdventurers: number, rng: () => number, node?: ParserNode): LeveledSkillCheck[] {
+function parseDecisionChecks(maxRequiredSuccesses: number, rng: () => number, node?: ParserNode): LeveledSkillCheck[] {
   const checks: SkillCheck[] = [];
   if (node) {
     node.loopChildren((tag, c) => {
@@ -157,7 +159,7 @@ function parseDecisionChecks(aliveAdventurers: number, rng: () => number, node?:
   }
 
   return checks.map((c: SkillCheck): LeveledSkillCheck => {
-    return {...c, difficulty: 'medium', requiredSuccesses: generateRequiredSuccesses(aliveAdventurers, rng)};
+    return {...c, difficulty: 'medium', requiredSuccesses: generateRequiredSuccesses(maxRequiredSuccesses, rng)};
   });
 }
 
