@@ -163,6 +163,7 @@ export interface QuestState {
 export interface SavedQuestState {
   list: SavedQuestMeta[];
   selectedTS: number|null;
+  freeBytes: number|null;
 }
 
 export interface SearchState {

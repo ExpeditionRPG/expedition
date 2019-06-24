@@ -2,7 +2,7 @@ import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
-import {getStorageJson, getStorageString} from '../LocalStorage';
+import {getStorageJson, getStorageString, checkStorageFreeBytes} from '../LocalStorage';
 import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest, recreateNodeFromPath} from './SavedQuests';
 import {newMockStore} from '../Testing';
 
@@ -16,7 +16,8 @@ describe('SavedQuest actions', () => {
     if (next === null) {
       throw new Error('Initial setup failed');
     }
-    storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS);
+    const tmpStore = newMockStore();
+    tmpStore.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS));
   });
   afterEach(() => {
     localStorage.clear();
@@ -24,9 +25,17 @@ describe('SavedQuest actions', () => {
 
   describe('deleteSavedQuest', () => {
     test('removes both the listing and the data', () => {
-      deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS);
+      const store = newMockStore({});
+      store.dispatch(deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
       expect(getStorageString(savedQuestKey(STORED_QUEST_ID, STORED_QUEST_TS), '')).toEqual('');
       expect(getStorageJson(SAVED_QUESTS_KEY, {})).toEqual([]);
+    });
+    test('updates available storage', () => {
+      const store = newMockStore({});
+      const startBytes = checkStorageFreeBytes();
+      store.dispatch(deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
+      const bytesAction = store.getActions()[0];
+      expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
     });
   });
 
@@ -41,12 +50,21 @@ describe('SavedQuest actions', () => {
     }
 
     test('adds to the listing without affecting other quests', () => {
-      storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
+      const store = newMockStore({});
+      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
       expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
     });
     test('stores xml and context path', () => {
-      storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS);
+      const store = newMockStore({});
+      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
       expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual(jasmine.objectContaining({xml: (quest + ''), path: [0]}));
+    });
+    test('updates available storage', () => {
+      const store = newMockStore({});
+      const startBytes = checkStorageFreeBytes();
+      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
+      const bytesAction = store.getActions()[0];
+      expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
     });
   });
 

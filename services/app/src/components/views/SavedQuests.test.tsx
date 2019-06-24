@@ -41,4 +41,20 @@ describe('SavedQuests', () => {
     const text = e.text();
     expect(text).toContain('3 saves');
   });
+  test('shows storage remaining', () => {
+    const {e} = setup({
+      saved: [SAVED_QUEST],
+      freeBytes: 1024*1024,
+    });
+    const text = e.text();
+    expect(text).toContain('1024KB');
+  });
+  test('hides storage remaining when not set', () => {
+    const {e} = setup({
+      saved: [SAVED_QUEST],
+      freeBytes: null,
+    });
+    const text = e.text();
+    expect(text).not.toContain('KB');
+  });
 });

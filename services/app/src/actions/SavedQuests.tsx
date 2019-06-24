@@ -6,10 +6,10 @@ import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/role
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
-import {getStorageJson, setStorageKeyValue} from '../LocalStorage';
+import {checkStorageFreeBytes, getStorageJson, setStorageKeyValue} from '../LocalStorage';
 import {logEvent} from '../Logging';
 import {SavedQuestMeta} from '../reducers/StateTypes';
-import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, SavedQuestStoredAction} from './ActionTypes';
+import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, StorageFreeAction} from './ActionTypes';
 import {initQuestNode} from './Quest';
 import {openSnackbar} from './Snackbar';
 
@@ -33,17 +33,20 @@ export function listSavedQuests(): SavedQuestListAction {
 }
 
 export function deleteSavedQuest(id: string, ts: number) {
-  // Update the listing
-  const savedQuests = getSavedQuestMeta();
-  for (let i = 0; i < savedQuests.length; i++) {
-    if (savedQuests[i].details.id === id && savedQuests[i].ts === ts) {
-      savedQuests.splice(i, 1);
-      setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
-      setStorageKeyValue(savedQuestKey(id, ts), '');
-      return {type: 'SAVED_QUEST_DELETED', savedQuests} as SavedQuestDeletedAction;
+  return (dispatch: Redux.Dispatch<any>): any => {
+    // Update the listing
+    const savedQuests = getSavedQuestMeta();
+    for (let i = 0; i < savedQuests.length; i++) {
+      if (savedQuests[i].details.id === id && savedQuests[i].ts === ts) {
+        savedQuests.splice(i, 1);
+        setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
+        setStorageKeyValue(savedQuestKey(id, ts), '');
+        dispatch(updateStorageFreeBytes());
+        return dispatch({type: 'SAVED_QUEST_DELETED', savedQuests} as SavedQuestDeletedAction);
+      }
     }
-  }
-  throw new Error('No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.');
+    throw new Error('No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.');
+  };
 }
 
 export function saveQuestForOffline(details: Quest) {
@@ -60,26 +63,33 @@ export function saveQuestForOffline(details: Quest) {
   };
 }
 
-export function storeSavedQuest(node: ParserNode, details: Quest, ts: number): SavedQuestStoredAction {
-  logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
-  // Update the listing
-  const savedQuests = getSavedQuestMeta();
+export function storeSavedQuest(node: ParserNode, details: Quest, ts: number) {
+  return (dispatch: Redux.Dispatch<any>): any => {
+    logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
+    // Update the listing
+    const savedQuests = getSavedQuestMeta();
 
-  const pathLen = node.ctx.path.length;
-  savedQuests.push({ts, details, pathLen});
-  setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
+    const pathLen = node.ctx.path.length;
+    savedQuests.push({ts, details, pathLen});
+    setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
 
-  // Save the quest state
-  const xml = node.getRootElem() + '';
-  const path = node.ctx.path;
-  const seed = node.ctx.seed;
+    // Save the quest state
+    const xml = node.getRootElem() + '';
+    const path = node.ctx.path;
+    const seed = node.ctx.seed;
 
-  if (!xml || !path) {
-    throw new Error('Could not save quest.');
-  }
+    if (!xml || !path) {
+      throw new Error('Could not save quest.');
+    }
 
-  setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
-  return {type: 'SAVED_QUEST_STORED', savedQuests};
+    setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
+    dispatch(updateStorageFreeBytes());
+    return dispatch({type: 'SAVED_QUEST_STORED', savedQuests});
+  };
+}
+
+export function updateStorageFreeBytes(): StorageFreeAction {
+  return {type: 'STORAGE_FREE', freeBytes: checkStorageFreeBytes()};
 }
 
 function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|number[]): {nextNode: ParserNode|null, i: number} {

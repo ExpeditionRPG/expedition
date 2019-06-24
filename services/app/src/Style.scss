@@ -354,6 +354,12 @@ span.line {
   margin-top: 0.25em;
 }
 
+.freeSpace {
+  text-align: center;
+  font-style: italic;
+  margin-top: size(base);
+}
+
 /* From https://codepen.io/ericrasch/pen/Irlpm */
 .textDivider {
   font-family: $headerFont;

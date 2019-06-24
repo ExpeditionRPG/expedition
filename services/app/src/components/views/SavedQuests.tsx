@@ -9,6 +9,7 @@ const Moment = require('moment');
 
 export interface StateProps {
   saved: SavedQuestMeta[];
+  freeBytes: number|null;
 }
 
 export interface DispatchProps {
@@ -81,6 +82,7 @@ const SavedQuests = (props: Props): JSX.Element => {
         <TextDivider text="Offline"/>
         {offlineQuests}
       </span>}
+      <div className="freeSpace">{props.freeBytes !== null && `${Math.floor(props.freeBytes / 1024)}KB storage remaining`}</div>
     </Card>
   );
 };

@@ -1,10 +1,11 @@
 import Redux from 'redux';
-import {SavedQuestListAction, SavedQuestSelectAction} from '../actions/ActionTypes';
+import {SavedQuestListAction, SavedQuestSelectAction, StorageFreeAction} from '../actions/ActionTypes';
 import {SavedQuestState} from './StateTypes';
 
 const initialSavedState: SavedQuestState = {
   list: [],
   selectedTS: null,
+  freeBytes: null,
 };
 
 export function saved(state: SavedQuestState = initialSavedState, action: Redux.Action): SavedQuestState {
@@ -16,6 +17,8 @@ export function saved(state: SavedQuestState = initialSavedState, action: Redux.
       return {...state, list: [...(action as SavedQuestListAction).savedQuests]};
     case 'SAVED_QUEST_SELECT':
       return {...state, selectedTS: (action as SavedQuestSelectAction).ts};
+    case 'STORAGE_FREE':
+      return {...state, freeBytes: (action as StorageFreeAction).freeBytes};
     default:
       return state;
   }
