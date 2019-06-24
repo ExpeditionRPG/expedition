@@ -70,7 +70,7 @@ export function checkStorageFreeBytes(gls = getLocalStorage): number {
   }
 
   try {
-    ls.setItem('test', null);
+    ls.setItem('test', null as any);
   } catch (e) {
     // Ignore errors
   }
