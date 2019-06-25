@@ -38,6 +38,8 @@ function reduce(state: RunState, action: Redux.Action): RunState {
       state = {...state, [id]: {...state[id]}};
       state[id].messages = (action as any).msg;
       break;
+    default:
+      break;
   }
   return state;
 }
