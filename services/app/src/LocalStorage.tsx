@@ -30,17 +30,13 @@ export function getStorageString(key: string, fallback: string): string {
 }
 
 // Value can be boolean, number, string or stringifiable JSON
-export function setStorageKeyValue(key: string, value: any) {
-  try {
-    if (typeof value === 'object') {
-      value = JSON.stringify(value);
-    } else {
-      value = value.toString();
-    }
-    getLocalStorage().setItem(key, value);
-  } catch (err) {
-    console.error('Error setting storage key', key, 'to', value, err);
+export function setStorageKeyValue(key: string, value: any, ignoreErrors= true) {
+  if (typeof value === 'object') {
+    value = JSON.stringify(value);
+  } else {
+    value = value.toString();
   }
+  getLocalStorage().setItem(key, value);
 }
 
 // Check for free space in local storage by allocating space.

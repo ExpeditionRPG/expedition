@@ -9,7 +9,8 @@ import {newMockStore} from '../Testing';
 describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';
   const STORED_QUEST_TS = 67890;
-  beforeEach(() => {
+
+  beforeEach((done) => {
     const quest = getCheerio().load('<quest><roleplay><choice></choice><choice if="false"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
     const pnode = new ParserNode(quest.children().eq(0), defaultContext());
     const next = pnode.getNext(1);
@@ -17,7 +18,7 @@ describe('SavedQuest actions', () => {
       throw new Error('Initial setup failed');
     }
     const tmpStore = newMockStore();
-    tmpStore.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS));
+    tmpStore.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS)).then(done);
   });
   afterEach(() => {
     localStorage.clear();
@@ -65,6 +66,20 @@ describe('SavedQuest actions', () => {
       store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
       const bytesAction = store.getActions()[0];
       expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
+    });
+    test('index is reverted when there is a storage error', (done) => {
+      const store = newMockStore({});
+      const startBytes = checkStorageFreeBytes();
+      const testKey = savedQuestKey(NEW_ID, NEW_TS);
+      const mockSetKeyValue = jasmine.createSpy('mockSetKeyValue').and.callFake((k: string, v: any) => {
+        if (k === testKey && v !== null) {
+          throw new Error('exceeded the quota');
+        }
+      });
+      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS mockSetKeyValue)).then(() => done.fail('expected error')).catch((e) => {
+        expect(mockSetKeyValue).toHaveBeenCalledWith(SAVED_QUESTS_KEY, [jasmine.objectContaining({details: {id: STORED_QUEST_ID}})]);
+        done();
+      });
     });
   });
 
@@ -190,5 +205,6 @@ describe('SavedQuest actions', () => {
 
   describe('saveQuestForOffline', () => {
     test.skip('Saves a publishedurl to local storage', () => { /* TODO */ });
+    test.skip('storage errors are shown in snackbar', () => { /* TODO */ });
   });
 });

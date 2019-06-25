@@ -51,27 +51,40 @@ export function deleteSavedQuest(id: string, ts: number) {
 
 export function saveQuestForOffline(details: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    return fetchLocal(details.publishedurl).then((result: string) => {
-      const elem = cheerio.load(result)('quest');
-      const node = initQuestNode(elem, defaultContext());
-      dispatch(storeSavedQuest(node, details, Date.now()));
-      return dispatch(openSnackbar('Saved for offline play.'));
-    })
+    return fetchLocal(details.publishedurl)
     .catch((e: Error) => {
       return dispatch(openSnackbar(Error('Network error saving quest: Please check your connection'), true));
+    })
+    .then((result: string) => {
+      const elem = cheerio.load(result)('quest');
+      const node = initQuestNode(elem, defaultContext());
+      return dispatch(storeSavedQuest(node, details, Date.now()))
+        .then(() => {
+          return dispatch(openSnackbar('Saved for offline play.'));
+        });
+    })
+    .catch((e: Error) => {
+      if (e.toString().indexOf('exceeded the quota')) {
+        // Out-of-space errors are not considered errors (they should not be reportable)
+        return dispatch(openSnackbar('Couldn\'t save; out of storage space.', true));
+      }
+      return dispatch(openSnackbar(Error('Error saving quest: ' + e), true));
     });
   };
 }
 
-export function storeSavedQuest(node: ParserNode, details: Quest, ts: number) {
+export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, set= setStorageKeyValue) {
   return (dispatch: Redux.Dispatch<any>): any => {
     logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
     // Update the listing
     const savedQuests = getSavedQuestMeta();
-
     const pathLen = node.ctx.path.length;
-    savedQuests.push({ts, details, pathLen});
-    setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
+    const newSavedQuests = [...savedQuests, {ts, details, pathLen}];
+    try {
+      set(SAVED_QUESTS_KEY, newSavedQuests);
+    } catch (e) {
+      return Promise.reject(e);
+    }
 
     // Save the quest state
     const xml = node.getRootElem() + '';
@@ -79,12 +92,19 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number) {
     const seed = node.ctx.seed;
 
     if (!xml || !path) {
-      throw new Error('Could not save quest.');
+      return Promise.reject(new Error('Could not save quest.'));
     }
 
-    setStorageKeyValue(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
+    try {
+      set(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
+    } catch (e) {
+      // If we fail to save a quest (e.g. due to not enough space), we
+      // must rollback the changes made to the index
+      set(SAVED_QUESTS_KEY, savedQuests);
+      return Promise.reject(e);
+    }
     dispatch(updateStorageFreeBytes());
-    return dispatch({type: 'SAVED_QUEST_STORED', savedQuests});
+    return Promise.resolve(dispatch({type: 'SAVED_QUEST_STORED', savedQuests: newSavedQuests}));
   };
 }
 
