@@ -65,7 +65,7 @@ export abstract class CrawlerBase<C extends Context> {
 
   protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
 
-  protected abstract onWarnings(q: CrawlEntry<C>, warnings: Error[], line: number): void;
+  protected abstract onErrors(q: CrawlEntry<C>, errors: Error[], line: number): void;
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
@@ -142,9 +142,9 @@ export abstract class CrawlerBase<C extends Context> {
           fromAction: k,
         });
       }
-      const warnings = q.node.getWarnings();
-      if (warnings.length > 0) {
-        this.onWarnings(q, warnings, line);
+      const errors = q.node.getErrors();
+      if (errors.length > 0) {
+        this.onErrors(q, errors, line);
       }
     }
     return (this.queue.size > 0);

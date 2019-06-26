@@ -5,6 +5,6 @@
   "homepage": "http://quests.expeditiongame.com",
   "scripts": {
     "start": "webpack-dev-server --progress",
-    "build": "webpack --config webpack.dist.config.js"
+    "build": "SKIP_RUNNER=true webpack --config webpack.dist.config.js"
   }
 }
