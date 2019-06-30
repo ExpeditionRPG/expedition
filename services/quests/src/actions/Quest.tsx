@@ -339,6 +339,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
           setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
             expansionhorror: Boolean(quest.expansionhorror),
             expansionfuture: Boolean(quest.expansionfuture),
+            expansionwyrmsgiants: Boolean(quest.expansionwyrmsgiants),
             expansionscarredlands: Boolean(quest.expansionscarredlands),
           })), 0);
         });

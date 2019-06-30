@@ -34,6 +34,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
         email: Joi.string().email(),
         expansionhorror: Joi.boolean(),
         expansionfuture: Joi.boolean(),
+        expansionwyrmsgiants: Joi.boolean(),
         expansionscarredlands: Joi.boolean(),
         genre: Joi.string().valid(enumValues(Genre)),
         language: Joi.string().valid(enumValues(Language)),

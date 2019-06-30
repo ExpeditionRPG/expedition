@@ -200,7 +200,8 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
     }
     Horror: ${quest.expansionhorror ? 'Required' : 'no'}.
     Future: ${quest.expansionfuture ? 'Required' : 'no'}.
-    Scarred Lands: ${quest.expansionscarredlands ? 'Required' : 'no'}.`;
+    Scarred Lands: ${quest.expansionscarredlands ? 'Required' : 'no'}.
+    Of Wyrms & Giants: ${quest.expansionwyrmsgiants ? 'Required' : 'no'}.`;
   return mail.send(to, subject, message);
 }
 

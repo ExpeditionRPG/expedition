@@ -36,6 +36,8 @@ export let initialState: FiltersState = {
       'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ',
       'The Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM',
       'Expedition+Horror+Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM,1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ,11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
+      'Of Wyrms & Giants:1S5xcFPUejtgC4Mosh8uuiRE-YwdaJ6mlCX3bQcbBT-4',
+      'Scarred Lands:1JHYSbQwRAKojMY5L9ViVe-M0toH__tZFSzuoahOgKws',
       'Custom',
     ],
   },

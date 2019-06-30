@@ -77,6 +77,7 @@ export interface QuestType {
   saveError?: string;
   expansionhorror?: boolean;
   expansionfuture?: boolean;
+  expansionwyrmsgiants?: boolean;
   expansionscarredlands?: boolean;
   language?: Language;
   theme?: Theme;
@@ -143,6 +144,7 @@ export interface PlaytestSettings {
   [key: string]: any;
   expansionhorror: boolean;
   expansionfuture: boolean;
+  expansionwyrmsgiants: boolean;
   expansionscarredlands: boolean;
 }
 

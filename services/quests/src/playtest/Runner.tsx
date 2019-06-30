@@ -78,6 +78,7 @@ function startSearching() {
       worker.postMessage({type: 'RUN', xml: q.xml, settings: {
         expansionhorror: true,
         expansionfuture: true,
+        expansionwyrmsgiants: true,
         expansionscarredlands: true,
       }});
       console.log('started worker for quest ' + q.id);

@@ -316,6 +316,13 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
+              label="Requires &quot;Of Wyrms &amp; Giants&quot; Booster"
+              value={metadata.get('expansionwyrmsgiants')}
+              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionwyrmsgiants', checked); }}>
+            </Checkbox>
+          </FormControl>
+          <FormControl className="fullWidth">
+            <Checkbox
               label="Requires &quot;Scarred Lands&quot; Expansion"
               value={metadata.get('expansionscarredlands')}
               onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionscarredlands', checked); }}>

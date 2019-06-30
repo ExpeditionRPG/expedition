@@ -107,6 +107,16 @@ export const quests = {
     title: 'Future Quest',
     userid: 'testuser',
   }),
+  wyrmsgiants: new Quest({
+    ...basicQuest,
+    expansionhorror: true,
+    expansionfuture: true,
+    expansionwyrmsgiants: true,
+    id: 'questidwyrmsgiants',
+    summary: 'This be a wyrms & giants quest! AHHH!',
+    title: 'Of Wyrms & Giants Quest',
+    userid: 'testuser',
+  }),
   scarredlands: new Quest({
     ...basicQuest,
     expansionhorror: true,
