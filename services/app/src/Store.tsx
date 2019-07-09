@@ -18,7 +18,19 @@ export function installStore(createdStore: Redux.Store<AppStateWithHistory>) {
 export function createAppStore(raven: any = null) {
   const middleware = [createMiddleware(getMultiplayerConnection())];
   if (raven) {
-    middleware.push(createRavenMiddleware(raven));
+    middleware.push(createRavenMiddleware(raven, {
+      stateTransformer: (state: AppStateWithHistory): AppStateWithHistory => {
+        // raven-for-redux loops indefinitely when attempting to serialize recursive objects,
+        // unlike vanilla JS serialization which detects cycles. We filter out ParserNode objects
+        // which may contain these self-references.
+        return {
+          ...state,
+          _history: ('hidden' as any),
+          _committed: ('hidden' as any),
+          quest: {...state.quest, node: ('hidden' as any)},
+        };
+      },
+    }));
   }
   const composeEnhancers = composeWithDevTools({
     actionsBlacklist: ['MULTIPLAYER_CLIENT_STATUS'],
