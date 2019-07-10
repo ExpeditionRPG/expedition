@@ -3,19 +3,26 @@
 // displaying any playtest errors as well as a link to the quest and the author's contact details.
 
 import {fetchSearchResults} from 'app/actions/Search';
-import {initialSearch} from 'app/reducers/Search';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {connect, Provider} from 'react-redux';
 import Redux, {applyMiddleware, compose, createStore} from 'redux';
 import thunk from 'redux-thunk';
 
-interface RunState {[id: string]: {xml: string, messages: string[], complete: boolean}; }
+interface RunState {
+  xml: string;
+  messages: string[];
+  complete: boolean;
+  email: string;
+  author: string;
+  title: string;
+}
+interface RunStateMap {[id: string]: RunState; }
 
 const middleware = [thunk];
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-function reduce(state: RunState, action: Redux.Action): RunState {
-  state = state || ({} as RunState);
+function reduce(state: RunStateMap, action: Redux.Action): RunStateMap {
+  state = state || ({} as RunStateMap);
 
   const id = (action as any).id;
   if (!id) {
@@ -47,7 +54,8 @@ function reduce(state: RunState, action: Redux.Action): RunState {
 const store = createStore(reduce, {}, composeEnhancers(applyMiddleware(...middleware)));
 
 function startSearching() {
-  fetchSearchResults(initialSearch.params).then((results: any) => {
+  // Empty search params, least restriction
+  fetchSearchResults({} as any).then((results: any) => {
     const proms: any[] = [];
     for (const r of results.quests) {
       proms.push(fetch(r.publishedurl).then((response) => response.text()).then((xml) => {
@@ -94,28 +102,49 @@ interface Props {
   state: any;
 }
 
+function renderRunState(id: string, rs: RunState): JSX.Element {
+  const msgs = rs.messages.map((msg: any, i: number) => {
+    return <li key={i}>{JSON.stringify(msg)}</li>;
+  });
+
+  return (<div>
+    <h3>
+      <a href={'https://quests.expeditiongame.com/#' + id} target="_blank">{rs.title}</a>
+      &nbsp;by {rs.author}
+      &nbsp;({rs.email})
+      &nbsp;{(rs.complete) ? 'DONE' : '...'}
+    </h3>
+    <ul>
+      {msgs}
+    </ul>
+  </div>);
+}
+
 const Main = (props: Props): JSX.Element => {
-  const results: JSX.Element[] = [];
+  const stats = (<div>
+    <div>Quests: {Object.keys(props.state).length}</div>
+    <div>Complete: {Object.keys(props.state).filter((k: string) => props.state[k].complete).length}</div>
+  </div>);
+
+  const cleanResults: JSX.Element[] = [];
+  const errorResults: JSX.Element[] = [];
   for (const id of Object.keys(props.state)) {
-    const msgs = props.state[id].messages.map((msg: any, i: number) => {
-      return <li key={i}>{JSON.stringify(msg)}</li>;
-    });
-    results.push(
-      <div key={id}>
-        <h3>
-          <a href={'https://quests.expeditiongame.com/#' + id} target="_blank">{props.state[id].title}</a>
-          &nbsp;by {props.state[id].author}
-          &nbsp;({props.state[id].email})
-          &nbsp;{(props.state[id].complete) ? 'DONE' : '...'}
-        </h3>
-        <ul>
-          {msgs}
-        </ul>
-      </div>
-    );
+
+    if (props.state[id].messages.length > 0) {
+      errorResults.push(<span key={id}>{renderRunState(id, props.state[id])}</span>);
+    } else {
+      cleanResults.push(<span key={id}>{renderRunState(id, props.state[id])}</span>);
+    }
   }
 
-  return <div>{results}</div>;
+  return <div>
+    <h1>Stats:</h1>
+    {stats}
+    <h1>Error:</h1>
+    {errorResults}
+    <h1>Clean:</h1>
+    {cleanResults}
+  </div>;
 };
 
 const mapStateToProps = (state: any): any => {
