@@ -91,7 +91,6 @@ function startSearching() {
       console.log('started worker for quest ' + q.id);
       store.dispatch({type: 'PLAYTEST_START', id: q.id, title: q.title, author: q.author, email: q.email});
     }
-    console.log(loadedQuests);
   });
 }
 
