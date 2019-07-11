@@ -35,11 +35,11 @@ export class StatsCrawler extends CrawlerBase<Context> {
     };
   }
 
-  public crawl(root?: Node<Context>, timeLimitMillis = 500, depthLimit = 50): boolean {
+  public crawl(root?: Node<Context>, timeLimitMillis = 500, depthLimit = 150, visitLimit = 10): boolean {
     if (!this.root && root) {
       this.root = root;
     }
-    return super.crawl(root, timeLimitMillis, depthLimit);
+    return super.crawl(root, timeLimitMillis, depthLimit, visitLimit);
   }
 
   // Retrieves stats for a given node ID.
@@ -81,7 +81,7 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
-    if (e === 'MAX_DEPTH_EXCEEDED' || e === 'ALREADY_SEEN') {
+    if (e === 'MAX_DEPTH_EXCEEDED' || e === 'VISIT_LIMIT_EXCEEDED' || e === 'ALREADY_SEEN') {
       return;
     }
 

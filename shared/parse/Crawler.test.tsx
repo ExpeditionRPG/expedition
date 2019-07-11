@@ -218,6 +218,10 @@ describe('CrawlerBase', () => {
       expect(foundExceeded).toEqual(true);
     });
 
+    test('notifies on max visit limit exceeded', () => {
+      // TODO
+    });
+
     test('bails out of computationally expensive quests', () => {
       const xml = cheerio.load(`
         <quest>
