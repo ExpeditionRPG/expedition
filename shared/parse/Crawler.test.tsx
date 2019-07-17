@@ -214,12 +214,23 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundExceeded = foundExceeded || (e === 'MAX_DEPTH_EXCEEDED');
       }, null, null);
-      crawler.crawl(new Node(xml, defaultContext()));
+      crawler.crawl(new Node(xml, defaultContext()), 500, 1, 150);
       expect(foundExceeded).toEqual(true);
     });
 
     test('notifies on max visit limit exceeded', () => {
-      // TODO
+      const xml = cheerio.load(`
+        <quest>
+          <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
+          <trigger data-line="4">goto I</trigger>
+        </quest>`)('quest > :first-child');
+
+      let foundExceeded = false;
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
+        foundExceeded = foundExceeded || (e === 'VISIT_LIMIT_EXCEEDED');
+      }, null, null);
+      crawler.crawl(new Node(xml, defaultContext()), 500, 150, 1);
+      expect(foundExceeded).toEqual(true);
     });
 
     test('bails out of computationally expensive quests', () => {
