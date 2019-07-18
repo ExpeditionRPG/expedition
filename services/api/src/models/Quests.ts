@@ -57,14 +57,17 @@ export function searchQuests(
   const where: WhereOptions = {
     published: { [Op.ne]: null } as any,
     tombstone: null,
+    [Op.and]: [], // Use this for multiple OR clauses
   };
   const order: OrderItem[] = [];
 
   if (params.showPrivate === true) {
-    (where as any)[Op.or] = [
-      { partition: Partition.expeditionPublic },
-      { partition: Partition.expeditionPrivate, userid: userId },
-    ];
+    (where as any)[Op.and].push({
+      [Op.or]: [
+        { partition: Partition.expeditionPublic },
+        { partition: Partition.expeditionPrivate, userid: userId },
+      ],
+    });
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
     where.partition = params.partition || Partition.expeditionPublic;
@@ -87,14 +90,16 @@ export function searchQuests(
 
   if (params.text && params.text !== '') {
     const text = '%' + params.text.toLowerCase() + '%';
-    (where as any)[Op.or] = [
-      Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
-        [Op.like]: text,
-      }),
-      Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {
-        [Op.like]: text,
-      }),
-    ];
+    (where as any)[Op.and].push({
+      [Op.or]: [
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
+          [Op.like]: text,
+        }),
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {
+          [Op.like]: text,
+        }),
+      ],
+    });
   }
 
   if (params.age) {
