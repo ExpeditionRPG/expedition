@@ -9,7 +9,6 @@ import {Badge} from 'shared/schema/Constants';
 import {AUTH_SETTINGS} from '../Constants';
 import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
 import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
-import {openSnackbar} from './Snackbar';
 import {fetchUserQuests} from './Web';
 
 function postRegister(us: UserStateAuth) {
@@ -124,17 +123,6 @@ function fetchUserBadges(): Promise<Badge[]> {
 }
 
 type TReduxThunk<ReturnType> = (dispatch: Redux.Dispatch<any>, getState: () => AppState) => ReturnType;
-
-export function logoutUser(): TReduxThunk<Promise<void>> {
-  return (dispatch) => {
-    const gapi = getGapi();
-    const auth2 = gapi.auth2.getAuthInstance();
-    return auth2.signOut().then(() => {
-      dispatch({type: 'USER_LOGOUT'});
-      dispatch(openSnackbar('You are successfully logged out'));
-    });
-  };
-}
 
 // Prompt the user for login if user is not logged in already.
 // Throws an error if login fails.
