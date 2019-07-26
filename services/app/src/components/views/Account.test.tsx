@@ -28,7 +28,6 @@ describe('Account', () => {
   function createElement(user = {}) {
     const props: IProps = {
       user: {...initialUser, ...user },
-      logoutUser: jest.fn(),
       getUserFeedBacks: jest.fn(),
       getUserBadges: jest.fn(),
       onReturn: jest.fn(),
@@ -37,12 +36,6 @@ describe('Account', () => {
     const elem = mount(<Account {...props} />);
     return {elem, props};
   }
-
-  test('clicked on logout', () => {
-    const {elem, props} = createElement({ feedbacks: [], badges: []});
-    elem.find('ExpeditionButton#logout').prop('onClick')();
-    expect(props.logoutUser).toBeCalled();
-  });
 
   test('show loading when not all data is received', () => {
     const {elem} = createElement();

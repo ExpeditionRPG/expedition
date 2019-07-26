@@ -3,7 +3,7 @@ import {Node} from './Node';
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
-export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'ALREADY_SEEN';
+export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'VISIT_LIMIT_EXCEEDED' | 'ALREADY_SEEN';
 
 export interface CrawlEntry<C extends Context> {
   depth: number;
@@ -50,8 +50,8 @@ export abstract class CrawlerBase<C extends Context> {
     });
   }
 
-  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 50): boolean {
-    return this.traverse(root, timeLimitMillis, depthLimit);
+  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 150, visitLimit = 10): boolean {
+    return this.traverse(root, timeLimitMillis, depthLimit, visitLimit);
   }
 
   protected calculateAddedDepth(n: Node<C>): number {
@@ -69,7 +69,7 @@ export abstract class CrawlerBase<C extends Context> {
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number): boolean {
+  private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number, visitLimit?: number): boolean {
     if (root) {
       this.queue.add({
         depth: 0,
@@ -100,6 +100,12 @@ export abstract class CrawlerBase<C extends Context> {
       const id = q.node.elem.attr('id') || q.prevId;
       const line = parseInt(q.node.elem.attr('data-line'), 10);
       this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
+
+      // If we've visited the same node too many times, don't crawl further.
+      if (visitLimit && this.lineVisitCount[line] >= visitLimit) {
+        this.onEvent(q, 'VISIT_LIMIT_EXCEEDED');
+        continue;
+      }
 
       // This happens if for some reason line numbers weren't calculated for this quest.
       // Don't traverse farther, else it'll throw off our crawl state.

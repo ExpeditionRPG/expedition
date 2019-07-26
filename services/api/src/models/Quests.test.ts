@@ -239,6 +239,9 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             showPrivate: true,
+            // https://github.com/ExpeditionRPG/expedition/issues/724
+            // "text" adds an extra Or condition which could stomp privacy of query if there is a regression
+            text: 'Quest',
           });
         })
         .then(results => {

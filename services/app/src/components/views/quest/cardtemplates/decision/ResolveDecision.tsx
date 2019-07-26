@@ -57,21 +57,20 @@ export default function resolveDecision(props: Props): JSX.Element {
     helpText = (<span>
       <h2>Roll <img className="inline_icon" src={'images/' + formatImg('roll', props.theme) + '.svg'}></img></h2>
       <p>
-        <strong>Roll</strong> for a single adventurer above zero health that hasn't yet rolled.
-        This counts as a roleplaying roll.
+        <strong>Roll</strong> for a single adventurer, picked by the party.
       </p>
       <h2>Add <img className="inline_icon" src={'images/' + formatImg('skill', props.theme) + '.svg'}></img></h2>
       <p>
-        <strong>Add</strong> the level of each of the adventurer's {selected.skill} skills.
+        <strong>Add</strong> the sum of levels of their {selected.skill} skills to their roll.
         {selected.persona && ` Also add 1 if the adventurer's persona type is ${selected.persona}.`}
       </p>
       <h2>Resolve <img className="inline_icon" src={'images/' + formatImg('damage', props.theme) + '.svg'}></img></h2>
       <p>
-        <strong>Tap</strong> the button matching your roll.
+        <strong>Tap</strong> the button matching your modified roll.
       </p>
       <p>
         <strong>Careful!</strong> Some actions are riskier than others,
-        <br/>and rolling too low may cause instant failure.
+        <br/>and rolling too low may cause bad things to happen.
       </p>
     </span>);
   }
