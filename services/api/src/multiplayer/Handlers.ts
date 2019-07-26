@@ -328,9 +328,7 @@ export function websocketSession(
   }
 
   console.log(
-    `Client ${params.client} connected to session ${
-      params.session
-    } with secret ${params.secret}`,
+    `Client ${params.client} connected to session ${params.session} with secret ${params.secret}`,
   );
 
   // Setup chaos handlers (if configured)

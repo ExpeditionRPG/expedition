@@ -153,9 +153,9 @@ describe('quest', () => {
           }),
         )
         .then(results => {
-          expect(results.length).toEqual(4);
+          expect(results.length).toEqual(5);
           expect(results.map(r => r.dataValues.id)).toEqual([
-            'questidwyrmsgiants',
+            'questidwyrmsgiantsscarred',
             'questidscarredlands',
             'questidfuture',
             'questidhorror',
