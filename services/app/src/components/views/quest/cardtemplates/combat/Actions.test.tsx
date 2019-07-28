@@ -23,10 +23,30 @@ import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 const cheerio: any = require('cheerio');
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
+const TEST_NODE_EASIER = new ParserNode(cheerio.load('<combat><e>Giant Rat</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
+
+const checkNodeIntegrity = jest.fn((before: ParserNode|null, after: ParserNode|null) {
+  // Pass null/null to ignore the integrity check
+  if (before === null && after === null) {
+    return;
+  }
+  expect(before.ctx.seed).toEqual(after.ctx.seed);
+});
 
 describe('Combat actions', () => {
-  const newCombatNode = () => {
-    const baseNode = Action(initCombat, {settings: s.basic}).execute({node: TEST_NODE.clone()})[1].node;
+  beforeEach(() => {
+    checkNodeIntegrity.mockClear();
+  });
+
+  afterEach(() => {
+    // Actions on combat nodes must *not* result in a combat node with a different seed.
+    // It is expected that the node seed should stay the same throughout combat, to be
+    // consistent with multiplayer and crawler actions.
+    expect(checkNodeIntegrity.mock.calls.length).toEqual(1);
+  });
+
+  const newCombatNode = (node = TEST_NODE) => {
+    const baseNode = Action(initCombat, {settings: s.basic}).execute({node: node.clone()})[1].node;
     return baseNode.clone();
   };
 
@@ -34,10 +54,12 @@ describe('Combat actions', () => {
     test('Set timer to 10s with two+ players', () => {
       const result = roundTimeMillis({...s.basic, numLocalPlayers: 2});
       expect(result).toEqual(10000);
+      checkNodeIntegrity(null, null); // skip
     });
     test('Set timer to 20s with one player', () => {
       const result = roundTimeMillis({...s.basic, numLocalPlayers: 1});
       expect(result).toEqual(20000);
+      checkNodeIntegrity(null, null); // skip
     });
     test.skip('Accounts for remote play', () => { /* TODO */ }); // TODO
   });
@@ -53,6 +75,7 @@ describe('Combat actions', () => {
         }),
         type: 'NAVIGATE',
       }));
+      checkNodeIntegrity(null, null); // skip
     });
 
     test('parses initial state', () => {
@@ -68,6 +91,7 @@ describe('Combat actions', () => {
         roundCount: 0,
         tier: 9,
       }));
+      checkNodeIntegrity(null, null); // skip
     });
   });
 
@@ -76,6 +100,7 @@ describe('Combat actions', () => {
       // "Play" until surge
       const store = newMockStore({settings: s.basic, multiplayer: initialMultiplayer});
       let node = newCombatNode();
+      let initNode = node;
       for (let i = 0; i < 10 && (!node || !isSurgeNextRound(node.ctx.templates.combat)); i++) {
         store.clearActions();
         store.dispatch(handleCombatTimerStop({node, settings: s.basic, elapsedMillis: 1000, seed: ''}));
@@ -104,6 +129,8 @@ describe('Combat actions', () => {
         pd++;
       } while (pd < 10 && !isSurgeNextRound(node.ctx.templates.combat));
       expect(pd).toEqual(3); // Default for normal difficulty
+
+      checkNodeIntegrity(initNode, node);
     });
   });
 
@@ -130,102 +157,196 @@ describe('Combat actions', () => {
 
     test('starts timer (without pausing) when local alive adventurers in multiplayer', () => {
       expect(doTest(2)).not.toContainEqual(PAUSE_TIMER_MATCH);
+      checkNodeIntegrity(null, null); // skip
     });
 
     test('starts timer in pause state when 0 local alive adventurers in multiplayer', () => {
       expect(doTest(0)).toContainEqual(PAUSE_TIMER_MATCH)
+      checkNodeIntegrity(null, null); // skip
     });
   });
 
   describe('handleCombatTimerStop', () => {
     const runTest = (overrides: any) => {
-      const node = newCombatNode(); // Caution: this reset the multiplayer connection
+      const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
       const conn = fakeConnection();
       const store = newMockStore({multiplayer: m.s2p5}, conn);
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
-        node,
+        node: startNode,
         multiplayer: m.s2p5,
         seed: '',
         settings: s.basic,
         ...overrides,
       }));
       const actions = store.getActions();
-      return {actions, store, conn};
+      return {startNode, actions, store, conn};
     };
 
     test('randomly assigns damage', () => {
-      const {actions} = runTest({});
+      const {startNode, actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
+      checkNodeIntegrity(startNode, actions[2].node);
+    });
+    test('random damage changes significantly between rounds', () => {
+      const startNode = newCombatNode(TEST_NODE_EASIER); // Caution: this resets the multiplayer connection
+      const conn = fakeConnection();
+      const store = newMockStore({multiplayer: m.s2p5}, conn);
+
+      let node = startNode;
+      const hist: {[dmg: string]: number} = {};
+      const TRIALS = 20;
+      for (let i = 0; i < TRIALS; i++) {
+        store.dispatch(handleCombatTimerStop({
+          elapsedMillis: 1000,
+          node,
+          multiplayer: m.s2p5,
+          seed: '',
+          settings: s.basic,
+        }));
+        const actions = store.getActions();
+        store.clearActions();
+        for (let j of actions) {
+          if (j.type === 'QUEST_NODE') {
+            node = j.node;
+            break;
+          }
+        }
+        const dmg = node.ctx.templates.combat.mostRecentAttack.damage;
+        hist[dmg] = (hist[dmg] || 0) + 1;
+      }
+
+      // Should have at least 2 damage values
+      expect(Object.keys(hist).length).toBeGreaterThan(1);
+
+      // Same damage should happen not more than half the time.
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(TRIALS/2);
+      checkNodeIntegrity(startNode, node);
     });
     test('generates rolls according to player count', () => {
-      const {actions} = runTest({});
+      const {startNode, actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      checkNodeIntegrity(startNode, actions[2].node);
+    });
+    test('random rolls change significantly between rounds', () => {
+      const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
+      const conn = fakeConnection();
+      const store = newMockStore({multiplayer: m.s2p5}, conn);
+
+      let node = startNode;
+      const TRIALS = 20;
+      const hist: {[roll: string]: number} = {};
+      for (let i = 0; i < TRIALS; i++) {
+        store.dispatch(handleCombatTimerStop({
+          elapsedMillis: 1000,
+          node,
+          multiplayer: m.s2p5,
+          seed: '',
+          settings: s.basic,
+        }));
+        const actions = store.getActions();
+        store.clearActions();
+        for (let j of actions) {
+          if (j.type === 'QUEST_NODE') {
+            node = j.node;
+            break;
+          }
+        }
+        for (let roll of node.ctx.templates.combat.mostRecentRolls) {
+          hist[roll] = (hist[roll] || 0) + 1;
+        }
+      }
+
+      // Should have several damage values (rolling 3 d20s, 20 times)
+      expect(Object.keys(hist).length).toBeGreaterThan(5);
+
+      // Same damage should happen not more than half the time.
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(3*TRIALS/5);
+      checkNodeIntegrity(startNode, node);
     });
     test('increments the round counter', () => {
-      const {actions} = runTest({});
+      const {startNode, actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.roundCount).toEqual(1);
+      checkNodeIntegrity(startNode, actions[2].node);
     });
     test('only generates rolls for local, not remote, players', () => {
-      const {actions} = runTest({ multiplayer: m.s2p5 });
+      const {startNode, actions} = runTest({ multiplayer: m.s2p5 });
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
+      checkNodeIntegrity(startNode, actions[2].node);
     });
     test('clears waitingOn for multiplayer', () => {
-      const {conn} = runTest({});
+      const {startNode, conn, actions} = runTest({});
       expect(conn.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({type: 'STATUS', waitingOn: undefined}), undefined);
+      checkNodeIntegrity(startNode, actions[2].node);
     });
   });
 
   describe('handleCombatEnd', () => {
     test('levels up if high maxTier on victory', () => {
       const store = newMockStore({settings: s.basic});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: s.basic, victory: true, maxTier: 9, seed: ''}));
+      const startNode = newCombatNode();
+      store.dispatch(handleCombatEnd({node: startNode, settings: s.basic, victory: true, maxTier: 9, seed: ''}));
 
-      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(true);
+      const actions = store.getActions();
+      expect(actions[1].node.ctx.templates.combat.levelUp).toEqual(true);
+      checkNodeIntegrity(startNode, actions[1].node);
     });
 
     test('does not level up if low maxTier on victory', () => {
       const store = newMockStore({settings: s.basic});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: s.basic, victory: true, maxTier: 1, seed: ''}));
+      const startNode = newCombatNode();
+      store.dispatch(handleCombatEnd({node: startNode, settings: s.basic, victory: true, maxTier: 1, seed: ''}));
 
-      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
+      const actions = store.getActions();
+      expect(actions[1].node.ctx.templates.combat.levelUp).toEqual(false);
+      checkNodeIntegrity(startNode, actions[1].node);
     });
 
     test('assigns random loot on victory', () => {
       const store = newMockStore({settings: s.basic});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: s.basic, victory: true, maxTier: 9, seed: ''}));
+      const startNode = newCombatNode();
+      store.dispatch(handleCombatEnd({node: startNode, settings: s.basic, victory: true, maxTier: 9, seed: ''}));
 
-      const loot = store.getActions()[1].node.ctx.templates.combat.loot;
+      const actions = store.getActions();
+      const loot = actions[1].node.ctx.templates.combat.loot;
       let lootCount = 0;
       for (const l of loot) {
         lootCount += l.count;
       }
       expect(lootCount).toBeGreaterThan(0);
+      checkNodeIntegrity(startNode, actions[1].node);
     });
 
     test('never assigns loot or levels up on defeat', () => {
       const store = newMockStore({});
-      store.dispatch(handleCombatEnd({node: newCombatNode(), settings: s.basic, victory: false, maxTier: 9, seed: ''}));
-      expect(store.getActions()[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
+      const startNode = newCombatNode();
+      store.dispatch(handleCombatEnd({node: startNode, settings: s.basic, victory: false, maxTier: 9, seed: ''}));
+
+      const actions = store.getActions();
+      expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
       }));
+      checkNodeIntegrity(startNode, actions[1].node);
     });
 
     test('does not level up if multiplayer count exceeds tier sum', () => {
       const store = newMockStore({settings: s.basic, multiplayer: m.s2p5});
+      const startNode = newCombatNode();
       store.dispatch(handleCombatEnd({
         maxTier: 4,
-        node: newCombatNode(),
+        node: startNode,
         seed: '',
         settings: s.basic,
         victory: true,
       }));
 
-      expect(store.getActions()[1].node.ctx.templates.combat.levelUp).toEqual(false);
+      const actions = store.getActions();
+      expect(actions[1].node.ctx.templates.combat.levelUp).toEqual(false);
+      checkNodeIntegrity(startNode, actions[1].node);
     });
 
-    test('Uses parent combat node when given a mid-combat roleplay node', () => {
+    test('Goes back to parent combat node when given a mid-combat roleplay node', () => {
       const pnode = new ParserNode(cheerio.load(`
         <combat><e>lich</e>
           <event on="round">
@@ -235,57 +356,78 @@ describe('Combat actions', () => {
           <event on="lose"></event>
         </combat>`)('combat'), defaultContext());
       const node = Action(initCombat, {settings: s.basic}).execute({node: pnode.clone()})[1].node;
-      // Replace combat node elem with the roleplay node
-      node.elem = node.elem.find('#start');
+
+      // Go into roleplay node
+      const rpnode = Action(handleResolvePhase, {}).execute({node})[1].node;
 
       const store = newMockStore({settings: s.basic, multiplayer: m.s2p5});
       store.dispatch(handleCombatEnd({
         maxTier: 4,
-        node,
+        node: rpnode,
         seed: '',
         settings: s.basic,
         victory: true,
       }));
 
-      expect(store.getActions()[1].node.getTag()).toEqual('combat');
+      const actions = store.getActions();
+      expect(actions[1].node.getTag()).toEqual('combat');
+
+      // Roleplay into combat doesn't require same seed
+      checkNodeIntegrity(null, null);
     });
   });
 
   describe('tierSumDelta', () => {
     test('increases', () => {
-      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: 1})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(tierSumDelta).execute({node: startNode, current: 9, delta: 1})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(10);
+      checkNodeIntegrity(startNode, node);
     });
     test('decreases', () => {
-      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(tierSumDelta).execute({node: startNode, current: 9, delta: -1})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(8);
+      checkNodeIntegrity(startNode, node);
     });
     test('does not go below 0', () => {
-      const node = Action(tierSumDelta).execute({node: newCombatNode(), current: 9, delta: -1000})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(tierSumDelta).execute({node: startNode, current: 9, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.tier).toEqual(0);
+      checkNodeIntegrity(startNode, node);
     });
   });
 
   describe('adventurerDelta', () => {
     test('increases', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: s.basic, current: 1, delta: 2})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(adventurerDelta).execute({node: startNode, settings: s.basic, current: 1, delta: 2})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(3);
+      checkNodeIntegrity(startNode, node);
     });
     test('decreases', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: s.basic, current: 3, delta: -1})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(adventurerDelta).execute({node: startNode, settings: s.basic, current: 3, delta: -1})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(2);
+      checkNodeIntegrity(startNode, node);
     });
     test('does not go above player count', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: s.basic, current: s.basic.numLocalPlayers, delta: 1})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(adventurerDelta).execute({node: startNode, settings: s.basic, current: s.basic.numLocalPlayers, delta: 1})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(s.basic.numLocalPlayers);
+      checkNodeIntegrity(startNode, node);
     });
     test('does not go below 0', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: s.basic, current: 1, delta: -2})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(adventurerDelta).execute({node: startNode, settings: s.basic, current: 1, delta: -2})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+      checkNodeIntegrity(startNode, node);
     });
     test('does not go below 0', () => {
-      const node = Action(adventurerDelta).execute({node: newCombatNode(), settings: s.basic, current: 3, delta: -1000})[0].node;
+      const startNode = newCombatNode();
+      const node = Action(adventurerDelta).execute({node: startNode, settings: s.basic, current: 3, delta: -1000})[0].node;
       expect(node.ctx.templates.combat.numAliveAdventurers).toEqual(0);
+      checkNodeIntegrity(startNode, node);
     });
   });
 
@@ -301,6 +443,7 @@ describe('Combat actions', () => {
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
+      checkNodeIntegrity(node, actions[1].node);
     });
 
     test('goes to resolve card if conditionally false round event handler', () => {
@@ -315,6 +458,7 @@ describe('Combat actions', () => {
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
       expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
+      checkNodeIntegrity(node, actions[1].node);
     });
 
     test('goes to roleplay card on round event handler', () => {
@@ -332,6 +476,9 @@ describe('Combat actions', () => {
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].node.elem.text()).toEqual('expected');
       expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+
+      // We expect node integrity to be broken when moving from combat to roleplay.
+      checkNodeIntegrity(null, null);
     });
   });
 
@@ -347,6 +494,7 @@ describe('Combat actions', () => {
         throw Error('null result');
       }
       expect(result.attr('id')).toEqual('start');
+      checkNodeIntegrity(null, null); // skip
     });
     test('returns combat parent', () => {
       const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
@@ -355,19 +503,23 @@ describe('Combat actions', () => {
         throw Error('null result');
       }
       expect(result.attr('id')).toEqual('expected');
+      checkNodeIntegrity(null, null); // skip
     });
     test('does not return combat when node is within a win/lose event', () => {
       const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
       expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
+      checkNodeIntegrity(null, null); // skip
     });
   });
 
   describe('setupCombatDecision', () => {
     test('requires fewer successes than total alive player count (multiplayer)', () => {
-      const node = Action(setupCombatDecision, {settings: s.basic, multiplayer: m.s2p5a1}).execute({node: newCombatNode(), seed: 'asdf'})[1].node;
+      const startNode = newCombatNode();
+      const node = Action(setupCombatDecision, {settings: s.basic, multiplayer: m.s2p5a1}).execute({node: startNode, seed: 'asdf'})[1].node;
       for (const lc of node.ctx.templates.decision.leveledChecks) {
         expect(lc.requiredSuccesses).toBeLessThan(2);
       }
+      checkNodeIntegrity(startNode, node);
     });
     test.skip('populates combat decision template with generated LeveledSkillChecks', () => { /* TODO */ });
   });

@@ -18,6 +18,11 @@ export interface MidCombatPhase {
   roundCount: number;
   tier: number;
   decisionPhase: DecisionPhase;
+  // Combat needs its own seed so as not to interfere
+  // with replay/multiplayer seed on main node.
+  // This should only be used for calculating rolls & damage;
+  // use node seed for mid-combat roleplay.
+  seed: string;
 }
 
 export interface EndCombatPhase {

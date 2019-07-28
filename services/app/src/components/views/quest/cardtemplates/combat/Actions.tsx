@@ -11,6 +11,7 @@ import Redux from 'redux';
 const seedrandom = require('seedrandom');
 import {sendStatus} from 'app/actions/Multiplayer';
 import {remoteify} from 'app/multiplayer/Remoteify';
+import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
 import {ParserNode} from '../TemplateTypes';
@@ -55,6 +56,7 @@ export function generateCombatTemplate(settings: SettingsType, node?: ParserNode
     numAliveAdventurers: numLocalAdventurers(settings, mp),
     roundCount: 0,
     tier,
+    seed: (node && node.ctx && node.ctx.seed) || '',
     ...getDifficultySettings(settings.difficulty),
   };
 }
@@ -339,12 +341,14 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
   dispatch(audioSet({peakIntensity: 0}));
 
   a.node = a.node.clone();
-  const arng = seedrandom.alea(a.seed);
   let combat = a.node.ctx.templates.combat;
   if (!combat) {
     combat = generateCombatTemplate(a.settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
+
+  combat.seed = generateSeed(combat.seed);
+  const arng = seedrandom.alea(combat.seed);
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, mp, a.elapsedMillis, arng);
   combat.mostRecentRolls = generateRolls(numLocalAdventurers(a.settings), arng);
   combat.roundCount++;
@@ -412,7 +416,7 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   const adventurers = numAdventurers(a.settings, mp);
   combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
 
-  const arng = seedrandom.alea(a.seed);
+  const arng = seedrandom.alea(combat.seed);
   combat.loot = (a.victory) ? generateLoot(a.maxTier, adventurers, arng) : [];
   a.node.ctx.templates.combat = combat;
 

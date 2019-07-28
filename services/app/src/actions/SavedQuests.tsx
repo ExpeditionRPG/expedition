@@ -95,6 +95,7 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
     decisionPeriod: 4,
     damageMultiplier: 1,
     maxRoundDamage: 4,
+    seed: '',
   };
   node = node.clone();
 
