@@ -23,6 +23,7 @@ import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 const cheerio: any = require('cheerio');
 
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
+const TEST_NODE_EASIER = new ParserNode(cheerio.load('<combat><e>Giant Rat</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 const checkNodeIntegrity = jest.fn((before: ParserNode|null, after: ParserNode|null) {
   // Pass null/null to ignore the integrity check
@@ -44,8 +45,8 @@ describe('Combat actions', () => {
     expect(checkNodeIntegrity.mock.calls.length).toEqual(1);
   });
 
-  const newCombatNode = () => {
-    const baseNode = Action(initCombat, {settings: s.basic}).execute({node: TEST_NODE.clone()})[1].node;
+  const newCombatNode = (node = TEST_NODE) => {
+    const baseNode = Action(initCombat, {settings: s.basic}).execute({node: node.clone()})[1].node;
     return baseNode.clone();
   };
 
@@ -167,7 +168,7 @@ describe('Combat actions', () => {
 
   describe('handleCombatTimerStop', () => {
     const runTest = (overrides: any) => {
-      const startNode = newCombatNode(); // Caution: this reset the multiplayer connection
+      const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
       const conn = fakeConnection();
       const store = newMockStore({multiplayer: m.s2p5}, conn);
       store.dispatch(handleCombatTimerStop({
@@ -187,16 +188,81 @@ describe('Combat actions', () => {
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
       checkNodeIntegrity(startNode, actions[2].node);
     });
-    test('random damage changes between rounds', () => {
-      // TODO
+    test('random damage changes significantly between rounds', () => {
+      const startNode = newCombatNode(TEST_NODE_EASIER); // Caution: this resets the multiplayer connection
+      const conn = fakeConnection();
+      const store = newMockStore({multiplayer: m.s2p5}, conn);
+
+      let node = startNode;
+      const hist: {[dmg: string]: number} = {};
+      const TRIALS = 20;
+      for (let i = 0; i < TRIALS; i++) {
+        store.dispatch(handleCombatTimerStop({
+          elapsedMillis: 1000,
+          node,
+          multiplayer: m.s2p5,
+          seed: '',
+          settings: s.basic,
+        }));
+        const actions = store.getActions();
+        store.clearActions();
+        for (let j of actions) {
+          if (j.type === 'QUEST_NODE') {
+            node = j.node;
+            break;
+          }
+        }
+        const dmg = node.ctx.templates.combat.mostRecentAttack.damage;
+        hist[dmg] = (hist[dmg] || 0) + 1;
+      }
+
+      // Should have at least 2 damage values
+      expect(Object.keys(hist).length).toBeGreaterThan(1);
+
+      // Same damage should happen not more than half the time.
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(TRIALS/2);
+      checkNodeIntegrity(startNode, node);
     });
     test('generates rolls according to player count', () => {
       const {startNode, actions} = runTest({});
       expect(actions[2].node.ctx.templates.combat.mostRecentRolls.length).toEqual(3);
       checkNodeIntegrity(startNode, actions[2].node);
     });
-    test('random rolls change between rounds', () => {
-      // TODO
+    test('random rolls change significantly between rounds', () => {
+      const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
+      const conn = fakeConnection();
+      const store = newMockStore({multiplayer: m.s2p5}, conn);
+
+      let node = startNode;
+      const TRIALS = 20;
+      const hist: {[roll: string]: number} = {};
+      for (let i = 0; i < TRIALS; i++) {
+        store.dispatch(handleCombatTimerStop({
+          elapsedMillis: 1000,
+          node,
+          multiplayer: m.s2p5,
+          seed: '',
+          settings: s.basic,
+        }));
+        const actions = store.getActions();
+        store.clearActions();
+        for (let j of actions) {
+          if (j.type === 'QUEST_NODE') {
+            node = j.node;
+            break;
+          }
+        }
+        for (let roll of node.ctx.templates.combat.mostRecentRolls) {
+          hist[roll] = (hist[roll] || 0) + 1;
+        }
+      }
+
+      // Should have several damage values (rolling 3 d20s, 20 times)
+      expect(Object.keys(hist).length).toBeGreaterThan(5);
+
+      // Same damage should happen not more than half the time.
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(3*TRIALS/5);
+      checkNodeIntegrity(startNode, node);
     });
     test('increments the round counter', () => {
       const {startNode, actions} = runTest({});

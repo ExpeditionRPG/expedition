@@ -26,6 +26,7 @@ export function resolveCombat(node: ParserNode|undefined): CombatState {
       damageMultiplier: 0,
       maxRoundDamage: 0,
       roundCount: 0,
+      seed: '',
       decisionPhase: 'PREPARE_DECISION',
     };
 }

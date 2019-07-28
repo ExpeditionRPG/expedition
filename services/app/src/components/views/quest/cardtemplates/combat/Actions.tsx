@@ -11,10 +11,10 @@ import Redux from 'redux';
 const seedrandom = require('seedrandom');
 import {sendStatus} from 'app/actions/Multiplayer';
 import {remoteify} from 'app/multiplayer/Remoteify';
+import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
 import {ParserNode} from '../TemplateTypes';
-import {generateSeed} from 'shared/parse/Context';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 
 export function findCombatParent(node: ParserNode): Cheerio|null {
@@ -56,7 +56,7 @@ export function generateCombatTemplate(settings: SettingsType, node?: ParserNode
     numAliveAdventurers: numLocalAdventurers(settings, mp),
     roundCount: 0,
     tier,
-    seed: node.ctx.seed,
+    seed: (node && node.ctx && node.ctx.seed) || '',
     ...getDifficultySettings(settings.difficulty),
   };
 }
@@ -346,12 +346,12 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     combat = generateCombatTemplate(a.settings, a.node, mp);
     a.node.ctx.templates.combat = combat;
   }
+
+  combat.seed = generateSeed(combat.seed);
   const arng = seedrandom.alea(combat.seed);
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, mp, a.elapsedMillis, arng);
   combat.mostRecentRolls = generateRolls(numLocalAdventurers(a.settings), arng);
   combat.roundCount++;
-
-  combat.seed = generateSeed(combat.seed);
 
   // This is parsed when loading a saved quest, so that "on round" nodes
   // can be appropriately evaluated.
