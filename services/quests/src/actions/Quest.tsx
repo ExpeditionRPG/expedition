@@ -356,7 +356,7 @@ export function questMetadataChange(quest: QuestType, delta: Partial<QuestType>)
     // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     quest.realtimeModel.beginCompoundOperation('', false);
-    for (const key in delta) {
+    for (const key of Object.keys(delta)) {
       quest.metadataRealtime.set(key, delta[key]);
     }
     quest.realtimeModel.endCompoundOperation();

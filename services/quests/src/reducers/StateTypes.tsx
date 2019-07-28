@@ -48,7 +48,7 @@ export interface XMLElement {
 }
 
 export interface QuestType {
-  [index:string]: any;
+  [index: string]: any;
   id?: string;
   engineversion?: string;
   majorrelease?: boolean;
