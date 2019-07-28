@@ -120,7 +120,7 @@ export class AnnotationDetailDialog extends React.Component<AnnotationDetailDial
 }
 
 interface PublishingDialogProps extends React.Props<any> {
-  handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
+  handleMetadataChange: (quest: QuestType, delta: Partial<QuestType>) => void;
   open: boolean;
   onClose: () => void;
   onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
@@ -186,26 +186,26 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             value={metadata.get('summary')}
             label="Quest summary (1-2 sentences)"
             // TODO get rid of these magic numbers
-            onChange={(e: any) => { handleMetadataChange(quest, 'summary', e.target.value); }}
+            onChange={(e: any) => { handleMetadataChange(quest, {summary: e.target.value}); }}
           />
           <TextField
             className="halfWidth"
             value={metadata.get('author')}
             label="Author name"
-            onChange={(e: any) => { handleMetadataChange(quest, 'author', e.target.value); }}
+            onChange={(e: any) => { handleMetadataChange(quest, {author: e.target.value}); }}
           />
           <TextField
             className="halfWidth"
             value={metadata.get('email')}
             label="Author email (private)"
-            onChange={(e: any) => { handleMetadataChange(quest, 'email', e.target.value); }}
+            onChange={(e: any) => { handleMetadataChange(quest, {email: e.target.value}); }}
           />
           <FormControl className="halfWidth">
             <InputLabel htmlFor="minplayers-select">Minimum players</InputLabel>
             <Select
               inputProps={{id: 'minplayers-select'}}
               value={metadata.get('minplayers') || MIN_PLAYERS}
-              onChange={(e: any) => { handleMetadataChange(quest, 'minplayers', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {minplayers: e.target.value}); }}
             >
               {playerItems}
             </Select>
@@ -215,7 +215,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'maxplayers-select'}}
               value={metadata.get('maxplayers') || MAX_PLAYERS}
-              onChange={(e: any) => { handleMetadataChange(quest, 'maxplayers', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {maxplayers: e.target.value}); }}
             >
               {playerItems}
             </Select>
@@ -225,7 +225,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'mintimeminutes-select'}}
               value={metadata.get('mintimeminutes') || 10}
-              onChange={(e: any) => { handleMetadataChange(quest, 'mintimeminutes', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {mintimeminutes: e.target.value}); }}
             >
               <MenuItem value={10}>10 minutes</MenuItem>
               <MenuItem value={20}>20 minutes</MenuItem>
@@ -244,7 +244,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'maxtimeminutes-select'}}
               value={metadata.get('maxtimeminutes') || 999}
-              onChange={(e: any) => { handleMetadataChange(quest, 'maxtimeminutes', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {maxtimeminutes: e.target.value}); }}
             >
               <MenuItem value={10}>10 minutes</MenuItem>
               <MenuItem value={20}>20 minutes</MenuItem>
@@ -263,7 +263,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'language-select'}}
               value={metadata.get('language') || 'English'}
-              onChange={(e: any) => { handleMetadataChange(quest, 'language', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {language: e.target.value}); }}
             >
               {languages}
             </Select>
@@ -273,7 +273,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'genre-select'}}
               value={metadata.get('genre')}
-              onChange={(e: any) => { handleMetadataChange(quest, 'genre', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {genre: e.target.value}); }}
             >
               {genres}
             </Select>
@@ -283,7 +283,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Select
               inputProps={{id: 'theme-select'}}
               value={metadata.get('theme')}
-              onChange={(e: any) => { handleMetadataChange(quest, 'theme', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {theme: e.target.value}); }}
             >
               {themes}
             </Select>
@@ -294,7 +294,7 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
               className="ratingSelect"
               inputProps={{id: 'contentrating-select'}}
               value={metadata.get('contentrating') || ''}
-              onChange={(e: any) => { handleMetadataChange(quest, 'contentrating', e.target.value); }}
+              onChange={(e: any) => { handleMetadataChange(quest, {contentrating: e.target.value}); }}
             >
               {ratings}
             </Select>
@@ -304,35 +304,35 @@ export class PublishingDialog extends React.Component<PublishingDialogProps, {}>
             <Checkbox
               label="Requires &quot;The Horror&quot; Expansion"
               value={metadata.get('expansionhorror')}
-              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionhorror', checked); }}>
+              onChange={(checked: boolean) => { handleMetadataChange(quest, {expansionhorror: checked}); }}>
             </Checkbox>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
               label="Requires &quot;The Future&quot; Expansion"
               value={metadata.get('expansionfuture')}
-              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionfuture', checked); }}>
+              onChange={(checked: boolean) => { handleMetadataChange(quest, {expansionfuture: checked}); }}>
             </Checkbox>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
               label="Requires &quot;Of Wyrms &amp; Giants&quot; Booster"
               value={metadata.get('expansionwyrmsgiants')}
-              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionwyrmsgiants', checked); }}>
+              onChange={(checked: boolean) => { handleMetadataChange(quest, {expansionwyrmsgiants: checked}); }}>
             </Checkbox>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
               label="Requires &quot;Scarred Lands&quot; Expansion"
               value={metadata.get('expansionscarredlands')}
-              onChange={(checked: boolean) => { handleMetadataChange(quest, 'expansionscarredlands', checked); }}>
+              onChange={(checked: boolean) => { handleMetadataChange(quest, {expansionscarredlands: checked}); }}>
             </Checkbox>
           </FormControl>
           <FormControl className="fullWidth">
             <Checkbox
               label="Requires Pen and Paper"
               value={metadata.get('requirespenpaper')}
-              onChange={(checked: boolean) => { handleMetadataChange(quest, 'requirespenpaper', checked); }}>
+              onChange={(checked: boolean) => { handleMetadataChange(quest, {requirespenpaper: checked}); }}>
             </Checkbox>
           </FormControl>
           <FormControl className="fullWidth">
@@ -371,7 +371,7 @@ export interface DialogsStateProps {
 }
 
 export interface DialogsDispatchProps {
-  handleMetadataChange: (quest: QuestType, key: string, value: any) => void;
+  handleMetadataChange: (quest: QuestType, delta: Partial<QuestType>) => void;
   onClose: (dialog: DialogIDType) => void;
   onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean) => void;
 }

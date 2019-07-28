@@ -18,11 +18,11 @@ const mapStateToProps = (state: AppState): DialogsStateProps => {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps => {
   return {
-    handleMetadataChange: (quest: QuestType, key: string, value: any): void => {
-      dispatch(questMetadataChange(quest, key, value));
-      if (key === 'expansionfuture' && value) {
-        dispatch(questMetadataChange(quest, 'expansionhorror', true));
+    handleMetadataChange: (quest: QuestType, delta: Partial<QuestType>): void => {
+      if (delta.expansionfuture) {
+        delta.expansionhorror = true;
       }
+      dispatch(questMetadataChange(quest, delta));
     },
     onClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
