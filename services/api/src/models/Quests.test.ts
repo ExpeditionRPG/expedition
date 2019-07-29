@@ -30,6 +30,7 @@ describe('quest', () => {
       q.privateUser2,
       q.horror,
       q.future,
+      q.wyrmsgiants,
       q.scarredlands,
     ];
 
@@ -147,12 +148,14 @@ describe('quest', () => {
               Expansion.horror,
               Expansion.future,
               Expansion.scarredlands,
+              Expansion.wyrmsgiants,
             ],
           }),
         )
         .then(results => {
-          expect(results.length).toEqual(4);
+          expect(results.length).toEqual(5);
           expect(results.map(r => r.dataValues.id)).toEqual([
+            'questidwyrmsgiantsscarred',
             'questidscarredlands',
             'questidfuture',
             'questidhorror',

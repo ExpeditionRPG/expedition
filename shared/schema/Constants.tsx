@@ -6,12 +6,14 @@ export enum Expansion {
   base = 'base',
   horror = 'horror',
   future = 'future',
+  wyrmsgiants = 'wyrmsgiants',
   scarredlands = 'scarredlands',
 }
 export const CONTENT_SET_FULL_NAMES: {[key in Expansion]: string} = {
   [Expansion.base]: 'Expedition',
   [Expansion.horror]: 'The Horror',
   [Expansion.future]: 'The Future',
+  [Expansion.wyrmsgiants]: 'Of Wyrms and Giants',
   [Expansion.scarredlands]: 'Scarred Lands',
 };
 

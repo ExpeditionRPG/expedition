@@ -102,8 +102,7 @@ export interface QuestPlaytestAction extends Redux.Action {
 
 export interface QuestMetadataChangeAction extends Redux.Action {
   type: 'QUEST_METADATA_CHANGE';
-  key: string;
-  value: any;
+  delta: Partial<QuestType>;
 }
 
 export interface RequestQuestPublishAction extends Redux.Action {

@@ -339,6 +339,7 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
           setTimeout(() => dispatch(startPlaytestWorker(null, xmlResult.getResult(), {
             expansionhorror: Boolean(quest.expansionhorror),
             expansionfuture: Boolean(quest.expansionfuture),
+            expansionwyrmsgiants: Boolean(quest.expansionwyrmsgiants),
             expansionscarredlands: Boolean(quest.expansionscarredlands),
           })), 0);
         });
@@ -349,15 +350,17 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
   };
 }
 
-export function questMetadataChange(quest: QuestType, key: string, value: any):
+export function questMetadataChange(quest: QuestType, delta: Partial<QuestType>):
   ((dispatch: Redux.Dispatch<any>) => any) {
   return (dispatch: Redux.Dispatch<any>): any => {
     // Don't allow undo, since these are set via UI and users don't expect Ctrl+Z to affec them.
     // https://developers.google.com/google-apps/realtime/conflict-resolution#preventing_undo
     quest.realtimeModel.beginCompoundOperation('', false);
-    quest.metadataRealtime.set(key, value);
+    for (const key of Object.keys(delta)) {
+      quest.metadataRealtime.set(key, delta[key]);
+    }
     quest.realtimeModel.endCompoundOperation();
-    dispatch({type: 'QUEST_METADATA_CHANGE', key, value} as QuestMetadataChangeAction);
+    dispatch({type: 'QUEST_METADATA_CHANGE', delta} as QuestMetadataChangeAction);
     dispatch(updateDirtyState());
   };
 }

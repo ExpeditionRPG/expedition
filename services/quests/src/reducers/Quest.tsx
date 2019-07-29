@@ -14,9 +14,7 @@ const initialQuestState: QuestType = {};
 export function quest(state: QuestType = initialQuestState, action: Redux.Action): QuestType {
   switch (action.type) {
     case 'QUEST_METADATA_CHANGE':
-      const key = (action as QuestMetadataChangeAction).key;
-      const value = (action as QuestMetadataChangeAction).value;
-      return {...state, [key]: value};
+      return Object.assign({}, state, (action as QuestMetadataChangeAction).delta);
     case 'RECEIVE_QUEST_LOAD':
       return (action as ReceiveQuestLoadAction).quest;
     case 'REALTIME_CHANGE':

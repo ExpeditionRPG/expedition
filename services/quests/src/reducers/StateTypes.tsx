@@ -48,6 +48,7 @@ export interface XMLElement {
 }
 
 export interface QuestType {
+  [index: string]: any;
   id?: string;
   engineversion?: string;
   majorrelease?: boolean;
@@ -77,6 +78,7 @@ export interface QuestType {
   saveError?: string;
   expansionhorror?: boolean;
   expansionfuture?: boolean;
+  expansionwyrmsgiants?: boolean;
   expansionscarredlands?: boolean;
   language?: Language;
   theme?: Theme;
@@ -143,6 +145,7 @@ export interface PlaytestSettings {
   [key: string]: any;
   expansionhorror: boolean;
   expansionfuture: boolean;
+  expansionwyrmsgiants: boolean;
   expansionscarredlands: boolean;
 }
 
