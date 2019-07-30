@@ -57,14 +57,17 @@ export function searchQuests(
   const where: WhereOptions = {
     published: { [Op.ne]: null } as any,
     tombstone: null,
+    [Op.and]: [], // Use this for multiple OR clauses
   };
   const order: OrderItem[] = [];
 
   if (params.showPrivate === true) {
-    (where as any)[Op.or] = [
-      { partition: Partition.expeditionPublic },
-      { partition: Partition.expeditionPrivate, userid: userId },
-    ];
+    (where as any)[Op.and].push({
+      [Op.or]: [
+        { partition: Partition.expeditionPublic },
+        { partition: Partition.expeditionPrivate, userid: userId },
+      ],
+    });
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
     where.partition = params.partition || Partition.expeditionPublic;
@@ -87,14 +90,16 @@ export function searchQuests(
 
   if (params.text && params.text !== '') {
     const text = '%' + params.text.toLowerCase() + '%';
-    (where as any)[Op.or] = [
-      Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
-        [Op.like]: text,
-      }),
-      Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {
-        [Op.like]: text,
-      }),
-    ];
+    (where as any)[Op.and].push({
+      [Op.or]: [
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
+          [Op.like]: text,
+        }),
+        Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('author')), {
+          [Op.like]: text,
+        }),
+      ],
+    });
   }
 
   if (params.age) {
@@ -185,9 +190,7 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
   // If this is a newly published quest, email us!
   // We don't care if this fails.
   const to = ['team+newquest@fabricate.io'];
-  const subject = `Please review! New quest published: ${quest.title} (${
-    quest.partition
-  }, ${quest.language})`;
+  const subject = `Please review! New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
   const message = `Summary: ${quest.summary}.\n
     By ${quest.author} (${quest.email}),
     for ${quest.minplayers} - ${quest.maxplayers} players
@@ -200,7 +203,8 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
     }
     Horror: ${quest.expansionhorror ? 'Required' : 'no'}.
     Future: ${quest.expansionfuture ? 'Required' : 'no'}.
-    Scarred Lands: ${quest.expansionscarredlands ? 'Required' : 'no'}.`;
+    Scarred Lands: ${quest.expansionscarredlands ? 'Required' : 'no'}.
+    Of Wyrms & Giants: ${quest.expansionwyrmsgiants ? 'Required' : 'no'}.`;
   return mail.send(to, subject, message);
 }
 
@@ -240,8 +244,9 @@ export function publishQuest(
   return db.quests
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
-      isNew = true; // !Boolean(i);
+      isNew = !Boolean(i);
       instance = i || db.quests.build(prepare(quest));
+
       if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
 
@@ -260,11 +265,9 @@ export function publishQuest(
       }
 
       const updateValues: Partial<Quest> = {
-        ...quest,
+        ...quest.withoutDefaults(),
         published: new Date(),
-        publishedurl: `http://quests.expeditiongame.com/raw/${
-          quest.partition
-        }/${quest.id}/${quest.questversion}`,
+        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         questversion:
           (instance.get('questversion') || quest.questversion || 0) + 1,
         tombstone: null as any, // Remove tombstone; need null instead of undefined to trigger Sequelize update override
@@ -273,23 +276,19 @@ export function publishQuest(
       if (majorRelease) {
         updateValues.questversionlastmajor = updateValues.questversion;
         updateValues.created = new Date();
+        updateValues.ratingavg = 0;
+        updateValues.ratingcount = 0;
       }
 
-      console.log(quest);
-
-      // Publish to RenderedQuests
-      db.renderedQuests
-        .create(
-          new RenderedQuest({
-            id: quest.id,
-            partition: quest.partition,
-            questversion: updateValues.questversion,
-            xml,
-          }),
-        )
-        .then(() => {
-          console.log(`Stored XML for quest ${quest.id} in RenderedQuests`);
-        });
+      // Publish to RenderedQuests (async)
+      db.renderedQuests.create(
+        new RenderedQuest({
+          id: quest.id,
+          partition: quest.partition,
+          questversion: updateValues.questversion,
+          xml,
+        }),
+      );
 
       return instance.update(updateValues);
     });

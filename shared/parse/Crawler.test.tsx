@@ -10,11 +10,11 @@ class CrawlTest extends CrawlerBase<Context> {
 
   constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null,
               onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null,
-              onWarnings: ((q: CrawlEntry<Context>, warnings: Error[], line: number) => any)|null) {
+              onErrors: ((q: CrawlEntry<Context>, errors: Error[], line: number) => any)|null) {
     super();
     this.efn = onEvent;
     this.nfn = onNode;
-    this.wfn = onWarnings;
+    this.wfn = onErrors;
   }
 
   protected onEvent(q: CrawlEntry<Context>, e: CrawlEvent) {
@@ -27,9 +27,9 @@ class CrawlTest extends CrawlerBase<Context> {
       this.nfn(q, nodeStr, id, line);
     }
   }
-  protected onWarnings(q: CrawlEntry<Context>, warnings: Error[], line: number) {
+  protected onErrors(q: CrawlEntry<Context>, errors: Error[], line: number) {
     if (this.wfn) {
-      this.wfn(q, warnings, line);
+      this.wfn(q, errors, line);
     }
   }
 }
@@ -214,7 +214,22 @@ describe('CrawlerBase', () => {
       const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
         foundExceeded = foundExceeded || (e === 'MAX_DEPTH_EXCEEDED');
       }, null, null);
-      crawler.crawl(new Node(xml, defaultContext()));
+      crawler.crawl(new Node(xml, defaultContext()), 500, 1, 150);
+      expect(foundExceeded).toEqual(true);
+    });
+
+    test('notifies on max visit limit exceeded', () => {
+      const xml = cheerio.load(`
+        <quest>
+          <roleplay title="I" id="I" data-line="2"><p></p></roleplay>
+          <trigger data-line="4">goto I</trigger>
+        </quest>`)('quest > :first-child');
+
+      let foundExceeded = false;
+      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
+        foundExceeded = foundExceeded || (e === 'VISIT_LIMIT_EXCEEDED');
+      }, null, null);
+      crawler.crawl(new Node(xml, defaultContext()), 500, 150, 1);
       expect(foundExceeded).toEqual(true);
     });
 
@@ -290,20 +305,50 @@ describe('CrawlerBase', () => {
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
-    test('handles warnings', () => {
+    test('handles errors in attributes', () => {
       const xml = cheerio.load(`
         <roleplay title="I" data-line="2">
           <choice if="notavar"><roleplay></roleplay></choice>
         </roleplay>`)(':first-child');
-      let foundWarnings = false;
-      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, warnings: Error[], line: number) => {
-        foundWarnings = true;
-        expect(warnings[0].toString()).toContain('notavar');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
         expect(line).toEqual(2);
       });
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(foundWarnings).toEqual(true);
+      expect(foundErrors).toEqual(true);
+    });
+
+    test('handles errors in body', () => {
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <p>{{notavar}}</p>
+        </roleplay>`)(':first-child');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
+        expect(line).toEqual(2);
+      });
+      crawler.crawl(new Node(xml, defaultContext()));
+      expect(foundErrors).toEqual(true);
+    });
+
+    test('handles errors in trigger', () => {
+      const xml = cheerio.load(`
+        <roleplay title="I" data-line="2">
+          <trigger>{{notavar}}</trigger>
+        </roleplay>`)(':first-child');
+      let foundErrors = false;
+      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+        foundErrors = true;
+        expect(errors[0].toString()).toContain('notavar');
+        expect(line).toEqual(2);
+      });
+      crawler.crawl(new Node(xml, defaultContext()));
+      expect(foundErrors).toEqual(true);
     });
   });
 });

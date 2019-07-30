@@ -40,6 +40,9 @@ function renderRequirementsRow(quest: Quest): JSX.Element|null {
   if (quest.expansionfuture) {
     requires.push(<div key={Expansion.future}><img className="inline_icon" src="images/future_small.svg"/>{CONTENT_SET_FULL_NAMES.future}</div>);
   }
+  if (quest.expansionwyrmsgiants) {
+    requires.push(<div key={Expansion.wyrmsgiants}><img className="inline_icon" src="images/beast_small.svg"/>{CONTENT_SET_FULL_NAMES.wyrmsgiants}</div>);
+  }
   if (quest.expansionscarredlands) {
     requires.push(<div key={Expansion.scarredlands}><img className="inline_icon" src="images/titanspawn_small.svg"/>{CONTENT_SET_FULL_NAMES.scarredlands}</div>);
   }

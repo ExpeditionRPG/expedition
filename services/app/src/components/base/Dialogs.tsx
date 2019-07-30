@@ -182,7 +182,7 @@ interface ExpansionSelectDialogProps extends React.Props<any> {
 
 export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialogProps, {}> {
   public shouldComponentUpdate(nextProps: ExpansionSelectDialogProps) {
-    return nextProps.open !== this.props.open || nextProps.settings.contentSets.scarredlands !== this.props.settings.contentSets.scarredlands;
+    return nextProps.open !== this.props.open || nextProps.settings.contentSets.scarredlands !== this.props.settings.contentSets.scarredlands || nextProps.settings.contentSets.wyrmsgiants !== this.props.settings.contentSets.wyrmsgiants;
   }
 
   public render(): JSX.Element {
@@ -198,7 +198,7 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
           <br/>
           <Button id={Expansion.future} className="primary large" onClick={() => this.props.onExpansionSelect({horror: true, future: true})}>Base + Horror + Future</Button>
           <br/>
-          <br/>
+          <Checkbox id={Expansion.wyrmsgiants} label="Of Wyrms & Giants" value={this.props.settings.contentSets.wyrmsgiants || false} onChange={(v) => this.props.onExpansionSelect({wyrmsgiants: v}, false)}/>
           <Checkbox id={Expansion.scarredlands} label="Scarred Lands" value={this.props.settings.contentSets.scarredlands || false} onChange={(v) => this.props.onExpansionSelect({scarredlands: v}, false)}/>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>This will only appear once, but you can change it at any time in Settings.</p>
           <p style={{textAlign: 'center', marginTop: '1.5em'}}>Don't have the cards? <strong><a href="#" onClick={() => openWindow('https://expeditiongame.com/store?utm_source=app')}>Get a copy</a></strong>.</p>
@@ -371,6 +371,8 @@ export class SetPlayerCountDialog extends React.Component<SetPlayerCountDialogPr
       expansionErr = CONTENT_SET_FULL_NAMES.horror;
     } else if (quest.expansionfuture && !contentSets.has(Expansion.future)) {
       expansionErr = CONTENT_SET_FULL_NAMES.future;
+    } else if (quest.expansionwyrmsgiants && !contentSets.has(Expansion.wyrmsgiants)) {
+      expansionErr = CONTENT_SET_FULL_NAMES.wyrmsgiants;
     } else if (quest.expansionscarredlands && !contentSets.has(Expansion.scarredlands)) {
       expansionErr = CONTENT_SET_FULL_NAMES.scarredlands;
     }

@@ -133,10 +133,6 @@ export interface UserLoginAction extends Redux.Action {
   user: UserState;
 }
 
-export interface UserLogoutAction extends Redux.Action {
-  type: 'USER_LOGOUT';
-}
-
 export interface UserFeedbacksAction extends Redux.Action {
   type: 'USER_FEEDBACKS';
   feedbacks: IUserFeedback[];

@@ -7,8 +7,6 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
   switch (action.type) {
     case 'USER_LOGIN':
       return (action as UserLoginAction).user;
-    case 'USER_LOGOUT':
-      return loggedOutUser;
     case 'USER_FEEDBACKS':
       return {...state, feedbacks: (action as UserFeedbacksAction).feedbacks};
     case 'USER_BADGES':

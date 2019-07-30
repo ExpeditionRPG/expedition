@@ -5,7 +5,7 @@ describe('quest', () => {
   test.skip('returns initial state', () => { /* TODO */ });
 
   test('updates metadata state on change', () => {
-    const change: QuestMetadataChangeAction = {type: 'QUEST_METADATA_CHANGE', key: 'author', value: 'test'};
+    const change: QuestMetadataChangeAction = {type: 'QUEST_METADATA_CHANGE', delta: {author: 'test'}};
     expect(quest({}, change)).toEqual({author: 'test'});
   });
 

@@ -2,12 +2,27 @@ import { object } from 'joi';
 import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
-import { getQuest, searchQuests, updateQuestRatings } from './Quests';
-import { feedback as f, quests as q, testingDBWithState } from './TestData';
+import {
+  getQuest,
+  publishQuest,
+  searchQuests,
+  updateQuestRatings,
+} from './Quests';
+import {
+  feedback as f,
+  quests as q,
+  testingDBWithState,
+  users as u,
+} from './TestData';
 
 const Moment = require('moment');
 
 describe('quest', () => {
+  let ms: MailService;
+  beforeEach(() => {
+    ms = { send: (e: string[], s: string, m: string) => Promise.resolve() };
+  });
+
   describe('searchQuests', () => {
     const quests = [
       q.basic,
@@ -15,6 +30,7 @@ describe('quest', () => {
       q.privateUser2,
       q.horror,
       q.future,
+      q.wyrmsgiants,
       q.scarredlands,
     ];
 
@@ -132,12 +148,14 @@ describe('quest', () => {
               Expansion.horror,
               Expansion.future,
               Expansion.scarredlands,
+              Expansion.wyrmsgiants,
             ],
           }),
         )
         .then(results => {
-          expect(results.length).toEqual(4);
+          expect(results.length).toEqual(5);
           expect(results.map(r => r.dataValues.id)).toEqual([
+            'questidwyrmsgiantsscarred',
             'questidscarredlands',
             'questidfuture',
             'questidhorror',
@@ -221,6 +239,9 @@ describe('quest', () => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
             showPrivate: true,
+            // https://github.com/ExpeditionRPG/expedition/issues/724
+            // "text" adds an extra Or condition which could stomp privacy of query if there is a regression
+            text: 'Quest',
           });
         })
         .then(results => {
@@ -407,6 +428,48 @@ describe('quest', () => {
   });
 
   describe('publishQuest', () => {
+    const q1 = new Quest({
+      ...q.basic,
+      id: 'q1',
+      questversion: 1,
+      questversionlastmajor: 1,
+      ratingavg: 3.0,
+      ratingcount: 5.0,
+      userid: u.basic.id,
+    });
+
+    function publishAndLookup(
+      state: any[],
+      quest: Quest,
+      majorrelease = false,
+      userid = null,
+    ): Promise<QuestInstance> {
+      let db: any;
+      return testingDBWithState(state)
+        .then(tdb => {
+          db = tdb;
+          return publishQuest(
+            db,
+            ms,
+            userid || quest.userid,
+            majorrelease,
+            new Quest({ id: quest.id, partition: quest.partition }),
+            'test_xml',
+          );
+        })
+        .then(results => {
+          return db.quests.findOne({
+            where: { id: quest.id, partition: quest.partition },
+          });
+        })
+        .then((i: QuestInstance | null) => {
+          if (i === null) {
+            throw new Error('Quest must exist');
+          }
+          return i;
+        });
+    }
+
     test.skip('shows up in public search results', () => {
       /* TODO */
     });
@@ -419,24 +482,52 @@ describe('quest', () => {
       /* TODO */
     });
 
-    test.skip('unpublishes owned quest', () => {
-      /* TODO */
+    test.skip('fails to publish unowned quest', done => {
+      // publishAndLookup([u.basic, new Quest({...q1, tombstone: new Date()})], q1, false, "badactor").then((i: QuestInstance) => {
+      //   done.fail('Expected failure');
+      // }).catch((e) => {
+      //   expect(e.toString()).toContain("Invalid user");
+      //   done();
+      // });
     });
 
-    test.skip('fails to publish/unpublish unowned quest', () => {
-      /* TODO */
+    test('updates questversion but not lastmajor on non-major release', done => {
+      publishAndLookup([u.basic, q1], q1, false)
+        .then((i: QuestInstance) => {
+          expect(i).not.toBeNull();
+          expect(i.get('questversion')).toEqual(q1.questversion + 1);
+          expect(i.get('questversionlastmajor')).toEqual(
+            q1.questversionlastmajor,
+          );
+          done();
+        })
+        .catch(done.fail);
     });
 
-    test.skip('always updates questversion', () => {
-      /* TODO */
+    test('increments questversionlastmajor and questversion on major release', done => {
+      publishAndLookup([u.basic, q1], q1, true)
+        .then((i: QuestInstance) => {
+          expect(i).not.toBeNull();
+          expect(i.get('questversion')).toEqual(q1.questversion + 1);
+          expect(i.get('questversionlastmajor')).toEqual(
+            q1.questversionlastmajor + 1,
+          );
+          done();
+        })
+        .catch(done.fail);
     });
 
-    test.skip('increments questversionlastmajor when major release flag is true', () => {
-      /* TODO */
-    });
-
-    test.skip('removes a set tombstone', () => {
-      /* TODO */
+    test('removes a set tombstone', done => {
+      publishAndLookup(
+        [u.basic, new Quest({ ...q1, tombstone: new Date() })],
+        q1,
+        false,
+      )
+        .then((i: QuestInstance) => {
+          expect(i.get('tombstone')).toEqual(null);
+          done();
+        })
+        .catch(done.fail);
     });
 
     test.skip('blocks publish if fields missing or invalid', () => {
@@ -447,17 +538,55 @@ describe('quest', () => {
       /* TODO */
     });
 
-    test.skip('mails admin if new quest', () => {
-      /* TODO */
+    test('mails if new quest', done => {
+      const msSendSpy = spyOn(ms, 'send');
+      publishAndLookup([u.basic], q1, false)
+        .then((i: QuestInstance) => {
+          expect(msSendSpy).toHaveBeenCalled();
+          done();
+        })
+        .catch(done.fail);
     });
 
-    test.skip('mails user if first published quest', () => {
-      /* TODO */
+    test('does not mail if existing quest', done => {
+      const msSendSpy = spyOn(ms, 'send');
+      publishAndLookup([u.basic, q1], q1, false)
+        .then((i: QuestInstance) => {
+          expect(msSendSpy).not.toHaveBeenCalled();
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('preserves ratings on non-major release', done => {
+      publishAndLookup([u.basic, q1], q1, false)
+        .then((i: QuestInstance) => {
+          expect(i.get('ratingavg')).toEqual(q1.ratingavg);
+          expect(i.get('ratingcount')).toEqual(q1.ratingcount);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    test('resets ratings on major release', done => {
+      publishAndLookup([u.basic, q1], q1, true)
+        .then((i: QuestInstance) => {
+          expect(i.get('ratingavg')).toEqual(0);
+          expect(i.get('ratingcount')).toEqual(0);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
   describe('unpublishQuest', () => {
+    test.skip('unpublishes owned quest', () => {
+      /* TODO */
+    });
     test.skip('no longer shows up in search results', () => {
+      /* TODO */
+    });
+    test.skip('fails to unpublish unowned quest', () => {
       /* TODO */
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "expedition",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "The Expedition Monorepo",
   "homepage": "http://expeditiongame.com",
   "repository": "https://github.com/ExpeditionRPG/expedition",
@@ -87,7 +87,7 @@
     "react-ace": "^4.1.6",
     "react-dom": "^16.4.0",
     "react-ga": "^2.3.6",
-    "react-hot-loader": "~4.8.0",
+    "react-hot-loader": "~4.12.0",
     "react-redux": "^5.0.7",
     "react-split-pane": "0.1.87",
     "react-transition-group": "^2.5.0",
@@ -182,7 +182,7 @@
     "lint-staged": "^8.0.5",
     "mock-socket": "^8.0.5",
     "pluralize": "^7.0.0",
-    "prettier": "1.17.1",
+    "prettier": "1.18.2",
     "tslint-config-prettier": "^1.16.0",
     "tslint-loader": "^3.6.0"
   },

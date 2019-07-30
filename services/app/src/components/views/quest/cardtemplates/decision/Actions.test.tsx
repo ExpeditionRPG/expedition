@@ -29,8 +29,8 @@ const TEST_NODE = new ParserNode(cheerio.load(`
     <event on="interrupted"><roleplay>interrupted node reached</roleplay></event>
   </decision>`)('decision'), defaultContext());
 
-const TEST_NODE_MAX_2 = new ParserNode(cheerio.load(`
-  <decision maxrolls="2">
+const TEST_NODE_MAX_1 = new ParserNode(cheerio.load(`
+  <decision maxrolls="1">
     <p>Decision text</p>
     <event on="light athletics"></event>
     <event on="dark athletics"></event>
@@ -108,6 +108,14 @@ describe('Decision actions', () => {
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
     });
+    test('requires fewer successes than maxrolls', () => {
+      const actions = Action(initDecision, {
+        settings: s.basic,
+        multiplayer: m.s2p5,
+      }).execute({node: TEST_NODE_MAX_1.clone()});
+      expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
+    });
   });
   describe('computeSuccesses', () => {
     test('works when zero rolls', () => {
@@ -144,7 +152,7 @@ describe('Decision actions', () => {
       expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.interrupted);
     });
     test('computes interrupted when over max rolls', () => {
-      expect(computeOutcome([20, 10], selected, s.basic, TEST_NODE_MAX_2, m.s2p5, true)).toEqual(Outcome.interrupted);
+      expect(computeOutcome([10], selected, s.basic, TEST_NODE_MAX_1, m.s2p5, true)).toEqual(Outcome.interrupted);
     });
     test('computes success when over max rolls and no interrupted state', () => {
       expect(computeOutcome([10, 10, 10, 10, 10], selected, s.basic, TEST_NODE_NO_INTERRUPTED, m.s2p5, false)).toEqual(Outcome.success);

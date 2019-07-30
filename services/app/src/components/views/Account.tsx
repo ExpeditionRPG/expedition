@@ -3,7 +3,6 @@ import * as React from 'react';
 import {Badge, BADGE_DESC} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {IUserFeedback, UserState} from '../../reducers/StateTypes';
-import Button from '../base/Button';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 import StarRating from '../base/StarRating';
@@ -15,7 +14,6 @@ export interface IStateProps {
 }
 
 export interface IDispatchProps {
-  logoutUser: () => void;
   getUserFeedBacks: () => void;
   getUserBadges: () => void;
   onReturn: () => any;
@@ -64,7 +62,7 @@ class Account extends React.Component<IProps, {}> {
   }
 
   public render() {
-    const {user, logoutUser, onReturn} = this.props;
+    const {user, onReturn} = this.props;
     if (!user.loggedIn) {
       return <SearchContainer />;
     }
@@ -82,8 +80,6 @@ class Account extends React.Component<IProps, {}> {
               {this.renderUserBadges(user.badges || [])}
             </tbody>
           </table>
-          <Button id="logout" onClick={logoutUser}>Log Out</Button>
-          <br/>
           <br/>
           <h3>My Reviews</h3>
           <Divider/>

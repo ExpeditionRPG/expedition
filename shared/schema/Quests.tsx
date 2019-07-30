@@ -139,6 +139,10 @@ export class Quest extends SchemaBase {
 
   @field({
     default: false,
+  }) public expansionwyrmsgiants: boolean;
+
+  @field({
+    default: false,
   }) public expansionscarredlands: boolean;
 
   @field({

@@ -137,6 +137,7 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         contentSets: {
           horror: quest.expansionhorror,
           future: quest.expansionfuture,
+          wyrmsgiants: quest.expansionwyrmsgiants,
           scarredlands: quest.expansionscarredlands,
         },
         difficulty: 'NORMAL',
@@ -162,12 +163,14 @@ export function renderAndPlay(quest: QuestType, qdl: string, line: number, oldWo
         partition: 'expedition-private',
         expansionhorror: quest.expansionhorror,
         expansionfuture: quest.expansionfuture,
+        expansionwyrmsgiants: quest.expansionwyrmsgiants,
         expansionscarredlands: quest.expansionscarredlands,
       })));
       // Results will be shown and added to annotations as they arise.
       dispatch(startPlaytestWorker(oldWorker, questNode, {
         expansionhorror: Boolean(quest.expansionhorror),
         expansionfuture: Boolean(quest.expansionfuture),
+        expansionwyrmsgiants: Boolean(quest.expansionwyrmsgiants),
         expansionscarredlands: Boolean(quest.expansionscarredlands),
       }));
     });

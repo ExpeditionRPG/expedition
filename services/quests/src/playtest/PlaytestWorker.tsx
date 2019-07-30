@@ -39,6 +39,9 @@ function mockContext() {
       currentCombatRound(): number {
         return 0;
       },
+      currentCombatTier(): number {
+        return 1;
+      },
       isCombatSurgeRound(): boolean {
         return false;
       },
@@ -80,7 +83,7 @@ function handleMessage(e: {data: RunMessage}) {
   try {
     const crawler = new PlaytestCrawler(e.data.settings);
     const start = Date.now();
-    const timeout = e.data.timeoutMillis || 10000; // 10s to playtest results
+    const timeout = e.data.timeoutMillis || 30000; // 30s to playtest results
     const logger = new Logger();
     const elem = cheerio.load(e.data.xml)('quest > :first-child');
     if (!elem) {
@@ -96,8 +99,10 @@ function handleMessage(e: {data: RunMessage}) {
 
     const asyncTest = () => {
       if (elapsed > timeout || !(queueLen > 0)) {
-        console.log('Playtest COMPLETE (' + (Date.now() - start) + 'ms)');
-        (postMessage as any)({status: 'COMPLETE'});
+        const ms = Date.now() - start;
+        const lines = crawler.getLines().length;
+        console.log(`Playtest COMPLETE (${ms} ms, ${lines} lines)`);
+        (postMessage as any)({status: 'COMPLETE', ms, lines});
         close();
         return;
       }
@@ -106,7 +111,7 @@ function handleMessage(e: {data: RunMessage}) {
       queueLen = result[0];
       numSeen = result[1];
       if (elapsed - lastLog > 250) {
-        console.log('Playtest (step: ' + step + ' queueLen: ' + queueLen + ', seen ' + numSeen + ')');
+        console.log(`Playtest (step ${step}, queueLen ${queueLen}, seen ${numSeen})`);
         lastLog = elapsed;
       }
       maybePublishLog(logger);

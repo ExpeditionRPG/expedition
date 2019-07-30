@@ -130,9 +130,7 @@ export function evaluateOp(op: string, scope: any, rng: () => number = Math.rand
     evalResult = parsed.compile().eval(scope);
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';
-    if (self && !self.document) { // webworker
-      return null;
-    } else if (window && window.onerror) {
+    if (self && self.document && window && window.onerror) {
       window.onerror(message, 'shared/parse/context');
       return null;
     } else {
