@@ -20,11 +20,26 @@ declare interface SavedQuest {xml: string; path: number[]; seed: string; }
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 
 function getSavedQuestMeta(): SavedQuestMeta[] {
-  return getStorageJson(SAVED_QUESTS_KEY, []) as any;
+  const savedQuests = getStorageJson(SAVED_QUESTS_KEY, []) as any;
+
+  // For each quest, also lookup its estimated size
+  for (const q of savedQuests) {
+    q.savedBytes = getSavedQuestApproxBytes(q.details.id || '', q.ts || 0);
+  }
+
+  return savedQuests;
 }
 
 export function savedQuestKey(id: string, ts: number) {
   return SAVED_QUESTS_KEY + '-' + id + '-' + ts.toString();
+}
+
+export function getSavedQuestApproxBytes(id: string, ts: number): number|undefined {
+  const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
+  if (!data) {
+    return undefined;
+  }
+  return (data.xml || '').length + (data.path || []).length;
 }
 
 export function listSavedQuests(): SavedQuestListAction {
@@ -76,15 +91,6 @@ export function saveQuestForOffline(details: Quest) {
 export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, set= setStorageKeyValue) {
   return (dispatch: Redux.Dispatch<any>): any => {
     logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
-    // Update the listing
-    const savedQuests = getSavedQuestMeta();
-    const pathLen = node.ctx.path.length;
-    const newSavedQuests = [...savedQuests, {ts, details, pathLen}];
-    try {
-      set(SAVED_QUESTS_KEY, newSavedQuests);
-    } catch (e) {
-      return Promise.reject(e);
-    }
 
     // Save the quest state
     const xml = node.getRootElem() + '';
@@ -98,11 +104,23 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     try {
       set(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
     } catch (e) {
-      // If we fail to save a quest (e.g. due to not enough space), we
-      // must rollback the changes made to the index
-      set(SAVED_QUESTS_KEY, savedQuests);
       return Promise.reject(e);
     }
+
+    // Update the listing
+    const savedQuests = getSavedQuestMeta();
+    const pathLen = node.ctx.path.length;
+    const savedBytes = getSavedQuestApproxBytes(details.id || '', ts || 0);
+    const newSavedQuests = [...savedQuests, {ts, details, pathLen, savedBytes}];
+    try {
+      set(SAVED_QUESTS_KEY, newSavedQuests);
+    } catch (e) {
+      // If we fail to save the index (e.g. due to not enough space), we
+      // must clean up the saved quest data
+      set(savedQuestKey(details.id, ts), null);
+      return Promise.reject(e);
+    }
+
     dispatch(updateStorageFreeBytes());
     return Promise.resolve(dispatch({type: 'SAVED_QUEST_STORED', savedQuests: newSavedQuests}));
   };

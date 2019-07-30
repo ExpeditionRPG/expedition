@@ -45,7 +45,9 @@ function formatUserMetadata(user: User | null) {
   if (!user || !user.created || !user.loginCount) {
     return '';
   }
-  return `User joined on ${user.created} and has logged in ${user.loginCount} time(s)`;
+  return `User joined on ${user.created} and has logged in ${
+    user.loginCount
+  } time(s)`;
 }
 
 function mailFeedbackToAdmin(
@@ -69,7 +71,9 @@ function mailFeedbackToAdmin(
     message += `
       <p>Quest: ${quest.title}</p>
       <p>Author email: <a href="mailto:${quest.email}">${quest.email}</a></p>
-      <p>Quest creator link: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
+      <p>Quest creator link: <a href="https://quests.expeditiongame.com/#${
+        feedback.questid
+      }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
     `;
     if (feedback.questline > 0) {
       message += `<p>Quest Line #: ${feedback.questline}</p>`;
@@ -176,10 +180,14 @@ function mailFirstRating(
     message += `<p>User feedback:</p><p>"${feedback.text}"</p>`;
   }
   if (feedback.email && !feedback.anonymous) {
-    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
+    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${
+      feedback.email
+    }</a></p>`;
   }
   message += `<p>${formatUserMetadata(user)}</p>`;
-  message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${feedback.questid}">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
+  message += `<p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
+    feedback.questid
+  }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>`;
   return mail.send(emails, subject, message);
 }
 
@@ -212,7 +220,9 @@ function mailNewRating(
     }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
   `;
   if (feedback.email && !feedback.anonymous) {
-    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${feedback.email}</a></p>`;
+    message += `<p>Reviewer email: <a href="mailto:${feedback.email}">${
+      feedback.email
+    }</a></p>`;
   }
   message += `<p>${formatUserMetadata(user)}</p>`;
   return mail.send(emails, subject, message);

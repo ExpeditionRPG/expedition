@@ -53,7 +53,7 @@ describe('SavedQuest actions', () => {
     test('adds to the listing without affecting other quests', () => {
       const store = newMockStore({});
       store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
-      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1});
+      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual({ts: NEW_TS, details: {id: NEW_ID}, savedBytes: 154, pathLen: 1});
     });
     test('stores xml and context path', () => {
       const store = newMockStore({});
@@ -67,17 +67,17 @@ describe('SavedQuest actions', () => {
       const bytesAction = store.getActions()[0];
       expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
     });
-    test('index is reverted when there is a storage error', (done) => {
+    test('data is removed when there is a storage error', (done) => {
       const store = newMockStore({});
       const startBytes = checkStorageFreeBytes();
       const testKey = savedQuestKey(NEW_ID, NEW_TS);
       const mockSetKeyValue = jasmine.createSpy('mockSetKeyValue').and.callFake((k: string, v: any) => {
-        if (k === testKey && v !== null) {
+        if (k === SAVED_QUESTS_KEY && v !== null) {
           throw new Error('exceeded the quota');
         }
       });
       store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS mockSetKeyValue)).then(() => done.fail('expected error')).catch((e) => {
-        expect(mockSetKeyValue).toHaveBeenCalledWith(SAVED_QUESTS_KEY, [jasmine.objectContaining({details: {id: STORED_QUEST_ID}})]);
+        expect(mockSetKeyValue).toHaveBeenCalledWith(savedQuestKey(NEW_ID, NEW_TS), null);
         done();
       });
     });
@@ -87,7 +87,7 @@ describe('SavedQuest actions', () => {
     test('loads the listing', () => {
       const list = listSavedQuests();
       expect(list.savedQuests.length).toEqual(1);
-      expect(list.savedQuests[0]).toEqual({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}, pathLen: 1} as any);
+      expect(list.savedQuests[0]).toEqual({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}, savedBytes: 154, pathLen: 1} as any);
     });
   });
 
