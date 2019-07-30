@@ -72,7 +72,14 @@ class Card extends React.Component<Props, IState> {
         return dispatch(toCard({name: 'ACCOUNT'}));
       case 'SAVE':
         const state = getStore().getState();
-        dispatch(storeSavedQuest(state.quest.node, state.quest.details, Date.now()));
+        dispatch(storeSavedQuest(state.quest.node, state.quest.details, Date.now()))
+          .catch((e: Error) => {
+            if (e.toString().indexOf('exceeded the quota')) {
+              // Out-of-space errors are not considered errors (they should not be reportable)
+              return dispatch(openSnackbar('Couldn\'t save; out of storage space.', true));
+            }
+            return dispatch(openSnackbar(Error('Error saving quest: ' + e), true));
+          });
         return dispatch(openSnackbar('Quest saved.'));
       case 'SETTINGS':
         return dispatch(toCard({name: 'SETTINGS'}));

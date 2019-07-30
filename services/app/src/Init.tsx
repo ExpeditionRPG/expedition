@@ -17,7 +17,7 @@ import {Expansion, NODE_ENV, VERSION} from 'shared/schema/Constants';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
 import {setDialog} from './actions/Dialog';
-import {listSavedQuests} from './actions/SavedQuests';
+import {listSavedQuests, updateStorageFreeBytes} from './actions/SavedQuests';
 import {searchAndPlay} from './actions/Search';
 import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
@@ -221,6 +221,10 @@ function setupStorage(document: Document) {
       getStore().dispatch(openSnackbar('Please enable cookies for the app to function properly.'));
     }, 0);
   }
+
+  setTimeout(() => {
+    getStore().dispatch(updateStorageFreeBytes());
+  }, INIT_DELAY.FREE_STORAGE_MILLIS);
 }
 
 function setupSettings(settings: SettingsType) {

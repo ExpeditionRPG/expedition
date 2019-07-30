@@ -116,6 +116,7 @@ export interface SavedQuestMeta {
   details: Quest;
   ts: number;
   pathLen?: number;
+  savedBytes?: number;
 }
 
 export type MultiplayerPhase = 'CONNECT'|'LOBBY';
@@ -163,6 +164,7 @@ export interface QuestState {
 export interface SavedQuestState {
   list: SavedQuestMeta[];
   selectedTS: number|null;
+  freeBytes: number|null;
 }
 
 export interface SearchState {

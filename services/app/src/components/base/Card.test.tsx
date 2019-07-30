@@ -56,4 +56,6 @@ describe('Card', () => {
     root.update();
     expect(root.find('Menu').prop('open')).toEqual(false);
   });
+
+  test.skip('storage errors are shown in snackbar', () => { /* TODO */ });
 });

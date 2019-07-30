@@ -8,6 +8,7 @@ import SavedQuests, {DispatchProps, StateProps} from './SavedQuests';
 const mapStateToProps = (state: AppState): StateProps => {
   return {
     saved: state.saved.list,
+    freeBytes: state.saved.freeBytes,
   };
 };
 

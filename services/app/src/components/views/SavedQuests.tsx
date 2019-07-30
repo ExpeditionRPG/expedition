@@ -9,6 +9,7 @@ const Moment = require('moment');
 
 export interface StateProps {
   saved: SavedQuestMeta[];
+  freeBytes: number|null;
 }
 
 export interface DispatchProps {
@@ -52,6 +53,7 @@ const SavedQuests = (props: Props): JSX.Element => {
       ts: Math.max(ds.ts || 0, s.ts),
       pathLen: Math.max(ds.pathLen || 0, s.pathLen || 0),
       numSaves: ds.numSaves + 1,
+      savedBytes: (ds.savedBytes || 0) + (s.savedBytes || 0),
     };
   }
   const distinctSaveKeys = Object.keys(distinctSaves);
@@ -60,7 +62,7 @@ const SavedQuests = (props: Props): JSX.Element => {
     const s = distinctSaves[questID];
     return (
       <QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}>
-        <span className="details">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)})</span>
+        <span className="details">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)}, {(s.savedBytes) ? `${Math.round(s.savedBytes / 1024)} KB` : ''})</span>
       </QuestButtonContainer>
     );
   });
@@ -68,7 +70,9 @@ const SavedQuests = (props: Props): JSX.Element => {
   const offlineQuests: JSX.Element[] = props.saved.filter((s: SavedQuestMeta) => {
     return (s.pathLen !== undefined && s.pathLen === 0);
   }).map((s: SavedQuestMeta, i: number): JSX.Element => {
-    return (<QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}/>);
+    return (<QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}>
+        <span className="details">{(s.savedBytes) ? `${Math.round(s.savedBytes / 1024)} KB` : ''}</span>
+      </QuestButtonContainer>);
   });
 
   return (
@@ -81,6 +85,7 @@ const SavedQuests = (props: Props): JSX.Element => {
         <TextDivider text="Offline"/>
         {offlineQuests}
       </span>}
+      <div className="freeSpace">{props.freeBytes !== null && `${Math.floor(props.freeBytes / 1024)}KB storage remaining`}</div>
     </Card>
   );
 };
