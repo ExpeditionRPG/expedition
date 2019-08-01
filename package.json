@@ -101,7 +101,7 @@
     "sass-loader": "^7.0.3",
     "seedrandom": "^2.4.3",
     "semver": "~5.7.0",
-    "send": "^0.16.2",
+    "send": "^0.17.0",
     "sequelize": "^5.3.3",
     "sinon": "^6.0.0",
     "sinon-express-mock": "^2.0.0",
