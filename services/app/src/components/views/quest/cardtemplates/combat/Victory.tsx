@@ -81,7 +81,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
         <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
           {props.contentSets.has(Expansion.horror) && <ul>
             <li>
-              <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />:
+              <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />
               You may also draw from the Influence deck.
             </li>
           </ul>}
@@ -92,13 +92,13 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
   ];
   if (props.contentSets.has(Expansion.horror)) {
     levelUpOptions.push(<li>
-      <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />:
+      <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />
       Increase their Persona by 2.
     </li>);
   }
   if (props.contentSets.has(Expansion.future)) {
     levelUpOptions.push(<li>
-      <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />:
+      <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />
       Learn a new skill.
       {props.settings.showHelp && <ul>
         <li>Draw 3 skills and select one of them.</li>
@@ -106,7 +106,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
         <li>Place the remaining 2 at the bottom of the skill deck.</li>
       </ul>}
     </li>, <li>
-      <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />:
+      <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />
       Level up an existing skill.
       {props.settings.showHelp && <ul>
         <li>Move the clip on one skill one position to the right.</li>
