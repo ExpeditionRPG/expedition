@@ -273,6 +273,7 @@ export class FeedbackDialog extends TextAreaDialog<FeedbackDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('feedback', this.props.quest, this.props.settings, this.props.user, this.state.text);
+    this.setState({text: ''});
   }
 }
 
@@ -289,6 +290,7 @@ export class ReportErrorDialog extends TextAreaDialog<ReportErrorDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('report_error', this.props.quest, this.props.settings, this.props.user, this.state.text + '... Error: ' + this.props.error);
+    this.setState({text: ''});
   }
 }
 
@@ -310,6 +312,7 @@ export class ExitQuestDialog extends TextAreaDialog<ExitDialogProps> {
 
   public onSubmit() {
     this.props.onExit(this.props.quest, this.props.settings, this.props.user, this.state.text);
+    this.setState({text: ''});
   }
 }
 
@@ -333,6 +336,7 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('report_quest', this.props.quest, this.props.settings, this.props.user, this.state.text);
+    this.setState({text: ''});
   }
 }
 
