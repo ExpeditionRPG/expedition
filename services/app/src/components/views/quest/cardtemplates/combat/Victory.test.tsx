@@ -84,7 +84,7 @@ describe('Combat victory', () => {
     expect(setup({
       settings: {showHelp: true},
       contentSets: new Set(['future']),
-    }).e.text()).toContain(FUTURE_SUBSTR);
+    }).e.text()).toContain('skill');
   });
   test('hides expansion tips if no expansion', () => {
     const text = setup({
