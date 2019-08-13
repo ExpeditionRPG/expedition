@@ -16,7 +16,6 @@ export const initialQuestState: QuestState = {
     title: '',
   }),
   node: new ParserNode(cheerio.load('<quest></quest>')('quest'), {
-    _templateScopeFn: () => ({}),
     path: ([] as any),
     scope: {_: {}},
     templates: {},
