@@ -28,6 +28,6 @@ export function resolveCombat(node: ParserNode|undefined): CombatState {
       roundCount: 0,
       seed: '',
       phase: CombatPhase.drawEnemies,
-      decisionPhase: DecisionPhase.prepareDecision,
+      decisionPhase: DecisionPhase.prepare,
     };
 }

@@ -37,9 +37,9 @@ export interface OutcomeContent {
 export const EMPTY_OUTCOME: OutcomeContent = {type: 'retry', text: '', instructions: []};
 
 export enum DecisionPhase {
-  prepareDecision = 'PREPARE_DECISION',
-  decisionTimer = 'DECISION_TIMER',
-  resolveDecision = 'RESOLVE_DECISION',
+  prepare = 'PREPARE_DECISION',
+  timer = 'DECISION_TIMER',
+  resolve = 'RESOLVE_DECISION',
 }
 export interface DecisionState {
   leveledChecks: LeveledSkillCheck[];

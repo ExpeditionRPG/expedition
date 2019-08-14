@@ -72,7 +72,7 @@ describe('Decision actions', () => {
     }).execute({node: copyNode.clone()})[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
-    node.ctx.templates.combat = {decisionPhase: DecisionPhase.resolveDecision}; // Ignored if non-combat, used if mid-combat
+    node.ctx.templates.combat = {decisionPhase: DecisionPhase.resolve}; // Ignored if non-combat, used if mid-combat
     return node;
   }
   describe('extractDecision', () => {
@@ -99,7 +99,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepare}));
     });
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const actions = Action(initDecision, {
@@ -107,7 +107,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p2a1,
       }).execute({node: TEST_NODE.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepare}));
     });
     test('requires fewer successes than maxrolls', () => {
       const actions = Action(initDecision, {
@@ -115,7 +115,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node: TEST_NODE_MAX_1.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepare}));
     });
   });
   describe('computeSuccesses', () => {
@@ -214,7 +214,7 @@ describe('Decision actions', () => {
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
-      expect(actions[2].to.phase).toEqual(DecisionPhase.resolveDecision);
+      expect(actions[2].to.phase).toEqual(DecisionPhase.resolve);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
@@ -223,7 +223,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
-      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolveDecision);
+      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolve);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
@@ -232,7 +232,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
-      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolveDecision);
+      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolve);
     });
     test('goes to interrupted state when non-combat decision has interrupted event', () => {
       const node = setup();
@@ -261,8 +261,8 @@ describe('Decision actions', () => {
       expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
     });
     test('does pass-thru to toCard if not in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolveDecision});
-      expect(actions[1].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.resolveDecision}));
+      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolve});
+      expect(actions[1].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.resolve}));
     });
   });
 });

@@ -49,7 +49,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   };
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.prepareDecision, noHistory: true}));
+  dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.prepare, noHistory: true}));
   return {};
 });
 
@@ -271,7 +271,7 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   if (getState().card.phase === CombatPhase.midCombatDecision) {
     const {node} = resolveParams(a.node, getState);
     pushDecisionRoll(node, a.roll, getState);
-    dispatch(toDecisionCard({phase: DecisionPhase.resolveDecision, node}));
+    dispatch(toDecisionCard({phase: DecisionPhase.resolve, node}));
     return {
       roll: a.roll,
     };
@@ -288,7 +288,7 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   } else {
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.resolveDecision, noHistory: true, keySuffix: Date.now().toString()}));
+    dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true, keySuffix: Date.now().toString()}));
   }
   return {
     roll: a.roll,
@@ -300,7 +300,7 @@ interface ToDecisionCardArgs extends Partial<ToCardArgs> {
   phase: DecisionPhase;
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
-  const phase = a.phase || DecisionPhase.prepareDecision;
+  const phase = a.phase || DecisionPhase.prepare;
   const statePhase = getState().card.phase;
   if (statePhase !== CombatPhase.midCombatDecision && statePhase !== CombatPhase.midCombatDecisionTimer && a.name !== undefined) {
     const a2: ToCardArgs = {
@@ -319,7 +319,7 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   dispatch(toCard({
     name: 'QUEST_CARD',
-    phase: (a.phase === DecisionPhase.decisionTimer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision,
+    phase: (a.phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision,
     keySuffix: a.phase + (decision.rolls || '').toString(),
     noHistory: true,
   }));

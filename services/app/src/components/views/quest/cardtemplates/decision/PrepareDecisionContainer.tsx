@@ -7,7 +7,7 @@ import {DecisionPhase, mapStateToProps} from './Types';
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onStartTimer: () => {
-      dispatch(toDecisionCard({name: 'QUEST_CARD', phase: DecisionPhase.decisionTimer}));
+      dispatch(toDecisionCard({name: 'QUEST_CARD', phase: DecisionPhase.timer}));
     },
   };
 };

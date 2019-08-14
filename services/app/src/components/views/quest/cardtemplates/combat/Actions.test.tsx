@@ -221,7 +221,7 @@ describe('Combat actions', () => {
       expect(Object.keys(hist).length).toBeGreaterThan(1);
 
       // Same damage should happen not more than half the time.
-      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(TRIALS/2);
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).not.toBeGreaterThan(TRIALS/2);
       checkNodeIntegrity(startNode, node);
     });
     test('generates rolls according to player count', () => {

@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     onReturn: () => {
       // Return to the Prepare Decision card instead of going back to the timer.
       dispatch(toPrevious({before: false, skip: [
-        {name: 'QUEST_CARD', phase: DecisionPhase.decisionTimer},
+        {name: 'QUEST_CARD', phase: DecisionPhase.timer},
         {name: 'QUEST_CARD', phase: CombatPhase.midCombatDecisionTimer},
       ]}));
     },

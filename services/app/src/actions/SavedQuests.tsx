@@ -141,7 +141,7 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
     roundCount: 0,
     tier,
     phase: CombatPhase.drawEnemies,
-    decisionPhase: DecisionPhase.prepareDecision,
+    decisionPhase: DecisionPhase.prepare,
     surgePeriod: 4,
     decisionPeriod: 4,
     damageMultiplier: 1,

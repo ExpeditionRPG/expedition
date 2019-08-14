@@ -46,11 +46,11 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
   switch (phase) {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
-    case DecisionPhase.prepareDecision:
+    case DecisionPhase.prepare:
       return <PrepareDecisionContainer node={node}/>;
-    case DecisionPhase.decisionTimer:
+    case DecisionPhase.timer:
       return <DecisionTimerContainer node={node}/>;
-    case DecisionPhase.resolveDecision:
+    case DecisionPhase.resolve:
       return <ResolveDecisionContainer node={node}/>;
     case CombatPhase.drawEnemies:
       return <DrawEnemiesContainer node={node}/>;
@@ -80,7 +80,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
     case CombatPhase.midCombatDecision:
     case CombatPhase.midCombatDecisionTimer:
       const combat = node.ctx.templates.combat;
-      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepareDecision)}, node, settings);
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepare)}, node, settings);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -101,9 +101,9 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case CombatPhase.midCombatDecisionTimer:
       return 'dark';
     case 'ROLEPLAY':
-    case DecisionPhase.prepareDecision:
-    case DecisionPhase.decisionTimer:
-    case DecisionPhase.resolveDecision:
+    case DecisionPhase.prepare:
+    case DecisionPhase.timer:
+    case DecisionPhase.resolve:
     default:
       return 'light';
   }

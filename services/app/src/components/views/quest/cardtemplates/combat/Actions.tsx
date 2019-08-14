@@ -53,7 +53,7 @@ export function generateCombatTemplate(settings: SettingsType, node?: ParserNode
 
   return {
     phase: CombatPhase.drawEnemies,
-    decisionPhase: DecisionPhase.prepareDecision,
+    decisionPhase: DecisionPhase.prepare,
     enemies,
     numAliveAdventurers: numLocalAdventurers(settings, mp),
     roundCount: 0,
@@ -488,7 +488,7 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   const settings = getState().settings;
   const mp = getState().multiplayer;
   combat.phase = CombatPhase.midCombatDecision;
-  combat.decisionPhase = DecisionPhase.prepareDecision;
+  combat.decisionPhase = DecisionPhase.prepare;
   const arng = seedrandom.alea(a.seed);
   node.ctx.templates.decision = {
     leveledChecks: generateLeveledChecks(numAliveAdventurers(settings, node, mp), arng),
