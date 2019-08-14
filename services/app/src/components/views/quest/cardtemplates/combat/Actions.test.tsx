@@ -486,32 +486,6 @@ describe('Combat actions', () => {
 
   test.skip('clears combat state on completion', () => { /* TODO */ });
 
-  describe('findCombatParent', () => {
-    test('returns node when node is combat', () => {
-      const v = cheerio.load('<quest><combat id="start"></combat></quest>')('#start');
-      const result = findCombatParent(new ParserNode(v, defaultContext()));
-      if (result === null) {
-        throw Error('null result');
-      }
-      expect(result.attr('id')).toEqual('start');
-      checkNodeIntegrity(null, null); // skip
-    });
-    test('returns combat parent', () => {
-      const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
-      const result = findCombatParent(new ParserNode(v, defaultContext()));
-      if (result === null) {
-        throw Error('null result');
-      }
-      expect(result.attr('id')).toEqual('expected');
-      checkNodeIntegrity(null, null); // skip
-    });
-    test('does not return combat when node is within a win/lose event', () => {
-      const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
-      expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
-      checkNodeIntegrity(null, null); // skip
-    });
-  });
-
   describe('setupCombatDecision', () => {
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const startNode = newCombatNode();

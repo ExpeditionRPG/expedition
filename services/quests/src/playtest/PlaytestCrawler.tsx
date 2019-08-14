@@ -143,10 +143,10 @@ export class PlaytestCrawler extends StatsCrawler {
     });
   }
 
-  private verifySaveCheck() {
+  // private verifySaveCheck() {
     // TODO: serialize/deserialize the context and warn the user when they're doing something that would
     // cause their quest to fail to save & load.
-  }
+  //}
 
   private verifyMidCombatRoleplayNoJumpToCombat(roleplayNode: Node<Context>, line: number) {
     const cp1 = getCombatParent(roleplayNode);

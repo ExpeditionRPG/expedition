@@ -17,6 +17,7 @@ export interface MidCombatPhase {
   numAliveAdventurers: number;
   roundCount: number;
   tier: number;
+  combatPhase: CombatPhase;
   decisionPhase: DecisionPhase;
   // Combat needs its own seed so as not to interfere
   // with replay/multiplayer seed on main node.
@@ -38,6 +39,13 @@ export interface CombatDifficultySettings {
 }
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
+
+export enum CombatPhase {
+  drawEnemies = 'DRAW_ENEMIES',
+  timer = 'TIMER',
+  surge = 'SURGE',
+  // etc etc
+}
 
 export type CombatPhase = 'DRAW_ENEMIES'
   | 'PREPARE'

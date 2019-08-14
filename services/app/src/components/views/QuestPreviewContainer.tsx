@@ -36,7 +36,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onPlaySaved(id: string, ts: number): void {
       dispatch(loadSavedQuest(id, ts));
-      dispatch(toCard({name: 'QUEST_CARD'}));
     },
     onSave(quest: Quest) {
       dispatch(saveQuestForOffline(quest));

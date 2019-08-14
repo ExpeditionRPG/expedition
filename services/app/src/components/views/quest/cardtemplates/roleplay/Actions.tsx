@@ -124,9 +124,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
       dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
       break;
     default: // in-combat roleplay continues
-      dispatch({type: 'PUSH_HISTORY'});
-      dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
+      dispatch(setAndRenderNode(nextNode));
       break;
   }
   return remoteArgs;

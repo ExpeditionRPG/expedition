@@ -242,7 +242,7 @@ export function recreateNodeFromContext(xml: string, line: number, ctx: Template
   for (const k of Object.keys(ctx.scope._)) {
     ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
   }
-  return new ParserNode(elem, ctx);
+  return new ParserNode(elem, ctx, undefined, ctx.seed);
 }
 
 export function loadSavedQuest(id: string, ts: number) {
@@ -263,34 +263,52 @@ export function loadSavedQuest(id: string, ts: number) {
     logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
     const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
 
+    let node: ParserNode|null = null;
     if (data.ctx && data.xml && data.line !== undefined) {
       console.log('Attempting to recreate from ctx');
       try {
         const node = recreateNodeFromContext(data.xml, data.line, data.ctx);
         console.log('Recreated scope:', node.ctx.scope);
-        dispatch({
-          type: 'QUEST_NODE',
-          node,
-          details,
-        } as QuestNodeAction);
-        return;
       } catch (e) {
         console.warn(e);
-        console.log('Attempting legacy load');
+        node = null;
       }
     }
 
-    if (!data.xml || !data.path) {
-      throw new Error('Could not load quest - invalid save data');
+    if (node === null) {
+      console.log('Attempting legacy load');
+      if (!data.xml || !data.path) {
+        throw new Error('Could not load quest - invalid save data');
+      }
+      const {node, complete} = recreateNodeFromPath(data.xml, data.path, data.seed);
+      if (!complete) {
+        dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
+      }
     }
-    const {node, complete} = recreateNodeFromPath(data.xml, data.path, data.seed);
-    if (!complete) {
-      dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
-    }
+
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({
       type: 'QUEST_NODE',
       node,
       details,
     } as QuestNodeAction);
+
+    // TODO(scott): Upstream this render choice logic to its own function,
+    // reuse it in roleplay/Actions.tsx and combat/Actions.tsx
+    const tagName = node.elem.get(0).tagName;
+    if (tagName === 'roleplay') {
+      if (findCombatParent(node.elem) !== null) {
+        // Mid-combat roleplay
+        dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
+      } else {
+        // Regular roleplay
+        dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
+      }
+    } else if (tagName === 'combat') {
+      dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
+      dispatch(audioSet({intensity: calculateAudioIntensity(tierSum, tierSum, 0, 0)}));
+    } else {
+      dispatch(openSnackbar(`Failed to load quest (tag ${tagName})`));
+    }
   };
 }

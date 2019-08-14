@@ -11,6 +11,7 @@ import {resolveParams} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE} from './Types';
+import {setAndRenderNode} from '../Render';
 
 const MAX_REQUIRED_SUCCESSES = 3;
 const MIN_REQUIRED_SUCCESSES = 1;
@@ -47,9 +48,7 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
     selected: null,
     rolls: [],
   };
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'PREPARE_DECISION', noHistory: true}));
+  dispatch(setAndRenderNode(node));
   return {};
 });
 

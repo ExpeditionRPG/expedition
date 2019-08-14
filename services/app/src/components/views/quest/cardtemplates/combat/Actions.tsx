@@ -3,7 +3,7 @@ import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
 import {numAdventurers, numAliveAdventurers, numLocalAdventurers, numPlayers} from 'app/actions/Settings';
-import {COMBAT_DIFFICULTY, MUSIC_INTENSITY_MAX, PLAYER_DAMAGE_MULT, PLAYER_TIME_MULT} from 'app/Constants';
+import {COMBAT_DIFFICULTY, PLAYER_DAMAGE_MULT, PLAYER_TIME_MULT} from 'app/Constants';
 import {ENCOUNTERS} from 'app/Encounters';
 import {Enemy, Loot} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory, DifficultyType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
@@ -14,21 +14,9 @@ import {remoteify} from 'app/multiplayer/Remoteify';
 import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
 import {resolveParams} from '../Params';
+import {setAndRenderNode, findCombatParent, calculateAudioIntensity} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
-
-export function findCombatParent(node: ParserNode): Cheerio|null {
-  let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
-    // Don't count roleplay nodes within "win" and "lose" events even if they're children of
-    // a combat node; this is technically a roleplay state.
-    if (/win|lose/.test(elem.attr('on'))) {
-      return null;
-    }
-    elem = elem.parent();
-  }
-  return elem;
-}
 
 export function roundTimeMillis(settings: SettingsType, mp?: MultiplayerState) {
   const totalPlayerCount = numPlayers(settings, mp);
@@ -70,19 +58,9 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
   const settings = getState().settings;
   a.node.ctx.templates.combat = generateCombatTemplate(settings, a.node, mp);
   const tierSum = a.node.ctx.templates.combat.tier;
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
-  dispatch(audioSet({intensity: calculateAudioIntensity(tierSum, tierSum, 0, 0)}));
+  dispatch(setAndRenderNode(a.node));
   return null;
 });
-
-function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
-  // Some pretty arbitrary weights on different combat factors and how they affect music intensity
-  // Optimized for a tier 3 fight being 12, tier 8 (max relevant tier) being 32
-  // With intensity increasing generally over time, but fading off quickly as you defeat enemies
-  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 2 * currentTier + 2 * maxTier + 4 * deadAdventurers + 0.5 * roundCount));
-}
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];

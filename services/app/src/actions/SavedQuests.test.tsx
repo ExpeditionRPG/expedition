@@ -112,55 +112,68 @@ describe('SavedQuest actions', () => {
   });
 
   describe('loadSavedQuest', () => {
+    function storeAndLoadQuest(xml: string, mutateCtx: ((ctx: TemplateContext) => TemplateContext) = (c) => c): {saved: ParserNode, loaded: ParserNode} {
+      const quest = getCheerio().load(xml)('quest');
+      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const next = pnode.getNext(0);
+      if (next === null) {
+        throw new Error('Initial setup failed');
+      }
+      next.ctx = mutateCtx(next.ctx);
+      const store = newMockStore({});
+      store.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS+1));
+      store.clearActions();
+
+      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS+1));
+      return {saved: next, loaded: store.getActions()[0].node};
+    }
     test('loads from context, properly binding "lodash" functions in roleplay node', () => {
       // This tests the viewCount function defined in populateScope() (in TemplateTypes.tsx).
       // We pass once through the starting node, so viewCount("a") should equal 1.
       //
       // This test also sets a variable earlier in the save, and attempts to render the same
       // var when landing on the loaded node.
-      console.log('Cheerio-ing');
-      const quest = getCheerio().load(`
+      const node = storeAndLoadQuest(`
         <quest>
           <roleplay data-line="0" id="a">
             <p>{{n = "test"}}</p>
-            <choice></choice>
-            <choice if="false"></choice>
             <choice>
               <roleplay data-line="2"><p>Result: {{_.viewCount("a")}}{{n}}</p></roleplay>
               <roleplay data-line="3"><p>wrong</p></roleplay>
             </choice>
           </roleplay>
-        </quest>`)('quest');
-        console.log('Made quest');
-      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
-      const next = pnode.getNext(1);
-      if (next === null) {
-        throw new Error('Initial setup failed');
-      }
-      const store = newMockStore({});
-      console.log('Storing quest');
-      store.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS+1));
-      store.clearActions();
-
-      console.log('Loading quest');
-      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS+1));
-      const node = store.getActions()[0].node;
-
-      console.log(node.elem + '');
-
+        </quest>`).loaded;
       let result = "";
-      store.getActions()[0].node.loopChildren((tag: string, child: Cheerio, original: Cheerio) => {
+      node.loopChildren((tag: string, child: Cheerio, original: Cheerio) => {
         result += child
       });
       expect(result).toEqual('<p>Result: 1test</p>');
     });
     test('Loaded node seed matches saved node seed', () => {
-      throw Error("not implemented");
+      const {saved, loaded} = storeAndLoadQuest(`
+        <quest>
+          <roleplay data-line="0"></roleplay>
+          <roleplay data-line="1"></roleplay>
+        </quest>`);
+      let result = "";
+      expect(saved.ctx.seed).toEqual(loaded.ctx.seed);
     });
-    test('handles loading into combat', () => {
+    test.only('handles loading into combat', () => {
       // When recreating from ctx, user should be able to load into the exact round
       // of combat they were originally in.
-      throw Error("not implemented");
+      const node = storeAndLoadQuest(`
+        <quest>
+          <roleplay data-line="0" id="a"></roleplay>
+          <combat><e>Giant Rat</e></combat>
+        </quest>`, (c: TemplateContext) => {
+          console.log(c);
+          c.templates.combat = {...c.templates.combat, roundCount: 6, tier: 4};
+          return c;
+        });
+      console.log(node.ctx);
+      expect(node.ctx.scope.templates.combat.roundCount).toEqual(6);
+      expect(node.ctx.scope.templates.combat.tier).toEqual(4);
+      expect(node.elem.get(0).tagName).toEqual('combat');
     });
     test('handles loading into mid-combat roleplay', () => {
       // When recreating from ctx, user should be able to load into the exact round
