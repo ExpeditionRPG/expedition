@@ -6,7 +6,7 @@ import Redux from 'redux';
 import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import Defeat, {DispatchProps, StateProps} from './Defeat';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+import {CombatPhase, mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   // Override with dynamic state for tier and adventurer count
@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(event({node, evt}));
     },
     onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: CombatPhase.drawEnemies, before: true}));
     },
   };
 };

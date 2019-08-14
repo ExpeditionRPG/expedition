@@ -11,7 +11,8 @@ import {
 } from './Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
+import {DecisionPhase, EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
+import {CombatPhase} from '../combat/Types';
 import {Action, newMockStore} from 'app/Testing';
 import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
@@ -71,7 +72,7 @@ describe('Decision actions', () => {
     }).execute({node: copyNode.clone()})[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
-    node.ctx.templates.combat = {decisionPhase: 'RESOLVE_DECISION'}; // Ignored if non-combat, used if mid-combat
+    node.ctx.templates.combat = {decisionPhase: DecisionPhase.resolveDecision}; // Ignored if non-combat, used if mid-combat
     return node;
   }
   describe('extractDecision', () => {
@@ -98,7 +99,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
     });
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const actions = Action(initDecision, {
@@ -106,7 +107,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p2a1,
       }).execute({node: TEST_NODE.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
     });
     test('requires fewer successes than maxrolls', () => {
       const actions = Action(initDecision, {
@@ -114,7 +115,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node: TEST_NODE_MAX_1.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'PREPARE_DECISION'}));
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.prepareDecision}));
     });
   });
   describe('computeSuccesses', () => {
@@ -193,7 +194,7 @@ describe('Decision actions', () => {
   describe('handleDecisionRoll', () => {
     test('pushes the roll value onto the node', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: 'MID_COMBAT_DECISION'},
+        card: {phase: CombatPhase.midCombatDecision},
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 5});
@@ -213,25 +214,25 @@ describe('Decision actions', () => {
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
-      expect(actions[2].to.phase).toEqual('RESOLVE_DECISION');
+      expect(actions[2].to.phase).toEqual(DecisionPhase.resolveDecision);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: 'MID_COMBAT_DECISION'},
+        card: {phase: CombatPhase.midCombatDecision},
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
-      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
+      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolveDecision);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: 'MID_COMBAT_DECISION'},
+        card: {phase: CombatPhase.midCombatDecision},
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
-      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual('RESOLVE_DECISION');
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
+      expect(actions[1].node.ctx.templates.combat.decisionPhase).toEqual(DecisionPhase.resolveDecision);
     });
     test('goes to interrupted state when non-combat decision has interrupted event', () => {
       const node = setup();
@@ -256,12 +257,12 @@ describe('Decision actions', () => {
   });
   describe('toDecisionCard', () => {
     test('goes to MID_COMBAT_DECISION if in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: 'MID_COMBAT_DECISION'}}).execute({node: setup()});
-      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: 'MID_COMBAT_DECISION'}));
+      const actions = Action(toDecisionCard, {card: {phase: CombatPhase.midCombatDecision}}).execute({node: setup()});
+      expect(actions[2].to).toEqual(jasmine.objectContaining({phase: CombatPhase.midCombatDecision}));
     });
     test('does pass-thru to toCard if not in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: 'RESOLVE_DECISION'});
-      expect(actions[1].to).toEqual(jasmine.objectContaining({phase: 'RESOLVE_DECISION'}));
+      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolveDecision});
+      expect(actions[1].to).toEqual(jasmine.objectContaining({phase: DecisionPhase.resolveDecision}));
     });
   });
 });

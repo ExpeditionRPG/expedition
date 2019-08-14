@@ -17,6 +17,7 @@ export interface MidCombatPhase {
   numAliveAdventurers: number;
   roundCount: number;
   tier: number;
+  phase: CombatPhase;
   decisionPhase: DecisionPhase;
   // Combat needs its own seed so as not to interfere
   // with replay/multiplayer seed on main node.
@@ -39,17 +40,19 @@ export interface CombatDifficultySettings {
 
 export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
 
-export type CombatPhase = 'DRAW_ENEMIES'
-  | 'PREPARE'
-  | 'TIMER'
-  | 'SURGE'
-  | 'RESOLVE_ABILITIES'
-  | 'RESOLVE_DAMAGE'
-  | 'VICTORY'
-  | 'DEFEAT'
-  | 'MID_COMBAT_ROLEPLAY'
-  | 'MID_COMBAT_DECISION'
-  | 'MID_COMBAT_DECISION_TIMER'; // Timer must be separate to allow skip of timer during onReturn.
+export enum CombatPhase {
+  drawEnemies = 'DRAW_ENEMIES',
+  prepare = 'PREPARE',
+  timer = 'TIMER', // Timer must be separate to allow skip of timer during onReturn.
+  surge = 'SURGE',
+  resolveAbilities = 'RESOLVE_ABILITIES',
+  resolveDamage = 'RESOLVE_DAMAGE',
+  victory = 'VICTORY',
+  defeat = 'DEFEAT',
+  midCombatRoleplay = 'MID_COMBAT_ROLEPLAY',
+  midCombatDecision = 'MID_COMBAT_DECISION',
+  midCombatDecisionTimer = 'MID_COMBAT_DECISION_TIMER',
+}
 
 export interface StateProps {
   node: ParserNode;

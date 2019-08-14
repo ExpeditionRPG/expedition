@@ -13,9 +13,10 @@ import {sendStatus} from 'app/actions/Multiplayer';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
+import {DecisionPhase} from '../decision/Types';
 import {resolveParams} from '../Params';
 import {ParserNode} from '../TemplateTypes';
-import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
+import {CombatAttack, CombatDifficultySettings, CombatPhase, CombatState} from './Types';
 
 export function findCombatParent(node: ParserNode): Cheerio|null {
   let elem = node && node.elem;
@@ -51,7 +52,8 @@ export function generateCombatTemplate(settings: SettingsType, node?: ParserNode
   const {enemies, tier} = getEnemiesAndTier(node);
 
   return {
-    decisionPhase: 'PREPARE_DECISION',
+    phase: CombatPhase.drawEnemies,
+    decisionPhase: DecisionPhase.prepareDecision,
     enemies,
     numAliveAdventurers: numLocalAdventurers(settings, mp),
     roundCount: 0,
@@ -68,12 +70,12 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
   const mp = getState().multiplayer;
   a.node = a.node.clone();
   const settings = getState().settings;
-  a.node.ctx.templates.combat = generateCombatTemplate(settings, a.node, mp);
-  const tierSum = a.node.ctx.templates.combat.tier;
+  const combat = generateCombatTemplate(settings, a.node, mp);
+  a.node.ctx.templates.combat = combat;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', noHistory: true}));
-  dispatch(audioSet({intensity: calculateAudioIntensity(tierSum, tierSum, 0, 0)}));
+  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, noHistory: true}));
+  dispatch(audioSet({intensity: calculateAudioIntensity(combat.tier, combat.tier, 0, 0)}));
   return null;
 });
 
@@ -267,19 +269,23 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
     a.node = getState().quest.node;
   }
 
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
+
   // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
-  a.node = a.node.clone();
   if (a.node.getVisibleKeys().indexOf('round') !== -1) {
     // Set node *before* navigation to prevent a blank first roleplay card.
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node.getNext('round')} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
+    combat.phase = CombatPhase.midCombatRoleplay;
+    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true, noHistory: true}));
   } else {
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
+    combat.phase = CombatPhase.resolveAbilities;
+    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true, noHistory: true}));
   }
   return {};
 });
@@ -295,13 +301,17 @@ export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(
   if (!a.node) {
     a.node = getState().quest.node;
   }
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'TIMER'}));
+
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
+  combat.phase = CombatPhase.timer;
+
+  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase}));
   dispatch(audioSet({peakIntensity: 1}));
 
   // If we have no local alive adventurers but we're playing multiplayer, automatically put the timer in hold state.
   // Note that we don't have to check for multiplayer here, as starting the timer with 0 total alive adventurers
   // is not allowed by UI.
-  const combat = a.node.ctx.templates.combat;
   if (combat && combat.numAliveAdventurers === 0) {
     dispatch(handleCombatTimerHold({elapsedMillis: 0}));
   }
@@ -340,13 +350,8 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
 
   dispatch(audioSet({peakIntensity: 0}));
 
-  a.node = a.node.clone();
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    combat = generateCombatTemplate(a.settings, a.node, mp);
-    a.node.ctx.templates.combat = combat;
-  }
-
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
   combat.seed = generateSeed(combat.seed);
   const arng = seedrandom.alea(combat.seed);
   combat.mostRecentAttack = generateCombatAttack(a.node, a.settings, mp, a.elapsedMillis, arng);
@@ -362,7 +367,8 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     // We can preset the quest node here. This populates context in a way that
     // the latest round is considered when the "on round" branch is evaluated.
     dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'SURGE', overrideDebounce: true}));
+    combat.phase = CombatPhase.surge;
+    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true}));
   } else {
     dispatch(handleResolvePhase({node: a.node}));
   }
@@ -400,11 +406,8 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.node = new ParserNode(parent, a.node.ctx);
   }
 
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    combat = generateCombatTemplate(a.settings, a.node, mp);
-    a.node.ctx.templates.combat = combat;
-  }
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
 
   // Edit the final card before cloning
   if (a.victory) {
@@ -420,9 +423,11 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
   combat.loot = (a.victory) ? generateLoot(a.maxTier, adventurers, arng) : [];
   a.node.ctx.templates.combat = combat;
 
+  combat.phase = (a.victory) ? CombatPhase.victory : CombatPhase.defeat;
+
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: (a.victory) ? 'VICTORY' : 'DEFEAT',  overrideDebounce: true, noHistory: true}));
+  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase,  overrideDebounce: true, noHistory: true}));
   dispatch(audioSet({intensity: 0}));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
 });
@@ -436,13 +441,9 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
   if (!a.node) {
     a.node = getState().quest.node;
   }
-  const mp = getState().multiplayer;
-  a.node = a.node.clone();
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    combat = generateCombatTemplate(getState().settings, a.node, mp);
-    a.node.ctx.templates.combat = combat;
-  }
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
+
   combat.tier = Math.max(a.current + a.delta, 0);
   dispatch({type: 'QUEST_NODE', node: a.node});
   dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
@@ -462,12 +463,10 @@ interface AdventurerDeltaArgs {
 export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerDeltaArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) {
   const mp = getState().multiplayer;
   const newAdventurerCount = Math.min(Math.max(0, a.current + a.delta), numLocalAdventurers(a.settings, mp));
-  a.node = a.node.clone();
-  let combat = a.node.ctx.templates.combat;
-  if (!combat) {
-    combat = generateCombatTemplate(getState().settings, a.node, mp);
-    a.node.ctx.templates.combat = combat;
-  }
+
+  const {node, combat} = resolveParams(a.node, getState);
+  a.node = node;
+
   combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
   dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
@@ -488,7 +487,8 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
   const {node, combat} = resolveParams(a.node, getState);
   const settings = getState().settings;
   const mp = getState().multiplayer;
-  combat.decisionPhase = 'PREPARE_DECISION';
+  combat.phase = CombatPhase.midCombatDecision;
+  combat.decisionPhase = DecisionPhase.prepareDecision;
   const arng = seedrandom.alea(a.seed);
   node.ctx.templates.decision = {
     leveledChecks: generateLeveledChecks(numAliveAdventurers(settings, node, mp), arng),
@@ -498,6 +498,6 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
 
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_DECISION', keySuffix: combat.decisionPhase, noHistory: true}));
+  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, keySuffix: combat.decisionPhase, noHistory: true}));
   return {seed: a.seed};
 });

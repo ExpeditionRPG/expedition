@@ -1,4 +1,5 @@
 import * as Redux from 'redux';
+import {CombatPhase} from '../components/views/quest/cardtemplates/combat/Types';
 import {NAV_CARD_STORAGE_KEY, VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
 import {getNavigator} from '../Globals';
 import {getStorageString} from '../LocalStorage';
@@ -20,7 +21,7 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
   const questId = (state.quest && state.quest.details && state.quest.details.id) || null;
   const vibration = state.settings && state.settings.vibration;
   if (nav && nav.vibrate && vibration) {
-    if (a.phase === 'TIMER') {
+    if (a.phase === CombatPhase.timer) {
       nav.vibrate(VIBRATION_LONG_MS);
     } else {
       nav.vibrate(VIBRATION_SHORT_MS);

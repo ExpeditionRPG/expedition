@@ -3,8 +3,7 @@ import Card from 'app/components/base/Card';
 import {ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
-import {CombatPhase} from './Types';
-import {StateProps as StatePropsBase} from './Types';
+import {CombatPhase, StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
   mostRecentRolls?: number[];
@@ -62,7 +61,7 @@ export default function resolve(props: Props): JSX.Element {
           <div className="rolls">{renderedRolls}</div>
         </div>
       }
-      <Button onClick={() => props.onNext('RESOLVE_DAMAGE')}>Next</Button>
+      <Button onClick={() => props.onNext(CombatPhase.resolveDamage)}>Next</Button>
     </Card>
   );
 }
