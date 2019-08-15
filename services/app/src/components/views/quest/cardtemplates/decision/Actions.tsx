@@ -9,6 +9,7 @@ import Redux from 'redux';
 import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
 import {CombatPhase} from '../combat/Types';
 import {resolveParams} from '../Params';
+import {setAndRenderNode} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
@@ -46,10 +47,9 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
     leveledChecks,
     selected: null,
     rolls: [],
+    phase: DecisionPhase.prepare,
   };
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.prepare, noHistory: true}));
+  dispatch(setAndRenderNode(a.node));
   return {};
 });
 
@@ -184,13 +184,32 @@ export const handleDecisionSelect = remoteify(function handleDecisionSelect(a: H
   }
 
   decision.selected = a.selected;
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+  decision.phase = DecisionPhase.resolve;
+  dispatch(setAndRenderNode(a.node));
 
   return {
     selected: a.selected,
     elapsedMillis: a.elapsedMillis,
   };
+});
+
+interface HandleDecisionTimerStartArgs {
+  node?: ParserNode;
+}
+export const handleDecisionTimerStart = remoteify(function handleDecisionTimerStart(a: HandleDecisionTimerStartArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionTimerStartArgs|null {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  a.node = a.node.clone();
+  const decision = a.node.ctx.templates.decision;
+  if (!decision) {
+    return null;
+  }
+
+  decision.phase = DecisionPhase.timer;
+  dispatch(setAndRenderNode(a.node));
+
+  return {};
 });
 
 // Pushes the roll value onto the given node, returning a string
@@ -206,6 +225,7 @@ function pushDecisionRoll(node: ParserNode, roll: number, getState: () => AppSta
   }
 
   decision.rolls.push(roll);
+  decision.phase = DecisionPhase.resolve;
 
   // Based on the outcome, navigate to a roleplay card
   const {settings, multiplayer, card} = getState();
@@ -286,9 +306,7 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
   if (targetText) {
     dispatch(event({node: a.node, evt: targetText}));
   } else {
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true, keySuffix: Date.now().toString()}));
+    dispatch(setAndRenderNode(a.node));
   }
   return {
     roll: a.roll,
@@ -302,7 +320,10 @@ interface ToDecisionCardArgs extends Partial<ToCardArgs> {
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
   const phase = a.phase || DecisionPhase.prepare;
   const statePhase = getState().card.phase;
+
+  // Non-combat flow
   if (statePhase !== CombatPhase.midCombatDecision && statePhase !== CombatPhase.midCombatDecisionTimer && a.name !== undefined) {
+    console.log('noncombat');
     const a2: ToCardArgs = {
       keySuffix: a.keySuffix,
       name: a.name || CombatPhase.midCombatDecision,
@@ -313,16 +334,15 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
     dispatch(toCard(a2));
     return {...a2, phase};
   }
+
+  // Combat flow
+  console.log('combat');
   const {node, decision, combat} = resolveParams(a.node, getState);
+  combat.phase = (phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision;
   combat.decisionPhase = phase;
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  dispatch(toCard({
-    name: 'QUEST_CARD',
-    phase: (a.phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision,
-    keySuffix: a.phase + (decision.rolls || '').toString(),
-    noHistory: true,
-  }));
+  console.log(node.ctx.templates.combat);
+  dispatch(setAndRenderNode(node));
+
   return {
   phase: a.phase,
 };

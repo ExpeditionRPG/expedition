@@ -15,21 +15,9 @@ import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
 import {DecisionPhase} from '../decision/Types';
 import {resolveParams} from '../Params';
+import {calculateAudioIntensity, findCombatParent, setAndRenderNode} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {CombatAttack, CombatDifficultySettings, CombatPhase, CombatState} from './Types';
-
-export function findCombatParent(node: ParserNode): Cheerio|null {
-  let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
-    // Don't count roleplay nodes within "win" and "lose" events even if they're children of
-    // a combat node; this is technically a roleplay state.
-    if (/win|lose/.test(elem.attr('on'))) {
-      return null;
-    }
-    elem = elem.parent();
-  }
-  return elem;
-}
 
 export function roundTimeMillis(settings: SettingsType, mp?: MultiplayerState) {
   const totalPlayerCount = numPlayers(settings, mp);
@@ -72,19 +60,9 @@ export const initCombat = remoteify(function initCombat(a: InitCombatArgs, dispa
   const settings = getState().settings;
   const combat = generateCombatTemplate(settings, a.node, mp);
   a.node.ctx.templates.combat = combat;
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, noHistory: true}));
-  dispatch(audioSet({intensity: calculateAudioIntensity(combat.tier, combat.tier, 0, 0)}));
+  dispatch(setAndRenderNode(a.node));
   return null;
 });
-
-function calculateAudioIntensity(currentTier: number, maxTier: number, deadAdventurers: number, roundCount: number): number {
-  // Some pretty arbitrary weights on different combat factors and how they affect music intensity
-  // Optimized for a tier 3 fight being 12, tier 8 (max relevant tier) being 32
-  // With intensity increasing generally over time, but fading off quickly as you defeat enemies
-  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 2 * currentTier + 2 * maxTier + 4 * deadAdventurers + 0.5 * roundCount));
-}
 
 function getDifficultySettings(difficulty: DifficultyType): CombatDifficultySettings {
   const result = COMBAT_DIFFICULTY[difficulty];
@@ -270,22 +248,16 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   }
 
   const {node, combat} = resolveParams(a.node, getState);
-  a.node = node;
 
   // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
-  if (a.node.getVisibleKeys().indexOf('round') !== -1) {
-    // Set node *before* navigation to prevent a blank first roleplay card.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: a.node.getNext('round')} as QuestNodeAction);
+  if (node.getVisibleKeys().indexOf('round') !== -1) {
     combat.phase = CombatPhase.midCombatRoleplay;
-    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true, noHistory: true}));
+    dispatch(setAndRenderNode(node.getNext('round')));
   } else {
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
     combat.phase = CombatPhase.resolveAbilities;
-    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true, noHistory: true}));
+    dispatch(setAndRenderNode(node));
   }
   return {};
 });
@@ -306,9 +278,7 @@ export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(
   a.node = node;
   combat.phase = CombatPhase.timer;
 
-  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase}));
-  dispatch(audioSet({peakIntensity: 1}));
-
+  dispatch(setAndRenderNode(node));
   // If we have no local alive adventurers but we're playing multiplayer, automatically put the timer in hold state.
   // Note that we don't have to check for multiplayer here, as starting the timer with 0 total alive adventurers
   // is not allowed by UI.
@@ -366,11 +336,10 @@ export const handleCombatTimerStop = remoteify(function handleCombatTimerStop(a:
     // Since we always skip the previous card (the timer) when going back,
     // We can preset the quest node here. This populates context in a way that
     // the latest round is considered when the "on round" branch is evaluated.
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
     combat.phase = CombatPhase.surge;
-    dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, overrideDebounce: true}));
+    dispatch(setAndRenderNode(node));
   } else {
-    dispatch(handleResolvePhase({node: a.node}));
+    dispatch(handleResolvePhase({node}));
   }
 
   // Tell everyone we're no longer waiting on anything
@@ -406,29 +375,21 @@ export const handleCombatEnd = remoteify(function handleCombatEnd(a: HandleComba
     a.node = new ParserNode(parent, a.node.ctx);
   }
 
-  const {node, combat} = resolveParams(a.node, getState);
-  a.node = node;
-
   // Edit the final card before cloning
   if (a.victory) {
-    combat.tier = 0;
+    a.node.ctx.templates.combat.tier = 0;
   } else {
-    combat.numAliveAdventurers = 0;
+    a.node.ctx.templates.combat.numAliveAdventurers = 0;
   }
-  a.node = a.node.clone();
-  const adventurers = numAdventurers(a.settings, mp);
-  combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
-
+  const {node, combat} = resolveParams(a.node, getState);
   const arng = seedrandom.alea(combat.seed);
-  combat.loot = (a.victory) ? generateLoot(a.maxTier, adventurers, arng) : [];
-  a.node.ctx.templates.combat = combat;
+  const adventurers = numAdventurers(a.settings, mp);
 
+  combat.levelUp = (a.victory) ? (adventurers <= a.maxTier) : false;
+  combat.loot = (a.victory) ? generateLoot(a.maxTier, adventurers, arng) : [];
   combat.phase = (a.victory) ? CombatPhase.victory : CombatPhase.defeat;
 
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase,  overrideDebounce: true, noHistory: true}));
-  dispatch(audioSet({intensity: 0}));
+  dispatch(setAndRenderNode(node));
   return {victory: a.victory, maxTier: a.maxTier, seed: a.seed};
 });
 
@@ -446,11 +407,7 @@ export const tierSumDelta = remoteify(function tierSumDelta(a: TierSumDeltaArgs,
 
   combat.tier = Math.max(a.current + a.delta, 0);
   dispatch({type: 'QUEST_NODE', node: a.node});
-  dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
-    a.node.ctx.scope._.currentCombatTier(),
-    a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
-    a.node.ctx.scope._.currentCombatRound()
-  )}));
+  dispatch(audioSet({intensity: calculateAudioIntensity(a.node, a.node.ctx.scope._.numAdventurers())}));
   return {current: a.current, delta: a.delta};
 });
 
@@ -469,11 +426,7 @@ export const adventurerDelta = remoteify(function adventurerDelta(a: AdventurerD
 
   combat.numAliveAdventurers = newAdventurerCount;
   dispatch({type: 'QUEST_NODE', node: a.node});
-  dispatch(audioSet({intensity: calculateAudioIntensity(a.node.ctx.scope._.currentCombatTier(),
-    a.node.ctx.scope._.currentCombatTier(),
-    a.node.ctx.scope._.numAdventurers() - a.node.ctx.scope._.aliveAdventurers(),
-    a.node.ctx.scope._.currentCombatRound()
-  )}));
+  dispatch(audioSet({intensity: calculateAudioIntensity(a.node, a.node.ctx.scope._.numAdventurers())}));
   // Send status to update player count remotely.
   dispatch(sendStatus());
   return null;
@@ -495,9 +448,6 @@ export const setupCombatDecision = remoteify(function setupCombatDecision(a: Set
     selected: null,
     rolls: [],
   };
-
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: combat.phase, keySuffix: combat.decisionPhase, noHistory: true}));
+  dispatch(setAndRenderNode(node));
   return {seed: a.seed};
 });

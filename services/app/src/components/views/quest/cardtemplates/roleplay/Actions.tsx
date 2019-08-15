@@ -5,19 +5,15 @@ import {endQuest, loadNode} from 'app/actions/Quest';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import {findCombatParent, handleCombatEnd} from '../combat/Actions';
+import {handleCombatEnd} from '../combat/Actions';
 import {CombatPhase} from '../combat/Types';
+import {resolveParams} from '../Params';
+import {findCombatParent, setAndRenderNode} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 
 export function initRoleplay(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    // We set the quest state *after* updating the history to prevent
-    // the history from grabbing the quest state before navigating.
-    // This bug manifests as toPrevious() sliding back to the same card
-    // content.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', noHistory: true}));
+    dispatch(setAndRenderNode(node));
   };
 }
 
@@ -100,16 +96,18 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
 
   const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
   const {nextNode, state} = getNextMidCombatNode(a.node, a.index);
+
+  const {node, combat} = resolveParams(nextNode, getState);
   switch (state) {
     case 'ENDCOMBAT':
-      dispatch(loadNode(nextNode));
+      dispatch(loadNode(node));
       dispatch(audioSet({intensity: 0}));
       break;
     case 'VICTORY':
     case 'DEFEAT':
       dispatch(handleCombatEnd({
         maxTier: a.maxTier,
-        node: nextNode,
+        node,
         seed: a.seed,
         settings: a.settings,
         victory: (state === 'VICTORY'),
@@ -120,14 +118,12 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
       dispatch(audioSet({intensity: 0}));
       break;
     case 'ENDROUND':
-      dispatch({type: 'PUSH_HISTORY'});
-      dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.resolveAbilities, overrideDebounce: true, noHistory: true}));
+      combat.phase = CombatPhase.resolveAbilities;
+      dispatch(setAndRenderNode(node));
       break;
     default: // in-combat roleplay continues
-      dispatch({type: 'PUSH_HISTORY'});
-      dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.midCombatRoleplay, overrideDebounce: true, noHistory: true}));
+      combat.phase = CombatPhase.midCombatRoleplay;
+      dispatch(setAndRenderNode(node));
       break;
   }
   return remoteArgs;

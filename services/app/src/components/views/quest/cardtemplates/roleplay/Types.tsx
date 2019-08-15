@@ -1,2 +1,4 @@
 
-export type RoleplayPhase = 'ROLEPLAY';
+export enum RoleplayPhase {
+  default = 'ROLEPLAY',
+}

@@ -319,16 +319,17 @@ describe('Combat actions', () => {
     });
 
     test('never assigns loot or levels up on defeat', () => {
-      const store = newMockStore({});
+      const store = newMockStore({settings: s.basic});
       const startNode = newCombatNode();
       store.dispatch(handleCombatEnd({node: startNode, settings: s.basic, victory: false, maxTier: 9, seed: ''}));
 
       const actions = store.getActions();
-      expect(actions[1].node.ctx.templates.combat).toEqual(jasmine.objectContaining({
+      const node = actions.filter((a) => a.type === 'QUEST_NODE')[0].node;
+      expect(node.ctx.templates.combat).toEqual(jasmine.objectContaining({
         levelUp: false,
         loot: [],
       }));
-      checkNodeIntegrity(startNode, actions[1].node);
+      checkNodeIntegrity(startNode, node);
     });
 
     test('does not level up if multiplayer count exceeds tier sum', () => {
@@ -457,8 +458,8 @@ describe('Combat actions', () => {
         <event if="false" on="round"><roleplay>bad</roleplay></event>
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
-      expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions[2].to.phase).toEqual(CombatPhase.resolveAbilities);
+      expect(actions.filter((a) => a.type === 'QUEST_NODE').length).toEqual(1);
+      expect(actions.filter((a) => a.type === 'NAVIGATE')[0].to.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -473,10 +474,10 @@ describe('Combat actions', () => {
         </event>
         <event on="lose"></event>
       </combat>`)('combat'), defaultContext());
-      node = Action(initCombat as any).execute({node: node.clone(), settings: s.basic})[1].node;
+      node = Action(initCombat as any).execute({node: node.clone(), settings: s.basic}).filter((a) => a.type === 'QUEST_NODE')[0].node;
       const actions = Action(handleResolvePhase).execute({node});
-      expect(actions[1].node.elem.text()).toEqual('expected');
-      expect(actions[2].to.phase).toEqual(CombatPhase.midCombatRoleplay);
+      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.elem.text()).toEqual('expected');
+      expect(actions.filter((a) => a.type === 'NAVIGATE')[0].to.phase).toEqual(CombatPhase.midCombatRoleplay);
 
       // We expect node integrity to be broken when moving from combat to roleplay.
       checkNodeIntegrity(null, null);
@@ -487,36 +488,11 @@ describe('Combat actions', () => {
 
   test.skip('clears combat state on completion', () => { /* TODO */ });
 
-  describe('findCombatParent', () => {
-    test('returns node when node is combat', () => {
-      const v = cheerio.load('<quest><combat id="start"></combat></quest>')('#start');
-      const result = findCombatParent(new ParserNode(v, defaultContext()));
-      if (result === null) {
-        throw Error('null result');
-      }
-      expect(result.attr('id')).toEqual('start');
-      checkNodeIntegrity(null, null); // skip
-    });
-    test('returns combat parent', () => {
-      const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
-      const result = findCombatParent(new ParserNode(v, defaultContext()));
-      if (result === null) {
-        throw Error('null result');
-      }
-      expect(result.attr('id')).toEqual('expected');
-      checkNodeIntegrity(null, null); // skip
-    });
-    test('does not return combat when node is within a win/lose event', () => {
-      const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
-      expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
-      checkNodeIntegrity(null, null); // skip
-    });
-  });
-
   describe('setupCombatDecision', () => {
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const startNode = newCombatNode();
-      const node = Action(setupCombatDecision, {settings: s.basic, multiplayer: m.s2p5a1}).execute({node: startNode, seed: 'asdf'})[1].node;
+      const node = Action(setupCombatDecision, {settings: s.basic, multiplayer: m.s2p5a1}).execute({node: startNode, seed: 'asdf'})
+        .filter((a) => a.type == 'QUEST_NODE')[0].node;
       for (const lc of node.ctx.templates.decision.leveledChecks) {
         expect(lc.requiredSuccesses).toBeLessThan(2);
       }

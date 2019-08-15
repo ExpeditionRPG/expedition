@@ -10,6 +10,7 @@ export function resolveParams(node: ParserNode|undefined, getState: () => AppSta
   let combat = node.ctx.templates.combat;
   if (!combat) {
     combat = generateCombatTemplate(getState().settings);
+    node.ctx.templates.combat = combat;
   }
   return {node, decision, combat};
 }

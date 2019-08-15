@@ -1,7 +1,15 @@
 import {configure, shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
-import {generateIconElements} from './Render';
+import {calculateAudioIntensity, generateIconElements, setAndRenderNode, findCombatParent} from './Render';
+import {ParserNode} from './TemplateTypes';
+import {defaultContext} from './Template';
+import {newMockStore} from 'app/Testing';
+import {RoleplayPhase} from './roleplay/Types';
+import {CombatPhase} from './combat/Types';
+import {DecisionPhase} from './decision/Types';
+
+const cheerio: any = require('cheerio');
 
 describe('Render', () => {
   describe('generateIconElements', () => {
@@ -49,5 +57,80 @@ describe('Render', () => {
   describe('capitalizeFirstLetter', () => {
     test.skip('capitalizes the first letter', () => { /* TODO */ });
     test.skip('safely handles empty string', () => { /* TODO */ });
+  });
+
+  describe('findCombatParent', () => {
+    test('returns node when node is combat', () => {
+      const v = cheerio.load('<quest><combat id="start"></combat></quest>')('#start');
+      const result = findCombatParent(new ParserNode(v, defaultContext()));
+      if (result === null) {
+        throw Error('null result');
+      }
+      expect(result.attr('id')).toEqual('start');
+    });
+    test('returns combat parent', () => {
+      const v = cheerio.load('<quest><combat id="expected"><event on="round"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
+      const result = findCombatParent(new ParserNode(v, defaultContext()));
+      if (result === null) {
+        throw Error('null result');
+      }
+      expect(result.attr('id')).toEqual('expected');
+    });
+    test('does not return combat when node is within a win/lose event', () => {
+      const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
+      expect(findCombatParent(new ParserNode(v, defaultContext()))).toEqual(null);
+    });
+  });
+
+  describe('setAndRenderNode', () => {
+    test('renders roleplay', () => {
+      const v = cheerio.load('<quest><combat><event on="win"><roleplay id="start"></roleplay></event></combat></quest>')('#start');
+      const store = newMockStore({});
+      store.dispatch(setAndRenderNode(new ParserNode(v, defaultContext())));
+      const action = store.getActions().filter((a) => a.type === 'NAVIGATE')[0];
+      expect(action.to.name).toEqual('QUEST_CARD');
+      expect(action.to.phase).toEqual(RoleplayPhase.default);
+    });
+
+    test('renders mid-combat roleplay', () => {
+      const v = cheerio.load('<quest><combat><event on="round"><roleplay id="midcombat"></roleplay></event></combat></quest>')('#midcombat');
+      const store = newMockStore({});
+      store.dispatch(setAndRenderNode(new ParserNode(v, defaultContext())));
+      const action = store.getActions().filter((a) => a.type === 'NAVIGATE')[0];
+      expect(action.to.name).toEqual('QUEST_CARD');
+      expect(action.to.phase).toEqual(CombatPhase.midCombatRoleplay);
+    });
+
+    test('renders combat', () => {
+      const v = cheerio.load('<quest><combat id="combat"></combat></quest>')('#combat');
+      const store = newMockStore({settings: {numLocalPlayers: 2}});
+      store.dispatch(setAndRenderNode(new ParserNode(v, {...defaultContext(), templates: {combat: {phase: CombatPhase.drawEnemies}}})));
+      const action = store.getActions().filter((a) => a.type === 'NAVIGATE')[0];
+      expect(action.to.name).toEqual('QUEST_CARD');
+      expect(action.to.phase).toEqual(CombatPhase.drawEnemies);
+    });
+
+    test('renders decision', () => {
+      const v = cheerio.load('<quest><decision id="decision"></decision></quest>')('#decision');
+      const store = newMockStore({});
+      store.dispatch(setAndRenderNode(new ParserNode(v, {...defaultContext(), templates: {decision: {phase: DecisionPhase.prepare}}})));
+      const action = store.getActions().filter((a) => a.type === 'NAVIGATE')[0];
+      expect(action.to.name).toEqual('QUEST_CARD');
+      expect(action.to.phase).toEqual(DecisionPhase.prepare);
+    });
+  });
+
+  describe('calculateAudioIntensity', () => {
+    test('returns intensity for normal combat', () => {
+      const ctx = defaultContext();
+      ctx.templates.combat = {tier: 2, numAliveAdventurers: 1, roundCount: 1};
+      const node = new ParserNode(cheerio.load('<quest><combat id="combat"></combat></quest>')('#combat'), ctx);
+      expect(calculateAudioIntensity(node, 2)).toEqual(13);
+    });
+
+    test('returns 0 for non-combat', () => {
+      const node = new ParserNode(cheerio.load('<quest><roleplay id="rp"></roleplay></quest>')('#rp'), defaultContext());
+      expect(calculateAudioIntensity(node, 2)).toEqual(0);
+    });
   });
 });

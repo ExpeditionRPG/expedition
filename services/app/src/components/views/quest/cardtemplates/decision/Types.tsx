@@ -45,6 +45,7 @@ export interface DecisionState {
   leveledChecks: LeveledSkillCheck[];
   selected: LeveledSkillCheck|null;
   rolls: number[];
+  phase: DecisionPhase;
 }
 export const EMPTY_DECISION_STATE: DecisionState = {
   leveledChecks: [],

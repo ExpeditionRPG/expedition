@@ -1,6 +1,13 @@
+import {audioSet} from 'app/actions/Audio';
+import {toCard} from 'app/actions/Card';
+import {numAdventurers} from 'app/actions/Settings';
+import {MUSIC_INTENSITY_MAX} from 'app/Constants';
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
 import {CardThemeType} from '../../../../reducers/StateTypes';
+import {CombatPhase} from './combat/Types';
+import {DecisionPhase} from './decision/Types';
+import {RoleplayPhase} from './roleplay/Types';
 
 // Replaces :icon_name: and [art_name] with appropriate HTML elements
 // if [art_name] ends will _full, adds class="full"; otherwise defaults to display at 50% size
@@ -74,4 +81,82 @@ export function formatImg(img: string, theme: CardThemeType, small?: boolean) {
     img += '_small';
   }
   return img;
+}
+
+export function findCombatParent(node: ParserNode): Cheerio|null {
+  let elem = node && node.elem;
+  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
+    // Don't count roleplay nodes within "win" and "lose" events even if they're children of
+    // a combat node; this is technically a roleplay state.
+    if (/win|lose/.test(elem.attr('on'))) {
+      return null;
+    }
+    elem = elem.parent();
+  }
+
+  if (elem === null || elem.length === 0) {
+    return null;
+  }
+
+  return elem;
+}
+
+export function calculateAudioIntensity(node: ParserNode, adventurers: number): number {
+  const combat = node.ctx.templates && node.ctx.templates.combat;
+  if (!combat) {
+    return 0;
+  }
+  const currentTier = combat.tier || 0;
+  const deadAdventurers = adventurers - (combat.numAliveAdventurers || 0);
+  const roundCount = combat.roundCount || 0;
+
+  // Some pretty arbitrary weights on different combat factors and how they affect music intensity
+  // Optimized for a tier 3 fight being 12, tier 8 (max relevant tier) being 32
+  // With intensity increasing generally over time, but fading off quickly as you defeat enemies
+  return Math.round(Math.min(MUSIC_INTENSITY_MAX, 4 * currentTier + 4 * deadAdventurers + 0.5 * roundCount));
+}
+
+// Sets a new parser node and renders the expected initial state for the node.
+// For combat, this is the "draw enemies" card.
+export function setAndRenderNode(node: ParserNode, details?: Quest) {
+  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory) => {
+    // We set the quest state *after* updating the history to prevent
+    // the history from grabbing the quest state before navigating.
+    // This bug manifests as toPrevious() sliding back to the same card
+    // content.
+    dispatch({type: 'PUSH_HISTORY'});
+    dispatch({
+      type: 'QUEST_NODE',
+      node,
+      details,
+    } as QuestNodeAction);
+
+    // TODO(scott): reuse in roleplay/Actions.tsx and combat/Actions.tsx
+    const tagName = node.elem.get(0).tagName;
+    if (tagName === 'roleplay') {
+      if (findCombatParent(node) !== null) {
+        // Mid-combat roleplay
+        dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.midCombatRoleplay, overrideDebounce: true, noHistory: true}));
+      } else {
+        // Regular roleplay
+        dispatch(toCard({name: 'QUEST_CARD', phase: RoleplayPhase.default, noHistory: true}));
+      }
+    } else if (tagName === 'combat') {
+      dispatch(toCard({name: 'QUEST_CARD', phase: node.ctx.templates.combat.phase || CombatPhase.drawEnemies, noHistory: true}));
+      // TODO 0 if victory/defeat
+      // Timerstart:  dispatch(audioSet({peakIntensity: 1}));
+      const intensity = calculateAudioIntensity(node, numAdventurers(getState().settings, getState().multiplayer));
+      dispatch(audioSet({intensity}));
+    } else if (tagName === 'decision') {
+      const decision = node.ctx.templates.decision;
+      dispatch(toCard({
+        name: 'QUEST_CARD',
+        phase: decision.phase,
+        keySuffix: decision.phase + (decision.rolls || '').toString(),
+        noHistory: true,
+      }));
+    } else {
+      dispatch(openSnackbar(`Failed to load quest (tag ${tagName})`));
+    }
+  };
 }

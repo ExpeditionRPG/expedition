@@ -24,6 +24,7 @@ import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
 import {DecisionPhase} from './decision/Types';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
+import {RoleplayPhase} from './roleplay/Types';
 import {ParserNode, TemplateContext} from './TemplateTypes';
 
 export function initCardTemplate(node: ParserNode) {
@@ -42,9 +43,9 @@ export function initCardTemplate(node: ParserNode) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode, settings: SettingsType): JSX.Element {
-  const phase = card.phase || 'ROLEPLAY';
+  const phase = card.phase || RoleplayPhase.default;
   switch (phase) {
-    case 'ROLEPLAY':
+    case RoleplayPhase.default:
       return <RoleplayContainer node={node}/>;
     case DecisionPhase.prepare:
       return <PrepareDecisionContainer node={node}/>;
@@ -87,7 +88,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
 }
 
 export function getCardTemplateTheme(card: CardState): CardThemeType {
-  switch (card.phase || 'ROLEPLAY') {
+  switch (card.phase || RoleplayPhase.default) {
     case CombatPhase.drawEnemies:
     case CombatPhase.prepare:
     case CombatPhase.timer:
@@ -100,7 +101,7 @@ export function getCardTemplateTheme(card: CardState): CardThemeType {
     case CombatPhase.midCombatDecision:
     case CombatPhase.midCombatDecisionTimer:
       return 'dark';
-    case 'ROLEPLAY':
+    case RoleplayPhase.default:
     case DecisionPhase.prepare:
     case DecisionPhase.timer:
     case DecisionPhase.resolve:
