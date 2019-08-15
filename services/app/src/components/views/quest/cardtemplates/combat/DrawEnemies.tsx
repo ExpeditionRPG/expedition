@@ -66,7 +66,7 @@ export default function drawEnemies(props: Props): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onClick={() => props.onNext('PREPARE')}>Next</Button>
+      <Button onClick={() => props.onNext(CombatPhase.prepare)}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );

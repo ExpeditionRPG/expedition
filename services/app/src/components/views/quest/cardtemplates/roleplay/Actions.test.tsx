@@ -7,6 +7,7 @@ import {
 import {midCombatChoice} from '../roleplay/Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
+import {CombatPhase} from '../combat/Types';
 
 const cheerio = require('cheerio');
 
@@ -56,12 +57,12 @@ describe('Roleplay actions', () => {
 
     test('goes to win screen on **win**', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 0, maxTier: 0, seed: ''});
-      expect(actions[2].to.phase).toEqual('VICTORY');
+      expect(actions[2].to.phase).toEqual(CombatPhase.victory);
     });
 
     test('goes to lose screen on **lose**', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 1, maxTier: 0, seed: ''});
-      expect(actions[2].to.phase).toEqual('DEFEAT');
+      expect(actions[2].to.phase).toEqual(CombatPhase.defeat);
     });
 
     test('ends quest on **end** and zeros audio', () => {
@@ -85,13 +86,13 @@ describe('Roleplay actions', () => {
 
     test('handles GOTOs that point to other roleplaying inside of the same combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 5, maxTier: 0, seed: ''});
-      expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+      expect(actions[2].to.phase).toEqual(CombatPhase.midCombatRoleplay);
       expect(actions[1].node.elem.text()).toEqual('rp2');
     });
 
     test('renders as combat for RPs inside of same combat', () => {
       const actions = Action(midCombatChoice).execute({settings: TEST_SETTINGS, node: newMidCombatNode(), index: 3, maxTier: 0, seed: ''});
-      expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+      expect(actions[2].to.phase).toEqual(CombatPhase.midCombatRoleplay);
     });
 
     test('renders as roleplay upon goto to element inside of win/lose event and zeros audio', () => {

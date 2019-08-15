@@ -3,7 +3,7 @@ describe('DRAW_ENEMIES', () => {
   test('renders all enemies in props', () => {
     /*
     const combat = newCombat(TEST_NODE);
-    const {enzymeWrapper} = setup('DRAW_ENEMIES', {combat});
+    const {enzymeWrapper} = setup(CombatPhase.drawEnemies, {combat});
     expect(enzymeWrapper.find('h2.draw_enemies').map((e) => e.text())).toEqual([
       'Thief (Tier I )',
       'Brigand (Tier I )',

@@ -1,7 +1,7 @@
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {generateCombatTemplate} from './combat/Actions';
-import {CombatState} from './combat/Types';
-import {DecisionState, EMPTY_DECISION_STATE} from './decision/Types';
+import {CombatPhase, CombatState} from './combat/Types';
+import {DecisionPhase, DecisionState, EMPTY_DECISION_STATE} from './decision/Types';
 import {ParserNode} from './TemplateTypes';
 
 export function resolveParams(node: ParserNode|undefined, getState: () => AppStateWithHistory): {node: ParserNode, decision: DecisionState, combat: CombatState} {
@@ -27,6 +27,7 @@ export function resolveCombat(node: ParserNode|undefined): CombatState {
       maxRoundDamage: 0,
       roundCount: 0,
       seed: '',
-      decisionPhase: 'PREPARE_DECISION',
+      phase: CombatPhase.drawEnemies,
+      decisionPhase: DecisionPhase.prepare,
     };
 }

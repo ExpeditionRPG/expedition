@@ -6,6 +6,7 @@ import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {findCombatParent, handleCombatEnd} from '../combat/Actions';
+import {CombatPhase} from '../combat/Types';
 import {ParserNode} from '../TemplateTypes';
 
 export function initRoleplay(node: ParserNode) {
@@ -121,12 +122,12 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
     case 'ENDROUND':
       dispatch({type: 'PUSH_HISTORY'});
       dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'RESOLVE_ABILITIES', overrideDebounce: true, noHistory: true}));
+      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.resolveAbilities, overrideDebounce: true, noHistory: true}));
       break;
     default: // in-combat roleplay continues
       dispatch({type: 'PUSH_HISTORY'});
       dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: 'MID_COMBAT_ROLEPLAY', overrideDebounce: true, noHistory: true}));
+      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.midCombatRoleplay, overrideDebounce: true, noHistory: true}));
       break;
   }
   return remoteArgs;

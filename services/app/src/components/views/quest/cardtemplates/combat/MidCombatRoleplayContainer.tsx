@@ -8,6 +8,7 @@ import {
 import {ParserNode} from '../TemplateTypes';
 import MidCombatRoleplay, {DispatchProps, StateProps} from './MidCombatRoleplay';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
+import {CombatPhase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;
@@ -21,7 +22,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     const tier = combatContext.tier;
     histIdx--;
     const phase = state._history[histIdx].card.phase;
-    if (tier && phase !== null && phase === 'PREPARE') {
+    if (tier && phase !== null && phase === CombatPhase.prepare) {
       maxTier = Math.max(maxTier, tier);
     }
   }
@@ -41,11 +42,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
     },
     onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: CombatPhase.drawEnemies, before: true}));
     },
     onReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
+      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: CombatPhase.timer}]}));
     },
   };
 };

@@ -3,6 +3,7 @@ import {choice} from 'app/actions/Quest';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {CombatPhase} from '../combat/Types';
 import {ParserNode} from '../TemplateTypes';
 import Roleplay, {DispatchProps, Props, StateProps} from './Roleplay';
 
@@ -29,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(choice({node, index}));
     },
     onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: 'DRAW_ENEMIES', before: true}));
+      dispatch(toPrevious({name: 'QUEST_CARD', phase: CombatPhase.drawEnemies, before: true}));
     },
   };
 };

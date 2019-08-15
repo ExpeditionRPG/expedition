@@ -79,7 +79,7 @@ export default function playerTier(props: Props): JSX.Element {
       <Button
         className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}
-        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext('PREPARE')}>Next</Button>
+        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(CombatPhase.prepare)}>Next</Button>
       <Button
         className={(props.tier !== 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 && props.tier > 0}

@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     const tier = combatContext.tier;
     histIdx--;
     const phase = state._history[histIdx].card.phase;
-    if (tier && phase !== null && phase === 'PREPARE') {
+    if (tier && phase !== null && phase === CombatPhase.prepare) {
       maxTier = Math.max(maxTier, tier);
     }
   }

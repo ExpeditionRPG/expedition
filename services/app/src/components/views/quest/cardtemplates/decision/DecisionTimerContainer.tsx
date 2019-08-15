@@ -5,7 +5,7 @@ import {LeveledSkillCheck} from '../decision/Types';
 import {ParserNode} from '../TemplateTypes';
 import {handleDecisionSelect, skillTimeMillis, toDecisionCard} from './Actions';
 import DecisionTimer, {DispatchProps, StateProps} from './DecisionTimer';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+import {DecisionPhase, mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   return {
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
       dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
-      dispatch(toDecisionCard({name: 'QUEST_CARD', phase: 'RESOLVE_DECISION', noHistory: true}));
+      dispatch(toDecisionCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true}));
     },
   };
 };

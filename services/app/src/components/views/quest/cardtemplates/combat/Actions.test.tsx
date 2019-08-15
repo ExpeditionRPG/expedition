@@ -4,6 +4,7 @@ import {Action, newMockStore} from 'app/Testing';
 import {fakeConnection} from 'app/multiplayer/Testing';
 import {getMultiplayerConnection} from 'app/multiplayer/Connection';
 import {defaultContext} from '../Template';
+import {CombatPhase} from './Types';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -71,7 +72,7 @@ describe('Combat actions', () => {
       expect(actions[2]).toEqual(jasmine.objectContaining({
         to: jasmine.objectContaining({
           name: 'QUEST_CARD',
-          phase: 'DRAW_ENEMIES',
+          phase: CombatPhase.drawEnemies,
         }),
         type: 'NAVIGATE',
       }));
@@ -220,7 +221,7 @@ describe('Combat actions', () => {
       expect(Object.keys(hist).length).toBeGreaterThan(1);
 
       // Same damage should happen not more than half the time.
-      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).toBeLessThan(TRIALS/2);
+      expect(Object.keys(hist).map((k) => hist[k]).reduce((a, b) => Math.max(a,b))).not.toBeGreaterThan(TRIALS/2);
       checkNodeIntegrity(startNode, node);
     });
     test('generates rolls according to player count', () => {
@@ -442,7 +443,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
+      expect(actions[2].to.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -457,7 +458,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions[2].to.phase).toEqual('RESOLVE_ABILITIES');
+      expect(actions[2].to.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -475,7 +476,7 @@ describe('Combat actions', () => {
       node = Action(initCombat as any).execute({node: node.clone(), settings: s.basic})[1].node;
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].node.elem.text()).toEqual('expected');
-      expect(actions[2].to.phase).toEqual('MID_COMBAT_ROLEPLAY');
+      expect(actions[2].to.phase).toEqual(CombatPhase.midCombatRoleplay);
 
       // We expect node integrity to be broken when moving from combat to roleplay.
       checkNodeIntegrity(null, null);

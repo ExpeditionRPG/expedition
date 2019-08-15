@@ -15,11 +15,13 @@ import ResolveContainer from './combat/ResolveContainer';
 import {combatScope} from './combat/Scope';
 import SurgeContainer from './combat/SurgeContainer';
 import TimerCardContainer from './combat/TimerCardContainer';
+import {CombatPhase} from './combat/Types';
 import VictoryContainer from './combat/VictoryContainer';
 import {initDecision} from './decision/Actions';
 import DecisionTimerContainer from './decision/DecisionTimerContainer';
 import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
 import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
+import {DecisionPhase} from './decision/Types';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -44,15 +46,15 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
   switch (phase) {
     case 'ROLEPLAY':
       return <RoleplayContainer node={node}/>;
-    case 'PREPARE_DECISION':
+    case DecisionPhase.prepare:
       return <PrepareDecisionContainer node={node}/>;
-    case 'DECISION_TIMER':
+    case DecisionPhase.timer:
       return <DecisionTimerContainer node={node}/>;
-    case 'RESOLVE_DECISION':
+    case DecisionPhase.resolve:
       return <ResolveDecisionContainer node={node}/>;
-    case 'DRAW_ENEMIES':
+    case CombatPhase.drawEnemies:
       return <DrawEnemiesContainer node={node}/>;
-    case 'PREPARE':
+    case CombatPhase.prepare:
       // Must handle conditional display of timer vs no timer here to
       // allow for timer length changes on the "prepare" card to dynamically
       // change which screen is shown.
@@ -61,24 +63,24 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
       } else {
         return <PrepareTimerContainer node={node}/>;
       }
-    case 'TIMER':
+    case CombatPhase.timer:
       return <TimerCardContainer node={node}/>;
-    case 'SURGE':
+    case CombatPhase.surge:
       return <SurgeContainer node={node}/>;
-    case 'RESOLVE_ABILITIES':
+    case CombatPhase.resolveAbilities:
       return <ResolveContainer node={node}/>;
-    case 'RESOLVE_DAMAGE':
+    case CombatPhase.resolveDamage:
       return <PlayerTierContainer node={node}/>;
-    case 'VICTORY':
+    case CombatPhase.victory:
       return <VictoryContainer node={node}/>;
-    case 'DEFEAT':
+    case CombatPhase.defeat:
       return <DefeatContainer node={node}/>;
-    case 'MID_COMBAT_ROLEPLAY':
+    case CombatPhase.midCombatRoleplay:
       return <MidCombatRoleplayContainer node={node}/>;
-    case 'MID_COMBAT_DECISION':
-    case 'MID_COMBAT_DECISION_TIMER':
+    case CombatPhase.midCombatDecision:
+    case CombatPhase.midCombatDecisionTimer:
       const combat = node.ctx.templates.combat;
-      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : 'PREPARE_DECISION')}, node, settings);
+      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepare)}, node, settings);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -86,22 +88,22 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
 
 export function getCardTemplateTheme(card: CardState): CardThemeType {
   switch (card.phase || 'ROLEPLAY') {
-    case 'DRAW_ENEMIES':
-    case 'PREPARE':
-    case 'TIMER':
-    case 'SURGE':
-    case 'RESOLVE_ABILITIES':
-    case 'RESOLVE_DAMAGE':
-    case 'VICTORY':
-    case 'DEFEAT':
-    case 'MID_COMBAT_ROLEPLAY':
-    case 'MID_COMBAT_DECISION':
-    case 'MID_COMBAT_DECISION_TIMER':
+    case CombatPhase.drawEnemies:
+    case CombatPhase.prepare:
+    case CombatPhase.timer:
+    case CombatPhase.surge:
+    case CombatPhase.resolveAbilities:
+    case CombatPhase.resolveDamage:
+    case CombatPhase.victory:
+    case CombatPhase.defeat:
+    case CombatPhase.midCombatRoleplay:
+    case CombatPhase.midCombatDecision:
+    case CombatPhase.midCombatDecisionTimer:
       return 'dark';
     case 'ROLEPLAY':
-    case 'PREPARE_DECISION':
-    case 'DECISION_TIMER':
-    case 'RESOLVE_DECISION':
+    case DecisionPhase.prepare:
+    case DecisionPhase.timer:
+    case DecisionPhase.resolve:
     default:
       return 'light';
   }

@@ -5,8 +5,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {resolveCombat} from '../Params';
 import Resolve, {DispatchProps, StateProps} from './Resolve';
-import {CombatPhase} from './Types';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+import {CombatPhase, mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   return {
@@ -23,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: 'TIMER'}]}));
+      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: CombatPhase.timer}]}));
     },
   };
 };
