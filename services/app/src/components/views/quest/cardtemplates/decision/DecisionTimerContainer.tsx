@@ -18,7 +18,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
-      console.log(DecisionPhase);
       dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
       dispatch(toDecisionCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true}));
     },

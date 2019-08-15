@@ -14,7 +14,6 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 };
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
-  console.log(DecisionPhase);
   return {
     onReturn: () => {
       // Return to the Prepare Decision card instead of going back to the timer.

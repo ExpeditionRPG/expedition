@@ -62,7 +62,6 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
       if (!settings.timerSeconds) {
         return <NoTimerContainer node={node}/>;
       } else {
-        console.log('PrepareTimerContainer');
         return <PrepareTimerContainer node={node}/>;
       }
     case CombatPhase.timer:

@@ -60,7 +60,6 @@ export default function drawEnemies(props: Props): JSX.Element {
     );
   }
 
-  console.log('Combat phase', CombatPhase);
   return (
     <Card title="Draw Enemies" theme="dark" inQuest={true}>
       <p>
