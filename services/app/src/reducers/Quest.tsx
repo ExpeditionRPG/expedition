@@ -1,6 +1,8 @@
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {PreviewQuestAction, QuestDetailsAction, QuestNodeAction} from '../actions/ActionTypes';
+import {EMPTY_COMBAT_STATE} from '../components/views/quest/cardtemplates/combat/Types';
+import {EMPTY_DECISION_STATE} from '../components/views/quest/cardtemplates/decision/Types';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {QuestState} from './StateTypes';
 
@@ -19,7 +21,10 @@ export const initialQuestState: QuestState = {
     _templateScopeFn: () => ({}),
     path: ([] as any),
     scope: {_: {}},
-    templates: {},
+    templates: {
+      combat: EMPTY_COMBAT_STATE,
+      decision: EMPTY_DECISION_STATE,
+    },
     views: {},
   }),
   lastPlayed: null,

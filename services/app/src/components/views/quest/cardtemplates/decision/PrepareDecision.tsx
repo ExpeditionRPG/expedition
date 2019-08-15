@@ -2,10 +2,11 @@ import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
 import * as React from 'react';
 import {formatImg, generateIconElements} from '../Render';
+import {ParserNode} from '../TemplateTypes';
 import {StateProps} from './Types';
 
 export interface DispatchProps {
-  onStartTimer: () => void;
+  onStartTimer: (node: ParserNode) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -50,7 +51,7 @@ export default function prepareDecision(props: Props): JSX.Element {
     <Card title="Skill Check" inQuest={true} theme={props.theme}>
       {prelude}
       {helpText}
-      <Button className="bigbutton" onClick={() => props.onStartTimer()}>Begin Skill Check</Button>
+      <Button className="bigbutton" onClick={() => props.onStartTimer(props.node)}>Begin Skill Check</Button>
     </Card>
   );
 }

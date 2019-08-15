@@ -6,7 +6,7 @@ import * as React from 'react';
 import {REGEX} from 'shared/Regex';
 import {NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {CombatPhase, CombatState} from './Types';
+import {CombatState} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
@@ -15,7 +15,7 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onNext: (phase: CombatPhase) => void;
+  onNext: (node: ParserNode) => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
 }
 
@@ -66,7 +66,7 @@ export default function drawEnemies(props: Props): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onClick={() => props.onNext(CombatPhase.prepare)}>Next</Button>
+      <Button onClick={() => props.onNext(props.node)}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );

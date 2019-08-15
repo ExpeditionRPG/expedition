@@ -1,4 +1,3 @@
-import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {numAliveAdventurers, numPlayers} from 'app/actions/Settings';
@@ -8,7 +7,6 @@ import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/
 import Redux from 'redux';
 import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
 import {CombatPhase} from '../combat/Types';
-import {resolveParams} from '../Params';
 import {setAndRenderNode} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
@@ -288,8 +286,12 @@ interface HandleDecisionRollArgs {
   roll: number;
 }
 export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: HandleDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionRollArgs|null {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  const node = a.node.clone();
+
   if (getState().card.phase === CombatPhase.midCombatDecision) {
-    const {node} = resolveParams(a.node, getState);
     pushDecisionRoll(node, a.roll, getState);
     dispatch(toDecisionCard({phase: DecisionPhase.resolve, node}));
     return {
@@ -297,16 +299,11 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     };
   }
 
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-
-  const targetText = pushDecisionRoll(a.node, a.roll, getState);
+  const targetText = pushDecisionRoll(node, a.roll, getState);
   if (targetText) {
-    dispatch(event({node: a.node, evt: targetText}));
+    dispatch(event({node, evt: targetText}));
   } else {
-    dispatch(setAndRenderNode(a.node));
+    dispatch(setAndRenderNode(node));
   }
   return {
     roll: a.roll,
@@ -337,13 +334,16 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
 
   // Combat flow
   console.log('combat');
-  const {node, decision, combat} = resolveParams(a.node, getState);
-  combat.phase = (phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision;
-  combat.decisionPhase = phase;
-  console.log(node.ctx.templates.combat);
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+
+  const node = a.node.clone();
+  node.ctx.templates.combat.phase = (phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision;
+  node.ctx.templates.combat.decisionPhase = phase;
   dispatch(setAndRenderNode(node));
 
   return {
-  phase: a.phase,
-};
+    phase: a.phase,
+  };
 });

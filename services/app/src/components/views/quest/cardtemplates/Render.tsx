@@ -1,13 +1,18 @@
+import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
 import {toCard} from 'app/actions/Card';
 import {numAdventurers} from 'app/actions/Settings';
+import {openSnackbar} from 'app/actions/Snackbar';
 import {MUSIC_INTENSITY_MAX} from 'app/Constants';
+import {CardThemeType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import Redux from 'redux';
 import {REGEX} from 'shared/Regex';
-import {CardThemeType} from '../../../../reducers/StateTypes';
+import {Quest} from 'shared/schema/Quests';
 import {CombatPhase} from './combat/Types';
-import {DecisionPhase} from './decision/Types';
 import {RoleplayPhase} from './roleplay/Types';
+import {ParserNode} from './TemplateTypes';
 
 // Replaces :icon_name: and [art_name] with appropriate HTML elements
 // if [art_name] ends will _full, adds class="full"; otherwise defaults to display at 50% size
@@ -110,6 +115,9 @@ export function calculateAudioIntensity(node: ParserNode, adventurers: number): 
   const deadAdventurers = adventurers - (combat.numAliveAdventurers || 0);
   const roundCount = combat.roundCount || 0;
 
+  // TODO 0 if victory/defeat
+  // Timerstart:  dispatch(audioSet({peakIntensity: 1}));
+
   // Some pretty arbitrary weights on different combat factors and how they affect music intensity
   // Optimized for a tier 3 fight being 12, tier 8 (max relevant tier) being 32
   // With intensity increasing generally over time, but fading off quickly as you defeat enemies
@@ -142,17 +150,19 @@ export function setAndRenderNode(node: ParserNode, details?: Quest) {
         dispatch(toCard({name: 'QUEST_CARD', phase: RoleplayPhase.default, noHistory: true}));
       }
     } else if (tagName === 'combat') {
-      dispatch(toCard({name: 'QUEST_CARD', phase: node.ctx.templates.combat.phase || CombatPhase.drawEnemies, noHistory: true}));
-      // TODO 0 if victory/defeat
-      // Timerstart:  dispatch(audioSet({peakIntensity: 1}));
+      console.log('tocarding');
+      dispatch(toCard({name: 'QUEST_CARD', phase: node.ctx.templates.combat.phase, noHistory: true}));
+      console.log('calculating audio');
       const intensity = calculateAudioIntensity(node, numAdventurers(getState().settings, getState().multiplayer));
+      console.log('audio set');
       dispatch(audioSet({intensity}));
+      console.log('done');
     } else if (tagName === 'decision') {
-      const decision = node.ctx.templates.decision;
+      const {phase, rolls} = node.ctx.templates.decision;
       dispatch(toCard({
         name: 'QUEST_CARD',
-        phase: decision.phase,
-        keySuffix: decision.phase + (decision.rolls || '').toString(),
+        phase,
+        keySuffix: phase + rolls.toString(),
         noHistory: true,
       }));
     } else {

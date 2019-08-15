@@ -1,8 +1,9 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toDecisionCard} from './Actions';
+import {ParserNode} from '../TemplateTypes';
+import {handleDecisionTimerStart} from './Actions';
 import PrepareDecision, {DispatchProps} from './PrepareDecision';
-import {DecisionPhase, mapStateToProps} from './Types';
+import {mapStateToProps} from './Types';
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {

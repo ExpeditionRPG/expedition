@@ -4,7 +4,6 @@ import {logEvent} from 'app/Logging';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -38,18 +37,16 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  const stateCombat = resolveCombat(state.quest.node);
-
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
     adventurers: numAdventurers(state.settings, state.multiplayer),
-    combat: resolveCombat(node),
+    combat: node.ctx.templates.combat,
     maxTier,
     numAliveAdventurers: numAliveAdventurers(state.settings, node, state.multiplayer),
-    localAliveAdventurers: stateCombat.numAliveAdventurers,
-    tier: stateCombat.tier,
+    localAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
+    tier: state.quest.node.ctx.templates.combat.tier,
     contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };

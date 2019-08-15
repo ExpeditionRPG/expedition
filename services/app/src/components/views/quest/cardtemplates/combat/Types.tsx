@@ -38,8 +38,6 @@ export interface CombatDifficultySettings {
   maxRoundDamage: number;
 }
 
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
-
 export enum CombatPhase {
   drawEnemies = 'DRAW_ENEMIES',
   prepare = 'PREPARE',
@@ -54,6 +52,22 @@ export enum CombatPhase {
   midCombatDecisionTimer = 'MID_COMBAT_DECISION_TIMER',
 }
 
+export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
+export const EMPTY_COMBAT_STATE = {
+  enemies: [],
+  tier: 0,
+  mostRecentRolls: [],
+  numAliveAdventurers: 1,
+  surgePeriod: 0,
+  decisionPeriod: 0,
+  damageMultiplier: 0,
+  maxRoundDamage: 0,
+  roundCount: 0,
+  seed: '',
+  phase: CombatPhase.drawEnemies,
+  decisionPhase: DecisionPhase.prepare,
+};
+
 export interface StateProps {
   node: ParserNode;
   players: number;
@@ -64,6 +78,7 @@ export interface StateProps {
 }
 
 export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+  console.log(state.settings);
   const node = ownProps.node || state.quest.node;
   return {
     node,

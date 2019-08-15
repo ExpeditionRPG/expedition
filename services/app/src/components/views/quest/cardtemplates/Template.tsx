@@ -15,13 +15,14 @@ import ResolveContainer from './combat/ResolveContainer';
 import {combatScope} from './combat/Scope';
 import SurgeContainer from './combat/SurgeContainer';
 import TimerCardContainer from './combat/TimerCardContainer';
-import {CombatPhase} from './combat/Types';
+import {CombatPhase, EMPTY_COMBAT_STATE} from './combat/Types';
 import VictoryContainer from './combat/VictoryContainer';
 import {initDecision} from './decision/Actions';
 import DecisionTimerContainer from './decision/DecisionTimerContainer';
 import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
 import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
-import {DecisionPhase} from './decision/Types';
+import {DecisionPhase, EMPTY_DECISION_STATE} from './decision/Types';
+import {findCombatParent} from './Render';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {RoleplayPhase} from './roleplay/Types';
@@ -43,47 +44,66 @@ export function initCardTemplate(node: ParserNode) {
 }
 
 export function renderCardTemplate(card: CardState, node: ParserNode, settings: SettingsType): JSX.Element {
-  const phase = card.phase || RoleplayPhase.default;
-  switch (phase) {
-    case RoleplayPhase.default:
-      return <RoleplayContainer node={node}/>;
-    case DecisionPhase.prepare:
-      return <PrepareDecisionContainer node={node}/>;
-    case DecisionPhase.timer:
-      return <DecisionTimerContainer node={node}/>;
-    case DecisionPhase.resolve:
-      return <ResolveDecisionContainer node={node}/>;
-    case CombatPhase.drawEnemies:
-      return <DrawEnemiesContainer node={node}/>;
-    case CombatPhase.prepare:
-      // Must handle conditional display of timer vs no timer here to
-      // allow for timer length changes on the "prepare" card to dynamically
-      // change which screen is shown.
-      if (!settings.timerSeconds) {
-        return <NoTimerContainer node={node}/>;
+  const tagName = node.elem.get(0).tagName || 'roleplay';
+  switch (tagName) {
+    case 'roleplay':
+      if (findCombatParent(node) !== null) {
+        // Mid-combat roleplay
+        return <MidCombatRoleplayContainer node={node}/>;
       } else {
-        return <PrepareTimerContainer node={node}/>;
+        // Regular roleplay
+        return <RoleplayContainer node={node}/>;
       }
-    case CombatPhase.timer:
-      return <TimerCardContainer node={node}/>;
-    case CombatPhase.surge:
-      return <SurgeContainer node={node}/>;
-    case CombatPhase.resolveAbilities:
-      return <ResolveContainer node={node}/>;
-    case CombatPhase.resolveDamage:
-      return <PlayerTierContainer node={node}/>;
-    case CombatPhase.victory:
-      return <VictoryContainer node={node}/>;
-    case CombatPhase.defeat:
-      return <DefeatContainer node={node}/>;
-    case CombatPhase.midCombatRoleplay:
-      return <MidCombatRoleplayContainer node={node}/>;
-    case CombatPhase.midCombatDecision:
-    case CombatPhase.midCombatDecisionTimer:
-      const combat = node.ctx.templates.combat;
-      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepare)}, node, settings);
+    case 'combat':
+      const combatPhase = (node.ctx.templates.combat && node.ctx.templates.combat.phase) || CombatPhase.drawEnemies;
+      switch (combatPhase) {
+        case CombatPhase.drawEnemies:
+          return <DrawEnemiesContainer node={node}/>;
+        case CombatPhase.prepare:
+          // Must handle conditional display of timer vs no timer here to
+          // allow for timer length changes on the "prepare" card to dynamically
+          // change which screen is shown.
+          if (!settings.timerSeconds) {
+            return <NoTimerContainer node={node}/>;
+          } else {
+            console.log('Rendering PrepareTimerContainer');
+            return <PrepareTimerContainer node={node}/>;
+          }
+        case CombatPhase.timer:
+          return <TimerCardContainer node={node}/>;
+        case CombatPhase.surge:
+          return <SurgeContainer node={node}/>;
+        case CombatPhase.resolveAbilities:
+          return <ResolveContainer node={node}/>;
+        case CombatPhase.resolveDamage:
+          return <PlayerTierContainer node={node}/>;
+        case CombatPhase.victory:
+          return <VictoryContainer node={node}/>;
+        case CombatPhase.defeat:
+          return <DefeatContainer node={node}/>;
+        case CombatPhase.midCombatRoleplay:
+          return <MidCombatRoleplayContainer node={node}/>;
+        case CombatPhase.midCombatDecision:
+        case CombatPhase.midCombatDecisionTimer:
+          const combat = node.ctx.templates.combat;
+          return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepare)}, node, settings);
+        default:
+          throw new Error('Unknown template for combat phase ' + combatPhase);
+      }
+    case 'decision':
+      const decisionPhase = (node.ctx.templates.decision && node.ctx.templates.decision.phase) || DecisionPhase.prepare;
+      switch (decisionPhase) {
+        case DecisionPhase.prepare:
+          return <PrepareDecisionContainer node={node}/>;
+        case DecisionPhase.timer:
+          return <DecisionTimerContainer node={node}/>;
+        case DecisionPhase.resolve:
+          return <ResolveDecisionContainer node={node}/>;
+        default:
+          throw new Error('Unknown template for decision phase ' + decisionPhase);
+      }
     default:
-      throw new Error('Unknown template for card phase ' + card.phase);
+      throw new Error(`Unknown node tag: ${tagName}`);
   }
 }
 
@@ -144,7 +164,10 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
     scope: {
       _: populateScopeFn(),
     },
-    templates: {},
+    templates: {
+      combat: EMPTY_COMBAT_STATE,
+      decision: EMPTY_DECISION_STATE,
+    },
     views: {},
   };
 

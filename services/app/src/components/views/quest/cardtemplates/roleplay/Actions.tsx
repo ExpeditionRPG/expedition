@@ -1,13 +1,10 @@
-import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {audioSet} from 'app/actions/Audio';
-import {toCard} from 'app/actions/Card';
 import {endQuest, loadNode} from 'app/actions/Quest';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {handleCombatEnd} from '../combat/Actions';
 import {CombatPhase} from '../combat/Types';
-import {resolveParams} from '../Params';
 import {findCombatParent, setAndRenderNode} from '../Render';
 import {ParserNode} from '../TemplateTypes';
 
@@ -96,18 +93,16 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
 
   const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
   const {nextNode, state} = getNextMidCombatNode(a.node, a.index);
-
-  const {node, combat} = resolveParams(nextNode, getState);
   switch (state) {
     case 'ENDCOMBAT':
-      dispatch(loadNode(node));
+      dispatch(loadNode(nextNode));
       dispatch(audioSet({intensity: 0}));
       break;
     case 'VICTORY':
     case 'DEFEAT':
       dispatch(handleCombatEnd({
         maxTier: a.maxTier,
-        node,
+        node: nextNode,
         seed: a.seed,
         settings: a.settings,
         victory: (state === 'VICTORY'),
@@ -118,12 +113,12 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
       dispatch(audioSet({intensity: 0}));
       break;
     case 'ENDROUND':
-      combat.phase = CombatPhase.resolveAbilities;
-      dispatch(setAndRenderNode(node));
+      nextNode.ctx.templates.combat.phase = CombatPhase.resolveAbilities;
+      dispatch(setAndRenderNode(nextNode));
       break;
     default: // in-combat roleplay continues
-      combat.phase = CombatPhase.midCombatRoleplay;
-      dispatch(setAndRenderNode(node));
+      nextNode.ctx.templates.combat.phase = CombatPhase.midCombatRoleplay;
+      dispatch(setAndRenderNode(nextNode));
       break;
   }
   return remoteArgs;

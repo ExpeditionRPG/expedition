@@ -13,7 +13,10 @@ export interface Props extends StateProps, DispatchProps {}
 
 export default function prepareTimer(props: Props): JSX.Element {
   // Note: similar help text in renderNoTimer()
+  console.log('rendering prepare timer');
+  console.log(props.settings);
   const solo = numPlayers(props.settings) === 1;
+  console.log(solo);
   let helpText: JSX.Element = (<span></span>);
   if (props.settings.showHelp) {
     helpText = (

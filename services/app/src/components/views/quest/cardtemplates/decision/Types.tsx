@@ -51,6 +51,7 @@ export const EMPTY_DECISION_STATE: DecisionState = {
   leveledChecks: [],
   selected: null,
   rolls: [],
+  phase: DecisionPhase.prepare,
 };
 
 export interface StateProps {
