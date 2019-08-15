@@ -4,7 +4,7 @@ import {Action, newMockStore} from 'app/Testing';
 import {fakeConnection} from 'app/multiplayer/Testing';
 import {getMultiplayerConnection} from 'app/multiplayer/Connection';
 import {defaultContext} from '../Template';
-import {CombatPhase} from './Types';
+import {CombatPhase} from 'app/Constants';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -191,6 +191,7 @@ describe('Combat actions', () => {
     });
     test('random damage changes significantly between rounds', () => {
       const startNode = newCombatNode(TEST_NODE_EASIER); // Caution: this resets the multiplayer connection
+      startNode.ctx.seed = "abc";
       const conn = fakeConnection();
       const store = newMockStore({multiplayer: m.s2p5}, conn);
 

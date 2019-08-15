@@ -1,6 +1,5 @@
 import * as Redux from 'redux';
-import {CombatPhase} from '../components/views/quest/cardtemplates/combat/Types';
-import {NAV_CARD_STORAGE_KEY, VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
+import {CombatPhase, NAV_CARD_STORAGE_KEY, VIBRATION_LONG_MS, VIBRATION_SHORT_MS} from '../Constants';
 import {getNavigator} from '../Globals';
 import {getStorageString} from '../LocalStorage';
 import {remoteify} from '../multiplayer/Remoteify';

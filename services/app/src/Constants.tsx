@@ -378,3 +378,23 @@ export const MUSIC_FADE_SECONDS = 1.5;
 
 export const NAV_CARDS = ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY'];
 export const NAV_CARD_STORAGE_KEY = 'nav_card';
+
+export enum CombatPhase {
+  drawEnemies = 'DRAW_ENEMIES',
+  prepare = 'PREPARE',
+  timer = 'TIMER', // Timer must be separate to allow skip of timer during onReturn.
+  surge = 'SURGE',
+  resolveAbilities = 'RESOLVE_ABILITIES',
+  resolveDamage = 'RESOLVE_DAMAGE',
+  victory = 'VICTORY',
+  defeat = 'DEFEAT',
+  midCombatRoleplay = 'MID_COMBAT_ROLEPLAY',
+  midCombatDecision = 'MID_COMBAT_DECISION',
+  midCombatDecisionTimer = 'MID_COMBAT_DECISION_TIMER',
+}
+
+export enum DecisionPhase {
+  prepare = 'PREPARE_DECISION',
+  timer = 'DECISION_TIMER',
+  resolve = 'RESOLVE_DECISION',
+}

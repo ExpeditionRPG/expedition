@@ -7,6 +7,7 @@ import {ParserNode} from '../TemplateTypes';
 import ResolveDecision, {Props} from './ResolveDecision';
 import {EMPTY_LEVELED_CHECK} from './Types';
 import {mount, unmountAll} from 'app/Testing';
+import {DecisionPhase} from 'app/Constants';
 
 const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
@@ -40,33 +41,40 @@ describe('ResolveDecision', () => {
   });
   test('shows a "roll & resolve" element when outcome=retry', () => {
     const node = TEST_NODE.clone();
+    node.ctx.templates.combat.numAliveAdventurers = 2;
     node.ctx.templates.decision = {
       leveledChecks: [],
       selected: {...EMPTY_LEVELED_CHECK, requiredSuccesses: 2},
       rolls: [10],
+      phase: DecisionPhase.resolve,
     };
     expect(setup({node}).e.text()).toContain('Failed; 2 Successes Needed');
   });
   test('shows success page on outcome=success', () => {
     const node = TEST_NODE.clone();
+    node.ctx.templates.combat.numAliveAdventurers = 2;
     node.ctx.templates.decision = {
       leveledChecks: [],
       selected: {...EMPTY_LEVELED_CHECK, requiredSuccesses: 1},
       rolls: [20],
+      phase: DecisionPhase.resolve,
     };
     expect(titleWithProps({node})).toEqual('Success!');
   });
   test('shows failure page on outcome=failure', () => {
     const node = TEST_NODE.clone();
+    node.ctx.templates.combat.numAliveAdventurers = 2;
     node.ctx.templates.decision = {
       leveledChecks: [],
       selected: {...EMPTY_LEVELED_CHECK, requiredSuccesses: 1},
       rolls: [1],
+      phase: DecisionPhase.resolve,
     };
     expect(titleWithProps({node})).toEqual('Failure!');
   });
   test('shows interrupted page on outcome=interrupted', () => {
     const node = TEST_NODE.clone();
+    node.ctx.templates.combat.numAliveAdventurers = 2;
     const numAdv = numAdventurers(initialSettings, initialMultiplayer);
     const rolls = [];
     for (let i = 0; i < numAdv; i++) {
@@ -76,6 +84,7 @@ describe('ResolveDecision', () => {
       leveledChecks: [],
       selected: {...EMPTY_LEVELED_CHECK, requiredSuccesses: 1},
       rolls,
+      phase: DecisionPhase.resolve,
     };
     expect(titleWithProps({node})).toEqual('Interrupted!');
   });

@@ -1,10 +1,10 @@
 import {toCard} from 'app/actions/Card';
 import {getContentSets, numAdventurers, numAliveAdventurers, numPlayers} from 'app/actions/Settings';
+import {CombatPhase} from 'app/Constants';
 import {logEvent} from 'app/Logging';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {
   adventurerDelta,
@@ -13,7 +13,6 @@ import {
   tierSumDelta,
 } from './Actions';
 import PlayerTier, {DispatchProps, StateProps} from './PlayerTier';
-import {CombatPhase} from './Types';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -38,14 +37,14 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  const stateCombat = resolveCombat(state.quest.node);
+  const stateCombat = state.quest.node.ctx.templates.combat;
 
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
     adventurers: numAdventurers(state.settings, state.multiplayer),
-    combat: resolveCombat(node),
+    combat: node.ctx.templates.combat,
     maxTier,
     numAliveAdventurers: numAliveAdventurers(state.settings, node, state.multiplayer),
     localAliveAdventurers: stateCombat.numAliveAdventurers,

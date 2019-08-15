@@ -27,7 +27,7 @@ export default function resolveDecision(props: Props): JSX.Element {
   // hasInterrupted = true here, as it only matters when an action hasn't already
   // moved us to another node.
   const outcome = computeOutcome(decision.rolls, selected, props.settings, props.node, props.multiplayerState, true);
-
+  console.log(outcome);
   // Short-circuit the regular decision logic if we end up with a final outcome. We're
   // only rendering resolve with these states if there isn't a valid one provided by
   // the parser node.

@@ -54,7 +54,7 @@ describe('Settings action', () => {
     });
     describe('numAliveAdventurers', () => {
       test('returns node value from single player mode', () => {
-        expect(numAliveAdventurers(s, n, initialMultiplayer)).toEqual(1);
+        expect(numAliveAdventurers(s, n, initialMultiplayer)).toEqual(2);
       });
       test('sums up across all connected devices', () => {
         expect(numAliveAdventurers(s, n, m4)).toEqual(2);

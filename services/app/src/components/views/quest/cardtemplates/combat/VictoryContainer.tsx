@@ -5,7 +5,6 @@ import {EventParameters} from 'app/reducers/QuestTypes';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
@@ -17,18 +16,15 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  const combatFromNode = (node && node.ctx && node.ctx.templates && node.ctx.templates.combat);
-  const combat = resolveCombat(node);
+  const combat = node.ctx.templates.combat;
   let victoryParameters: EventParameters = {
     heal: MAX_ADVENTURER_HEALTH,
     loot: true,
     xp: true,
   };
-  if (combatFromNode) {
-    const parsedParams = node.getEventParameters('win');
-    if (parsedParams !== null) {
-      victoryParameters = parsedParams;
-    }
+  const parsedParams = node.getEventParameters('win');
+  if (parsedParams !== null) {
+    victoryParameters = parsedParams;
   }
 
   // Override with dynamic state for tier and adventurer count

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Victory, {Props} from './Victory';
+import {EMPTY_COMBAT_STATE} from './Types';
 import {MAX_ADVENTURER_HEALTH} from 'app/Constants';
-import {resolveCombat} from '../Params';
 import {render} from 'app/Testing';
 import {Expansion, CONTENT_SET_FULL_NAMES} from 'shared/schema/Constants';
 
@@ -21,7 +21,7 @@ describe('Combat victory', () => {
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
       combat: {
-        ...resolveCombat(null),
+        ...EMPTY_COMBAT_STATE,
         levelUp: true,
         loot: [],
       },
@@ -54,7 +54,7 @@ describe('Combat victory', () => {
     expect(setup({
       victoryParameters: {..TEST_VP, loot: true},
       combat: {
-        ...resolveCombat(null),
+        ...EMPTY_COMBAT_STATE,
         loot: [{count: 1, tier: 1}],
       },
     }).e.text()).toContain('One tier I loot');

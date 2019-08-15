@@ -1,9 +1,8 @@
+import {CombatPhase} from 'app/Constants';
 import * as Redux from 'redux';
 import {fetchLocal} from 'shared/requests';
 import {Quest} from 'shared/schema/Quests';
 import {getEnemiesAndTier} from '../components/views/quest/cardtemplates/combat/Actions';
-import {CombatPhase} from '../components/views/quest/cardtemplates/combat/Types';
-import {DecisionPhase} from '../components/views/quest/cardtemplates/decision/Types';
 import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/roleplay/Actions';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
@@ -141,7 +140,6 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
     roundCount: 0,
     tier,
     phase: CombatPhase.drawEnemies,
-    decisionPhase: DecisionPhase.prepare,
     surgePeriod: 4,
     decisionPeriod: 4,
     damageMultiplier: 1,

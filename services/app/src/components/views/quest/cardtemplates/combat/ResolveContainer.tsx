@@ -1,16 +1,16 @@
 import {toCard, toPrevious} from 'app/actions/Card';
 import {getContentSets} from 'app/actions/Settings';
+import {CombatPhase} from 'app/Constants';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import Resolve, {DispatchProps, StateProps} from './Resolve';
-import {CombatPhase, mapStateToProps as mapStateToPropsBase} from './Types';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   return {
     ...mapStateToPropsBase(state, ownProps),
-    mostRecentRolls: resolveCombat(state.quest.node).mostRecentRolls,
+    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
     contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };

@@ -1,20 +1,20 @@
 import {toPrevious} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
+import {CombatPhase} from 'app/Constants';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import Defeat, {DispatchProps, StateProps} from './Defeat';
-import {CombatPhase, mapStateToProps as mapStateToPropsBase} from './Types';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+const mapStateToProps = (state: AppStateWithHistory, ownProps: {node: ParserNode}): StateProps => {
   // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
-    combat: resolveCombat(ownProps.node),
-    mostRecentRolls: resolveCombat(state.quest.node).mostRecentRolls,
+    combat: ownProps.node.ctx.templates.combat,
+    mostRecentRolls: state.quest.node.ctx.templates.combat.mostRecentRolls,
   };
 };
 

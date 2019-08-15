@@ -1,14 +1,20 @@
 import {toCard} from 'app/actions/Card';
 import {toPrevious} from 'app/actions/Card';
+import {CombatPhase, DecisionPhase} from 'app/Constants';
+import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {CombatPhase} from '../combat/Types';
 import {ParserNode} from '../TemplateTypes';
 import {handleDecisionRoll} from './Actions';
 import ResolveDecision, {DispatchProps} from './ResolveDecision';
-import {DecisionPhase, mapStateToProps} from './Types';
+import {mapStateToProps as mapStateToPropsBase, StateProps} from './Types';
+
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+  return mapStateToPropsBase(state, ownProps);
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+  console.log(DecisionPhase);
   return {
     onReturn: () => {
       // Return to the Prepare Decision card instead of going back to the timer.

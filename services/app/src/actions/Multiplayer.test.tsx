@@ -175,14 +175,14 @@ describe('Multiplayer actions', () => {
 
     test('sends line number, commit id, and other state vars', () => {
       const {c} = doTest();
-      expect(c.sendEvent).toHaveBeenCalledWith({
+      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({
         connected: true,
         lastEventID: cid,
         line: 123,
         numLocalPlayers: 1,
         type: 'STATUS',
         waitingOn: undefined
-      }, cid);
+      }), cid);
     });
     test('overrides defaults when partial status passed', () => {
       const {c} = doTest(undefined, undefined, {waitingOn: 'something'});
