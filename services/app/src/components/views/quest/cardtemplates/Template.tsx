@@ -1,4 +1,5 @@
 import {getContentSets, numAdventurers} from 'app/actions/Settings';
+import {CombatPhase, DecisionPhase} from 'app/Constants';
 import {AppStateWithHistory, CardState, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
@@ -15,13 +16,13 @@ import ResolveContainer from './combat/ResolveContainer';
 import {combatScope} from './combat/Scope';
 import SurgeContainer from './combat/SurgeContainer';
 import TimerCardContainer from './combat/TimerCardContainer';
-import {CombatPhase} from './combat/Types';
+import {EMPTY_COMBAT_STATE} from './combat/Types';
 import VictoryContainer from './combat/VictoryContainer';
 import {initDecision} from './decision/Actions';
 import DecisionTimerContainer from './decision/DecisionTimerContainer';
 import PrepareDecisionContainer from './decision/PrepareDecisionContainer';
 import ResolveDecisionContainer from './decision/ResolveDecisionContainer';
-import {DecisionPhase} from './decision/Types';
+import {EMPTY_DECISION_STATE} from './decision/Types';
 import {initRoleplay} from './roleplay/Actions';
 import RoleplayContainer from './roleplay/RoleplayContainer';
 import {ParserNode, TemplateContext} from './TemplateTypes';
@@ -79,8 +80,7 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
       return <MidCombatRoleplayContainer node={node}/>;
     case CombatPhase.midCombatDecision:
     case CombatPhase.midCombatDecisionTimer:
-      const combat = node.ctx.templates.combat;
-      return renderCardTemplate({...card, phase: ((combat) ? combat.decisionPhase : DecisionPhase.prepare)}, node, settings);
+      return renderCardTemplate({...card, phase: node.ctx.templates.decision.phase}, node, settings);
     default:
       throw new Error('Unknown template for card phase ' + card.phase);
   }
@@ -143,7 +143,10 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
     scope: {
       _: populateScopeFn(),
     },
-    templates: {},
+    templates: {
+      combat: EMPTY_COMBAT_STATE,
+      decision: EMPTY_DECISION_STATE,
+    },
     views: {},
   };
 

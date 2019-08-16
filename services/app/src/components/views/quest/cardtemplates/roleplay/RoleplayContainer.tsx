@@ -1,9 +1,9 @@
 import {toPrevious} from 'app/actions/Card';
 import {choice} from 'app/actions/Quest';
+import {CombatPhase} from 'app/Constants';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {CombatPhase} from '../combat/Types';
 import {ParserNode} from '../TemplateTypes';
 import Roleplay, {DispatchProps, Props, StateProps} from './Roleplay';
 

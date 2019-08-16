@@ -11,8 +11,8 @@ import {
 } from './Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {DecisionPhase, EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
-import {CombatPhase} from '../combat/Types';
+import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
+import {CombatPhase, DecisionPhase} from 'app/Constants';
 import {Action, newMockStore} from 'app/Testing';
 import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
@@ -53,13 +53,14 @@ const TEST_NODE_NO_INTERRUPTED = new ParserNode(cheerio.load(`
 // Parsed from TEST_NODE
 const testDecision = (requiredSuccesses: number) => {
   return {
-    "leveledChecks": [
-      {difficulty: 'medium', persona: 'light', requiredSuccesses, skill: 'athletics'},
-      {difficulty: 'medium', persona: 'dark', requiredSuccesses, skill: 'athletics'},
-      {difficulty: 'medium', persona: undefined, requiredSuccesses, skill: 'charisma'}
+    leveledChecks: [
+      {difficulty: 'medium', persona: 'light', requiredSuccesses, skill: 'athletics', outcome: undefined},
+      {difficulty: 'medium', persona: 'dark', requiredSuccesses, skill: 'athletics', outcome: undefined},
+      {difficulty: 'medium', persona: undefined, requiredSuccesses, skill: 'charisma', outcome: undefined}
     ],
-    "rolls": [],
-    "selected": null
+    phase: DecisionPhase.prepare,
+    rolls: [],
+    selected: null
   };
 }
 

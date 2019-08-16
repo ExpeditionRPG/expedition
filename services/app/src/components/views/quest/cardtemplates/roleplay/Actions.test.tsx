@@ -7,7 +7,7 @@ import {
 import {midCombatChoice} from '../roleplay/Actions';
 import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
-import {CombatPhase} from '../combat/Types';
+import {CombatPhase} from 'app/Constants';
 
 const cheerio = require('cheerio');
 

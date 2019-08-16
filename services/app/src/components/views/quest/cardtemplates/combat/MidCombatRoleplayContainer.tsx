@@ -1,4 +1,5 @@
 import {toPrevious} from 'app/actions/Card';
+import {CombatPhase} from 'app/Constants';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
@@ -8,7 +9,6 @@ import {
 import {ParserNode} from '../TemplateTypes';
 import MidCombatRoleplay, {DispatchProps, StateProps} from './MidCombatRoleplay';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
-import {CombatPhase} from './Types';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
   let maxTier = 0;

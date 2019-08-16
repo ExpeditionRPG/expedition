@@ -1,12 +1,13 @@
 import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
+import {CombatPhase} from 'app/Constants';
 import {Enemy} from 'app/reducers/QuestTypes';
 import * as React from 'react';
 import {REGEX} from 'shared/Regex';
 import {NUMERALS} from '../Render';
 import {ParserNode} from '../TemplateTypes';
-import {CombatPhase, CombatState} from './Types';
+import {CombatState} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {

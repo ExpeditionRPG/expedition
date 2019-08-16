@@ -1,7 +1,6 @@
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {resolveCombat} from '../Params';
 import {ParserNode} from '../TemplateTypes';
 import {
   handleCombatTimerHold,
@@ -20,9 +19,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
-    combat: resolveCombat(node),
+    combat: node.ctx.templates.combat,
     multiplayerState: state.multiplayer,
-    numAliveAdventurers: resolveCombat(state.quest.node).numAliveAdventurers,
+    numAliveAdventurers: state.quest.node.ctx.templates.combat.numAliveAdventurers,
   };
 };
 

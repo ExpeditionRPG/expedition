@@ -1,9 +1,10 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
+import {CombatPhase} from 'app/Constants';
 import {ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
-import {CombatPhase, StateProps as StatePropsBase} from './Types';
+import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
   mostRecentRolls?: number[];

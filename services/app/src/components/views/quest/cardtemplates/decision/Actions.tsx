@@ -2,15 +2,13 @@ import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {numAliveAdventurers, numPlayers} from 'app/actions/Settings';
-import {PLAYER_TIME_MULT} from 'app/Constants';
+import {CombatPhase, DecisionPhase, PLAYER_TIME_MULT} from 'app/Constants';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
 import {extractSkillCheck, Outcome, Persona, Skill, SkillCheck} from 'shared/schema/templates/Decision';
-import {CombatPhase} from '../combat/Types';
-import {resolveParams} from '../Params';
 import {ParserNode} from '../TemplateTypes';
-import {DecisionPhase, DecisionState, Difficulty, EMPTY_DECISION_STATE, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
+import {DecisionState, Difficulty, EMPTY_DECISION_STATE, LeveledSkillCheck, RETRY_THRESHOLD_MAP, SUCCESS_THRESHOLD_MAP} from './Types';
 
 const MAX_REQUIRED_SUCCESSES = 3;
 const MIN_REQUIRED_SUCCESSES = 1;
@@ -42,14 +40,10 @@ export const initDecision = remoteify(function initDecision(a: InitDecisionArgs,
   if (leveledChecks.length === 0) {
     throw new Error('No valid choices for skill check');
   }
-  a.node.ctx.templates.decision = {
-    leveledChecks,
-    selected: null,
-    rolls: [],
-  };
+  a.node.ctx.templates.decision = {...EMPTY_DECISION_STATE, leveledChecks};
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.prepare, noHistory: true}));
+  dispatch(toCard({name: 'QUEST_CARD', phase: a.node.ctx.templates.decision.phase, noHistory: true}));
   return {};
 });
 
@@ -268,8 +262,12 @@ interface HandleDecisionRollArgs {
   roll: number;
 }
 export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: HandleDecisionRollArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): HandleDecisionRollArgs|null {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
+  const node = a.node.clone();
+
   if (getState().card.phase === CombatPhase.midCombatDecision) {
-    const {node} = resolveParams(a.node, getState);
     pushDecisionRoll(node, a.roll, getState);
     dispatch(toDecisionCard({phase: DecisionPhase.resolve, node}));
     return {
@@ -277,17 +275,12 @@ export const handleDecisionRoll = remoteify(function handleDecisionRoll(a: Handl
     };
   }
 
-  if (!a.node) {
-    a.node = getState().quest.node;
-  }
-  a.node = a.node.clone();
-
-  const targetText = pushDecisionRoll(a.node, a.roll, getState);
+  const targetText = pushDecisionRoll(node, a.roll, getState);
   if (targetText) {
-    dispatch(event({node: a.node, evt: targetText}));
+    dispatch(event({node, evt: targetText}));
   } else {
     dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node: a.node} as QuestNodeAction);
+    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
     dispatch(toCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true, keySuffix: Date.now().toString()}));
   }
   return {
@@ -300,6 +293,9 @@ interface ToDecisionCardArgs extends Partial<ToCardArgs> {
   phase: DecisionPhase;
 }
 export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCardArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ToDecisionCardArgs {
+  if (!a.node) {
+    a.node = getState().quest.node;
+  }
   const phase = a.phase || DecisionPhase.prepare;
   const statePhase = getState().card.phase;
   if (statePhase !== CombatPhase.midCombatDecision && statePhase !== CombatPhase.midCombatDecisionTimer && a.name !== undefined) {
@@ -313,14 +309,14 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
     dispatch(toCard(a2));
     return {...a2, phase};
   }
-  const {node, decision, combat} = resolveParams(a.node, getState);
-  combat.decisionPhase = phase;
+  const node = a.node.clone();
+  node.ctx.templates.decision.phase = phase;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   dispatch(toCard({
     name: 'QUEST_CARD',
     phase: (a.phase === DecisionPhase.timer) ? CombatPhase.midCombatDecisionTimer : CombatPhase.midCombatDecision,
-    keySuffix: a.phase + (decision.rolls || '').toString(),
+    keySuffix: a.phase + (node.ctx.templates.decision.rolls || '').toString(),
     noHistory: true,
   }));
   return {

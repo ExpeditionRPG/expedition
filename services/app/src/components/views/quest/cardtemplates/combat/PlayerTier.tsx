@@ -2,11 +2,12 @@ import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
 import Picker from 'app/components/base/Picker';
+import {CombatPhase} from 'app/Constants';
 import {ContentSetsType, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
 import {ParserNode} from '../TemplateTypes';
-import {CombatPhase, CombatState} from './Types';
+import {CombatState} from './Types';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {

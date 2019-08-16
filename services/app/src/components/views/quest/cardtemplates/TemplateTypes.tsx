@@ -1,12 +1,13 @@
+import {CombatPhase, DecisionPhase} from 'app/Constants';
 import {Context} from 'shared/parse/Context';
 import {Node} from 'shared/parse/Node';
-import {CombatPhase, CombatState} from './combat/Types';
-import {DecisionPhase, DecisionState} from './decision/Types';
+import {CombatState} from './combat/Types';
+import {DecisionState} from './decision/Types';
 import {RoleplayPhase} from './roleplay/Types';
 
 export interface TemplateState {
-  combat?: CombatState;
-  decision?: DecisionState;
+  combat: CombatState;
+  decision: DecisionState;
 }
 
 export type TemplatePhase = CombatPhase | RoleplayPhase | DecisionPhase;

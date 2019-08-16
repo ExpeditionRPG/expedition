@@ -1,5 +1,6 @@
 import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 const seedrandom = require('seedrandom');
+import {DecisionPhase} from 'app/Constants';
 import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
 import {getCardTemplateTheme} from '../Template';
 import {ParserNode} from '../TemplateTypes';
@@ -36,20 +37,17 @@ export interface OutcomeContent {
 }
 export const EMPTY_OUTCOME: OutcomeContent = {type: 'retry', text: '', instructions: []};
 
-export enum DecisionPhase {
-  prepare = 'PREPARE_DECISION',
-  timer = 'DECISION_TIMER',
-  resolve = 'RESOLVE_DECISION',
-}
 export interface DecisionState {
   leveledChecks: LeveledSkillCheck[];
   selected: LeveledSkillCheck|null;
   rolls: number[];
+  phase: DecisionPhase;
 }
 export const EMPTY_DECISION_STATE: DecisionState = {
   leveledChecks: [],
   selected: null,
   rolls: [],
+  phase: DecisionPhase.prepare,
 };
 
 export interface StateProps {
