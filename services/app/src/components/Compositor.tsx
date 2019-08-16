@@ -7,7 +7,6 @@ import {
   CardName,
   CardState,
   CardThemeType,
-  MultiplayerPhase,
   MultiplayerState,
   QuestState,
   SettingsType,
@@ -21,10 +20,12 @@ import MultiplayerClientContainer from './multiplayer/MultiplayerClientContainer
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
 import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import AccountContainer from './views/AccountContainer';
-import CheckoutContainer from './views/CheckoutContainer';
+import CheckoutDoneContainer from './views/CheckoutDoneContainer';
+import CheckoutEntryContainer from './views/CheckoutEntryContainer';
 import GMCornerContainer from './views/GMCornerContainer';
 import ModeSelectContainer from './views/ModeSelectContainer';
-import MultiplayerContainer from './views/MultiplayerContainer';
+import MultiplayerConnectContainer from './views/MultiplayerConnectContainer';
+import MultiplayerLobbyContainer from './views/MultiplayerLobbyContainer';
 import {renderCardTemplate} from './views/quest/cardtemplates/Template';
 import QuestEndContainer from './views/quest/QuestEndContainer';
 import QuestSetupContainer from './views/quest/QuestSetupContainer';
@@ -96,8 +97,10 @@ export default class Compositor extends React.Component<Props, {}> {
         return <QuestEndContainer />;
       case 'GM_CARD':
         return <GMCornerContainer />;
-      case 'CHECKOUT':
-        return <CheckoutContainer />;
+      case 'CHECKOUT_ENTRY':
+        return <CheckoutEntryContainer />;
+      case 'CHECKOUT_DONE':
+        return <CheckoutDoneContainer />;
       case 'SEARCH_CARD':
         return <SearchContainer />;
       case 'SEARCH_SETTINGS':
@@ -106,8 +109,10 @@ export default class Compositor extends React.Component<Props, {}> {
         return <SearchDisclaimerContainer />;
       case 'SETTINGS':
         return <SettingsContainer />;
-      case 'REMOTE_PLAY':
-        return <MultiplayerContainer phase={this.props.card.phase as MultiplayerPhase} />;
+      case 'REMOTE_PLAY_LOBBY':
+        return <MultiplayerLobbyContainer />;
+      case 'REMOTE_PLAY_CONNECT':
+        return <MultiplayerConnectContainer />;
       case 'ACCOUNT':
         return <AccountContainer />;
       default:

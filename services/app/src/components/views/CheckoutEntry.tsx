@@ -2,12 +2,11 @@ import LockIcon from '@material-ui/icons/Lock';
 import * as React from 'react';
 
 import {AUTH_SETTINGS} from '../../Constants';
-import {CardState, CheckoutState, QuestState, UserState} from '../../reducers/StateTypes';
+import {CheckoutState, QuestState, UserState} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
 export interface StateProps extends React.Props<any> {
-  card: CardState;
   checkout: CheckoutState;
   quest: QuestState;
   user: UserState;
@@ -15,8 +14,6 @@ export interface StateProps extends React.Props<any> {
 
 export interface DispatchProps {
   onError: (error: string) => void;
-  onHome: () => void;
-  onPhaseChange: (phase: string) => void;
   onStripeLoad: (stripe: stripe.Stripe) => void;
   onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState) => void;
 }
@@ -24,7 +21,7 @@ export interface DispatchProps {
 interface Props extends StateProps, DispatchProps {}
 
 // Docs: https://stripe.com/docs/stripe-js
-class CheckoutForm extends React.Component<Props, {}> {
+class CheckoutEntry extends React.Component<Props, {}> {
   public state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
 
   constructor(props: Props) {
@@ -100,27 +97,4 @@ class CheckoutForm extends React.Component<Props, {}> {
   }
 }
 
-function renderCheckoutThankYou(props: Props) {
-  return (
-    <Card title="Payment Complete">
-      <div className="centralMessage">
-        <p>Payment for ${props.checkout.amount} complete.</p>
-        <p>Thank you for your support!</p>
-      </div>
-      <Button onClick={() => props.onHome()}>Return Home</Button>
-    </Card>
-  );
-}
-
-export default class Checkout extends React.Component<Props, {}> {
-  public render() {
-    switch (this.props.card.phase) {
-      case 'ENTRY':
-        return <CheckoutForm {...this.props} />;
-      case 'DONE':
-        return renderCheckoutThankYou(this.props);
-      default:
-        return null;
-    }
-  }
-}
+export default CheckoutEntry;

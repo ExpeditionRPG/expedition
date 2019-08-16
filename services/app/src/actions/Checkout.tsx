@@ -16,7 +16,7 @@ export function checkoutSetState(delta: Partial<CheckoutState>) {
 export function toCheckout(amount: number) {
   return (dispatch: Redux.Dispatch<any>): any => {
     logEvent('navigate', 'to_checkout', {value: amount});
-    dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
+    dispatch(toCard({name: 'CHECKOUT_ENTRY'}));
   };
 }
 
@@ -38,14 +38,14 @@ export function checkoutSubmit(stripeToken: string, checkout: CheckoutState, use
     .then(handleFetchErrorsAsString)
     .then((response: Response) => {
       logEvent('valuable', 'checkout_success', {value: checkout.amount});
-      dispatch(toCard({name: 'CHECKOUT', phase: 'DONE'}));
+      dispatch(toCard({name: 'CHECKOUT_DONE'}));
       dispatch(checkoutSetState({processing: false}));
     })
     .catch((error: Error) => {
       console.log(error);
       logEvent('error', 'checkout_submit_err', {label: error});
       dispatch(openSnackbar(error, true));
-      dispatch(toCard({name: 'CHECKOUT', phase: 'ENTRY'}));
+      dispatch(toCard({name: 'CHECKOUT_ENTRY'}));
       dispatch(checkoutSetState({processing: false}));
     });
   };

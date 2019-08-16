@@ -48,7 +48,7 @@ function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any
     // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
     // to fast-forward to the current state.
     dispatch({type: 'MULTIPLAYER_SESSION', session: {secret, id: sessionID}, client, instance});
-    return dispatch(toCard({name: 'REMOTE_PLAY', phase: 'LOBBY'}));
+    return dispatch(toCard({name: 'REMOTE_PLAY_LOBBY'}));
   })
   .then(() => {
     c.configure(client, instance);
@@ -109,12 +109,12 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
     .then((response: Response) => response.json())
     .then((data: {history: MultiplayerSessionMeta[]}) => {
       dispatch({type: 'MULTIPLAYER_HISTORY', history: data.history});
-      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
+      dispatch(toCard({name: 'REMOTE_PLAY_CONNECT'}));
     })
     .catch((error: Error) => {
       console.error(error);
       logEvent('multiplayer', 'init_err', {label: error.toString()});
-      dispatch(toCard({name: 'REMOTE_PLAY', phase: 'CONNECT'}));
+      dispatch(toCard({name: 'REMOTE_PLAY_CONNECT'}));
     });
   };
 }
