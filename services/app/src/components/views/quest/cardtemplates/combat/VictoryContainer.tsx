@@ -33,7 +33,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     ...mapStateToPropsBase(state, ownProps),
     combat,
     victoryParameters,
-    theme: getCardTemplateTheme(state.card),
+    theme: getCardTemplateTheme(state.quest.node),
     contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };

@@ -1,4 +1,3 @@
-import {toCard} from 'app/actions/Card';
 import {getContentSets, numAdventurers, numAliveAdventurers, numPlayers} from 'app/actions/Settings';
 import {CombatPhase} from 'app/Constants';
 import {logEvent} from 'app/Logging';
@@ -11,6 +10,7 @@ import {
   handleCombatEnd,
   setupCombatDecision,
   tierSumDelta,
+  toCombatPhase,
 } from './Actions';
 import PlayerTier, {DispatchProps, StateProps} from './PlayerTier';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
@@ -26,8 +26,8 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     }
     const tier = combatContext.tier;
     histIdx--;
-    const phase = state._history[histIdx].card.phase;
-    if (tier && phase !== null && phase === CombatPhase.prepare) {
+    const phase = state._history[histIdx].quest.node.ctx.templates.combat.phase;
+    if (tier && phase === CombatPhase.prepare) {
       maxTier = Math.max(maxTier, tier);
     }
   }
@@ -71,8 +71,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       });
       dispatch(handleCombatEnd({node, settings, victory: false, maxTier, seed}));
     },
-    onNext: (phase: CombatPhase) => {
-      dispatch(toCard({name: 'QUEST_CARD', phase}));
+    onNext: (node: ParserNode, phase: CombatPhase) => {
+      dispatch(toCombatPhase({node, phase}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
       dispatch(tierSumDelta({node, current, delta}));

@@ -1,6 +1,6 @@
 import {toPrevious} from 'app/actions/Card';
 import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardName} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: CombatPhase.timer}]}));
+      dispatch(toPrevious({before: false, matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase !== CombatPhase.timer}));
     },
     onSurgeNext: (node: ParserNode) => {
       dispatch(handleResolvePhase({node}));

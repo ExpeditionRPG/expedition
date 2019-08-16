@@ -25,7 +25,7 @@ export interface DispatchProps {
   onAdventurerDelta: (node: ParserNode, settings: SettingsType, current: number, delta: number) => void;
   onDecisionSetup: (node: ParserNode, seed: string) => void;
   onDefeat: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
-  onNext: (phase: CombatPhase) => void;
+  onNext: (node: ParserNode, phase: CombatPhase) => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
   onVictory: (node: ParserNode, settings: SettingsType, maxTier: number, seed: string) => void;
 }
@@ -80,7 +80,7 @@ export default function playerTier(props: Props): JSX.Element {
       <Button
         className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}
-        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(CombatPhase.prepare)}>Next</Button>
+        onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(props.node, CombatPhase.prepare)}>Next</Button>
       <Button
         className={(props.tier !== 0) ? 'subtle' : ''}
         disabled={props.numAliveAdventurers <= 0 && props.tier > 0}
