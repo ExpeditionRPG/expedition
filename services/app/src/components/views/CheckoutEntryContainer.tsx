@@ -1,15 +1,13 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
-import {toCard, toPrevious} from '../../actions/Card';
 import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout';
 import {openSnackbar} from '../../actions/Snackbar';
 import {logEvent} from '../../Logging';
-import {AppState, CheckoutPhase, CheckoutState, UserState} from '../../reducers/StateTypes';
-import Checkout, {DispatchProps, StateProps} from './Checkout';
+import {AppState, CheckoutState, UserState} from '../../reducers/StateTypes';
+import CheckoutEntry, {DispatchProps, StateProps} from './CheckoutEntry';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
-    card: state.card,
     checkout: state.checkout,
     quest: state.quest,
     user: state.user,
@@ -22,13 +20,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       logEvent('error', 'checkout_err', {label: err});
       dispatch(openSnackbar(Error('Error encountered: ' + err)));
     },
-    onHome: (): void => {
-      dispatch(toPrevious({name: 'TUTORIAL_QUESTS'}));
-    },
-    onPhaseChange: (phase: CheckoutPhase): void => {
-      logEvent('navigate', 'checkout_phase', {label: phase});
-      dispatch(toCard({name: 'CHECKOUT', phase}));
-    },
     onStripeLoad: (stripe: stripe.Stripe): void => {
       dispatch(checkoutSetState({stripe}));
     },
@@ -38,9 +29,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const CheckoutContainer = connect(
+const CheckoutEntryContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Checkout);
+)(CheckoutEntry);
 
-export default CheckoutContainer;
+export default CheckoutEntryContainer;

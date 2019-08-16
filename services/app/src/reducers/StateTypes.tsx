@@ -119,13 +119,12 @@ export interface SavedQuestMeta {
   savedBytes?: number;
 }
 
-export type MultiplayerPhase = 'CONNECT'|'LOBBY';
-export type CheckoutPhase = 'ENTRY' | 'DONE';
 export type CardName =
   'QUEST_PREVIEW' |
   'QUEST_HISTORY' |
   'SAVED_QUESTS' |
-  'CHECKOUT' |
+  'CHECKOUT_ENTRY' |
+  'CHECKOUT_DONE' |
   'PLAYER_COUNT_SETTING' |
   'QUEST_SETUP' |
   'QUEST_END' |
@@ -137,9 +136,10 @@ export type CardName =
   'SEARCH_CARD' |
   'SEARCH_SETTINGS' |
   'SETTINGS' |
-  'REMOTE_PLAY' |
+  'REMOTE_PLAY_CONNECT' |
+  'REMOTE_PLAY_LOBBY' |
   'ACCOUNT';
-export type CardPhase = TemplatePhase | MultiplayerPhase | CheckoutPhase;
+export type CardPhase = TemplatePhase;
 
 export interface CardState {
   questId: string;

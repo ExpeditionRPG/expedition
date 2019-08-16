@@ -1,21 +1,15 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {SessionID} from 'shared/multiplayer/Session';
-import {toNavCard} from '../../actions/Card';
 import {multiplayerConnect, multiplayerNewSession} from '../../actions/Multiplayer';
-import {changeSettings, getContentSets} from '../../actions/Settings';
 import {openSnackbar} from '../../actions/Snackbar';
-import {logEvent} from '../../Logging';
 import {AppState, UserState} from '../../reducers/StateTypes';
-import Multiplayer, {DispatchProps, MIN_SECRET_LENGTH, StateProps} from './Multiplayer';
+import MultiplayerConnect, {DispatchProps, MIN_SECRET_LENGTH, StateProps} from './MultiplayerConnect';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<StateProps>): StateProps => {
   return {
     multiplayer: state.multiplayer,
-    phase: ownProps.phase || 'CONNECT',
     user: state.user,
-    settings: state.settings,
-    contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };
 
@@ -28,16 +22,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
       return dispatch(multiplayerConnect(user, secret.toUpperCase()));
     },
-    onPlayerChange: (numLocalPlayers: number) => {
-      dispatch(changeSettings({numLocalPlayers}));
-    },
-    onStart: () => {
-      logEvent('multiplayer', 'session_start', {});
-      dispatch(toNavCard({}));
-
-      // Prevent us from going back
-      dispatch({type: 'CLEAR_HISTORY'});
-    },
     onNewSessionRequest: (user: UserState) => {
       return dispatch(multiplayerNewSession(user));
     },
@@ -47,9 +31,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const MultiplayerContainer = connect(
+const MultiplayerConnectContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Multiplayer);
+)(MultiplayerConnect);
 
-export default MultiplayerContainer;
+export default MultiplayerConnectContainer;
