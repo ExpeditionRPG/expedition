@@ -1,6 +1,6 @@
 import {mount, unmountAll} from 'app/Testing';
 import * as React from 'react';
-import renderLobby, { Props } from './Multiplayer';
+import MultiplayerLobby, { Props } from './MultiplayerLobby';
 import {initialSettings} from '../../reducers/Settings';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
 import {loggedOutUser} from 'shared/auth/UserState';
@@ -23,7 +23,7 @@ describe('Multiplayer lobby', () => {
       onPlayerChange: jasmine.createSpy('onPlayerChange'),
       ...overrides,
     };
-    const elem = mount(renderLobby(props));
+    const elem = mount(MultiplayerLobby(props));
     return {elem, props};
   }
 
