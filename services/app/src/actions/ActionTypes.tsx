@@ -6,9 +6,8 @@ import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes'
 import {
   AudioDataState,
   AudioState,
-  CardName,
-  CardPhase,
   CardState,
+  CardName,
   CheckoutState,
   DialogIDType,
   IUserFeedback,
@@ -74,9 +73,8 @@ export interface NavigateAction extends Redux.Action {
 
 export interface ReturnAction extends Redux.Action {
   type: 'RETURN';
-  to: CardState;
+  matchFn?: (c:CardName, n:ParserNode) => boolean;
   before: boolean;
-  skip?: Array<{name: CardName, phase: CardPhase}>; // Skip any occurrences of these cards
 }
 
 export interface QuestExitAction extends Redux.Action {

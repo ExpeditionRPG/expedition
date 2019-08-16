@@ -1,4 +1,3 @@
-import {toCard} from 'app/actions/Card';
 import {CombatPhase} from 'app/Constants';
 import {AppStateWithHistory} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
@@ -6,6 +5,7 @@ import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
 import {
   tierSumDelta,
+  toCombatPhase,
 } from './Actions';
 import DrawEnemies, {DispatchProps, StateProps} from './DrawEnemies';
 import {mapStateToProps as mapStateToPropsBase} from './Types';
@@ -22,8 +22,8 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: {node: ParserNode
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onNext: (phase: CombatPhase) => {
-      dispatch(toCard({name: 'QUEST_CARD', phase}));
+    onNext: (node: ParserNode, phase: CombatPhase) => {
+      dispatch(toCombatPhase({node, phase}));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
       dispatch(tierSumDelta({node, current, delta}));

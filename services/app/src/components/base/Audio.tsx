@@ -1,13 +1,12 @@
 import {ThemeManager} from 'app/audio/ThemeManager';
 import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY} from 'app/Constants';
-import {AudioState, CardName, CardPhase} from 'app/reducers/StateTypes';
+import {AudioState} from 'app/reducers/StateTypes';
 import * as React from 'react';
 
 export interface StateProps {
   themeManager: ThemeManager|null;
   audio: AudioState;
-  cardName: CardName;
-  cardPhase: CardPhase|null;
+  inCombat: boolean;
   enabled: boolean;
 }
 
@@ -97,7 +96,7 @@ export default class Audio extends React.Component<Props, {}> {
     }
 
     // If we're outside of combat, pause music
-    if (nextProps.cardName !== 'QUEST_CARD' || nextProps.cardPhase === null || nextProps.cardPhase === 'ROLEPLAY') {
+    if (nextProps.inCombat) {
       console.log('Pausing music (outside of combat)');
       return tm.pause();
     }

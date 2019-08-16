@@ -13,7 +13,7 @@ const pluralize = require('pluralize');
 
 export interface DispatchProps {
   onRoll: (node: ParserNode, roll: number) => void;
-  onCombatDecisionEnd: () => void;
+  onCombatDecisionEnd: (node: ParserNode) => void;
   onReturn: () => void;
 }
 
@@ -45,7 +45,7 @@ export default function resolveDecision(props: Props): JSX.Element {
           ? <Callout icon={formatImg('adventurer', props.theme, false)}>{instruction}</Callout>
           : <p>Nothing happens.</p>
         }
-        <Button onClick={() => props.onCombatDecisionEnd()}>Next</Button>
+        <Button onClick={() => props.onCombatDecisionEnd(props.node)}>Next</Button>
       </Card>
     );
   }

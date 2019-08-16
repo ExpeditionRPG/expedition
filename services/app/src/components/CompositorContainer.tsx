@@ -25,7 +25,7 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
     quest: state.quest,
     settings: state.settings,
     snackbar: state.snackbar,
-    theme: getCardTemplateTheme(state.card),
+    theme: getCardTemplateTheme(state.quest.node),
     transition,
   };
 };

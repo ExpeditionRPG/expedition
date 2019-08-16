@@ -65,6 +65,6 @@ export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<St
     node,
     settings: state.settings,
     rng: seedrandom.alea((node && node.ctx.seed) || ''),
-    theme: getCardTemplateTheme(state.card),
+    theme: getCardTemplateTheme(state.quest.node),
   };
 }

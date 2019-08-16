@@ -1,9 +1,9 @@
-import {toCard} from 'app/actions/Card';
 import {toPrevious} from 'app/actions/Card';
-import {CombatPhase, DecisionPhase} from 'app/Constants';
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
+import {CombatPhase} from 'app/Constants';
+import {AppStateWithHistory, CardName} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {toCombatPhase} from '../combat/Actions';
 import {ParserNode} from '../TemplateTypes';
 import {handleDecisionRoll} from './Actions';
 import ResolveDecision, {DispatchProps} from './ResolveDecision';
@@ -17,16 +17,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onReturn: () => {
       // Return to the Prepare Decision card instead of going back to the timer.
-      dispatch(toPrevious({before: false, skip: [
-        {name: 'QUEST_CARD', phase: DecisionPhase.timer},
-        {name: 'QUEST_CARD', phase: CombatPhase.midCombatDecisionTimer},
-      ]}));
+      dispatch(toPrevious({before: false, matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase !== CombatPhase.midCombatDecisionTimer}));
     },
     onRoll: (node: ParserNode, roll: number) => {
       dispatch(handleDecisionRoll({node, roll}));
     },
-    onCombatDecisionEnd: () => {
-      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.prepare}));
+    onCombatDecisionEnd: (node: ParserNode) => {
+      dispatch(toCombatPhase({node, phase: CombatPhase.prepare}));
     },
   };
 };

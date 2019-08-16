@@ -5,7 +5,6 @@ import {Badge, ContentRating, Expansion, Genre, Language, Partition} from 'share
 import {Quest} from 'shared/schema/Quests';
 import {AudioNode} from '../audio/AudioNode';
 import {ThemeManager} from '../audio/ThemeManager';
-import {TemplatePhase} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
 export interface AnnouncementState {
@@ -139,14 +138,12 @@ export type CardName =
   'REMOTE_PLAY_CONNECT' |
   'REMOTE_PLAY_LOBBY' |
   'ACCOUNT';
-export type CardPhase = TemplatePhase;
 
 export interface CardState {
   questId: string;
   name: CardName;
   ts: number;
   key: string;
-  phase: CardPhase|null;
   overrideDebounce?: boolean;
 }
 

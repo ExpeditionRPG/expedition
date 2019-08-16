@@ -4,6 +4,7 @@ import {CombatPhase} from 'app/Constants';
 import {ContentSetsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
 import {CONTENT_SET_FULL_NAMES, Expansion} from 'shared/schema/Constants';
+import {ParserNode} from '../TemplateTypes';
 import {StateProps as StatePropsBase} from './Types';
 
 export interface StateProps extends StatePropsBase {
@@ -12,7 +13,7 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onNext: (phase: CombatPhase) => void;
+  onNext: (node: ParserNode, phase: CombatPhase) => void;
   onReturn: () => void;
 }
 
@@ -62,7 +63,7 @@ export default function resolve(props: Props): JSX.Element {
           <div className="rolls">{renderedRolls}</div>
         </div>
       }
-      <Button onClick={() => props.onNext(CombatPhase.resolveDamage)}>Next</Button>
+      <Button onClick={() => props.onNext(props.node, CombatPhase.resolveDamage)}>Next</Button>
     </Card>
   );
 }

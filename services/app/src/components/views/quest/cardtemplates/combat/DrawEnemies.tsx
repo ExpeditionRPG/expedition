@@ -16,7 +16,7 @@ export interface StateProps extends StatePropsBase {
 }
 
 export interface DispatchProps {
-  onNext: (phase: CombatPhase) => void;
+  onNext: (node: ParserNode, phase: CombatPhase) => void;
   onTierSumDelta: (node: ParserNode, current: number, delta: number) => void;
 }
 
@@ -67,7 +67,7 @@ export default function drawEnemies(props: Props): JSX.Element {
       </p>
       {enemies}
       {helpText}
-      <Button onClick={() => props.onNext(CombatPhase.prepare)}>Next</Button>
+      <Button onClick={() => props.onNext(props.node, CombatPhase.prepare)}>Next</Button>
       <AudioControlsContainer />
     </Card>
   );

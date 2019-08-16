@@ -11,8 +11,7 @@ const mapStateToProps = (state: AppState): StateProps => {
   return {
     themeManager: (state.audioData || {}).themeManager || null,
     audio: state.audio || initialAudioState,
-    cardName: state.card ? state.card.name : 'SPLASH_CARD',
-    cardPhase: state.card ? state.card.phase : null,
+    inCombat: (state.quest.node.getTag() === 'combat'),
     enabled: state.settings.audioEnabled,
   };
 };

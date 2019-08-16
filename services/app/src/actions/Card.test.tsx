@@ -31,7 +31,7 @@ describe('Card action', () => {
 
   describe('toPrevious', () => {
     test('returns a RETURN action', () => {
-      Action(toPrevious).expect({name: 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
+      Action(toPrevious).expect({matchFn: (c, n) => c === 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
     });
   });
 
