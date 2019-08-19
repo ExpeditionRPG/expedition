@@ -4,19 +4,28 @@ import {fetchLocal} from 'shared/requests';
 import {Quest} from 'shared/schema/Quests';
 import {getEnemiesAndTier} from '../components/views/quest/cardtemplates/combat/Actions';
 import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/roleplay/Actions';
-import {defaultContext} from '../components/views/quest/cardtemplates/Template';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import {defaultContext, populateScope} from '../components/views/quest/cardtemplates/Template';
+import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
 import {checkStorageFreeBytes, getStorageJson, setStorageKeyValue} from '../LocalStorage';
 import {logEvent} from '../Logging';
 import {SavedQuestMeta} from '../reducers/StateTypes';
 import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, StorageFreeAction} from './ActionTypes';
+import {toCard} from './Card';
 import {initQuestNode} from './Quest';
 import {openSnackbar} from './Snackbar';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
-declare interface SavedQuest {xml: string; path: number[]; seed: string; }
+declare interface SavedQuest {
+  xml: string;
+  path: number[];
+  seed: string;
+  // We additionally include context and line information - try to load from this first,
+  // otherwise use the path to recreate the node from the beginning.
+  ctx: TemplateContext;
+  line: number;
+}
 
 export const SAVED_QUESTS_KEY = 'SAVED_QUESTS';
 
@@ -97,13 +106,14 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     const xml = node.getRootElem() + '';
     const path = node.ctx.path;
     const seed = node.ctx.seed;
+    const line = parseInt(node.elem.attr('data-line'), 10);
 
     if (!xml || !path) {
       return Promise.reject(new Error('Could not save quest.'));
     }
 
     try {
-      set(savedQuestKey(details.id, ts), {xml, path, seed} as SavedQuest);
+      set(savedQuestKey(details.id, ts), {xml, path, seed, line, ctx: node.ctx} as SavedQuest);
     } catch (e) {
       return Promise.reject(e);
     }
@@ -223,6 +233,20 @@ export function recreateNodeFromPath(xml: string, path: string|number[], seed?: 
   return {node, complete: true};
 }
 
+export function recreateNodeFromContext(xml: string, line: number, ctx: TemplateContext, regenScope= populateScope): ParserNode {
+  const elem = cheerio.load(xml)(`[data-line=${line}]`);
+  if (!elem) {
+    throw new Error(`Could not load line ${line} from XML`);
+  }
+
+  // Functions do not get serialized; we must recreate them and then bind them to the context.
+  ctx.scope._ = regenScope();
+  for (const k of Object.keys(ctx.scope._)) {
+    ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
+  }
+  return new ParserNode(elem, ctx, undefined, ctx.seed);
+}
+
 export function loadSavedQuest(id: string, ts: number) {
   return (dispatch: Redux.Dispatch<any>) => {
     const savedQuests = getSavedQuestMeta();
@@ -240,17 +264,37 @@ export function loadSavedQuest(id: string, ts: number) {
 
     logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
     const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
-    if (!data.xml || !data.path) {
-      throw new Error('Could not load quest - invalid save data');
+
+    let node: ParserNode|null = null;
+    if (data.ctx && data.xml && data.line !== undefined) {
+      console.log('Attempting to recreate from ctx');
+      try {
+        node = recreateNodeFromContext(data.xml, data.line, data.ctx);
+        console.log('Recreated scope:', node.ctx.scope);
+      } catch (e) {
+        console.warn(e);
+        node = null;
+      }
     }
-    const {node, complete} = recreateNodeFromPath(data.xml, data.path, data.seed);
-    if (!complete) {
-      dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
+
+    if (node === null) {
+      console.log('Attempting legacy load');
+      if (!data.xml || !data.path) {
+        throw new Error('Could not load quest - invalid save data');
+      }
+      const result = recreateNodeFromPath(data.xml, data.path, data.seed);
+      if (!result.complete) {
+        dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
+      }
+      node = result.node;
     }
+
+    dispatch({type: 'PUSH_HISTORY'});
     dispatch({
       type: 'QUEST_NODE',
       node,
       details,
     } as QuestNodeAction);
+    dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
   };
 }

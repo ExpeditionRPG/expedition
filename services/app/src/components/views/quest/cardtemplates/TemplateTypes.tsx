@@ -14,9 +14,6 @@ export type TemplatePhase = CombatPhase | RoleplayPhase | DecisionPhase;
 
 export interface TemplateContext extends Context {
   templates: TemplateState;
-
-  // Regenerate template scope (all of "_") with this function.
-  _templateScopeFn: () => any;
 }
 
 export class ParserNode extends Node<TemplateContext> {

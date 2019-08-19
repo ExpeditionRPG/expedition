@@ -11,7 +11,17 @@ describe('SavedQuest actions', () => {
   const STORED_QUEST_TS = 67890;
 
   beforeEach((done) => {
-    const quest = getCheerio().load('<quest><roleplay><choice></choice><choice if="false"></choice><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice></roleplay></quest>')('quest');
+    const quest = getCheerio().load(`
+      <quest>
+        <roleplay data-line="0">
+          <choice></choice>
+          <choice if="false"></choice>
+          <choice>
+            <roleplay data-line="1">expected</roleplay>
+            <roleplay data-line="2">wrong</roleplay>
+          </choice>
+        </roleplay>
+      </quest>`)('quest');
     const pnode = new ParserNode(quest.children().eq(0), defaultContext());
     const next = pnode.getNext(1);
     if (next === null) {
@@ -41,7 +51,17 @@ describe('SavedQuest actions', () => {
   });
 
   describe('storeSavedQuest', () => {
-    const quest = getCheerio().load('<quest><roleplay><choice><roleplay>expected</roleplay><roleplay>wrong</roleplay></choice><choice></choice><choice if="false"></choice></roleplay></quest>')('quest');
+    const quest = getCheerio().load(`
+      <quest>
+        <roleplay data-line="0">
+          <choice>
+            <roleplay data-line="2">expected</roleplay>
+            <roleplay data-line="3">wrong</roleplay>
+          </choice>
+          <choice></choice>
+          <choice if="false"></choice>
+        </roleplay>
+      </quest>`)('quest');
     const pnode = new ParserNode(quest.children().eq(0), defaultContext()).getNext(0);
     const NEW_ID = '0123';
     const NEW_TS = 4567;
@@ -92,8 +112,77 @@ describe('SavedQuest actions', () => {
   });
 
   describe('loadSavedQuest', () => {
-    test('replays the node given the saved path', () => {
+    function storeAndLoadQuest(xml: string, mutateCtx: ((ctx: TemplateContext) => TemplateContext) = (c) => c): {saved: ParserNode, loaded: ParserNode} {
+      const quest = getCheerio().load(xml)('quest');
+      const pnode = new ParserNode(quest.children().eq(0), defaultContext());
+      const next = pnode.getNext(0);
+      if (next === null) {
+        throw new Error('Initial setup failed');
+      }
+      next.ctx = mutateCtx(next.ctx);
       const store = newMockStore({});
+      store.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS+1));
+      store.clearActions();
+
+      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS+1));
+      return {saved: next, loaded: store.getActions()[0].node};
+    }
+    test('loads from context, properly binding "lodash" functions in roleplay node', () => {
+      // This tests the viewCount function defined in populateScope() (in TemplateTypes.tsx).
+      // We pass once through the starting node, so viewCount("a") should equal 1.
+      //
+      // This test also sets a variable earlier in the save, and attempts to render the same
+      // var when landing on the loaded node.
+      const node = storeAndLoadQuest(`
+        <quest>
+          <roleplay data-line="0" id="a">
+            <p>{{n = "test"}}</p>
+            <choice>
+              <roleplay data-line="2"><p>Result: {{_.viewCount("a")}}{{n}}</p></roleplay>
+              <roleplay data-line="3"><p>wrong</p></roleplay>
+            </choice>
+          </roleplay>
+        </quest>`).loaded;
+      let result = "";
+      node.loopChildren((tag: string, child: Cheerio, original: Cheerio) => {
+        result += child
+      });
+      expect(result).toEqual('<p>Result: 1test</p>');
+    });
+    test('Loaded node seed matches saved node seed', () => {
+      const {saved, loaded} = storeAndLoadQuest(`
+        <quest>
+          <roleplay data-line="0"></roleplay>
+          <roleplay data-line="1"></roleplay>
+        </quest>`);
+      let result = "";
+      expect(saved.ctx.seed).toEqual(loaded.ctx.seed);
+    });
+    test.only('handles loading into combat', () => {
+      // When recreating from ctx, user should be able to load into the exact round
+      // of combat they were originally in.
+      const node = storeAndLoadQuest(`
+        <quest>
+          <roleplay data-line="0" id="a"></roleplay>
+          <combat><e>Giant Rat</e></combat>
+        </quest>`, (c: TemplateContext) => {
+          console.log(c);
+          c.templates.combat = {...c.templates.combat, roundCount: 6, tier: 4};
+          return c;
+        });
+      console.log(node.ctx);
+      expect(node.ctx.scope.templates.combat.roundCount).toEqual(6);
+      expect(node.ctx.scope.templates.combat.tier).toEqual(4);
+      expect(node.elem.get(0).tagName).toEqual('combat');
+    });
+    test('handles loading into mid-combat roleplay', () => {
+      // When recreating from ctx, user should be able to load into the exact round
+      // of combat they were originally in, but even in mid-combat roleplay node.
+      throw Error("not implemented");
+    });
+    test('LEGACY: replays the node given the saved path when ctx and line not saved', () => {
+      const store = newMockStore({});
+      throw Error("TODO delete ctx and line attributes of saved quest");
       store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
       expect(store.getActions()[0].node.elem + '').toEqual('<roleplay>expected</roleplay>');
     });

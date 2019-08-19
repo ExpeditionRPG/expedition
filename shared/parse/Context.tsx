@@ -37,30 +37,18 @@ export interface Context {
   // context given this path.
   path: Array<string|number>;
 
-  // Regenerate template scope (all of "_") with this function.
-  _templateScopeFn: () => any;
-
   // Optional contextual arg to seed the random number generator.
   seed?: string;
 }
 
-export function defaultContext(): Context {
-  const populateScopeFn = () => {
-    return {
-      viewCount(id: string): number {
-        return this.views[id] || 0;
-      },
-    };
-  };
-
+export function defaultContext(populateScope: (() => any) = (() => ({}))): Context {
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: Context = {
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
     path: ([] as any),
     scope: {
-      _: populateScopeFn(),
+      _: populateScope(),
     },
     seed: generateSeed(),
     views: {},
@@ -195,8 +183,8 @@ export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?:
     newContext.path.push(action);
   }
 
-  // Create new copies of all scope functions and bind them
-  newContext.scope._ = newContext._templateScopeFn();
+  // Copy over all scope functions and bind them
+  newContext.scope._ = ctx.scope._;
   for (const k of Object.keys(newContext.scope._)) {
     newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
