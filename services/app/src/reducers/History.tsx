@@ -4,15 +4,10 @@ import {getHistoryApi, getNavigator} from '../Globals';
 import {AppStateBase, AppStateWithHistory} from './StateTypes';
 
 export function history(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
-  if (state === undefined) {
-    return state;
-  }
-
   if (state._history === undefined) {
     state._history = [];
   }
 
-  // TODO: Convert history into a separate reducer.
   // If action is "Return", pop history accordingly
   if (action.type === 'RETURN') {
     // Backing all the way out of the Android app should kill it

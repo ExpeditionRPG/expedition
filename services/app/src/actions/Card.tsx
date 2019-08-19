@@ -20,18 +20,23 @@ export const toCard = remoteify(function toCard(a: ToCardArgs, dispatch: Redux.D
   const state = (getState !== undefined) ? getState() : getStore().getState();
   const questId = (state.quest && state.quest.details && state.quest.details.id) || null;
   const vibration = state.settings && state.settings.vibration;
+
   if (nav && nav.vibrate && vibration) {
-    // TODO long vibration on combat phase timer
     nav.vibrate((a.vibrateLong) ? VIBRATION_LONG_MS : VIBRATION_SHORT_MS);
   }
+
   if (!a.noHistory) {
     dispatch({type: 'PUSH_HISTORY'});
   }
 
   const keylist: string[] = [a.name];
-  const line = state.quest && state.quest.node && state.quest.node.elem.attr('data-line');
-  if (line !== undefined) {
-    keylist.push('L' + line);
+  if (state.quest && state.quest.node) { // In tests, quest.node may not be set up
+    const line = state.quest.node.elem.attr('data-line');
+    if (line !== undefined) {
+      keylist.push('L' + line);
+    }
+    keylist.push(state.quest.node.ctx.templates.combat.phase);
+    keylist.push(state.quest.node.ctx.templates.decision.phase);
   }
   if (a.keySuffix) {
     keylist.push(a.keySuffix);

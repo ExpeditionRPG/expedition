@@ -14,6 +14,7 @@ import {URLS} from '../../Constants';
 import {getDevicePlatform, openWindow} from '../../Globals';
 import {AppStateWithHistory, CardName, CardThemeType, SettingsType, UserState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
+import {ParserNode} from '../views/quest/cardtemplates/TemplateTypes';
 
 // If onMenuSelect or onReturn is not set, default dispatch behavior is used.
 export interface Props extends React.Props<any> {
@@ -65,7 +66,7 @@ class Card extends React.Component<Props, IState> {
         break;
       case 'HOME':
         if (!this.props.inQuest) {
-          return dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+          return dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => c === 'SPLASH_CARD', before: false}));
         }
         return dispatch(setDialog('EXIT_QUEST'));
       case 'ACCOUNT':

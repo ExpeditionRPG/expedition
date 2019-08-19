@@ -2,7 +2,7 @@ import {QuestNodeAction} from 'app/actions/ActionTypes';
 import {toCard, ToCardArgs} from 'app/actions/Card';
 import {event} from 'app/actions/Quest';
 import {numAliveAdventurers, numPlayers} from 'app/actions/Settings';
-import {DecisionPhase, PLAYER_TIME_MULT} from 'app/Constants';
+import {CombatPhase, DecisionPhase, PLAYER_TIME_MULT} from 'app/Constants';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
@@ -298,6 +298,10 @@ export const toDecisionCard = remoteify(function toDecisionCard(a: ToDecisionCar
     a.node = getState().quest.node;
   }
   const node = a.node.clone();
+  if (node.inCombat()) {
+    console.log('setting combat phase');
+    node.ctx.templates.combat.phase = CombatPhase.midCombatDecision;
+  }
   node.ctx.templates.decision.phase = a.phase;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);

@@ -13,12 +13,18 @@ import {search} from './Search';
 import {serverstatus} from './ServerStatus';
 import {settings} from './Settings';
 import {snackbar} from './Snackbar';
-import {AppState, AppStateWithHistory} from './StateTypes';
+import {AppStateWithHistory} from './StateTypes';
 import {user} from './User';
 import {userquests} from './UserQuests';
 
-function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
+export default function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   state = state || ({} as AppStateWithHistory);
+
+  // Run global reducers
+  state = commitID(state, action, combinedReduce);
+  state = history(state, action);
+
+  // Run the reducers on the new action
   return {
     audio: audio(state.audio, action),
     audioData: audioData(state.audioData, action),
@@ -35,17 +41,10 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
     userQuests: userquests(state.userQuests, action),
-  };
-}
 
-export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
-  // Run global reducers
-  state = commitID(state, action, combinedReduce);
-  state = history(state, action);
-
-  // Run the reducers on the new action
-  return {
-    ...combinedReduce(state, action),
+    // These attributes are handled by the global reducers; persist them.
+    _history: (state && state._history),
+    _return: (state && state._return),
     _committed: (state && state._committed),
   } as AppStateWithHistory;
 }

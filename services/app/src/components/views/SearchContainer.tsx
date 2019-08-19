@@ -8,6 +8,7 @@ import {search} from '../../actions/Search';
 import {getContentSets} from '../../actions/Settings';
 import {NAV_CARDS} from '../../Constants';
 import {AppStateWithHistory, CardName, SearchParams, SettingsType} from '../../reducers/StateTypes';
+import {ParserNode} from './quest/cardtemplates/TemplateTypes';
 import Search, {DispatchProps, StateProps} from './Search';
 
 const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
@@ -37,7 +38,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onReturn(): void {
       dispatch(toPrevious({
-        skip: NAV_CARDS.map((c) => ({name: c as CardName})),
+        matchFn: (c: CardName, n: ParserNode) => NAV_CARDS.indexOf(c) === -1,
       }));
     },
   };

@@ -76,7 +76,7 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
     return null;
   }
   const levelUpOptions = [
-    <li>Learn a new ability.
+    <li key="base_level">Learn a new ability.
       {props.settings.showHelp && <ul>
         <li>Draw 3 abilities from one of the decks listed on your adventurer card.</li>
           {props.contentSets.has(Expansion.horror) && <ul>
@@ -91,13 +91,13 @@ function maybeRenderLevelUp(props: Props): JSX.Element|null {
     </li>,
   ];
   if (props.contentSets.has(Expansion.horror)) {
-    levelUpOptions.push(<li>
+    levelUpOptions.push(<li key="horror_level">
       <img className="inline_icon" src={'images/' + formatImg('horror', props.theme) + '.svg'} />
       Increase their Persona by 2.
     </li>);
   }
   if (props.contentSets.has(Expansion.future)) {
-    levelUpOptions.push(<li>
+    levelUpOptions.push(<li key="future_level">
       <img className="inline_icon" src={'images/' + formatImg('synth', props.theme) + '.svg'} />
       Learn a new skill.
       {props.settings.showHelp && <ul>

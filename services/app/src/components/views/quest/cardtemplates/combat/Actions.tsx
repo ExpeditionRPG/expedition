@@ -282,19 +282,21 @@ export const handleResolvePhase = remoteify(function handleResolvePhase(a: Handl
   if (!a.node) {
     a.node = getState().quest.node;
   }
-  const node = a.node.clone();
+  let node = a.node.clone();
 
   // Handles resolution, with a hook for if a <choice on="round"/> tag is specified.
   // Note that handling new combat nodes within a "round" handler has undefined
   // behavior and should be prevented when compiled.
   const roundNode = node.getNext('round');
-  dispatch({type: 'PUSH_HISTORY'});
   if (roundNode !== null) {
-    roundNode.ctx.templates.combat.phase = CombatPhase.midCombatRoleplay;
+    node = roundNode;
+    node.ctx.templates.combat.phase = CombatPhase.midCombatRoleplay;
   } else {
     node.ctx.templates.combat.phase = CombatPhase.resolveAbilities;
   }
-  dispatch({type: 'QUEST_NODE', node: roundNode} as QuestNodeAction);
+
+  dispatch({type: 'PUSH_HISTORY'});
+  dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
   dispatch(toCard({name: 'QUEST_CARD', overrideDebounce: true, noHistory: true}));
   return {};
 });
@@ -315,7 +317,7 @@ export const handleCombatTimerStart = remoteify(function handleCombatTimerStart(
   node.ctx.templates.combat.phase = CombatPhase.timer;
   dispatch({type: 'PUSH_HISTORY'});
   dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-  dispatch(toCard({name: 'QUEST_CARD'}));
+  dispatch(toCard({name: 'QUEST_CARD', vibrateLong: true}));
   dispatch(audioSet({peakIntensity: 1}));
 
   // If we have no local alive adventurers but we're playing multiplayer, automatically put the timer in hold state.

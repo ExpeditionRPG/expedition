@@ -3,5 +3,5 @@ import combinedReducers from './CombinedReducers';
 import {AppStateWithHistory} from './StateTypes';
 
 describe('CombinedReducers', () => {
-  // TODO
+  test.skip('TODO', () => { /* TODO */ });
 });

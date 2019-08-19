@@ -96,7 +96,7 @@ export default class Audio extends React.Component<Props, {}> {
     }
 
     // If we're outside of combat, pause music
-    if (nextProps.inCombat) {
+    if (!nextProps.inCombat) {
       console.log('Pausing music (outside of combat)');
       return tm.pause();
     }

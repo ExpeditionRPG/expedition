@@ -7,9 +7,10 @@ import {ensureLogin} from 'app/actions/User';
 import {submitUserFeedback} from 'app/actions/Web';
 import {getDevicePlatform} from 'app/Globals';
 import {logEvent} from 'app/Logging';
-import {AppState, MultiplayerState, QuestState, SettingsType, UserState} from 'app/reducers/StateTypes';
+import {AppState, CardName, MultiplayerState, QuestState, SettingsType, UserState} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
+import {ParserNode} from './cardtemplates/TemplateTypes';
 import QuestEnd, {DispatchProps, StateProps} from './QuestEnd';
 
 declare var window: any;
@@ -48,7 +49,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
 
       if (!multiplayer.session) {
-        dispatch(toPrevious({skip: [{name: 'QUEST_CARD'}, {name: 'QUEST_SETUP'}]}));
+        dispatch(toPrevious({
+          matchFn: (c: CardName, n: ParserNode) => c !== 'QUEST_CARD' && c !== 'QUEST_SETUP',
+        }));
         dispatch(exitQuest({}));
       } else {
         dispatch(setMultiplayerStatus({

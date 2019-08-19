@@ -1,8 +1,9 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toPrevious} from '../../actions/Card';
-import {AppState} from '../../reducers/StateTypes';
+import {AppState, CardName} from '../../reducers/StateTypes';
 import CheckoutDone, {DispatchProps, StateProps} from './CheckoutDone';
+import {ParserNode} from './quest/cardtemplates/TemplateTypes';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -13,7 +14,7 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onHome: (): void => {
-      dispatch(toPrevious({name: 'TUTORIAL_QUESTS'}));
+      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => c === 'TUTORIAL_QUESTS'}));
     },
   };
 };

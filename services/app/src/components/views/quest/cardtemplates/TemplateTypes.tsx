@@ -19,4 +19,8 @@ export interface TemplateContext extends Context {
   _templateScopeFn: () => any;
 }
 
-export class ParserNode extends Node<TemplateContext> {}
+export class ParserNode extends Node<TemplateContext> {
+  public inCombat(): boolean {
+    return this.getTag() === 'combat' || this.ctx.templates.combat.phase === CombatPhase.midCombatDecision || this.ctx.templates.combat.phase === CombatPhase.midCombatRoleplay;
+  }
+}

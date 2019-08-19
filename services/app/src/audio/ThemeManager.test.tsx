@@ -184,7 +184,6 @@ describe('ThemeManager', () => {
     for(let k of Object.keys(ns)) {
       ns[k].playOnce.calls.reset();
     }
-    console.log('HEAVY');
     am.setIntensity(36);
     let heavys = 0;
     for(let k of Object.keys(ns)) {

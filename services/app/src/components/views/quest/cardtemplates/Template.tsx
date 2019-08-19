@@ -82,8 +82,6 @@ function renderCombatTemplate(node: ParserNode, settings: SettingsType): JSX.Ele
       return <VictoryContainer node={node}/>;
     case CombatPhase.defeat:
       return <DefeatContainer node={node}/>;
-    case CombatPhase.midCombatRoleplay:
-      return <MidCombatRoleplayContainer node={node}/>;
     case CombatPhase.midCombatDecision:
     case CombatPhase.midCombatDecisionTimer:
       return renderDecisionTemplate(node);
@@ -92,11 +90,19 @@ function renderCombatTemplate(node: ParserNode, settings: SettingsType): JSX.Ele
   }
 }
 
+function renderRoleplayTemplate(node: ParserNode): JSX.Element {
+  if (node.ctx.templates.combat.phase === CombatPhase.midCombatRoleplay) {
+    return <MidCombatRoleplayContainer node={node}/>;
+  } else {
+    return <RoleplayContainer node={node}/>;
+  }
+}
+
 export function renderCardTemplate(node: ParserNode, settings: SettingsType): JSX.Element {
   const tag = node.getTag();
   switch (tag) {
     case 'roleplay':
-      return <RoleplayContainer node={node}/>;
+      return renderRoleplayTemplate(node);
     case 'combat':
       return renderCombatTemplate(node, settings);
     case 'decision':
@@ -107,8 +113,7 @@ export function renderCardTemplate(node: ParserNode, settings: SettingsType): JS
 }
 
 export function getCardTemplateTheme(node: ParserNode): CardThemeType {
-  if (node.getTag() === 'combat') {
-    // TODO handle mid combat roleplay
+  if (node.inCombat()) {
     return 'dark';
   }
   return 'light';
