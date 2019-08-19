@@ -69,13 +69,8 @@ describe('Combat actions', () => {
     const actions = Action(initCombat, {settings: s.basic}).execute({node: TEST_NODE.clone()});
 
     test('triggers nav to combat start', () => {
-      expect(actions[2]).toEqual(jasmine.objectContaining({
-        to: jasmine.objectContaining({
-          name: 'QUEST_CARD',
-          phase: CombatPhase.drawEnemies,
-        }),
-        type: 'NAVIGATE',
-      }));
+      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.drawEnemies);
+      expect(actions.filter((a) => a.type === 'NAVIGATE').length).toEqual(1);
       checkNodeIntegrity(null, null); // skip
     });
 
@@ -444,7 +439,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions[2].to.phase).toEqual(CombatPhase.resolveAbilities);
+      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -459,7 +454,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions[2].to.phase).toEqual(CombatPhase.resolveAbilities);
+      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -477,7 +472,7 @@ describe('Combat actions', () => {
       node = Action(initCombat as any).execute({node: node.clone(), settings: s.basic})[1].node;
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].node.elem.text()).toEqual('expected');
-      expect(actions[2].to.phase).toEqual(CombatPhase.midCombatRoleplay);
+      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatRoleplay);
 
       // We expect node integrity to be broken when moving from combat to roleplay.
       checkNodeIntegrity(null, null);

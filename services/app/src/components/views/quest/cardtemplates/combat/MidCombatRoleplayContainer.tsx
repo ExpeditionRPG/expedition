@@ -1,6 +1,6 @@
 import {toPrevious} from 'app/actions/Card';
 import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardName, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {
@@ -21,7 +21,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     }
     const tier = combatContext.tier;
     histIdx--;
-    const phase = state._history[histIdx].card.phase;
+    const phase = state._history[histIdx].quest.node.ctx.templates.combat.phase;
     if (tier && phase !== null && phase === CombatPhase.prepare) {
       maxTier = Math.max(maxTier, tier);
     }
@@ -42,11 +42,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
     },
     onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: CombatPhase.drawEnemies, before: true}));
+      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => n.getTag() === 'combat' && n.ctx.templates.combat.phase === CombatPhase.drawEnemies, before: true}));
     },
     onReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, skip: [{name: 'QUEST_CARD', phase: CombatPhase.timer}]}));
+      dispatch(toPrevious({before: false, matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase !== CombatPhase.timer}));
     },
   };
 };

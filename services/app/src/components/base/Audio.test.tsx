@@ -29,8 +29,7 @@ describe('Audio', () => {
     const props: Props = {
       themeManager: fakeThemeManager(),
       audio: {...initialAudioState},
-      cardName: 'QUEST_CARD';
-      cardPhase: 'DRAW_ENEMIES';
+      inCombat: true,
       enabled: true,
       disableAudio: jasmine.createSpy('disableAudio'),
       onLoadChange: jasmine.createSpy('onLoadChange'),
@@ -72,8 +71,7 @@ describe('Audio', () => {
         timestamp: 0,
         ...audioOverrides,
       },
-      cardName: 'QUEST_CARD',
-      cardPhase: 'DRAW_ENEMIES',
+      inCombat: true,
     };
   }
   test('plays audio when nonzero intensity in combat node', () => {
@@ -84,7 +82,7 @@ describe('Audio', () => {
 
   test('mutes audio when exiting combat node', () => {
     const {props, a} = setup(activeProps());
-    a.setProps(tick({cardName: 'QUEST_CARD', cardPhase: 'ROLEPLAY'}, 1));
+    a.setProps(tick({inCombat: false}, 1));
     expect(props.themeManager.pause).toHaveBeenCalledTimes(1);
   });
 

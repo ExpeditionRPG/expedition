@@ -12,7 +12,8 @@ import {openSnackbar} from '../../actions/Snackbar';
 import {fetchQuestXML, submitUserFeedback} from '../../actions/Web';
 import {MIN_FEEDBACK_LENGTH} from '../../Constants';
 import {getCounters} from '../../multiplayer/Counters';
-import {AppState, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import {AppState, CardName, ContentSetsType, FeedbackType, QuestState, SavedQuestMeta, SettingsType, UserState} from '../../reducers/StateTypes';
+import {ParserNode} from '../views/quest/cardtemplates/TemplateTypes';
 import Dialogs, {DispatchProps, StateProps} from './Dialogs';
 
 const mapStateToProps = (state: AppState): StateProps => {
@@ -50,12 +51,12 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
     onExitMultiplayer: () => {
       dispatch(multiplayerDisconnect());
       dispatch(setDialog(null));
-      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => c === 'SPLASH_CARD', before: false}));
     },
     onExitQuest: (quest: QuestState, settings: SettingsType, user: UserState, text: string): Promise<any> => {
       dispatch(setDialog(null));
       dispatch(exitQuest({}));
-      dispatch(toPrevious({name: 'SPLASH_CARD', before: false}));
+      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => c === 'SPLASH_CARD', before: false}));
       if (text && text.length > 0) {
         return dispatch(submitUserFeedback({quest, settings, user, text, type: 'feedback', anonymous: false, rating: null})) as any;
       }

@@ -92,7 +92,7 @@ export default class Compositor extends React.Component<Props, {}> {
         if (!this.props.quest || !this.props.quest.node) {
           throw new Error('QUEST_CARD without quest/node');
         }
-        return renderCardTemplate(this.props.card, this.props.quest.node, this.props.settings);
+        return renderCardTemplate(this.props.quest.node, this.props.settings);
       case 'QUEST_END':
         return <QuestEndContainer />;
       case 'GM_CARD':
@@ -141,10 +141,16 @@ export default class Compositor extends React.Component<Props, {}> {
   }
 
   public shouldComponentUpdate(nextProps: Props) {
+    // Don't update the main UI if we're on the same card key
+    if (this.props.card.key === nextProps.card.key) {
+      return false;
+    }
+
     // Don't update the main UI if we're just syncing state
     if (nextProps.multiplayer && nextProps.multiplayer.syncing) {
       return false;
     }
+
     return true;
   }
 

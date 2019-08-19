@@ -7,6 +7,7 @@ import {getUserBadges, getUserFeedBacks} from '../../actions/User';
 import {NAV_CARDS} from '../../Constants';
 import {AppState, CardName} from '../../reducers/StateTypes';
 import Account, {IDispatchProps, IStateProps} from './Account';
+import {ParserNode} from './quest/cardtemplates/TemplateTypes';
 
 const mapStateToProps = (state: AppState): IStateProps => {
   return {
@@ -19,7 +20,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): IDispatchProps =>  (
   getUserBadges: () => dispatch(getUserBadges()),
   onReturn: () => {
     dispatch(toPrevious({
-      skip: NAV_CARDS.map((c) => ({name: c as CardName})),
+      matchFn: (c: CardName, n: ParserNode) => NAV_CARDS.indexOf(c) === -1,
     }));
   },
   onQuestSelect(quest: Quest): void {

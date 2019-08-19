@@ -17,7 +17,7 @@ export function initRoleplay(node: ParserNode) {
     // content.
     dispatch({type: 'PUSH_HISTORY'});
     dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', phase: 'ROLEPLAY', noHistory: true}));
+    dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
   };
 }
 
@@ -102,6 +102,7 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
   const {nextNode, state} = getNextMidCombatNode(a.node, a.index);
   switch (state) {
     case 'ENDCOMBAT':
+      nextNode.ctx.templates.combat.phase = CombatPhase.drawEnemies;
       dispatch(loadNode(nextNode));
       dispatch(audioSet({intensity: 0}));
       break;
@@ -121,13 +122,15 @@ export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatCh
       break;
     case 'ENDROUND':
       dispatch({type: 'PUSH_HISTORY'});
+      nextNode.ctx.templates.combat.phase = CombatPhase.resolveAbilities;
       dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.resolveAbilities, overrideDebounce: true, noHistory: true}));
+      dispatch(toCard({name: 'QUEST_CARD', overrideDebounce: true, noHistory: true}));
       break;
     default: // in-combat roleplay continues
       dispatch({type: 'PUSH_HISTORY'});
+      nextNode.ctx.templates.combat.phase = CombatPhase.midCombatRoleplay;
       dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', phase: CombatPhase.midCombatRoleplay, overrideDebounce: true, noHistory: true}));
+      dispatch(toCard({name: 'QUEST_CARD', overrideDebounce: true, noHistory: true}));
       break;
   }
   return remoteArgs;

@@ -1,6 +1,6 @@
 import {getContentSets, numAdventurers} from 'app/actions/Settings';
 import {CombatPhase, DecisionPhase} from 'app/Constants';
-import {AppStateWithHistory, CardState, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardThemeType, SettingsType} from 'app/reducers/StateTypes';
 import {getStore} from 'app/Store';
 import * as React from 'react';
 import Redux from 'redux';
@@ -42,17 +42,23 @@ export function initCardTemplate(node: ParserNode) {
   };
 }
 
-export function renderCardTemplate(card: CardState, node: ParserNode, settings: SettingsType): JSX.Element {
-  const phase = card.phase || 'ROLEPLAY';
-  switch (phase) {
-    case 'ROLEPLAY':
-      return <RoleplayContainer node={node}/>;
+function renderDecisionTemplate(node: ParserNode): JSX.Element {
+  const dp = node.ctx.templates.decision.phase;
+  switch (dp) {
     case DecisionPhase.prepare:
       return <PrepareDecisionContainer node={node}/>;
     case DecisionPhase.timer:
       return <DecisionTimerContainer node={node}/>;
     case DecisionPhase.resolve:
       return <ResolveDecisionContainer node={node}/>;
+    default:
+      throw new Error('Unknown decision phase ' + dp);
+  }
+}
+
+function renderCombatTemplate(node: ParserNode, settings: SettingsType): JSX.Element {
+  const cp = node.ctx.templates.combat.phase;
+  switch (cp) {
     case CombatPhase.drawEnemies:
       return <DrawEnemiesContainer node={node}/>;
     case CombatPhase.prepare:
@@ -76,37 +82,41 @@ export function renderCardTemplate(card: CardState, node: ParserNode, settings: 
       return <VictoryContainer node={node}/>;
     case CombatPhase.defeat:
       return <DefeatContainer node={node}/>;
-    case CombatPhase.midCombatRoleplay:
-      return <MidCombatRoleplayContainer node={node}/>;
     case CombatPhase.midCombatDecision:
     case CombatPhase.midCombatDecisionTimer:
-      return renderCardTemplate({...card, phase: node.ctx.templates.decision.phase}, node, settings);
+      return renderDecisionTemplate(node);
     default:
-      throw new Error('Unknown template for card phase ' + card.phase);
+      throw new Error('Unknown combat phase ' + cp);
   }
 }
 
-export function getCardTemplateTheme(card: CardState): CardThemeType {
-  switch (card.phase || 'ROLEPLAY') {
-    case CombatPhase.drawEnemies:
-    case CombatPhase.prepare:
-    case CombatPhase.timer:
-    case CombatPhase.surge:
-    case CombatPhase.resolveAbilities:
-    case CombatPhase.resolveDamage:
-    case CombatPhase.victory:
-    case CombatPhase.defeat:
-    case CombatPhase.midCombatRoleplay:
-    case CombatPhase.midCombatDecision:
-    case CombatPhase.midCombatDecisionTimer:
-      return 'dark';
-    case 'ROLEPLAY':
-    case DecisionPhase.prepare:
-    case DecisionPhase.timer:
-    case DecisionPhase.resolve:
-    default:
-      return 'light';
+function renderRoleplayTemplate(node: ParserNode): JSX.Element {
+  if (node.ctx.templates.combat.phase === CombatPhase.midCombatRoleplay) {
+    return <MidCombatRoleplayContainer node={node}/>;
+  } else {
+    return <RoleplayContainer node={node}/>;
   }
+}
+
+export function renderCardTemplate(node: ParserNode, settings: SettingsType): JSX.Element {
+  const tag = node.getTag();
+  switch (tag) {
+    case 'roleplay':
+      return renderRoleplayTemplate(node);
+    case 'combat':
+      return renderCombatTemplate(node, settings);
+    case 'decision':
+      return renderDecisionTemplate(node);
+    default:
+      throw new Error('Unknown tag ' + tag);
+  }
+}
+
+export function getCardTemplateTheme(node: ParserNode): CardThemeType {
+  if (node.inCombat()) {
+    return 'dark';
+  }
+  return 'light';
 }
 
 export function templateScope() {

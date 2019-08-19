@@ -69,7 +69,7 @@ export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<St
     players: numPlayers(state.settings, state.multiplayer),
     settings: state.settings,
     seed: (node && node.ctx.seed) || '',
-    theme: getCardTemplateTheme(state.card),
+    theme: getCardTemplateTheme(state.quest.node),
     multiplayer: state.multiplayer,
   };
 }

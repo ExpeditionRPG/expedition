@@ -167,7 +167,6 @@ export function getUserBadges(): TReduxThunk<Promise<any>> {
   return (dispatch) => {
     return fetchUserBadges()
     .then((badges: Badge[]) => {
-      console.log(badges);
       return dispatch({type: 'USER_BADGES', badges});
     })
     .catch(() => dispatch({type: 'USER_BADGES', badges: []}));

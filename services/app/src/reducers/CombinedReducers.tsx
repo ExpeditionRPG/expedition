@@ -1,12 +1,11 @@
 import Redux from 'redux';
-import {ReturnAction} from '../actions/ActionTypes';
-import {getHistoryApi, getNavigator} from '../Globals';
 import {audio} from './Audio';
 import {audioData} from './AudioData';
 import {card} from './Card';
 import {checkout} from './Checkout';
 import {commitID} from './CommitID';
 import {dialog} from './Dialog';
+import {history} from './History';
 import {multiplayer} from './Multiplayer';
 import {quest} from './Quest';
 import {saved} from './Saved';
@@ -14,12 +13,18 @@ import {search} from './Search';
 import {serverstatus} from './ServerStatus';
 import {settings} from './Settings';
 import {snackbar} from './Snackbar';
-import {AppState, AppStateBase, AppStateWithHistory} from './StateTypes';
+import {AppStateWithHistory} from './StateTypes';
 import {user} from './User';
 import {userquests} from './UserQuests';
 
-function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppState {
+export default function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
   state = state || ({} as AppStateWithHistory);
+
+  // Run global reducers
+  state = commitID(state, action, combinedReduce);
+  state = history(state, action);
+
+  // Run the reducers on the new action
   return {
     audio: audio(state.audio, action),
     audioData: audioData(state.audioData, action),
@@ -36,126 +41,10 @@ function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppSt
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
     userQuests: userquests(state.userQuests, action),
-  };
-}
 
-function isReturnState(state: AppStateBase, action: ReturnAction): boolean {
-  const matchesName = state.card.name === action.to.name;
-  const matchesPhase = (action.to.phase && state.card && action.to.phase === state.card.phase);
-  return (matchesName && (!action.to.phase || matchesPhase)) || false;
-}
-
-export default function combinedReducerWithHistory(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
-  let stateHistory: AppStateBase[] = [];
-
-  // Manage CommitID transactions
-  state = commitID(state, action, combinedReduce);
-
-  if (state !== undefined) {
-    if (state._history === undefined) {
-      state._history = [];
-    }
-
-    // TODO: Convert history into a separate reducer.
-    // If action is "Return", pop history accordingly
-    if (action.type === 'RETURN') {
-      // Backing all the way out of the Android app should kill it
-      if (state._history.length === 0) {
-        const navigator = getNavigator();
-        if (navigator.app) {
-            navigator.app.exitApp();
-        } else if (navigator.device) {
-            navigator.device.exitApp();
-        }
-        return state;
-      }
-
-      let pastStateIdx: number = state._history.length - 1;
-      const returnAction = action as ReturnAction;
-      if (returnAction.to && (returnAction.to.name || returnAction.to.phase)) {
-        while (pastStateIdx > 0 && !isReturnState(state._history[pastStateIdx], returnAction)) {
-          pastStateIdx--;
-        }
-      } else if (returnAction.skip) {
-        // Skip past any explicitly blacklisted card types
-        while (pastStateIdx > 0) {
-          let skipCard: boolean = false;
-          for (const s of returnAction.skip) {
-            if (s.name === state._history[pastStateIdx].card.name && (!s.phase || s.phase === state._history[pastStateIdx].card.phase)) {
-              skipCard = true;
-              break;
-            }
-          }
-          if (!skipCard) {
-            break;
-          }
-          pastStateIdx--;
-        }
-      }
-
-      if (returnAction.before) {
-        pastStateIdx--;
-      }
-
-      // If we're going back to a point where the quest is no longer defined, clear the URL hash
-      if (pastStateIdx === 0 ||
-         (state._history[pastStateIdx - 1] && state._history[pastStateIdx - 1].quest && state._history[pastStateIdx - 1].quest.details.id === '')) {
-        getHistoryApi().pushState(null, '', '#');
-      }
-
-      return {
-        ...state._history[pastStateIdx],
-        _committed: state._committed,
-        _history: state._history.slice(0, pastStateIdx),
-        _return: true,
-        // things that should persist / not be rewound:
-        audioData: state.audioData,
-        commitID: state.commitID,
-        multiplayer: state.multiplayer,
-        saved: state.saved,
-        search: state.search,
-        serverstatus: state.serverstatus,
-        settings: state.settings,
-        user: state.user,
-        snackbar: state.snackbar,
-        userQuests: state.userQuests,
-      } as AppStateWithHistory;
-    } else if (action.type === 'CLEAR_HISTORY') {
-      return {
-        ...state,
-        _history: [],
-      };
-    }
-
-    // Create a new array (objects may be shared)
-    stateHistory = state._history.slice();
-
-    if (action.type === 'PUSH_HISTORY') {
-      // Save a copy of existing state to _history, excluding non-historical fields.
-      stateHistory.push({
-        ...state,
-        _committed: undefined,
-        _history: undefined,
-        _return: undefined,
-        audioData: undefined,
-        commitID: undefined,
-        multiplayer: undefined,
-        saved: undefined,
-        search: undefined,
-        serverstatus: undefined,
-        settings: undefined,
-        user: undefined,
-        snackbar: undefined,
-        userQuests: undefined,
-      } as AppStateBase);
-    }
-  }
-
-  // Run the reducers on the new action
-  return {
-    ...combinedReduce(state, action),
+    // These attributes are handled by the global reducers; persist them.
+    _history: (state && state._history),
+    _return: (state && state._return),
     _committed: (state && state._committed),
-    _history: stateHistory,
-    _return: false,
   } as AppStateWithHistory;
 }

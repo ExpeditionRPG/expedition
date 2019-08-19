@@ -1,7 +1,7 @@
 import {toPrevious} from 'app/actions/Card';
 import {choice} from 'app/actions/Quest';
 import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, CardName, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(choice({node, index}));
     },
     onRetry: () => {
-      dispatch(toPrevious({name: 'QUEST_CARD', phase: CombatPhase.drawEnemies, before: true}));
+      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase === CombatPhase.drawEnemies, before: true}));
     },
   };
 };

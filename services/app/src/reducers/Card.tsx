@@ -8,7 +8,6 @@ import {CardName, CardState} from './StateTypes';
 export const initialCardState: CardState = {
   key: '',
   name: 'SPLASH_CARD' as CardName,
-  phase: null,
   questId: '',
   ts: 0,
 };
