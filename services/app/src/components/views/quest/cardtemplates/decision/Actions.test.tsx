@@ -262,7 +262,6 @@ describe('Decision actions', () => {
   describe('toDecisionCard', () => {
     test('goes to MID_COMBAT_DECISION if in combat', () => {
       const actions = Action(toDecisionCard, {card: {phase: CombatPhase.midCombatDecision}}).execute({node: TEST_NODE_COMBAT});
-      console.log(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat);
       expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
     });
     test('does pass-thru to toCard if not in combat', () => {
