@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import Redux from 'redux';
 import {Quest} from 'shared/schema/Quests';
 import {SavedQuestSelectAction} from '../../actions/ActionTypes';
-import {toCard, toPrevious} from '../../actions/Card';
+import {toPrevious} from '../../actions/Card';
 import {setDialog} from '../../actions/Dialog';
 import {deleteSavedQuest, loadSavedQuest, saveQuestForOffline} from '../../actions/SavedQuests';
 import {openSnackbar} from '../../actions/Snackbar';
@@ -36,7 +36,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onPlaySaved(id: string, ts: number): void {
       dispatch(loadSavedQuest(id, ts));
-      dispatch(toCard({name: 'QUEST_CARD'}));
     },
     onSave(quest: Quest) {
       dispatch(saveQuestForOffline(quest));

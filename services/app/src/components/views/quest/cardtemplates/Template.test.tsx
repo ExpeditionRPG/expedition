@@ -1,6 +1,7 @@
 import {defaultContext} from './Template';
 import {initialSettings} from 'app/reducers/Settings';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
+import {evaluateOp} from 'shared/parse/Context';
 
 describe('CardTemplates template', () => {
   describe('updateContext', () => {
@@ -25,11 +26,11 @@ describe('CardTemplates template', () => {
     test('viewCount gets the view count for a node id', () => {
       const ctx = defaultContext(() => return {});
       ctx.views['a'] = 5;
-      expect(ctx.scope._.viewCount('a')).toEqual(5);
+      expect(evaluateOp('_.viewCount("a")', ctx)).toEqual(5);
     });
     test ('viewCount handles unviewed nodes', () => {
       const ctx = defaultContext(() => return {});
-      expect(ctx.scope._.viewCount('a')).toEqual(0);
+      expect(evaluateOp('_.viewCount("a")', ctx)).toEqual(0);
     });
   });
 });

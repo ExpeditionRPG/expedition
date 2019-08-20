@@ -37,39 +37,28 @@ export interface Context {
   // context given this path.
   path: Array<string|number>;
 
-  // Regenerate template scope (all of "_") with this function.
-  _templateScopeFn: () => any;
-
   // Optional contextual arg to seed the random number generator.
   seed?: string;
 }
 
-export function defaultContext(): Context {
-  const populateScopeFn = () => {
-    return {
-      viewCount(id: string): number {
-        return this.views[id] || 0;
-      },
-    };
-  };
-
+export function defaultContext(populateScope: (() => any) = (() => ({}))): Context {
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: Context = {
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
     path: ([] as any),
     scope: {
-      _: populateScopeFn(),
+      // Lodash functions are UNBOUND - binding to the context is done dynamically
+      // within evaluateOp so that we don't have to keep track of unbound copies
+      // of the functions elsewhere.
+      //
+      // Do not rely on calling these methods directly, as they will not return
+      // the correct values.
+      _: populateScope(),
     },
     seed: generateSeed(),
     views: {},
   };
-
-  for (const k of Object.keys(newContext.scope._)) {
-    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
-  }
-
   return newContext;
 }
 
@@ -89,7 +78,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
   for (const m of matches) {
     const op = parseOpString(m);
     if (op) {
-      const evalResult = evaluateOp(op, ctx.scope, rng);
+      const evalResult = evaluateOp(op, ctx, rng);
       if (evalResult || evalResult === 0) {
         result += evalResult;
       }
@@ -104,7 +93,7 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, scope: any, rng: () => number = Math.random): any {
+export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.random): any {
   let parsed;
   let evalResult;
 
@@ -125,9 +114,17 @@ export function evaluateOp(op: string, scope: any, rng: () => number = Math.rand
     pickRandom(a: {_data: any[]}) { return a._data[Math.floor(random(a._data.length))]; },
   }, {override: true});
 
+  // Bind all scope functions, keeping a copy of the originals.
+  // Note that .bind() returns a new (bound) function
+  // that cannot be re-bound.
+  const origLodash: any = ctx.scope._;
+  for (const k of Object.keys(ctx.scope._)) {
+    ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
+  }
+
   try {
     parsed = MathJS.parse(HtmlDecode(op));
-    evalResult = parsed.compile().eval(scope);
+    evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
     const message = err.message + ' Op: (' + op + ')';
     if (self && self.document && window && window.onerror) {
@@ -136,6 +133,13 @@ export function evaluateOp(op: string, scope: any, rng: () => number = Math.rand
     } else {
       throw new Error(message);
     }
+  } finally {
+    // Replace bound scope functions with originals.
+    ctx.scope._ = origLodash;
+  }
+
+  if (evalResult === undefined) {
+    return null;
   }
 
   // Only return the result IF it doesn't assign a value as its last action.
@@ -193,12 +197,6 @@ export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?:
   }
   if (action !== undefined && action !== null) {
     newContext.path.push(action);
-  }
-
-  // Create new copies of all scope functions and bind them
-  newContext.scope._ = newContext._templateScopeFn();
-  for (const k of Object.keys(newContext.scope._)) {
-    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
   }
 
   // Update random seed (using the previous seed)

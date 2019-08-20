@@ -279,20 +279,14 @@ describe('Node', () => {
       )).toEqual(['<p>5</p>', '<p>7</p>']);
     });
 
-    test('increments scope._.views.<id>', () => {
+    test('increments views.<id>', () => {
       const ctx = defaultContext();
       let result = new Node(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), ctx);
       expect(result.ctx.views).toEqual({foo: 1});
-      expect(result.ctx.scope._.viewCount('foo')).toEqual(1);
-      expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
       result = new Node(cheerio.load('<roleplay id="foo"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
       expect(result.ctx.views).toEqual({foo: 2});
-      expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
-      expect(result.ctx.scope._.viewCount('bar')).toEqual(0);
       result = new Node(cheerio.load('<roleplay id="bar"><p>[roll]</p></roleplay>')('roleplay'), result.ctx);
       expect(result.ctx.views).toEqual({foo: 2, bar: 1});
-      expect(result.ctx.scope._.viewCount('foo')).toEqual(2);
-      expect(result.ctx.scope._.viewCount('bar')).toEqual(1);
     });
 
     test('renders deterministically when a seed is given', () => {

@@ -43,6 +43,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
+    node: state.quest.node,
     adventurers: numAdventurers(state.settings, state.multiplayer),
     combat: node.ctx.templates.combat,
     maxTier,

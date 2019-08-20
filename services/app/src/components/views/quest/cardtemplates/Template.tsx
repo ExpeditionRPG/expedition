@@ -119,39 +119,34 @@ export function getCardTemplateTheme(node: ParserNode): CardThemeType {
   return 'light';
 }
 
-export function templateScope() {
-  return combatScope();
+export function populateScope(getState: (() => AppStateWithHistory) = getStore().getState) {
+  return {
+    contentSets(): {[content: string]: boolean} {
+      const {settings, multiplayer} = getState();
+      const result: any = {};
+      for (const cs of [...getContentSets(settings, multiplayer)]) {
+        result[cs] = true;
+      }
+      return result;
+    },
+    numAdventurers(): number {
+      return numAdventurers(getState().settings, getState().multiplayer);
+    },
+    viewCount(id: string): number {
+      return this.views[id] || 0;
+    },
+    ...combatScope(),
+  };
 }
 
 export function defaultContext(getState: (() => AppStateWithHistory) = getStore().getState): TemplateContext {
-  const populateScopeFn = () => {
-    return {
-      contentSets(): {[content: string]: boolean} {
-        const {settings, multiplayer} = getState();
-        const result: any = {};
-        for (const cs of [...getContentSets(settings, multiplayer)]) {
-          result[cs] = true;
-        }
-        return result;
-      },
-      numAdventurers(): number {
-        return numAdventurers(getState().settings, getState().multiplayer);
-      },
-      viewCount(id: string): number {
-        return this.views[id] || 0;
-      },
-      ...templateScope(),
-    };
-  };
-
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: TemplateContext = {
-    _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
     path: ([] as any),
     scope: {
-      _: populateScopeFn(),
+      _: populateScope(getState),
     },
     templates: {
       combat: EMPTY_COMBAT_STATE,
@@ -159,10 +154,6 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
     },
     views: {},
   };
-
-  for (const k of Object.keys(newContext.scope._)) {
-    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
-  }
 
   // Update random seed
   newContext.seed = generateSeed();

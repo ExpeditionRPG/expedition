@@ -275,7 +275,7 @@ export class Node<C extends Context> {
 
     try {
       // Operate on copied scope - checking for enablement should never change the current context.
-      const visible = evaluateOp(ifExpr, Clone(this.ctx.scope), this.rng);
+      const visible = evaluateOp(ifExpr, Clone(this.ctx), this.rng);
       // We check for truthiness here, so nonzero numbers are true, etc.
       return Boolean(visible);
     } catch (e) {
