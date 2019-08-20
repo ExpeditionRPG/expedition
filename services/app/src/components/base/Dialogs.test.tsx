@@ -107,6 +107,13 @@ describe('Dialogs', () => {
       e.find('#submitButton').hostNodes().prop('onClick')();
       expect(e.instance().onSubmitSpy).toHaveBeenCalledTimes(1);
     });
+    test('clears text on submission', () => {
+      const {e} = setup();
+      e.find('TextField').prop('onChange')({target: {value: 'asdf'}});
+      expect(e.find('TextField').render().text()).toContain("asdf");
+      e.find('#submitButton').hostNodes().prop('onClick')();
+      expect(e.find('TextField').render().text()).not.toContain("asdf");
+    });
     test('calls onClose on Cancel tap', () => {
       const {props, e} = setup();
       e.find('#cancelButton').hostNodes().prop('onClick')();

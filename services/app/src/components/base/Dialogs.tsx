@@ -225,6 +225,10 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
     throw new Error('Unimplemented');
   }
 
+  public clearText() {
+    this.setState({text: ''});
+  }
+
   public shouldComponentUpdate(nextProps: BaseDialogProps, nextState: {text: string}) {
     return nextProps.open !== this.props.open || nextState.text !== this.state.text;
   }
@@ -249,7 +253,7 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
         </DialogContent>
         <DialogActions>
           <Button id="cancelButton" onClick={() => this.props.onClose()}>Cancel</Button>
-          <Button id="submitButton" className="primary" onClick={() => this.onSubmit()}>{this.action || 'Submit'}</Button>
+          <Button id="submitButton" className="primary" onClick={() => {this.onSubmit(); this.clearText(); }}>{this.action || 'Submit'}</Button>
         </DialogActions>
       </Dialog>
     );
@@ -273,7 +277,6 @@ export class FeedbackDialog extends TextAreaDialog<FeedbackDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('feedback', this.props.quest, this.props.settings, this.props.user, this.state.text);
-    this.setState({text: ''});
   }
 }
 
@@ -290,7 +293,6 @@ export class ReportErrorDialog extends TextAreaDialog<ReportErrorDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('report_error', this.props.quest, this.props.settings, this.props.user, this.state.text + '... Error: ' + this.props.error);
-    this.setState({text: ''});
   }
 }
 
@@ -312,7 +314,6 @@ export class ExitQuestDialog extends TextAreaDialog<ExitDialogProps> {
 
   public onSubmit() {
     this.props.onExit(this.props.quest, this.props.settings, this.props.user, this.state.text);
-    this.setState({text: ''});
   }
 }
 
@@ -336,7 +337,6 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
 
   public onSubmit() {
     this.props.onFeedbackSubmit('report_quest', this.props.quest, this.props.settings, this.props.user, this.state.text);
-    this.setState({text: ''});
   }
 }
 
