@@ -239,12 +239,9 @@ export function recreateNodeFromContext(xml: string, line: number, ctx: Template
     throw new Error(`Could not load line ${line} from XML`);
   }
 
-  // Functions do not get serialized; we must recreate them and then bind them to the context.
+  // Functions do not get serialized; we must recreate them.
   ctx.scope._ = regenScope();
-  for (const k of Object.keys(ctx.scope._)) {
-    ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
-  }
-  console.log(ctx.scope._);
+
   return new ParserNode(elem, ctx, undefined, ctx.seed);
 }
 

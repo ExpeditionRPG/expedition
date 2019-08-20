@@ -120,7 +120,6 @@ export class Node<C extends Context> {
         }
       }) || null;
     }
-
     return (next) ? new (this.constructor as any)(next, this.ctx, key, nextSeed) : null;
   }
 
