@@ -37,7 +37,9 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     throw Error('Incomplete props given');
   }
 
-  // Include the "live" state node for tier and adventurer count
+  const stateCombat = state.quest.node.ctx.templates.combat;
+
+  // Override with dynamic state for tier and adventurer count
   // Any combat param change (e.g. change in tier) causes a repaint
   return {
     ...mapStateToPropsBase(state, ownProps),
@@ -46,6 +48,8 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     combat: node.ctx.templates.combat,
     maxTier,
     numAliveAdventurers: numAliveAdventurers(state.settings, node, state.multiplayer),
+    localAliveAdventurers: stateCombat.numAliveAdventurers,
+    tier: stateCombat.tier,
     contentSets: getContentSets(state.settings, state.multiplayer),
   };
 };

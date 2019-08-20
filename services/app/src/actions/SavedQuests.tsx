@@ -244,6 +244,7 @@ export function recreateNodeFromContext(xml: string, line: number, ctx: Template
   for (const k of Object.keys(ctx.scope._)) {
     ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
   }
+  console.log(ctx.scope._);
   return new ParserNode(elem, ctx, undefined, ctx.seed);
 }
 

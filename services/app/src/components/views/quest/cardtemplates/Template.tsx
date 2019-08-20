@@ -155,10 +155,6 @@ export function defaultContext(getState: (() => AppStateWithHistory) = getStore(
     views: {},
   };
 
-  for (const k of Object.keys(newContext.scope._)) {
-    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
-  }
-
   // Update random seed
   newContext.seed = generateSeed();
 

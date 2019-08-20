@@ -15,7 +15,9 @@ export interface StateProps extends StatePropsBase {
   combat: CombatState;
   maxTier: number;
   numAliveAdventurers: number;
+  localAliveAdventurers: number;
   seed: string;
+  tier: number;
   contentSets: Set<keyof ContentSetsType>;
 }
 
@@ -39,7 +41,7 @@ export default function playerTier(props: Props): JSX.Element {
   let helpText: JSX.Element = (<span></span>);
   const damage = (props.combat.mostRecentAttack) ? props.combat.mostRecentAttack.damage : -1;
   const theHorror = (props.contentSets.has(Expansion.horror) === true);
-  const injured = props.node.ctx.templates.combat.numAliveAdventurers < props.adventurers;
+  const injured = props.localAliveAdventurers < props.adventurers;
 
   if (props.settings.showHelp) {
     helpText = (
@@ -60,32 +62,32 @@ export default function playerTier(props: Props): JSX.Element {
       <Picker
         label="Tier Sum"
         id="tier_sum"
-        onDelta={(i: number) => props.onTierSumDelta(props.node, props.node.ctx.templates.combat.tier, i)}
-        value={props.node.ctx.templates.combat.tier}>
+        onDelta={(i: number) => props.onTierSumDelta(props.node, props.tier, i)}
+        value={props.tier}>
         {props.settings.showHelp && 'The total tier of remaining enemies.'}
       </Picker>
       <Picker
         label="Adventurers"
         id="adventurers"
-        onDelta={(i: number) => props.onAdventurerDelta(props.node, props.settings, props.node.ctx.templates.combat.numAliveAdventurers, i)}
-        value={props.node.ctx.templates.combat.numAliveAdventurers}>
-        {props.settings.showHelp && (props.numAliveAdventurers === props.node.ctx.templates.combat.numAliveAdventurers)
+        onDelta={(i: number) => props.onAdventurerDelta(props.node, props.settings, props.localAliveAdventurers, i)}
+        value={props.localAliveAdventurers}>
+        {props.settings.showHelp && (props.numAliveAdventurers === props.localAliveAdventurers)
           ? <span>The number of adventurers &gt; 0 health.</span>
           : <span>Local adventurers &gt; 0 health.<br/>({props.numAliveAdventurers} across all devices)</span>
         }
       </Picker>
       {helpText}
       <Button
-        className={(props.numAliveAdventurers === 0 || props.node.ctx.templates.combat.tier === 0) ? 'subtle' : ''}
-        disabled={props.numAliveAdventurers <= 0 || props.node.ctx.templates.combat.tier <= 0}
+        className={(props.numAliveAdventurers === 0 || props.tier === 0) ? 'subtle' : ''}
+        disabled={props.numAliveAdventurers <= 0 || props.tier <= 0}
         onClick={() => (shouldRunDecision) ? props.onDecisionSetup(props.node, props.seed) : props.onNext(props.node, CombatPhase.prepare)}>Next</Button>
       <Button
-        className={(props.node.ctx.templates.combat.tier !== 0) ? 'subtle' : ''}
-        disabled={props.numAliveAdventurers <= 0 && props.node.ctx.templates.combat.tier > 0}
+        className={(props.tier !== 0) ? 'subtle' : ''}
+        disabled={props.numAliveAdventurers <= 0 && props.tier > 0}
         onClick={() => props.onVictory(props.node, props.settings, props.maxTier, props.seed)}>Victory (Tier = 0)</Button>
       <Button
         className={(props.numAliveAdventurers !== 0) ? 'subtle' : ''}
-        disabled={props.node.ctx.templates.combat.tier <= 0}
+        disabled={props.tier <= 0}
         onClick={() => props.onDefeat(props.node, props.settings, props.maxTier, props.seed)}>Defeat (Adventurers = 0)</Button>
     </Card>
   );
