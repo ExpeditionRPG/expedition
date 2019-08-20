@@ -184,7 +184,7 @@ describe('Combat actions', () => {
       expect(actions[2].node.ctx.templates.combat.mostRecentAttack.damage).toBeDefined();
       checkNodeIntegrity(startNode, actions[2].node);
     });
-    test.only('random damage changes significantly between rounds', () => {
+    test('random damage changes significantly between rounds', () => {
       const startNode = newCombatNode(TEST_NODE_EASIER); // Caution: this resets the multiplayer connection
       startNode.ctx.templates.combat.seed = "abc";
       const conn = fakeConnection();
