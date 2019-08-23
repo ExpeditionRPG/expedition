@@ -1,8 +1,23 @@
 // Wrappers that simulate degraded network performance, bugs in code, and fuzzed packets
 import * as WebSocket from 'ws';
 import Config from '../config';
-import {Database} from '../models/Database';
-import {commitEvent, getLargestEventID} from '../models/multiplayer/Events';
+import { Database } from '../models/Database';
+import { commitEvent, getLargestEventID } from '../models/multiplayer/Events';
+
+const LOGPRE = '>>>>> CHAOS: ';
+const CHAOS_FRACTION_FIELD = 'CHAOS_FRACTION';
+const CHAOS_FIELD = 'CHAOS';
+enum ChaosParam {
+  replay = 'CHAOS_REPLAY',
+  close = 'CHAOS_CLOSE_SOCKET',
+  fuzz = 'CHAOS_FUZZ_SOCKET',
+  inject = 'CHAOS_INJECT_DB',
+  drop = 'CHAOS_DROP_MESSAGE',
+  delay = 'CHAOS_DELAY_MESSAGE',
+}
+function enabled(p: ChaosParam): boolean {
+  return (Config.get(CHAOS_FIELD) || []).indexOf(p) !== -1;
+}
 
 const CHAOS_FUZZ_LENGTH = 80;
 const CHAOS_REPLAY_BUF_LENGTH = 10;
@@ -20,8 +35,6 @@ function fuzzMessage(): string {
 }
 
 export function chaosWS(ws: WebSocket): WebSocket {
-  console.log('CHAOS: wrapping websocket');
-
   const oldMessageBuf: string[] = [];
   const oldSend = ws.send.bind(ws);
 
@@ -34,100 +47,115 @@ export function chaosWS(ws: WebSocket): WebSocket {
       oldMessageBuf.shift();
     }
 
-    if (Math.random() <= (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
+    if (Math.random() <= (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)) {
       oldSend(s, errCallback);
       return;
     }
 
-    if (Math.random() < 0.4) {
+    if (enabled(ChaosParam.drop) && Math.random() < 0.4) {
       // Randomly drop outbound messages
-      console.log('CHAOS: dropping outbound message ' + s.substr(0, 128));
+      console.warn(LOGPRE + 'dropping outbound message ' + s.substr(0, 128));
       return;
-    } else {
+    } else if (enabled(ChaosParam.delay)) {
       // Randomly delay outbound messages
       const delay = Math.floor(CHAOS_MAX_DELAY * Math.random());
-      console.log('CHAOS: delaying outbound message by ' + delay + 'ms');
-      setTimeout(() => {oldSend(s, errCallback); }, delay);
+      console.warn(LOGPRE + 'delaying outbound message by ' + delay + 'ms');
+      setTimeout(() => {
+        oldSend(s, errCallback);
+      }, delay);
     }
   };
 
   const chaosInterval = setInterval(() => {
     if (ws.readyState !== WebSocket.OPEN) {
-      console.log('CHAOS: stopping interval');
+      console.warn(LOGPRE + 'stopping interval');
       clearInterval(chaosInterval);
       return;
     }
 
-    if (Math.random() >= (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
+    if (Math.random() >= (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)) {
       return;
     }
 
     const r = Math.random();
-    if (r < 0.05) {
-      console.log('CHAOS: closing socket!');
+    if (enabled(ChaosParam.close) && r < 0.05) {
+      console.log(LOGPRE + 'closing socket!');
       ws.close();
-    } else if (r < 0.5) {
+    } else if (enabled(ChaosParam.fuzz) && r < 0.5) {
       // Send fuzz to server
       const fuzzmsg = fuzzMessage();
-      console.log('CHAOS: fuzzing ws message to server: ' + fuzzmsg);
-
+      console.warn(LOGPRE + 'fuzzing ws message to server: ' + fuzzmsg);
       (ws as any)._receiver.onmessage(fuzzmsg); // {data: fuzzmsg, type: 'test', target: ws});
-
-    } else if (oldMessageBuf.length > 0) {
+    } else if (enabled(ChaosParam.replay) && oldMessageBuf.length > 0) {
       // Send replay to client
-      const replaymsg = oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
-      console.log('CHAOS: replaying msg to client: ' + replaymsg.substr(0, 128));
-      oldSend(replaymsg, (e: Error) => {console.error(e); });
+      const replaymsg =
+        oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
+      console.warn(
+        LOGPRE + 'replaying msg to client: ' + replaymsg.substr(0, 128),
+      );
+      oldSend(replaymsg, (e: Error) => {
+        console.error(e);
+      });
     }
   }, CHAOS_INTERVAL);
   return ws;
 }
 
-export function chaosDB(db: Database, session: number, ws: WebSocket): Database {
-  console.log('CHAOS: setting up chaos Database');
-
+export function chaosDB(
+  db: Database,
+  session: number,
+  ws: WebSocket,
+): Database {
   // Randomly injects events (results in conflicts in commitEvent)
   const chaosInterval = setInterval(() => {
     if (ws.readyState !== WebSocket.OPEN) {
-      console.log('CHAOS: stopping interval');
+      console.log(LOGPRE + 'stopping interval');
       clearInterval(chaosInterval);
       return;
     }
 
-    if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
-      console.log('CHAOS: injecting an id\'d event');
-      getLargestEventID(db, session).then((latestID) => {
-        commitEvent(db, session, 'chaos', 'chaos', latestID + 1, 'CHAOS', JSON.stringify({id: latestID + 1, event: {type: 'chaos!'}}));
+    if (
+      enabled(ChaosParam.inject) &&
+      Math.random() < (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)
+    ) {
+      console.log(LOGPRE + "injecting an id'd event");
+      getLargestEventID(db, session).then(latestID => {
+        commitEvent(
+          db,
+          session,
+          'chaos',
+          'chaos',
+          latestID + 1,
+          'CHAOS',
+          JSON.stringify({ id: latestID + 1, event: { type: 'chaos!' } }),
+        );
       });
     }
   }, CHAOS_INTERVAL);
-
-  /*
-  console.log('CHAOS: wrapping SessionClientModel');
-
-  // Randomly fail to verify user membership in a session
-  const oldVerify = sc.verify.bind(sc);
-  sc.verify = (session: number, client: string, secret: string) => {
-    if (Math.random() < (parseFloat(Config.get('CHAOS_FRACTION')) || 0)) {
-      console.log('CHAOS: failing session client check');
-      return Bluebird.resolve(false);
-    }
-    return oldVerify(session, client, secret);
-  }
-  */
-
   return db;
 }
 
 export function maybeChaosWS(ws: WebSocket): WebSocket {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get(CHAOS_FIELD)) {
+    console.warn(' ================== WARNING ================== ');
+    console.warn('            WEBSOCKET CHAOS ENABLED            ');
+    console.warn(Config.get(CHAOS_FIELD));
+    console.warn(' ============================================= ');
     return chaosWS(ws);
   }
   return ws;
 }
 
-export function maybeChaosDB(db: Database, session: number, ws: WebSocket): Database {
-  if (Config.get('NODE_ENV') !== 'production' && Config.get('MULTIPLAYER_CHAOS') === 'true') {
+export function maybeChaosDB(
+  db: Database,
+  session: number,
+  ws: WebSocket,
+): Database {
+  if (Config.get('NODE_ENV') !== 'production' && Config.get(CHAOS_FIELD)) {
+    console.warn(' ================== WARNING ================== ');
+    console.warn('            DATABASE CHAOS ENABLED             ');
+    console.warn(Config.get(CHAOS_FIELD));
+    console.warn(' ============================================= ');
     return chaosDB(db, session, ws);
   }
   return db;
