@@ -225,6 +225,10 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
     throw new Error('Unimplemented');
   }
 
+  public clearText() {
+    this.setState({text: ''});
+  }
+
   public shouldComponentUpdate(nextProps: BaseDialogProps, nextState: {text: string}) {
     return nextProps.open !== this.props.open || nextState.text !== this.state.text;
   }
@@ -249,7 +253,7 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T
         </DialogContent>
         <DialogActions>
           <Button id="cancelButton" onClick={() => this.props.onClose()}>Cancel</Button>
-          <Button id="submitButton" className="primary" onClick={() => this.onSubmit()}>{this.action || 'Submit'}</Button>
+          <Button id="submitButton" className="primary" onClick={() => {this.onSubmit(); this.clearText(); }}>{this.action || 'Submit'}</Button>
         </DialogActions>
       </Dialog>
     );
