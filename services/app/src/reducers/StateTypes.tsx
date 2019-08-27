@@ -79,6 +79,7 @@ export interface SearchParams {
   partition?: Partition;
   expansions?: Expansion[];
   language?: Language;
+  showCommunity?: boolean;
   showPrivate: boolean;
 }
 

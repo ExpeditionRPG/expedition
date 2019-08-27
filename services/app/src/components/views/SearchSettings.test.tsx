@@ -31,7 +31,7 @@ describe('SearchSettings', () => {
       return 'ExpansionCheckbox';
     }
 
-    if(k === 'showPrivate') {
+    if(k === 'showPrivate' || k === 'showCommunity') {
       return `Checkbox#${k}`;
     }
 

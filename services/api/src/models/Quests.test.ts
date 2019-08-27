@@ -233,6 +233,25 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
+    test('returns only official quests when showCommunity is set to false', done => {
+      testingDBWithState(quests)
+        .then(tdb => {
+          return searchQuests(tdb, q.basic.userid, {
+            partition: Partition.expeditionPublic,
+            showCommunity: false,
+          });
+        })
+        .then(results => {
+          for (const r of results) {
+            expect(r.dataValues).toEqual(
+              jasmine.objectContaining({ official: true }),
+            );
+          }
+          done();
+        })
+        .catch(done.fail);
+    });
+
     test('returns only private quests belonging to provided user', done => {
       testingDBWithState(quests)
         .then(tdb => {

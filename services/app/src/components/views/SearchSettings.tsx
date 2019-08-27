@@ -46,11 +46,12 @@ export class SearchSettings extends React.Component<Props, {}> {
     }
   }
 
-  public handleCheckbox(v: boolean) {
+  // Separate from onChange b/c input from first checkbox interaction is incorrectly null
+  public onCheckboxChange(attrib: string, v: boolean) {
     if (v === false) {
-      this.onChange('showPrivate', false);
+      this.onChange(attrib, false);
     } else {
-      this.onChange('showPrivate', true);
+      this.onChange(attrib, true);
     }
   }
 
@@ -191,14 +192,24 @@ export class SearchSettings extends React.Component<Props, {}> {
               <option value="false">No</option>
             </NativeSelect>
           </FormControl>
-          <FormControl fullWidth={true} className="showPrivateControl">
+          <FormControl className="showCommunityControl checkbox halfLeft">
+            <FormControlLabel control={
+              <Checkbox
+                id="showCommunity"
+                checked={this.props.params.showCommunity === true ? true : false}
+                onChange={(_, v: boolean) => this.onCheckboxChange('showCommunity', v)}
+              />
+            } label={'Show community-written quests'}></FormControlLabel>
+          </FormControl>
+          <FormControl className="showPrivateControl checkbox halfRight">
             <FormControlLabel control={
               <Checkbox
                 id="showPrivate"
-                checked={this.props.params.showPrivate === true ? true : false}
-                onChange={(_, v: boolean) => { this.handleCheckbox(v); }}
+                checked={this.props.params.showCommunity && this.props.params.showPrivate === true ? true : false}
+                onChange={(_, v: boolean) => this.onCheckboxChange('showPrivate', v)}
+                disabled={!this.props.params.showCommunity}
               />
-            } label={'Also show my private quests'}></FormControlLabel>
+            } label={'Show my private quests'}></FormControlLabel>
           </FormControl>
           {rating && <div className="ratingDescription">
             <span>"{this.props.params.contentrating}" rating means: {rating.summary}</span>
