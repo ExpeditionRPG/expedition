@@ -192,22 +192,22 @@ export class SearchSettings extends React.Component<Props, {}> {
               <option value="false">No</option>
             </NativeSelect>
           </FormControl>
-          <FormControl className="showCommunityControl checkbox halfLeft">
+          <FormControl className="showOfficialControl checkbox halfLeft">
             <FormControlLabel control={
               <Checkbox
-                id="showCommunity"
-                checked={this.props.params.showCommunity === true ? true : false}
-                onChange={(_, v: boolean) => this.onCheckboxChange('showCommunity', v)}
+                id="showOfficial"
+                checked={this.props.params.showOfficial === true ? true : false}
+                onChange={(_, v: boolean) => this.onCheckboxChange('showOfficial', v)}
               />
-            } label={'Show community-written quests'}></FormControlLabel>
+            } label={'Only show official quests'}></FormControlLabel>
           </FormControl>
           <FormControl className="showPrivateControl checkbox halfRight">
             <FormControlLabel control={
               <Checkbox
                 id="showPrivate"
-                checked={this.props.params.showCommunity && this.props.params.showPrivate === true ? true : false}
+                checked={!this.props.params.showOfficial && this.props.params.showPrivate === true ? true : false}
                 onChange={(_, v: boolean) => this.onCheckboxChange('showPrivate', v)}
-                disabled={!this.props.params.showCommunity}
+                disabled={this.props.params.showOfficial}
               />
             } label={'Show my private quests'}></FormControlLabel>
           </FormControl>

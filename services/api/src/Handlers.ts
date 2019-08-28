@@ -209,7 +209,7 @@ export function search(
     requirespenpaper: body.requirespenpaper,
     text: body.text,
     showPrivate: body.showPrivate,
-    showCommunity: body.showCommunity,
+    showOfficial: body.showOfficial,
   };
 
   return doSearch(db, res.locals.id, params).then(result => {

@@ -55,7 +55,7 @@ function loadMetadataFromPublished(fileId: string): Promise<QuestType> {
       body: JSON.stringify({
         id: fileId,
         showPrivate: true,
-        showCommunity: true,
+        showOfficial: true,
       }),
   }).then((response) => {
     if (!response.ok) {

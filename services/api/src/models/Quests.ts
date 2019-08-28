@@ -33,7 +33,7 @@ export interface QuestSearchParams {
   requirespenpaper?: boolean | null;
   text?: string | null;
   showPrivate?: boolean | null;
-  showCommunity?: boolean | null;
+  showOfficial?: boolean | null;
 }
 
 export function getQuest(
@@ -74,7 +74,7 @@ export function searchQuests(
     where.partition = params.partition || Partition.expeditionPublic;
   }
 
-  if (params.showCommunity === false) {
+  if (params.showOfficial === true) {
     where.official = true;
   }
 

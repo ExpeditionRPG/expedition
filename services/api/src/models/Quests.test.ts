@@ -233,12 +233,12 @@ describe('quest', () => {
         .catch(done.fail);
     });
 
-    test('returns only official quests when showCommunity is set to false', done => {
+    test('returns only official quests when showOfficial is set to true', done => {
       testingDBWithState(quests)
         .then(tdb => {
           return searchQuests(tdb, q.basic.userid, {
             partition: Partition.expeditionPublic,
-            showCommunity: false,
+            showOfficial: true,
           });
         })
         .then(results => {
