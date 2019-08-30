@@ -53,7 +53,9 @@ class ExpansionCheckbox extends React.Component<Props, {}> {
   }
 
   public render() {
-    const expansions: ExpansionCheck[] = enumValues(Expansion).map((cs: Expansion) => {
+    const expansions: ExpansionCheck[] = enumValues(Expansion).filter((cs: Expansion) => {
+      return cs !== 'base';
+    }).map((cs: Expansion) => {
       return {
         value: cs,
         checked: (this.props.value.indexOf(cs) !== -1),
