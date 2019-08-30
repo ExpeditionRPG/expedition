@@ -39,10 +39,11 @@ export class SearchSettings extends React.Component<Props, {}> {
     // Have to use 'null' string instead of raw undefined
     // as select value, otherwise HTML auto-populates the value as the display
     // string, which breaks the API (i.e. passing "Any length" instead no value)
+    // For values cast to a Number, 'null' -> NaN
     for (const key in delta) {
       if (delta.hasOwnProperty(key)) {
         const value = delta[key];
-        if (value === 'null' || value === NaN) {
+        if (value === 'null' || Number.isNaN(value)) {
           this.props.onChangeParams({[key]: undefined});
         } else {
           this.props.onChangeParams({[key]: value});
