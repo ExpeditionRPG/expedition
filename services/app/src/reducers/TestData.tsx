@@ -80,4 +80,5 @@ export const TEST_SEARCH: SearchParams = {
   text: 'Test Text',
   expansions: [],
   showPrivate: true,
+  showOfficial: true,
 };

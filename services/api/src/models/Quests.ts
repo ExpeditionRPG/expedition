@@ -33,6 +33,7 @@ export interface QuestSearchParams {
   requirespenpaper?: boolean | null;
   text?: string | null;
   showPrivate?: boolean | null;
+  showOfficial?: boolean | null;
 }
 
 export function getQuest(
@@ -71,6 +72,10 @@ export function searchQuests(
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
   } else {
     where.partition = params.partition || Partition.expeditionPublic;
+  }
+
+  if (params.showOfficial === true) {
+    where.official = true;
   }
 
   if (params.id) {
@@ -190,9 +195,7 @@ function mailNewQuestToAdmin(mail: MailService, quest: Quest) {
   // If this is a newly published quest, email us!
   // We don't care if this fails.
   const to = ['team+newquest@fabricate.io'];
-  const subject = `Please review! New quest published: ${quest.title} (${
-    quest.partition
-  }, ${quest.language})`;
+  const subject = `Please review! New quest published: ${quest.title} (${quest.partition}, ${quest.language})`;
   const message = `Summary: ${quest.summary}.\n
     By ${quest.author} (${quest.email}),
     for ${quest.minplayers} - ${quest.maxplayers} players
@@ -269,9 +272,7 @@ export function publishQuest(
       const updateValues: Partial<Quest> = {
         ...quest.withoutDefaults(),
         published: new Date(),
-        publishedurl: `http://quests.expeditiongame.com/raw/${
-          quest.partition
-        }/${quest.id}/${quest.questversion}`,
+        publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         questversion:
           (instance.get('questversion') || quest.questversion || 0) + 1,
         tombstone: null as any, // Remove tombstone; need null instead of undefined to trigger Sequelize update override

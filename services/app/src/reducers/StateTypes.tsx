@@ -79,7 +79,8 @@ export interface SearchParams {
   partition?: Partition;
   expansions?: Expansion[];
   language?: Language;
-  showPrivate: boolean;
+  showOfficial?: boolean;
+  showPrivate?: boolean;
 }
 
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
