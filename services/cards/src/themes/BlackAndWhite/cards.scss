@@ -791,8 +791,22 @@ $text-color-white: #fff;
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
   }
+  .card.back.Horror:before {
+    background-image: url(../../../../shared/images/icons/horror.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
   .card.back.Synth:before {
     background-image: url(../../../../shared/images/icons/synth.svg) !important;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+  .card.back.Titanspawn:before {
+    background-image: url(../../../../shared/images/icons/titanspawn.svg) !important;
     -webkit-filter: invert(100%);
     filter: invert(100%);
     -webkit-transform: rotate(90deg);
