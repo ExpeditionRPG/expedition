@@ -58,7 +58,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       return;
     } else if (enabled(ChaosParam.delay)) {
       // Randomly delay outbound messages
-      const delay = Math.floor(CHAOS_MAX_DELAY * Math.random());
+      const delay = 2000 + Math.floor(CHAOS_MAX_DELAY * Math.random());
       console.warn(LOGPRE + 'delaying outbound message by ' + delay + 'ms');
       setTimeout(() => {
         oldSend(s, errCallback);

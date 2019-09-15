@@ -3,7 +3,6 @@ import * as express from 'express';
 import * as http from 'http';
 import {
   ClientID,
-  MultiEvent,
   MultiplayerEvent,
   StatusEvent,
 } from 'shared/multiplayer/Events';
@@ -21,7 +20,6 @@ import {
   commitEvent,
   getLargestEventID,
   getLastEvent,
-  getOrderedEventsAfter,
 } from '../models/multiplayer/Events';
 import {
   getClientSessions,
@@ -221,27 +219,6 @@ export function verifyWebsocket(
     });
 }
 
-function makeMultiEvent(db: Database, session: number, lastEventID: number) {
-  return getOrderedEventsAfter(db, session, lastEventID).then(
-    (eventInstances: EventInstance[] | null) => {
-      if (eventInstances === null) {
-        return;
-      }
-      let lastId = 0;
-      const events = eventInstances
-        .filter((e: EventInstance) => {
-          // For now, only return action events when fast-forwarding.
-          return e.get('id') !== null;
-        })
-        .map((e: EventInstance) => {
-          lastId = Math.max(lastId, e.get('id'));
-          return e.get('json');
-        });
-      return { type: 'MULTI_EVENT', events, lastId };
-    },
-  );
-}
-
 // Identify most recent event and fast forward the client if they're behind
 function maybeFastForwardClient(
   db: Database,
@@ -255,15 +232,15 @@ function maybeFastForwardClient(
     if (lastEventID >= dbLastEventID) {
       return;
     }
-    makeMultiEvent(db, session, lastEventID).then((event: MultiEvent) => {
+    getLastEvent(db, session).then((event: EventInstance) => {
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
       ws.send(
         JSON.stringify({
           client: 'SERVER',
-          event,
-          id: null,
+          event: JSON.parse(event.get('json')),
+          id: event.get('id'),
           instance: Config.get('NODE_ENV'),
         } as MultiplayerEvent),
         (e: Error) => {
@@ -427,20 +404,23 @@ export function websocketSession(
       })
       .catch((error: Error) => {
         console.error('WS commit error:', error);
-        let multiEvent: MultiEvent | null = null;
-        makeMultiEvent(db, params.session, eventID)
-          .then((e: MultiEvent) => {
-            multiEvent = e;
+        let lastEvent: EventInstance | null = null;
+        getLastEvent(db, params.session)
+          .then((e: EventInstance) => {
+            lastEvent = e;
           })
           .catch((e: Error) => {
             sendError(ws, e.toString());
           })
           .finally(() => {
+            if (lastEvent === null) {
+              return;
+            }
             ws.send(
               JSON.stringify({
                 client: 'SERVER',
-                event: multiEvent,
-                id: null,
+                event: JSON.parse(lastEvent.get('json')),
+                id: lastEvent.get('id'),
                 instance: Config.get('NODE_ENV'),
               } as MultiplayerEvent),
               (e?: Error) => {

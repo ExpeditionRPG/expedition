@@ -9,7 +9,6 @@ describe('History reducer', () => {
   describe('RETURN', () => {
     function setup(overrides?: AppStateWithHistory) {
       return Reducer(history).withState({
-        _committed: {},
         _history: [{
           commitID: 5,
           card: {name: 'QUEST_CARD'},

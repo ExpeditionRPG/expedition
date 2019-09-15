@@ -39,7 +39,8 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
 
     if (action instanceof Array) {
       const [name, fn, args] = action;
-      const {commitID, multiplayer} = getState();
+      const state = getState();
+      const {commitID, multiplayer} = state;
       if (multiplayer && multiplayer.connected && !localOnly && !inflight) {
         inflight = (conn.getMaxBufferID() || commitID) + 1;
       }
@@ -60,8 +61,15 @@ export function createMiddleware(conn: Connection): Redux.Middleware {
         // Remove any promises made for completion tracking
         delete remoteArgs.promise;
         const argstr = JSON.stringify(remoteArgs);
-        console.log('WS: outbound #' + inflight + ': ' + name + '(' + argstr + ')');
-        dispatch(sendEvent({type: 'ACTION', name, args: argstr} as ActionEvent, commitID));
+        const evt: ActionEvent = {
+          type: 'ACTION',
+          name,
+          args: argstr,
+          ctx: state.quest.node.ctx || null,
+          line: parseInt(state.quest.node.elem.attr('data-line'), 10) || null,
+        };
+        console.log(`WS: outbound #${inflight}`, evt);
+        dispatch(sendEvent(evt, commitID));
       }
       return result;
     } else if (typeof(action) === 'function') {

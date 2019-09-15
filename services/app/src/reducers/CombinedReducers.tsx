@@ -44,7 +44,6 @@ export default function combinedReduce(state: AppStateWithHistory, action: Redux
 
     // These attributes are handled by the global reducers; persist them.
     _history: (state && state._history),
-    _return: (state && state._return),
-    _committed: (state && state._committed),
+    _transition: (state && state._transition),
   } as AppStateWithHistory;
 }

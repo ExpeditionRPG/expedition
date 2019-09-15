@@ -329,56 +329,5 @@ describe('Multiplayer actions', () => {
         done();
       }).catch(done.fail);
     });
-    test('handles MULTI_EVENT', (done) => {
-      // Update the commit ID when the action is executed
-      let calls = 0;
-      const testAction = remoteify(function testAction(args: {n: number}) {calls++;});
-      Action(handleEvent, {multiplayer}).execute({
-        id: 1,
-        event: {
-          type: 'MULTI_EVENT',
-          lastId: 3,
-          events: [
-            JSON.stringify({id: 1, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 1})}}),
-            JSON.stringify({id: 2, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 2})}}),
-            JSON.stringify({id: 3, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 3})}}),
-          ],
-        } as MultiEvent,
-      }, false, 0, multiplayer, fakeConnection()).then((results) => {
-        expect(results[0].type).toEqual("MULTIPLAYER_MULTI_EVENT_START");
-        expect(calls).toEqual(3);
-        expect(results[results.length-1].type).toEqual("MULTIPLAYER_MULTI_EVENT");
-        done();
-      }).catch(done.fail);
-    });
-    test('handles MULTI_EVENT with async events', (done) => {
-      // Update the commit ID when the action is executed
-      let actions = 0;
-      const asyncAction = remoteify(function asyncAction(args: {n: number}) {
-        return {
-          promise: new Promise((f, r) => {
-            setTimeout(() => {
-              actions++;
-              f();
-            }, 200);
-          }),
-        };
-      });
-      Action(handleEvent, {multiplayer}).execute({
-        id: 1,
-        event: {
-          type: 'MULTI_EVENT',
-          lastId: 3,
-          events: [
-            JSON.stringify({id: 1, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 1})}}),
-            JSON.stringify({id: 2, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 2})}}),
-            JSON.stringify({id: 3, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 3})}}),
-          ],
-        } as MultiEvent,
-      }, false, 0, multiplayer, fakeConnection()).then(() => {
-        expect(actions).toEqual(3);
-        done();
-      }).catch(done.fail);
-    });
   });
 });
