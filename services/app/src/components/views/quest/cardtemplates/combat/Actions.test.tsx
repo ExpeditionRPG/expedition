@@ -231,6 +231,7 @@ describe('Combat actions', () => {
       const store = newMockStore({multiplayer: m.s2p5}, conn);
 
       let node = startNode;
+      node.ctx.templates.combat.seed = 'fixed_seed_so_not_flaky';
       const TRIALS = 20;
       const hist: {[roll: string]: number} = {};
       for (let i = 0; i < TRIALS; i++) {
@@ -253,7 +254,6 @@ describe('Combat actions', () => {
           hist[roll] = (hist[roll] || 0) + 1;
         }
       }
-
       // Should have several damage values (rolling 3 d20s, 20 times)
       expect(Object.keys(hist).length).toBeGreaterThan(5);
 

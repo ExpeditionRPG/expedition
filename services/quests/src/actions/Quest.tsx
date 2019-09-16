@@ -55,6 +55,7 @@ function loadMetadataFromPublished(fileId: string): Promise<QuestType> {
       body: JSON.stringify({
         id: fileId,
         showPrivate: true,
+        showOfficial: true,
       }),
   }).then((response) => {
     if (!response.ok) {
@@ -100,7 +101,7 @@ function loadQuestFromDrive(fileId: string, edittime: Date): Promise<LoadResult>
       edittime,
     };
   }, (json: any) => {
-    throw new Error(json.result.error);
+    throw new Error(json.result.error.message);
   });
 }
 
@@ -277,6 +278,11 @@ export function loadQuest(user: UserState, docid?: string, edittime: Date = new 
         });
       })
       .then((result: LoadResult) => {
+        if (result.data === '' && Object.keys(result.metadata).length === 0) {
+          // Even new quests have data/metadata.
+          throw new Error('Could not load quest. Try looking for it at https://drive.google.com/drive/search?q=.quest');
+        }
+
         window.location.hash = docid;
         const md = new EditableString('md', result.data);
         const notes = new EditableString('notes', result.notes);

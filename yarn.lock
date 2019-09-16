@@ -311,9 +311,9 @@
   version "8.10.21"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.21.tgz#12b3f2359b27aa05a45d886c8ba1eb8d1a77e285"
 
-"@types/passport@^0.4.0":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@types/passport/-/passport-0.4.5.tgz#a6dd5bd2f96f2f15d350a688c3f59aa16d101c7a"
+"@types/passport@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/passport/-/passport-1.0.1.tgz#bf082e29497d09410e13c260903571a489bf9c2a"
   dependencies:
     "@types/express" "*"
 
@@ -420,9 +420,9 @@
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@types/stripe-v3/-/stripe-v3-3.0.7.tgz#b5e888e54a5e0ca37dcfc7774c3e33b7a4212225"
 
-"@types/stripe@^5.0.10":
-  version "5.0.17"
-  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-5.0.17.tgz#3c25b2848fcff52559528598cd63356746adf7bc"
+"@types/stripe@^6.0.0":
+  version "6.31.23"
+  resolved "https://registry.yarnpkg.com/@types/stripe/-/stripe-6.31.23.tgz#713c5d263b38942b84e4fc6bf364752ef9b046ca"
   dependencies:
     "@types/node" "*"
 
