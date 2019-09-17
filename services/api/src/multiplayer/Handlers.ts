@@ -48,6 +48,13 @@ export interface MultiplayerSessionMeta {
   secret: string;
 }
 
+function safeSend(ws: WebSocket, str: string) {
+  if (ws.readyState !== WebSocket.OPEN) {
+    return;
+  }
+  ws.send(str);
+}
+
 export function user(
   db: Database,
   req: express.Request,
@@ -225,18 +232,24 @@ function maybeFastForwardClient(
   session: number,
   client: ClientID,
   instance: string,
-  lastEventID: number,
+  lastEventID: number | null | undefined,
   ws: WebSocket,
 ) {
+  if (lastEventID === null || lastEventID === undefined) {
+    return;
+  }
+
   getLargestEventID(db, session).then((dbLastEventID: number) => {
     if (lastEventID >= dbLastEventID) {
       return;
     }
-    getLastEvent(db, session).then((event: EventInstance) => {
-      if (ws.readyState !== WebSocket.OPEN) {
+    getLastEvent(db, session).then((event: EventInstance | null) => {
+      if (event === null) {
+        console.warn('No events to fast forward client to');
         return;
       }
-      ws.send(
+      safeSend(
+        ws,
         JSON.stringify({
           client: 'SERVER',
           event: JSON.parse(event.get('json')),
@@ -244,7 +257,7 @@ function maybeFastForwardClient(
           instance: Config.get('NODE_ENV'),
         } as MultiplayerEvent),
         (e: Error) => {
-          console.error('WS FF error:', e);
+          console.error('WS FF error:', e, 'on event', event);
         },
       );
     });
@@ -253,32 +266,27 @@ function maybeFastForwardClient(
 
 // We need a little custom server code to pay attention when clients
 // are all waiting on something.
-function handleClientStatus(
+export function handleClientStatus(
   db: Database,
   session: number,
   client: ClientID,
   instance: string,
   ev: StatusEvent,
   ws: WebSocket,
+  waitingOnTimer = handleWaitingOnTimer,
+  waitingOnReview = handleWaitingOnReview,
+  maybeFastForward = maybeFastForwardClient,
 ) {
-  console.log(
-    'Client key:',
-    toClientKey(client, instance) + ': ' + JSON.stringify(ev),
-  );
-
   setClientStatus(session, client, instance, ws, ev);
-  handleWaitingOnTimer(db, session, client, instance);
-  handleWaitingOnReview(db, session, client, instance);
-
-  const lastEventID = ev.lastEventID;
-  if (lastEventID !== null && lastEventID !== undefined) {
-    maybeFastForwardClient(db, session, client, instance, lastEventID, ws);
-  }
+  waitingOnTimer(db, session, client, instance);
+  waitingOnReview(db, session, client, instance);
+  maybeFastForward(db, session, client, instance, ev.lastEventID, ws);
 }
 
 function sendError(ws: WebSocket, e: string) {
   console.error('WS Error:', e);
-  ws.send(
+  safeSend(
+    ws,
     JSON.stringify({
       client: 'SERVER',
       event: {
@@ -305,7 +313,9 @@ export function websocketSession(
   }
 
   console.log(
-    `Client ${params.client} connected to session ${params.session} with secret ${params.secret}`,
+    `Client ${params.client} connected to session ${
+      params.session
+    } with secret ${params.secret}`,
   );
 
   // Setup chaos handlers (if configured)
@@ -325,7 +335,8 @@ export function websocketSession(
         }
         console.log('Initial notify of status for ' + k);
 
-        ws.send(
+        safeSend(
+          ws,
           JSON.stringify({
             client: s[k].client,
             event: s[k].status,
@@ -414,7 +425,8 @@ export function websocketSession(
             if (lastEvent === null) {
               return;
             }
-            ws.send(
+            safeSend(
+              ws,
               JSON.stringify({
                 client: 'SERVER',
                 event: JSON.parse(lastEvent.get('json')),

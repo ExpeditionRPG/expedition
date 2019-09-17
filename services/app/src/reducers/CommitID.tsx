@@ -1,6 +1,5 @@
 import Redux from 'redux';
 import {MultiplayerCommitAction} from '../actions/ActionTypes';
-import {getMultiplayerConnection} from '../multiplayer/Connection';
 import {AppStateWithHistory} from './StateTypes';
 
 export function commitID(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {

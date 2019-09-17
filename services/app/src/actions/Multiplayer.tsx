@@ -240,9 +240,7 @@ export function rejectEvent(n: number, error: string) {
 
 export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState, c= getMultiplayerConnection(), regenScope= populateScope) {
   return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
-
     console.log(e);
-
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
@@ -256,6 +254,12 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
       case 'ACTION':
         // Actions must have IDs.
         if (e.id === null) {
+          return Promise.resolve();
+        }
+
+        // Ignore actions from the past.
+        if (e.id && e.id <= (commitID)) {
+          console.log('Ignoring prior action #' + e.id + ' ' + e.event.type + '(counter at #' + commitID + ')');
           return Promise.resolve();
         }
 
