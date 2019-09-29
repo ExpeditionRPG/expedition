@@ -800,6 +800,14 @@ $large-icon-width: 0.195in;
       background-image: url(../../../../shared/images/cards/back-encounter-synth.jpg) !important;
     }
   }
+  .card.back.Titanspawn {
+    .tier {
+      color: #ffffff;
+    }
+    &:before {
+      background-image: url(../../../../shared/images/cards/back-encounter-titanspawn.jpg) !important;
+    }
+  }
   .card.back.Undead {
     .tier {
       color: #70c25e;

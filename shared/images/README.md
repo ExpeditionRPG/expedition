@@ -8,7 +8,7 @@ When new art files are received from artists, they're often in PNG - but we want
 
 1. Turn the PNG art into pure black on transparent, such as using the Photoshop magic wand with 20 tolerance, anti - aliased. Then, use curves to force all set pixels to be black.
 2. Use a tool like pngtosvg.com to convert it, with one color, to SVG.
-3. Open it in Adobe Illustrator to adjust the viewbox as appropriate.
+3. Open it in Adobe Illustrator to adjust the viewbox as appropriate. If artboard is good, wiggle and save it (saving from Illustrator fixes file formatting).
 4. Voila! Make sure to optimize the resulting files as outlined below.
 
 ## Optimization
