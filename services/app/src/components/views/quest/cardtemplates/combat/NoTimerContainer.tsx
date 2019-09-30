@@ -1,4 +1,4 @@
-import {MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {AppStateWithHistory, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {ParserNode} from '../TemplateTypes';
@@ -6,8 +6,18 @@ import {
   handleCombatTimerHold,
   handleCombatTimerStop,
 } from './Actions';
-import NoTimer, {DispatchProps} from './NoTimer';
-import {mapStateToProps} from './Types';
+import NoTimer, {DispatchProps, StateProps} from './NoTimer';
+import {mapStateToProps as mapStateToPropsBase} from './Types';
+
+const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+  const node = ownProps.node;
+  if (!node) {
+    throw Error('Incomplete props given');
+  }
+  return {
+    ...mapStateToPropsBase(state, ownProps),
+  };
+};
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
