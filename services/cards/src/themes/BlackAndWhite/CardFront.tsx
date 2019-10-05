@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {MAX_ADVENTURER_HEALTH} from '../../Constants';
-import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, romanize, translate, translateTier} from '../../helpers';
+import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, translate, translateTier} from '../../helpers';
 import {CardType} from '../../reducers/StateTypes';
 
 export default class CardFront extends React.Component<CardType, {}> {
@@ -74,7 +74,6 @@ export default class CardFront extends React.Component<CardType, {}> {
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
-                {card.level && <div className="level">Level {romanize(card.level)} Adventurer</div>}
                 {card.health > 12 && <div className="health">{icon('health_small')} {card.health}</div>}
               </header>
               <article>
@@ -124,9 +123,6 @@ export default class CardFront extends React.Component<CardType, {}> {
                   }
                   {card.surge &&
                     <div className="surge"><strong>{translate('Surge', translations)}: </strong>{card.surge}</div>
-                  }
-                  {card.death &&
-                    <div className="death"><strong>{translate('On Defeat', translations)}: </strong>{card.death}</div>
                   }
                 </article>
                 {card.image && <img className="art" src={`/images/icons/${card.image}.png`} />}
