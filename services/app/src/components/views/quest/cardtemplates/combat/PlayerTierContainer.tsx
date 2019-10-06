@@ -47,7 +47,7 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
     adventurers: numAdventurers(state.settings, state.multiplayer),
     combat: node.ctx.templates.combat,
     maxTier,
-    numAliveAdventurers: numAliveAdventurers(state.settings, node, state.multiplayer),
+    numAliveAdventurers: numAliveAdventurers(state.settings, state.quest.node, state.multiplayer),
     localAliveAdventurers: stateCombat.numAliveAdventurers,
     tier: stateCombat.tier,
     contentSets: getContentSets(state.settings, state.multiplayer),
