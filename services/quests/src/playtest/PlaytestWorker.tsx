@@ -21,6 +21,9 @@ function mockContext() {
       numAdventurers(): number {
         return 3;
       },
+      aliveAdventurers(): number {
+        return 3;
+      },
       viewCount(id: string): number {
         return this.views[id] || 0;
       },
