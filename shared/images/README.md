@@ -2,36 +2,7 @@
 
 The raw assets (such as .PSD and .AI) are stored separately in Google Drive to keep the repo compact.
 
-## PNG ->SVG
-
-When new art files are received from artists, they're often in PNG - but we want them to be in SVG for the best app + printing experience. To do so:
-
-1. Turn the PNG art into pure black on transparent, such as using the Photoshop magic wand with 20 tolerance, anti - aliased. Then, use curves to force all set pixels to be black.
-2. Use a tool like pngtosvg.com to convert it, with one color, to SVG.
-3. Open it in Adobe Illustrator to adjust the viewbox as appropriate. If artboard is good, wiggle and save it (saving from Illustrator fixes file formatting).
-4. Voila! Make sure to optimize the resulting files as outlined below.
-
-## Optimization
-
-### General Optimization
-
-Images should be resized such that the longest dimension is <= 2000 px.
-
-### JPG Optimization
-
-Generally save around quality 11 out of 12 for printed assets, 10 out of 12 for digital assets.
-
-### PNG Optimization
-
-Use something like https://compresspng.com, which can generally achieve a 50% compression and supports bulk processing.
-
-### SVG Optimization
-
-Use an SVG minification tool like https://jakearchibald.github.io/svgomg/
-
-Precision can generally set be pretty low (ie 2 / 10) unless it makes it look terrible.
-
-**IMPORTANT:** Make sure to preserve the **viewBox** setting.
+(See the bottom for internal instructions on how to convert art assets)
 
 ## Icons Available
 
@@ -180,3 +151,37 @@ Courtesy of game-icons.net:
 <img src='https://cdn.rawgit.com/expeditionrpg/expedition/master/shared/images/icons/key_small.svg' width = '48' height = '48' /><a href='http://game-icons.net/lorc/originals/key.html'>key</a>
 
 <img src='https://cdn.rawgit.com/expeditionrpg/expedition/master/shared/images/icons/male_small.svg' width = '48' height = '48' /><a href='http://game-icons.net/delapouite/originals/male.html'>male</a>
+
+
+# Internal 
+
+## PNG ->SVG
+
+When new art files are received from artists, they're often in PNG - but we want them to be in SVG for the best app + printing experience. To do so:
+
+1. Turn the PNG art into pure black on transparent, such as using the Photoshop magic wand with 20 tolerance, anti - aliased. Then, use curves to force all set pixels to be black.
+2. Use a tool like pngtosvg.com to convert it, with one color, to SVG.
+3. Open it in Adobe Illustrator to adjust the viewbox as appropriate. If artboard is good, wiggle and save it (saving from Illustrator fixes file formatting).
+4. Voila! Make sure to optimize the resulting files as outlined below.
+
+## Optimization
+
+### General Optimization
+
+Images should be resized such that the longest dimension is <= 2000 px.
+
+### JPG Optimization
+
+Generally save around quality 11 out of 12 for printed assets, 10 out of 12 for digital assets.
+
+### PNG Optimization
+
+Use something like https://compresspng.com, which can generally achieve a 50% compression and supports bulk processing.
+
+### SVG Optimization
+
+Use an SVG minification tool like https://jakearchibald.github.io/svgomg/
+
+Precision can generally set be pretty low (ie 2 / 10) unless it makes it look terrible.
+
+**IMPORTANT:** Make sure to preserve the **viewBox** setting.
