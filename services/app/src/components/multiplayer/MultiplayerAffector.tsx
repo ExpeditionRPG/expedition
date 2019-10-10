@@ -111,10 +111,17 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     this.processInput('touchend', {});
   }
 
-  private processInput(type: string, positions: {[id: string]: number[]}) {
+  public processInput(type: string, positions: {[id: string]: number[]}) {
     for (const k of Object.keys(positions)) {
       positions[k][0] = Math.floor((positions[k][0] - this.boundingRect.left) / this.ref.offsetWidth * 1000);
       positions[k][1] = Math.floor((positions[k][1] - this.boundingRect.top) / this.ref.offsetHeight * 1000);
+
+      // For unknown reasons, clientX may sometimes appear to be -100vw from its correct position.
+      // As a result we instead track the mod of the position.
+      if (positions[k][0] < 0) {
+        positions[k][0] += 1000;
+      }
+
     }
     const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.id || '', event: type};
 
