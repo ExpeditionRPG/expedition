@@ -16,8 +16,8 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAnnouncementTap: (announcement: AnnouncementState) => {
-      if (announcement.link !== '') {
-        openWindow(announcement.link + '?utm_source=app');
+      if (announcement.link && announcement.link !== '') {
+        openWindow(announcement.link);
       }
     },
     onPlayerCountSelect: (numLocalPlayers: number) => {
