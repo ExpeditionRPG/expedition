@@ -17,7 +17,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAnnouncementTap: (announcement: AnnouncementState) => {
       if (announcement.link && announcement.link !== '') {
-        openWindow(announcement.link);
+        if (announcement.link.includes('?')) {
+          openWindow(announcement.link); // appending ?utm_source to a URL with
+              // a ? may break the URL
+        } else {
+          openWindow(announcement.link + '?utm_source=app');
+        }
       }
     },
     onPlayerCountSelect: (numLocalPlayers: number) => {
