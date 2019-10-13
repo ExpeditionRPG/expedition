@@ -18,9 +18,6 @@ function mockContext() {
       contentSets(): {[content: string]: boolean} {
         return {horror: true, future: true, scarredlands: true};
       },
-      currentCombatRound(): number {
-        return 1;
-      },
       numAdventurers(): number {
         return 3;
       },
