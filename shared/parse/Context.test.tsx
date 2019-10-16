@@ -78,6 +78,16 @@ describe('Context', () => {
         expect(evaluateOp('pickRandom([1,2,3])', ctx, rng)).toEqual(expected);
       }
     });
+
+    test('restores an unbound copy of lodash functions', () => {
+      const ctx = defaultContext();
+      ctx.scope._.viewCount = (id: string) => {
+        return this.views[id] || 0;
+      };
+      evaluateOp('n = 5', ctx, () => 0.1);
+      expect(ctx.scope._.viewCount.name).not.toContain('bound');
+      expect(ctx.scope._.viewCount.hasOwnProperty('prototype')).toEqual(true);
+    });
   });
 
   describe('evaluateContentOps', () => {
