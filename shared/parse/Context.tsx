@@ -136,6 +136,10 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
   } finally {
     // Replace bound scope functions with originals.
     ctx.scope._ = origLodash;
+
+    // Subsequent calls to evaluateOp should use a deterministic
+    // (but different) seed.
+    ctx.seed = generateSeed(ctx.seed);
   }
 
   if (evalResult === undefined) {
