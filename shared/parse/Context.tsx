@@ -117,7 +117,7 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
   // Bind all scope functions, keeping a copy of the originals.
   // Note that .bind() returns a new (bound) function
   // that cannot be re-bound.
-  const origLodash: any = ctx.scope._;
+  const origLodash: any = {...ctx.scope._};
   for (const k of Object.keys(ctx.scope._)) {
     ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
   }
