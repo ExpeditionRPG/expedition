@@ -125,7 +125,7 @@ export default class CardFront extends React.Component<CardType, {}> {
                   <div className="surge"><strong>{translate('Surge', translations)}: </strong>{card.surge}</div>
                 }
               </article>
-              {card.image && <div className="art">{icon(card.image)}</div>}
+              {card.image && <div className={['art', card.svgClass].join(' ')}>{icon(card.image)}</div>}
               <footer>
                 <div className="flavortext">{card.flavortext}</div>
               </footer>

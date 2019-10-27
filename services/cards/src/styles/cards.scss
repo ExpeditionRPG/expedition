@@ -95,6 +95,10 @@
       fill: $text-color-white;
       stroke: $text-color-white;
     }
+
+    .noStroke svg {
+      stroke: none;
+    }
   }
 }
 
