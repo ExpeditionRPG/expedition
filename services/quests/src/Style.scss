@@ -821,6 +821,11 @@ body #olark-wrapper button.olark-launch-button { /*must be more specifc than ola
   }
 }
 
+body div #olark-wrapper button.olark-launch-button { /*must be more specifc than olark styles */
+  bottom: 6px !important;
+  top: auto !important;
+}
+
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }

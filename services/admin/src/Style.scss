@@ -158,10 +158,6 @@ label {
   }
 }
 
-body .olark-launch-button { /*must be more specifc than olark styles */
-  bottom: 32px !important;
-}
-
 .splash {
   background: $bg_primary;
   font-family: $fontFamilyBody;
