@@ -734,7 +734,7 @@ body.android .dialog .textfield:focus-within {
         height: size(inputsquare) !important;
         padding: 0 !important;
         svg {
-          width: size(input);
+          max-width: size(input);
           height: size(input);
         }
         &:hover {
