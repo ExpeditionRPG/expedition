@@ -474,7 +474,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,
@@ -490,7 +490,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,

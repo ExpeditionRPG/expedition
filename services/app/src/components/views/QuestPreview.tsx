@@ -72,13 +72,13 @@ function renderSaves(props: Props): JSX.Element|null {
   const buttons = saves.map((s, i) => {
     return (
       <div key={i} className="savedQuest">
-        <Button onClick={(e) => props.onPlaySaved(s.details.id, s.ts)} id={`playsave${i}`}>
+        <Button onClick={(e: any) => props.onPlaySaved(s.details.id, s.ts)} id={`playsave${i}`}>
           {Moment(s.ts).fromNow()}
           &nbsp;
           ({(s.pathLen === undefined) ? 'unknown position' : `${s.pathLen.toString()} ${pluralize('choice', s.pathLen || 0)}`}
             {(s.savedBytes) ? `, ${Math.round(s.savedBytes / 1024)} KB` : ''})
         </Button>
-        <IconButton onClick={(e) => props.onDeleteConfirm(quest, s.ts)} id={`deletesave${i}`}>
+        <IconButton onClick={(e: any) => props.onDeleteConfirm(quest, s.ts)} id={`deletesave${i}`}>
           <CloseIcon/>
         </IconButton>
       </div>
@@ -110,25 +110,25 @@ const QuestPreview = (props: Props): JSX.Element => {
   const actions: JSX.Element[] = [];
 
   if (offlineTS !== null && !props.isDirectLinked) {
-    actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlaySaved(quest.id, offlineTS || 0)} id="play">Play</Button>);
+    actions.push(<Button key="play" className="bigbutton" onClick={(e: any) => props.onPlaySaved(quest.id, offlineTS || 0)} id="play">Play</Button>);
   } else {
-    actions.push(<Button key="play" className="bigbutton" onClick={(e) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>);
+    actions.push(<Button key="play" className="bigbutton" onClick={(e: any) => props.onPlay(quest, props.isDirectLinked)} id="play">Play</Button>);
   }
 
   if (props.savedInstances.length > 0 && lastSaved !== null) {
-    actions.push(<Button key="continue" onClick={(e) => props.onPlaySaved(quest.id, lastSaved)} id="playlastsave">Continue from last save</Button>);
+    actions.push(<Button key="continue" onClick={(e: any) => props.onPlaySaved(quest.id, lastSaved)} id="playlastsave">Continue from last save</Button>);
   }
 
   // Allow us to save non-local quests for offline play
   if (!quest.publishedurl.startsWith('quests/')) {
-    let offlineButton: JSX.Element|null = <Button key="offlinesave" onClick={(e) => props.onSave(quest)} id="offlinesave">Save for offline play</Button>;
+    let offlineButton: JSX.Element|null = <Button key="offlinesave" onClick={(e: any) => props.onSave(quest)} id="offlinesave">Save for offline play</Button>;
     if (offlineTS !== null) {
-      offlineButton = <Button key="offlinedelete" onClick={(e) => props.onDeleteOffline(quest.id, offlineTS || 0)} id="offlinedelete">Clear offline state</Button>;
+      offlineButton = <Button key="offlinedelete" onClick={(e: any) => props.onDeleteOffline(quest.id, offlineTS || 0)} id="offlinedelete">Clear offline state</Button>;
     }
     actions.push(offlineButton);
   }
 
-  actions.push(<Button key="back" id="searchDetailsBackButton" onClick={(e) => props.onReturn()}>Back</Button>);
+  actions.push(<Button key="back" id="searchDetailsBackButton" onClick={(e: any) => props.onReturn()}>Back</Button>);
 
   const isNew = (props.lastLogin < quest.created || Moment().diff(quest.created, 'days') <= 7) && !props.lastPlayed;
   const ratingAvg = quest.ratingavg || 0;

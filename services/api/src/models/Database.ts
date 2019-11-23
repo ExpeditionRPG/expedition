@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import * as Sequelize from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
 import { Partition } from 'shared/schema/Constants';
@@ -153,7 +155,7 @@ export class Database {
       indexes: [
         // default search columns
         {
-          method: 'BTREE',
+          using: 'BTREE',
           fields: [
             'published',
             'tombstone',

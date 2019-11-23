@@ -33,12 +33,10 @@ store = createStore(questIDEApp, initialState, composeEnhancers(applyMiddleware(
 // We override getState() on the installed store for the embedded app, scoping it
 // only to the ".preview" param where it expects the app's state to live.
 installAppStore({
-  dispatch: store.dispatch,
+  ...store,
   getState() {
     return store.getState().preview || {};
   },
-  replaceReducer: store.replaceReducer,
-  subscribe: store.subscribe,
 });
 
 if (module && module.hot) {

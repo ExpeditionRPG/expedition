@@ -40,7 +40,7 @@ class SearchDisclaimer extends React.Component<Props, {}> {
         <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
           Learn about the latest quests, features and more - once per month!
         </Checkbox>
-        <Button onClick={(e) => this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
+        <Button onClick={(e: any) => this.props.onLoginRequest(this.state.subscribe)}>Continue with Google</Button>
       </Card>
     );
   }
