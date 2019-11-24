@@ -145,9 +145,9 @@ export function getUserFeedbacks(
       const questIds = feedbacks.map(({ questid }: any) => questid);
       return getUserQuests(db, userid, questIds).then(quests => {
         return feedbacks.map(feedback => ({
-          rating: feedback.get('rating'),
-          text: feedback.get('text'),
-          quest: quests[feedback.get('questid')],
+          rating: feedback.get('rating') as number,
+          text: feedback.get('text') as string,
+          quest: quests[feedback.get('questid') as string],
         }));
       });
     });
@@ -160,6 +160,6 @@ export function getUserBadges(db: Database, userid: string): Bluebird<Badge[]> {
       order: [['badge', 'ASC']],
     })
     .then(badges => {
-      return badges.map(b => b.get('badge'));
+      return badges.map(b => b.get('badge') as Badge);
     });
 }

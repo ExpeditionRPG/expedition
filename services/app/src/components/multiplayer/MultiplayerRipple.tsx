@@ -90,7 +90,7 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     if (this.state.hasRipple) {
       this.end();
     }
-    const endTimer = setTimeout(() => {
+    const endTimer = window.setTimeout(() => {
       this.end();
     }, DEFAULT_RIPPLE_TIMEOUT_MS);
     this.setState({activePlayer, hasRipple: true, endTimer});

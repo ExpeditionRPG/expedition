@@ -39,7 +39,10 @@ export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) 
         });
 
         const translations = results.reduce((acc: TranslationsType, obj: ResultType) => {
-          return {...acc, ...(obj.translations || {})};
+          if (obj.translations) {
+            return {...acc, ...obj.translations};
+          }
+          return acc;
         }, {});
 
         if (Object.keys(translations).length > 0) {

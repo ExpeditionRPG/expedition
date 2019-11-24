@@ -250,7 +250,7 @@ export function publishQuest(
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
       isNew = !Boolean(i);
-      instance = i || db.quests.build(prepare(quest));
+      instance = i || (db.quests.build(prepare(quest)) as QuestInstance);
 
       if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
@@ -274,7 +274,9 @@ export function publishQuest(
         published: new Date(),
         publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         questversion:
-          (instance.get('questversion') || quest.questversion || 0) + 1,
+          ((instance.get('questversion') as number) ||
+            quest.questversion ||
+            0) + 1,
         tombstone: null as any, // Remove tombstone; need null instead of undefined to trigger Sequelize update override
         userid, // Not included in the request - pull from auth
       };
@@ -323,7 +325,7 @@ export function updateQuestRatings(
     .findOne({ where: { partition, id } })
     .then((q: QuestInstance) => {
       quest = q;
-      return getFeedbackByQuestId(db, partition, quest.get('id'));
+      return getFeedbackByQuestId(db, partition, quest.get('id') as string);
     })
     .then((feedback: FeedbackInstance[]) => {
       const ratings: number[] = feedback
@@ -337,7 +339,10 @@ export function updateQuestRatings(
           if (!f.get('questversion') || !f.get('rating')) {
             return false;
           }
-          return f.get('questversion') >= quest.get('questversionlastmajor');
+          return (
+            (f.get('questversion') as number) >=
+            (quest.get('questversionlastmajor') as number)
+          );
         })
         .map((f: FeedbackInstance) => {
           if (
@@ -349,7 +354,7 @@ export function updateQuestRatings(
             // out any null/zero ratings. We add this here to appease it.
             throw Error('Failed to filter out null ratings');
           }
-          return f.get('rating');
+          return f.get('rating') as number;
         });
       const ratingcount = ratings.length;
       if (ratingcount === 0) {

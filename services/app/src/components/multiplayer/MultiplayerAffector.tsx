@@ -97,12 +97,12 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       return;
     }
     this.mouseDown = true;
-    this.processInput('touchstart', {0: [e.layerX, e.layerY]});
+    this.processInput('touchstart', {0: [e.pageX, e.pageY]});
   }
 
   private mouseMoveEvent(e: MouseEvent) {
     if (this.mouseDown) {
-      this.processInput('touchmove', {0: [e.layerX, e.layerY]});
+      this.processInput('touchmove', {0: [e.pageX, e.pageY]});
     }
   }
 
