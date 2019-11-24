@@ -28,6 +28,11 @@ import {
   users as u,
 } from './models/TestData';
 
+interface DoneFn {
+  (): void;
+  fail: (error: Error) => void;
+}
+
 describe('handlers', () => {
   describe('healthCheck', () => {
     test('returns success', () => {

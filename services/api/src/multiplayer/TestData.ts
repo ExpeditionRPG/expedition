@@ -1,7 +1,6 @@
-
 export function newMockWebsocket() {
-  return {
+  return ({
     readyState: WebSocket.OPEN,
     send: jasmine.createSpy('send'),
-  };
+  } as any) as WebSocket;
 }

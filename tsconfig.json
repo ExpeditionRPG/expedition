@@ -40,6 +40,5 @@
         "babelOptions": {
             "babelrc": true
         }
-    },
-    "files": ["not-a-file-but-included-to-appease-jest"]
+    }
 }

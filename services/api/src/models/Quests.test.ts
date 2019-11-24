@@ -1,4 +1,3 @@
-import { object } from 'joi';
 import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { QuestInstance } from './Database';
@@ -347,8 +346,6 @@ describe('quest', () => {
       const q1 = new Quest({
         ...q.basic,
         id: 'q1',
-        ratingavg: null,
-        ratingcount: null,
         created: Moment().subtract(1, 'month'),
       });
       const q2 = new Quest({

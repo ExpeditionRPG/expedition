@@ -1,11 +1,16 @@
-import {AnalyticsEvent} from 'shared/schema/AnalyticsEvents';
-import {analyticsEvents as ae, testingDBWithState} from './TestData';
+import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
+import { analyticsEvents as ae, testingDBWithState } from './TestData';
+
+interface DoneFn {
+  (): void;
+  fail: (error: Error) => void;
+}
 
 describe('Test Data', () => {
   describe('testingDBWithState', () => {
     test('Creates an unpopulated testing DB when empty', (done: DoneFn) => {
       testingDBWithState([])
-        .then((db) => {
+        .then(db => {
           return db.analyticsEvent.create(ae.action);
         })
         .then(() => done())
@@ -13,10 +18,12 @@ describe('Test Data', () => {
     });
     test('Creates a testing DB with records', (done: DoneFn) => {
       testingDBWithState([ae.action])
-        .then((db) => {
-          return db.analyticsEvent.findOne({where: {userID: ae.action.userID}});
+        .then(db => {
+          return db.analyticsEvent.findOne({
+            where: { userID: ae.action.userID },
+          });
         })
-        .then((result) => {
+        .then(result => {
           if (!result) {
             throw new Error('Expected entry');
           }
