@@ -120,7 +120,7 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
 }
 
 const Roleplay = (props: Props, theme: CardThemeType|{}): JSX.Element => {
-  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
+  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme as CardThemeType;
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;

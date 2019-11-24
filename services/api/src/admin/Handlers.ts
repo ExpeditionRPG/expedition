@@ -104,24 +104,26 @@ export function queryFeedback(
       .then((results: FeedbackInstance[]) => {
         return Promise.all(
           results.map((r: FeedbackInstance) => {
-            return getQuest(db, r.get('partition'), r.get('questid')).then(
-              (quest: Quest) => {
-                return {
-                  partition: r.get('partition'),
-                  quest: {
-                    id: r.get('questid'),
-                    title: quest.title,
-                  },
-                  rating: r.get('rating'),
-                  suppressed: r.get('tombstone') !== null,
-                  text: r.get('text'),
-                  user: {
-                    email: r.get('email'),
-                    id: r.get('userid'),
-                  },
-                } as QT.FeedbackEntry;
-              },
-            );
+            return getQuest(
+              db,
+              r.get('partition') as string,
+              r.get('questid') as string,
+            ).then((quest: Quest) => {
+              return {
+                partition: r.get('partition'),
+                quest: {
+                  id: r.get('questid'),
+                  title: quest.title,
+                },
+                rating: r.get('rating'),
+                suppressed: r.get('tombstone') !== null,
+                text: r.get('text'),
+                user: {
+                  email: r.get('email'),
+                  id: r.get('userid'),
+                },
+              } as QT.FeedbackEntry;
+            });
           }),
         );
       })
@@ -359,7 +361,13 @@ export function recalculateRatings(
     .then((qs: QuestInstance[]) => {
       const updates: Array<Bluebird<any>> = [];
       for (const q of qs) {
-        updates.push(updateQuestRatings(db, q.get('partition'), q.get('id')));
+        updates.push(
+          updateQuestRatings(
+            db,
+            q.get('partition') as string,
+            q.get('id') as string,
+          ),
+        );
       }
       return Promise.all(updates);
     })
