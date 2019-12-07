@@ -57,7 +57,11 @@ export function installRoutes(db: Database, router: express.Router) {
     res: express.Response,
     next: express.NextFunction,
   ) {
-    if (Config.get('API_URL_BASE').indexOf('beta') !== -1 && res.header) {
+    if (
+      Config.get('API_URL_BASE').indexOf('beta') !== -1 &&
+      res.header &&
+      req.get('origin')
+    ) {
       res.header('Access-Control-Allow-Origin', req.get('origin'));
     }
     next();
