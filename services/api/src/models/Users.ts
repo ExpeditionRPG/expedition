@@ -29,7 +29,7 @@ export function incrementLoginCount(db: Database, id: string) {
 export function getUser(db: Database, id: string): Bluebird<User> {
   return db.users
     .findOne({ where: { id } })
-    .then(result => new User(result ? result.dataValues : {}));
+    .then(result => new User(result ? result.get() : {}));
 }
 
 export function maybeGetUserByEmail(
@@ -38,7 +38,7 @@ export function maybeGetUserByEmail(
 ): Bluebird<User | null> {
   return db.users
     .findOne({ where: { email } })
-    .then(result => (result ? new User(result.dataValues) : null));
+    .then(result => (result ? new User(result.get()) : null));
 }
 
 export function subscribeToCreatorsList(mc: any, email: string) {

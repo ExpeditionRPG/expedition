@@ -85,7 +85,7 @@ export function searchQuests(
   // Require results to be published if we're not querying our own quests
   if (params.owner) {
     where.userid = params.owner;
-    where.published = { [Op.ne]: null };
+    where.published = { [Op.ne]: null as any };
   }
 
   if (params.players) {
