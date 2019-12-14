@@ -52,6 +52,21 @@ export function installRoutes(db: Database, router: express.Router) {
     next();
   }
 
+  function betaACAO(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    if (
+      Config.get('API_URL_BASE').indexOf('beta') !== -1 &&
+      res.header &&
+      req.get('origin')
+    ) {
+      res.header('Access-Control-Allow-Origin', req.get('origin'));
+    }
+    next();
+  }
+
   router.options('/*', (req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.get('origin'));
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -63,40 +78,57 @@ export function installRoutes(db: Database, router: express.Router) {
     res.sendStatus(200);
   });
 
-  router.get('/healthcheck', limitCors, Handlers.healthCheck);
-  router.get('/announcements', limitCors, Handlers.announcement);
-  router.get('/qc/announcements', limitCors, Handlers.qcAnnouncement);
-  router.post('/analytics/:category/:action', limitCors, (req, res) => {
-    Handlers.postAnalyticsEvent(db, req, res);
-  });
-  router.post('/quests', limitCors, (req, res) => {
+  router.get('/healthcheck', limitCors, betaACAO, Handlers.healthCheck);
+  router.get('/announcements', limitCors, betaACAO, Handlers.announcement);
+  router.get('/qc/announcements', limitCors, betaACAO, Handlers.qcAnnouncement);
+  router.post(
+    '/analytics/:category/:action',
+    limitCors,
+    betaACAO,
+    (req, res) => {
+      Handlers.postAnalyticsEvent(db, req, res);
+    },
+  );
+  router.post('/quests', limitCors, betaACAO, (req, res) => {
     Handlers.search(db, req, res);
   });
-  router.post('/save/quest/:id', limitCors, (req, res) => {
+  router.post('/save/quest/:id', limitCors, betaACAO, (req, res) => {
     Handlers.saveQuestData(db, req, res);
   });
-  router.get('/qdl/:quest/:edittime', limitCors, (req, res) => {
+  router.get('/qdl/:quest/:edittime', limitCors, betaACAO, (req, res) => {
     Handlers.loadQuestData(db, req, res);
   });
-  router.get('/raw/:partition/:quest/:version', limitCors, (req, res) => {
-    Handlers.questXMLHandler(db, req, res);
-  });
+  router.get(
+    '/raw/:partition/:quest/:version',
+    limitCors,
+    betaACAO,
+    (req, res) => {
+      Handlers.questXMLHandler(db, req, res);
+    },
+  );
   router.post(
     '/publish/:id',
     publishLimiter,
     limitCors,
+    betaACAO,
     requireAuth,
     (req, res) => {
       Handlers.publish(db, Mail, req, res);
     },
   );
-  router.post('/unpublish/:quest', limitCors, requireAuth, (req, res) => {
-    Handlers.unpublish(db, req, res);
-  });
-  router.post('/quest/feedback/:type', limitCors, (req, res) => {
+  router.post(
+    '/unpublish/:quest',
+    limitCors,
+    betaACAO,
+    requireAuth,
+    (req, res) => {
+      Handlers.unpublish(db, req, res);
+    },
+  );
+  router.post('/quest/feedback/:type', limitCors, betaACAO, (req, res) => {
     Handlers.feedback(db, Mail, req, res);
   });
-  router.post('/user/subscribe', limitCors, (req, res) => {
+  router.post('/user/subscribe', limitCors, betaACAO, (req, res) => {
     Handlers.subscribe(
       mailchimp,
       Config.get('MAILCHIMP_PLAYERS_LIST_ID'),
@@ -104,31 +136,50 @@ export function installRoutes(db: Database, router: express.Router) {
       res,
     );
   });
-  router.get('/user/quests', limitCors, requireAuth, (req, res) => {
+  router.get('/user/quests', limitCors, betaACAO, requireAuth, (req, res) => {
     Handlers.userQuests(db, req, res);
   });
-  router.get('/user/feedbacks', limitCors, requireAuth, (req, res) => {
-    Handlers.userFeedbacks(db, req, res);
-  });
-  router.get('/user/badges', limitCors, requireAuth, (req, res) => {
+  router.get(
+    '/user/feedbacks',
+    limitCors,
+    betaACAO,
+    requireAuth,
+    (req, res) => {
+      Handlers.userFeedbacks(db, req, res);
+    },
+  );
+  router.get('/user/badges', limitCors, betaACAO, requireAuth, (req, res) => {
     Handlers.userBadges(db, req, res);
   });
-  router.get('/multiplayer/v1/user', limitCors, requireAuth, (req, res) => {
-    MultiplayerHandlers.user(db, req, res);
-  });
+  router.get(
+    '/multiplayer/v1/user',
+    limitCors,
+    betaACAO,
+    requireAuth,
+    (req, res) => {
+      MultiplayerHandlers.user(db, req, res);
+    },
+  );
   router.post(
     '/multiplayer/v1/new_session',
     sessionLimiter,
     limitCors,
+    betaACAO,
     requireAuth,
     (req, res) => {
       MultiplayerHandlers.newSession(db, req, res);
     },
   );
-  router.post('/multiplayer/v1/connect', limitCors, requireAuth, (req, res) => {
-    MultiplayerHandlers.connect(db, req, res);
-  });
-  router.post('/stripe/checkout', limitCors, (req, res) => {
+  router.post(
+    '/multiplayer/v1/connect',
+    limitCors,
+    betaACAO,
+    requireAuth,
+    (req, res) => {
+      MultiplayerHandlers.connect(db, req, res);
+    },
+  );
+  router.post('/stripe/checkout', limitCors, betaACAO, (req, res) => {
     Stripe.checkout(req, res);
   });
 
