@@ -111,7 +111,7 @@ export function getUserQuests(
                 delete userQuests[k];
                 return;
               }
-              const qq = Quest.create(q.dataValues);
+              const qq = Quest.create(q.get());
               if (qq instanceof Error) {
                 delete userQuests[k];
                 return;

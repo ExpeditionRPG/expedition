@@ -44,8 +44,7 @@ export function getQuest(
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
-      (result: QuestInstance | null) =>
-        new Quest(result ? result.dataValues : {}),
+      (result: QuestInstance | null) => new Quest(result ? result.get() : {}),
     );
 }
 
