@@ -236,6 +236,7 @@ export const MIN_FEEDBACK_LENGTH = 16;
 export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
 export const URLS = {
+  CODE: 'https://github.com/ExpeditionRPG/expedition',
   WEBSITE: 'http://expeditiongame.com',
   PRIVACY_POLICY: 'https://expeditiongame.com/privacy',
   QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
