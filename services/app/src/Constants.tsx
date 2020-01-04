@@ -291,18 +291,18 @@ export const COMBAT_DIFFICULTY: {[key: string]: any} = {
     surgePeriod: 4,
   },
   NORMAL: {
-    damageMultiplier: 1.0,
-    maxRoundDamage: 6,
+    damageMultiplier: 0.9,
+    maxRoundDamage: 5,
     surgePeriod: 3,
   },
   HARD: {
     damageMultiplier: 1.2,
-    maxRoundDamage: 7,
+    maxRoundDamage: 6,
     surgePeriod: 3,
   },
   IMPOSSIBLE: {
-    damageMultiplier: 1.4,
-    maxRoundDamage: 8,
+    damageMultiplier: 1.3,
+    maxRoundDamage: 7,
     surgePeriod: 2,
   },
 };
