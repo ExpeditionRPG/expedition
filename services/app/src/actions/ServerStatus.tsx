@@ -20,7 +20,6 @@ export function fetchServerStatus(log: any = logEvent) {
     .then((data: FetchServerStatusResponse) => {
       dispatch(handleServerStatus(data));
     }).catch((error: Error) => {
-      // Don't alert user - it's not important to them if this fails
       dispatch(setServerStatus({
         announcement: {
           open: true,
