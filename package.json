@@ -59,6 +59,7 @@
     "express-session": "^1.15.4",
     "express-winston": "^2.5.1",
     "fastpriorityqueue": "^0.6.0",
+    "fetch-retry": "^2.2.3",
     "file-loader": "~1.1.11",
     "he": "^1.1.1",
     "html": "^1.0.0",
