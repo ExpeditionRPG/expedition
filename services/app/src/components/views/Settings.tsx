@@ -118,6 +118,7 @@ const Settings = (props: Props): JSX.Element => {
 
       <div className="version">Expedition App v{VERSION}</div>
       <div className="privacy"><a href="#" onClick={() => openWindow(URLS.PRIVACY_POLICY)}>Privacy Policy</a></div>
+      <div className="privacy"><a href="#" onClick={() => openWindow(URLS.CODE)}>Source Code (GitHub)</a></div>
     </Card>
   );
 };
