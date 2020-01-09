@@ -20,15 +20,13 @@ export function fetchServerStatus(log: any = logEvent) {
     .then((data: FetchServerStatusResponse) => {
       dispatch(handleServerStatus(data));
     }).catch((error: Error) => {
-      const isLatestAppVersion = false;
-      const serverOffline = true;
       dispatch(setServerStatus({
         announcement: {
           open: true,
           message: 'Please try again in a few minutes. If the issue persists, you can contact support at contact@fabricate.io',
         },
-        isLatestAppVersion,
-        serverOffline,
+        isLatestAppVersion: false,
+        serverOffline: true,
       }));
       log('error', 'status_fetch_err', {label: error});
     });
