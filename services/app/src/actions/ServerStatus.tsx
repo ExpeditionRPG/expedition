@@ -1,3 +1,4 @@
+import fetch from 'fetch-retry';
 import Redux from 'redux';
 import * as semver from 'semver';
 import {handleFetchErrors} from 'shared/requests';
@@ -10,15 +11,25 @@ import {FetchServerStatusResponse, ServerStatusSetAction} from './ActionTypes';
 
 export function fetchServerStatus(log: any = logEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    return fetch(AUTH_SETTINGS.URL_BASE + '/announcements')
-      .then(handleFetchErrors)
-      .then((response: Response) => response.json())
-      .then((data: FetchServerStatusResponse) => {
-        dispatch(handleServerStatus(data));
-      }).catch((error: Error) => {
-        // Don't alert user - it's not important to them if this fails
-        log('error', 'status_fetch_err', {label: error});
-      });
+    return fetch(AUTH_SETTINGS.URL_BASE + '/announcements', {
+      retries: 2,
+      retryDelay: 1000,
+    })
+    .then(handleFetchErrors)
+    .then((response: Response) => response.json())
+    .then((data: FetchServerStatusResponse) => {
+      dispatch(handleServerStatus(data));
+    }).catch((error: Error) => {
+      dispatch(setServerStatus({
+        announcement: {
+          open: true,
+          message: 'Please try again in a few minutes. If the issue persists, you can contact support at contact@fabricate.io',
+        },
+        isLatestAppVersion: false,
+        serverOffline: true,
+      }));
+      log('error', 'status_fetch_err', {label: error});
+    });
   };
 }
 

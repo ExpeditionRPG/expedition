@@ -70,11 +70,19 @@ describe('Fetch ServerStatus', () => {
     }).catch(done.fail);
   });
 
-  test('Silently logs error events', (done) => {
+  test('Shows try again prompt and logs the error as well', (done) => {
     fetchMock.get('*', 400);
     const log = jasmine.createSpy('log');
     Action(fetchServerStatus, {}).execute(log).then((actions) => {
-      expect(actions.length).toEqual(0);
+      expect(actions.length).toEqual(1);
+      expect(actions[0]).toEqual(jasmine.objectContaining({
+        type: 'SERVER_STATUS_SET',
+        delta: jasmine.objectContaining({
+          announcement: jasmine.objectContaining({
+            message: 'Please try again in a few minutes. If the issue persists, you can contact support at contact@fabricate.io',
+          }),
+        }),
+      }));
       expect(log).toHaveBeenCalled();
       done();
     }).catch(done.fail);

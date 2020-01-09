@@ -16,6 +16,7 @@ export interface AnnouncementState {
 export interface ServerStatusState {
   announcement: AnnouncementState;
   isLatestAppVersion: boolean;
+  serverOffline?: boolean;
 }
 
 export type AudioLoadingType = 'UNLOADED' | 'LOADING' | 'ERROR' | 'LOADED';
