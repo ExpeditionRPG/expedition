@@ -103,7 +103,7 @@
     "seedrandom": "^2.4.3",
     "semver": "~5.7.0",
     "send": "^0.16.2",
-    "sequelize": "^5.3.3",
+    "sequelize": "^5.15.1",
     "sinon": "^6.0.0",
     "sinon-express-mock": "^2.0.0",
     "source-map-loader": "^0.2.1",
