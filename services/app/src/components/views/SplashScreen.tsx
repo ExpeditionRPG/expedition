@@ -22,17 +22,19 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     animFrameReq: number|null;
   };
 
+  protected initialState = {
+    lastTouchTime: 0,
+    maxTouches: 0,
+    tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
+    touchCount: 0,
+    transitionTimeout: null,
+    progress: 0,
+    animFrameReq: null,
+  };
+
   constructor(props: PlayerCounterProps) {
     super(props);
-    this.state = {
-      lastTouchTime: 0,
-      maxTouches: 0,
-      tip: SPLASH_SCREEN_TIPS[Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)],
-      touchCount: 0,
-      transitionTimeout: null,
-      progress: 0,
-      animFrameReq: null,
-    };
+    this.state = this.initialState;
   }
 
   // NOTE: transitionMillis is also defined in scss for the timer spinner
@@ -57,6 +59,9 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       } else if (numFingers > 0) {
         this.setState({transitionTimeout: setTimeout(() => {
           this.props.onPlayerCountSelect(numFingers);
+          if (numFingers > 6) {
+            this.setState(this.initialState);
+          }
         }, this.props.transitionMillis)});
         this.animate();
       }

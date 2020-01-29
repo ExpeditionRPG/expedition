@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onPlayerCountSelect: (numLocalPlayers: number) => {
       if (numLocalPlayers > 6) {
-          dispatch(setDialog('TOO_MANY_PLAYERS'));
+        dispatch(setDialog('TOO_MANY_PLAYERS'));
       } else {
         dispatch(changeSettings({numLocalPlayers, multitouch: true}));
         dispatch(toNavCard({}));
