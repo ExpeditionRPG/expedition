@@ -208,6 +208,35 @@ export class ExpansionSelectDialog extends React.Component<ExpansionSelectDialog
   }
 }
 
+export class TooManyPlayersDialog<T extends BaseDialogProps> extends React.Component<T, {}> {
+  protected title: string;
+  protected content: JSX.Element;
+
+  constructor(props: T) {
+    super(props);
+    this.title = 'Too many players!';
+    this.content = <p>Expedition can only be played by a maximum of 6 players!</p>;
+  }
+
+  public shouldComponentUpdate(nextProps: BaseDialogProps) {
+    return nextProps.open !== this.props.open;
+  }
+
+  public render(): JSX.Element {
+    return (
+      <Dialog classes={{paperWidthSm: 'dialog'}} open={Boolean(this.props.open)}>
+        <DialogTitle>{this.title}</DialogTitle>
+        <DialogContent className="dialog">
+          {this.content}
+        </DialogContent>
+        <DialogActions>
+          <Button id="cancelButton" onClick={() => this.props.onClose()}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+}
+
 export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<T, {}> {
   protected title: string;
   protected content: JSX.Element;
@@ -501,6 +530,10 @@ const Dialogs = (props: Props): JSX.Element => {
         quest={props.quest.details}
         settings={props.settings}
         multiplayer={props.multiplayer}
+      />
+      <TooManyPlayersDialog
+        open={props.dialog && props.dialog.open === 'TOO_MANY_PLAYERS'}
+        onClose={props.onClose}
       />
     </span>
   );

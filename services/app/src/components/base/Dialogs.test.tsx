@@ -3,7 +3,6 @@ import {
   TextAreaDialog,
   BaseDialogProps,
   ConfirmationDialog,
-  BaseDialogProps
   MultiplayerStatusDialogProps,
   MultiplayerStatusDialog,
   ExpansionSelectDialogProps,
@@ -11,7 +10,8 @@ import {
   SetPlayerCountDialogProps,
   SetPlayerCountDialog,
   MultiplayerPeersDialogProps,
-  MultiplayerPeersDialog
+  MultiplayerPeersDialog,
+  TooManyPlayersDialog
 } from './Dialogs';
 import {loggedOutUser} from 'shared/auth/UserState';
 import {initialSettings} from 'app/reducers/Settings';
@@ -243,6 +243,29 @@ describe('Dialogs', () => {
       const {props, e} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})});
       expect(e.find('DialogContent').render().text()).toContain('expansion is required');
       expect(e.find('#play').length).toEqual(0);
+    });
+  });
+
+  describe('TooManyPlayersDialog', () => {
+    function setup(overrides?: Partial<BaseDialogProps>) {
+      const props: Props = {
+        open: true,
+        onClose: jasmine.createSpy('onClose'),
+        ...overrides,
+      };
+      return {props, e: mount(<TooManyPlayersDialog {...(props as any as BaseDialogProps)} />)};
+    }
+
+    test('renders title & content', () => {
+      const {e} = setup();
+      expect(e.find('DialogTitle').render().text()).toContain('Too many players!');
+      expect(e.find('DialogContent').render().text()).toContain('Expedition can only be played by a maximum of 6 players!');
+    });
+
+    test('calls onClose on Cancel tap', () => {
+      const {props, e} = setup();
+      e.find('#cancelButton').hostNodes().prop('onClick')();
+      expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
 });

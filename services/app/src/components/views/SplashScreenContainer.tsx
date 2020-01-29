@@ -1,3 +1,4 @@
+import { setDialog } from 'app/actions/Dialog';
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {toCard, toNavCard} from '../../actions/Card';
@@ -26,8 +27,12 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       }
     },
     onPlayerCountSelect: (numLocalPlayers: number) => {
-      dispatch(changeSettings({numLocalPlayers, multitouch: true}));
-      dispatch(toNavCard({}));
+      if (numLocalPlayers > 6) {
+          dispatch(setDialog('TOO_MANY_PLAYERS'));
+      } else {
+        dispatch(changeSettings({numLocalPlayers, multitouch: true}));
+        dispatch(toNavCard({}));
+      }
     },
     onPlayerManualSelect: () => {
       dispatch(toCard({name: 'PLAYER_COUNT_SETTING'}));

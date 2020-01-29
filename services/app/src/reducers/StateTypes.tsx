@@ -52,7 +52,8 @@ export type DialogIDType = null
   | 'MULTIPLAYER_STATUS'
   | 'MULTIPLAYER_PEERS'
   | 'SET_PLAYER_COUNT'
-  | 'DELETE_SAVED_QUEST';
+  | 'DELETE_SAVED_QUEST'
+  | 'TOO_MANY_PLAYERS';
 export interface DialogState {
   open: DialogIDType;
   message?: string;
