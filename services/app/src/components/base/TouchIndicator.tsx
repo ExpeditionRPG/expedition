@@ -85,7 +85,7 @@ export default class TouchIndicator extends React.Component<Props, {}> {
 
   public render() {
     return (
-       <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element|null) => {this.setupCanvas(ref); }} />
+      <canvas className="base_multi_touch_trigger touch_indicator" ref={(ref: Element|null) => {this.setupCanvas(ref); }} />
     );
   }
 }
