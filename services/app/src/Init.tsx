@@ -95,7 +95,7 @@ function setupDevice() {
     // https://stackoverflow.com/a/43502958/1332186
     if (/Android/.test(navigator.appVersion)) {
       window.addEventListener('resize', () => {
-        if (document.activeElement !== null) {
+        if (document.activeElement) {
           if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
             document.activeElement.scrollIntoView();
           }

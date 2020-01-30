@@ -215,7 +215,7 @@ export class TooManyPlayersDialog<T extends BaseDialogProps> extends React.Compo
   constructor(props: T) {
     super(props);
     this.title = 'Too many players!';
-    this.content = <p>Expedition can only be played by a maximum of 6 players!</p>;
+    this.content = <p>Expedition can only be played by a maximum of 6 players.</p>;
   }
 
   public shouldComponentUpdate(nextProps: BaseDialogProps) {
