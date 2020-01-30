@@ -259,7 +259,7 @@ describe('Dialogs', () => {
     test('renders title & content', () => {
       const {e} = setup();
       expect(e.find('DialogTitle').render().text()).toContain('Too many players!');
-      expect(e.find('DialogContent').render().text()).toContain('Expedition can only be played by a maximum of 6 players!');
+      expect(e.find('DialogContent').render().text()).toContain('Expedition can only be played by a maximum of 6 players.');
     });
 
     test('calls onClose on Cancel tap', () => {
