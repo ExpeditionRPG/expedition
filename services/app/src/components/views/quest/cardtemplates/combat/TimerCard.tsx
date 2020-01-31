@@ -1,6 +1,7 @@
 import TimerCard from 'app/components/base/TimerCard';
 import {MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
 import * as React from 'react';
+import { useEffect } from 'react';
 import {ParserNode} from '../TemplateTypes';
 import {isSurgeNextRound, roundTimeMillis} from './Actions';
 import {CombatState} from './Types';
@@ -20,6 +21,14 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 export default function timerCard(props: Props): JSX.Element {
+  useEffect(() => {
+    const timeOut = setTimeout(props.onTimerStop, 10000);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
+  });
+
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   const surgeWarning = (props.settings.difficulty === 'EASY' && surge) ? 'Surge Imminent' : undefined;
   let instruction: string|undefined;
