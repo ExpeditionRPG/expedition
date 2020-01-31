@@ -153,7 +153,7 @@ export class Database {
       indexes: [
         // default search columns
         {
-          method: 'BTREE',
+          using: 'BTREE',
           fields: [
             'published',
             'tombstone',
