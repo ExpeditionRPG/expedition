@@ -72,7 +72,9 @@ function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
   const map: { [key: string]: string[]; } = {};
   if (node.attr('id')) {
     const id = node.attr('id');
-    map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
+    if (id) {
+      map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
+    }
   }
 
   for (let i = 0; i < node.children().length; i++) {

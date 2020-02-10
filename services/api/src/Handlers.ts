@@ -470,11 +470,11 @@ export function feedback(
   let action: Bluebird<any> = maybeGetUserByEmail(db, data.email);
   switch (req.params.type as FeedbackType) {
     case 'feedback':
-      action = action.then(user =>
+      action = action.then((user) =>
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,
@@ -490,7 +490,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,

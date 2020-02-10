@@ -22,7 +22,8 @@ export function findCombatParent(node: ParserNode): Cheerio|null {
   while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
     // Don't count roleplay nodes within "win" and "lose" events even if they're children of
     // a combat node; this is technically a roleplay state.
-    if (/win|lose/.test(elem.attr('on'))) {
+    const attrOn = elem.attr('on');
+    if (/win|lose/.test(attrOn === undefined ? '' : attrOn)) {
       return null;
     }
     elem = elem.parent();
@@ -119,7 +120,8 @@ function getEnemies(node: ParserNode): Enemy[] {
 
     if (!encounter) {
       // If we don't know about the enemy, just assume tier 1.
-      enemies.push({name: text, tier: parseInt(c.attr('tier'), 10) || 1});
+      const tier = c.attr('tier');
+      enemies.push({name: text, tier: parseInt(tier === undefined ? '1' : tier, 10) || 1});
     } else {
       enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
     }
