@@ -139,7 +139,7 @@
     "@types/express-session": "^1.15.0",
     "@types/fetch-mock": "^7.0.0",
     "@types/jest": "^25.0.0",
-    "@types/joi": "^13.0.0",
+    "@types/joi": "^14.0.0",
     "@types/jquery": "^3.0.0",
     "@types/memoizee": "^0.4.2",
     "@types/node": "^8.10.20",
