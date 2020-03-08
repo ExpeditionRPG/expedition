@@ -26,7 +26,7 @@ const adjustedAppMiddleware = ({dispatch}: Redux.MiddlewareAPI<any>) => {
 
 // from https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const initialState = {preview: {}};
+const initialState: any = {preview: {}};
 const middleware = [thunk, adjustedAppMiddleware];
 store = createStore(questIDEApp, initialState, composeEnhancers(applyMiddleware(...middleware)));
 

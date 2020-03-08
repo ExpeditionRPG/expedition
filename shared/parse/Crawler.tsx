@@ -27,7 +27,7 @@ function getNodeLine(node: Node<Context>|null): number {
   }
 
   try {
-    return parseInt(node.elem.attr('data-line'), 10);
+    return parseInt(node.elem.attr('data-line') as any, 10);
   } catch (e) {
     return -1;
   }
@@ -98,8 +98,10 @@ export abstract class CrawlerBase<C extends Context> {
       }
 
       const id = q.node.elem.attr('id') || q.prevId;
-      const line = parseInt(q.node.elem.attr('data-line'), 10);
-      this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
+      const line = parseInt(q.node.elem.attr('data-line') || '-1', 10);
+      if (line >= 0) {
+        this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
+      }
 
       // If we've visited the same node too many times, don't crawl further.
       if (visitLimit && this.lineVisitCount[line] >= visitLimit) {

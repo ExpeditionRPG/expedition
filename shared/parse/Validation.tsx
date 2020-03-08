@@ -70,8 +70,8 @@ function getDuplicateIds(node: Cheerio): { [key: string]: string[]; } {
 // Builds and returns a map of all IDs to all nodes with that ID.
 function generateIdMapping(node: Cheerio): { [key: string]: string[]; } {
   const map: { [key: string]: string[]; } = {};
-  if (node.attr('id')) {
-    const id = node.attr('id');
+  const id = node.attr('id')
+  if (id) {
     map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
   }
 

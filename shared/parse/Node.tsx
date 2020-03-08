@@ -74,8 +74,9 @@ export class Node<C extends Context> {
     let choiceIdx = -1;
     const keys: Array<string|number> = [];
     this.loopChildren((tag, child, orig) => {
-      if (child.attr('on') !== undefined) {
-        keys.push(child.attr('on'));
+      const on = child.attr('on');
+      if (on !== undefined) {
+        keys.push(on);
       } else if (tag === 'choice') {
         choiceIdx++;
         keys.push(choiceIdx);
@@ -220,7 +221,7 @@ export class Node<C extends Context> {
 
     return JSON.stringify({
       ctx: ctxJSON,
-      line: parseInt(this.elem.attr('data-line'), 10),
+      line: parseInt(this.elem.attr('data-line') || '-1', 10),
     });
   }
 
@@ -298,7 +299,7 @@ export class Node<C extends Context> {
     const ret: EventParameters = {};
     if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
     if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
-    if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+    if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal') || '0', 10); }
     return ret;
   }
 
