@@ -1,4 +1,3 @@
-import fetch from 'fetch-retry';
 import Redux from 'redux';
 import * as semver from 'semver';
 import {handleFetchErrors} from 'shared/requests';
@@ -9,9 +8,11 @@ import {logEvent} from '../Logging';
 import {ServerStatusState} from '../reducers/StateTypes';
 import {FetchServerStatusResponse, ServerStatusSetAction} from './ActionTypes';
 
+const fetchRetry = require('fetch-retry')(fetch);
+
 export function fetchServerStatus(log: any = logEvent) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    return fetch(AUTH_SETTINGS.URL_BASE + '/announcements', {
+    return fetchRetry(AUTH_SETTINGS.URL_BASE + '/announcements', {
       retries: 2,
       retryDelay: 1000,
     })
