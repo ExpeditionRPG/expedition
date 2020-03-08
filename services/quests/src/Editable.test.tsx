@@ -1,4 +1,4 @@
-import {EditableString, EditableMap, EditableModel} from './Editable';
+import {EditableString, EditableMap} from './Editable';
 
 describe('Editable', () => {
   describe('EditableString', () => {

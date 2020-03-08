@@ -163,7 +163,7 @@ describe('feedback', () => {
           getFeedback(db, Partition.expeditionPublic, 'questid', 'userid'),
         )
         .then((result: FeedbackInstance) => {
-          const feedbackResult = new Feedback(result.dataValues);
+          const feedbackResult = new Feedback(result.get());
           feedbackResult.setDefaults = [];
           expect(feedbackResult).toEqual(fb.rating);
           done();
@@ -185,7 +185,7 @@ describe('feedback', () => {
           getFeedback(db, Partition.expeditionPublic, 'questid', 'userid'),
         )
         .then((result: FeedbackInstance) => {
-          const feedbackResult = new Feedback(result.dataValues);
+          const feedbackResult = new Feedback(result.get());
           feedbackResult.setDefaults = [];
           expect(feedbackResult).toEqual(rating2);
           return getQuest(db, Partition.expeditionPublic, 'questid');

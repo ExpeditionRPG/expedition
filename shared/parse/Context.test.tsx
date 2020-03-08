@@ -4,11 +4,11 @@ const cheerio: any = require('cheerio');
 declare var window: any;
 
 // https://stackoverflow.com/a/9229821/1332186
-function arrayUniques(array) {
+function arrayUniques(array: any) {
   let seen = {};
-  return array.filter((num) => {
-    return seen.hasOwnProperty(num) ? false : (seen[num] = true);
-  }
+  return array.filter((num: any) => {
+    return seen.hasOwnProperty(num) ? false : ((seen as any)[num] = true);
+  });
 }
 
 describe('Context', () => {
@@ -25,7 +25,7 @@ describe('Context', () => {
       evaluateOp('foo==\'a\'', defaultContext());
       expect(window.onerror)
         .toHaveBeenCalledWith(
-          'Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')',
+          'Undefined symbol foo Op: (foo==\'a\')',
           'shared/parse/context');
     });
     test('throws error on invalid eval', () => {
@@ -82,7 +82,7 @@ describe('Context', () => {
     test('restores an unbound copy of lodash functions', () => {
       const ctx = defaultContext();
       ctx.scope._.viewCount = (id: string) => {
-        return this.views[id] || 0;
+        return (this as any).views[id] || 0;
       };
       evaluateOp('n = 5', ctx, () => 0.1);
       expect(ctx.scope._.viewCount.name).not.toContain('bound');

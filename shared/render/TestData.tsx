@@ -65,12 +65,12 @@ data.basicXML = `<quest title="Quest Title" data-line="0">
                 <e>{{anEnemyExpression}}</e>
                 <e if="condition">BadGuy</e>
                 <event on="win">
-                    <roleplay title="" data-line="22">
+                    <roleplay title data-line="22">
                         <p>Victory!</p>
                     </roleplay>
                 </event>
                 <event on="lose">
-                    <roleplay title="" data-line="26">
+                    <roleplay title data-line="26">
                         <p>Defeat!</p>
                     </roleplay>
                     <trigger data-line="28">end</trigger>
@@ -78,13 +78,13 @@ data.basicXML = `<quest title="Quest Title" data-line="0">
             </combat>
         </choice>
         <choice text="Another decision that is multiple lines long">
-            <roleplay title="" data-line="33">
+            <roleplay title data-line="33">
                 <p>More stuff</p>
             </roleplay>
             <trigger data-line="35">end</trigger>
         </choice>
         <choice text="Still another decision!">
-            <roleplay title="" data-line="39">
+            <roleplay title data-line="39">
                 <p>And a thing.</p>
             </roleplay>
             <trigger data-line="41">end</trigger>
@@ -199,12 +199,12 @@ data.commentsXML = `<quest title="Quest Title" data-line="0">
             <combat data-line="12">
                 <e>Skeleton Swordsman</e>
                 <event on="win">
-                    <roleplay title="" data-line="20">
+                    <roleplay title data-line="20">
                         <p>Victory!</p>
                     </roleplay>
                 </event>
                 <event on="lose">
-                    <roleplay title="" data-line="24">
+                    <roleplay title data-line="24">
                         <p>Defeat!</p>
                     </roleplay>
                     <trigger data-line="26">end</trigger>
@@ -253,19 +253,19 @@ data.indentsXML = `<quest title="Quest Title" data-line="0">
     <roleplay title="Roleplay Card" data-line="2">
         <p>Stuff</p>
         <choice text="Decision">
-            <roleplay title="" data-line="8">
+            <roleplay title data-line="8">
                 <p>Stuff2</p>
                 <choice text="Decision2">
-                    <roleplay title="" data-line="12">
+                    <roleplay title data-line="12">
                         <p>Stuff3</p>
                         <choice text="Decision3">
-                            <roleplay title="" data-line="16">
+                            <roleplay title data-line="16">
                                 <p>Stuff4</p>
                                 <choice text="Decision4">
-                                    <roleplay title="" data-line="20">
+                                    <roleplay title data-line="20">
                                         <p>Stuff5</p>
                                         <choice text="Decision5">
-                                            <roleplay title="" data-line="24">
+                                            <roleplay title data-line="24">
                                                 <p>Stuff6</p>
                                             </roleplay>
                                         </choice>
@@ -307,7 +307,7 @@ Roleplay card without header`;
 
 data.triggerWithNoAfterHeaderXML = `<quest title="Quest Title" data-line="0">
     <trigger data-line="2">end</trigger>
-    <roleplay title="" data-line="4">
+    <roleplay title data-line="4">
         <p>Roleplay card without header</p>
     </roleplay>
 </quest>`;

@@ -23,7 +23,7 @@ describe('sessions', () => {
       testingDBWithState([])
         .then(db => createSession(db))
         .then((i: SessionInstance) => {
-          expect(new Session(i.dataValues)).toEqual(
+          expect(new Session(i.get())).toEqual(
             jasmine.objectContaining({ eventCounter: 0, locked: false }),
           );
           done();
@@ -37,7 +37,7 @@ describe('sessions', () => {
       testingDBWithState([s.basic])
         .then(db => getSessionBySecret(db, s.basic.secret))
         .then((i: SessionInstance) => {
-          expect(new Session(i.dataValues)).toEqual(s.basic);
+          expect(new Session(i.get())).toEqual(s.basic);
           done();
         })
         .catch(done.fail);

@@ -2,8 +2,6 @@ import { QuestData } from 'shared/schema/QuestData';
 import { claimNewestQuestData, saveQuestData } from './QuestData';
 import { questData as qd, TEST_NOW, testingDBWithState } from './TestData';
 
-const Moment = require('moment');
-
 describe('quest', () => {
   describe('saveQuestData', () => {
     const new1 = new QuestData({
@@ -30,13 +28,11 @@ describe('quest', () => {
     });
 
     test('rejects if edittime is different', done => {
-      let db = null;
       testingDBWithState([old1])
         .then(tdb => {
-          db = tdb;
           return saveQuestData(
             tdb,
-            { ...new1, edittime: new Date(TEST_NOW.getTime() - 5) },
+            { ...new1, edittime: new Date(TEST_NOW.getTime() - 5) } as any,
             new1.created.getTime(),
           );
         })
@@ -50,7 +46,7 @@ describe('quest', () => {
     });
 
     test('adds if <2 rows', done => {
-      let db = null;
+      let db: any = null;
       testingDBWithState([old1, old2])
         .then(tdb => {
           db = tdb;
@@ -66,7 +62,7 @@ describe('quest', () => {
     });
 
     test('overwrites oldest if all >24h', done => {
-      let db = null;
+      let db: any = null;
       testingDBWithState([old1, old2])
         .then(tdb => {
           db = tdb;
@@ -89,7 +85,7 @@ describe('quest', () => {
     });
 
     test('overwrites newest if at least one <24h', done => {
-      let db = null;
+      let db: any = null;
       testingDBWithState([old2, new1])
         .then(tdb => {
           db = tdb;
@@ -112,7 +108,7 @@ describe('quest', () => {
     });
 
     test("does not affect other users' saved quests", done => {
-      let db = null;
+      let db: any = null;
       testingDBWithState([otheruser1, old2])
         .then(tdb => {
           db = tdb;
@@ -129,7 +125,7 @@ describe('quest', () => {
     });
 
     test("does not affect same user's other quests", done => {
-      let db = null;
+      let db: any = null;
       testingDBWithState([otherquest1, old2])
         .then(tdb => {
           db = tdb;
@@ -157,7 +153,6 @@ describe('quest', () => {
         ...qd.basic,
         created: new Date(TEST_NOW.getTime() - 25 * 60 * 60 * 1000),
       });
-      const db = null;
       testingDBWithState([new1, old1])
         .then(tdb => {
           return claimNewestQuestData(
@@ -168,6 +163,9 @@ describe('quest', () => {
           );
         })
         .then(result => {
+          if (result === null) {
+            throw new Error('result was null');
+          }
           expect(result.created).toEqual(new1.created);
           expect(result.edittime.getTime()).toEqual(edittime.getTime());
           done();

@@ -27,7 +27,7 @@ describe('Test Data', () => {
           if (!result) {
             throw new Error('Expected entry');
           }
-          expect(new AnalyticsEvent(result.dataValues)).toEqual(ae.action);
+          expect(new AnalyticsEvent(result.get())).toEqual(ae.action);
           done();
         })
         .catch(done.fail);

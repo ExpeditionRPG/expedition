@@ -3,6 +3,6 @@
   "version": "1.6.4",
   "scripts": {
     "start": "webpack-dev-server --progress --hot",
-    "build": "webpack --config webpack.dist.config.js --progress"
+    "build": "webpack-cli --config webpack.dist.config.js --progress"
   }
 }

@@ -390,10 +390,10 @@ describe('Node', () => {
       const n2 = new Node(node, {...ctx}).handleAction(0);
       let r1 = '';
       let r2 = '';
-      n1.loopChildren((tag, c) => {
+      (n1 as any).loopChildren((tag: string, c: any) => {
         r1 += c.text();
       });
-      n2.loopChildren((tag, c) => {
+      (n2 as any).loopChildren((tag: string, c: any) => {
         r2 += c.text();
       });
       expect(r1).toEqual(r2);
@@ -404,7 +404,7 @@ describe('Node', () => {
       const ctx = defaultContext();
       const n1 = new Node(node, {...ctx});
       const n2 = n1.handleAction(0);
-      expect(n1.ctx.scope.a).not.toEqual(n2.ctx.scope.a);
+      expect(n1.ctx.scope.a).not.toEqual((n2 as any).ctx.scope.a);
     });
 
     test('skips hidden triggers', () => {

@@ -51,7 +51,7 @@ describe('SessionClients', () => {
         .then(db => getClientSessions(db, sc.basic.client))
         .then((results: SessionClientInstance[]) => {
           expect(results.length).toEqual(1);
-          expect(new SessionClient(results[0].dataValues)).toEqual(sc.basic);
+          expect(new SessionClient(results[0].get())).toEqual(sc.basic);
           done();
         })
         .catch(done.fail);

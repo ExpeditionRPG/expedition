@@ -98,9 +98,11 @@ export abstract class CrawlerBase<C extends Context> {
       }
 
       const id = q.node.elem.attr('id') || q.prevId;
-      const line = parseInt(q.node.elem.attr('data-line') || '-1', 10);
+      let line = parseInt(q.node.elem.attr('data-line') || '-1', 10);
       if (line >= 0) {
         this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
+      } else {
+        line = NaN;
       }
 
       // If we've visited the same node too many times, don't crawl further.

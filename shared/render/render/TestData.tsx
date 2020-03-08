@@ -1,7 +1,7 @@
 
 const data = Object();
 
-data.genericRoleplayXML = `<roleplay title="" data-line="0">
+data.genericRoleplayXML = `<roleplay title data-line="0">
 </roleplay>`;
 
 data.genericCombatXML = `<combat data-line="0">
@@ -106,14 +106,14 @@ data.roleplayChoiceNoParse = `<roleplay title="Title" data-line="5">
 
 data.roleplayChoiceNoTitle = `<roleplay title="Title" data-line="5">
     <p>text</p>
-    <choice text="" if="test1">
+    <choice text if="test1">
         <roleplay data-line="7">
             <p>choice text</p>
         </roleplay>
     </choice>
 </roleplay>`;
 
-data.roleplayNoTitle = `<roleplay title="" data-line="21">
+data.roleplayNoTitle = `<roleplay title data-line="21">
     <p>Victory!</p>
 </roleplay>`;
 

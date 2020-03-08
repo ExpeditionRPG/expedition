@@ -37,7 +37,7 @@ describe('events', () => {
       ])
         .then(db => getLastEvent(db, e.basic.session))
         .then((i: EventInstance) => {
-          expect(new Event(i.dataValues).id).toEqual(3);
+          expect(new Event(i.get()).id).toEqual(3);
           done();
         })
         .catch(done.fail);
@@ -56,8 +56,8 @@ describe('events', () => {
         .then((results: EventInstance[]) => {
           expect(results.length).toEqual(2);
           // Ascending order of time
-          expect(new Event(results[0].dataValues).id).toEqual(3);
-          expect(new Event(results[1].dataValues).id).toEqual(4);
+          expect(new Event(results[0].get()).id).toEqual(3);
+          expect(new Event(results[1].get()).id).toEqual(4);
           done();
         })
         .catch(done.fail);
@@ -181,12 +181,12 @@ describe('events', () => {
         })
         .then((i: EventInstance) => {
           // Event is inserted
-          expect(new Event(i.dataValues).id).toEqual(n + 1);
+          expect(new Event(i.get()).id).toEqual(n + 1);
           return db.sessions.findOne({ where: { id: e.basic.session } });
         })
         .then((i: SessionInstance) => {
           // Event counter is updated
-          expect(new Session(i.dataValues).eventCounter).toEqual(n + 1);
+          expect(new Session(i.get()).eventCounter).toEqual(n + 1);
           done();
         })
         .catch(done.fail);
@@ -250,14 +250,14 @@ describe('events', () => {
         })
         .then((i: EventInstance) => {
           // Event is inserted; ID is applied to event JSON
-          const result = new Event(i.dataValues);
+          const result = new Event(i.get());
           expect(result.id).toEqual(n + 1);
           expect(JSON.parse(result.json).id).toEqual(n + 1);
           return db.sessions.findOne({ where: { id: e.basic.session } });
         })
         .then((i: SessionInstance) => {
           // Event counter is updated
-          expect(new Session(i.dataValues).eventCounter).toEqual(n + 1);
+          expect(new Session(i.get()).eventCounter).toEqual(n + 1);
           done();
         })
         .catch(done.fail);
@@ -310,7 +310,12 @@ describe('events', () => {
 
     test('commits the action, then broadcasts it', done => {
       const ws1 = newMockWebsocket();
-      initSessionClient(e.basic.session, e.basic.client, e.basic.instance, ws1);
+      initSessionClient(
+        e.basic.session,
+        e.basic.client,
+        e.basic.instance,
+        ws1 as any,
+      );
 
       let db: Database;
       const n = 3;
@@ -337,10 +342,12 @@ describe('events', () => {
           return db.events.findOne({ where: { id: n + 1 } });
         })
         .then((i: EventInstance) => {
-          const result = new Event(i.dataValues);
+          const result = new Event(i.get());
           expect(result.json).toContain('testFn');
           expect(ws1.send).toHaveBeenCalled();
-          expect(ws1.send.calls.mostRecent().args[0]).toContain('testFn');
+          expect((ws1 as any).send.calls.mostRecent().args[0]).toContain(
+            'testFn',
+          );
           done();
         })
         .catch(done.fail);

@@ -11,7 +11,7 @@
     "pretest": "npm run lint",
     "test": "jest",
     "watch-test": "jest --watch --runInBand",
-    "build-all": "set -e && for D in services/*; do ([ -d $D ] && cd $D && echo $D && yarn run build); done",
+    "build-all": "set -e && for D in services/*; do ([ -d $D ] && cd $D && echo \"\n\n\n||||||||||| $D\" && yarn run build); done",
     "deploy": "./scripts/deploy.sh",
     "admin": "cd services/admin && yarn start",
     "admin-local": "API_HOST='http://localhost:8081' npm run admin & npm run api",
@@ -185,7 +185,8 @@
     "pluralize": "^7.0.0",
     "prettier": "1.19.1",
     "tslint-config-prettier": "^1.16.0",
-    "tslint-loader": "^3.6.0"
+    "tslint-loader": "^3.6.0",
+    "uglifyjs-webpack-plugin": "^2.2.0"
   },
   "engines": {
     "node": ">= 12 < 13"
