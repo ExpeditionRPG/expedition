@@ -654,7 +654,6 @@ body.android .dialog .textfield:focus-within {
         font-size: fontsize(title);
         text-align: center;
         overflow: hidden;
-        white-space: nowrap;
         text-overflow: ellipsis;
         margin: 0 48px;
       }

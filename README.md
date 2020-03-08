@@ -32,7 +32,7 @@ Run the tests to make sure everything's working: `yarn test`
 
 To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
 
-Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubunutu cli](https://askubuntu.com/a/510186)
+Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubuntu cli](https://askubuntu.com/a/510186)
 
 ### Running the code
 

@@ -236,6 +236,7 @@ export const MIN_FEEDBACK_LENGTH = 16;
 export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
 export const URLS = {
+  CODE: 'https://github.com/ExpeditionRPG/expedition',
   WEBSITE: 'http://expeditiongame.com',
   PRIVACY_POLICY: 'https://expeditiongame.com/privacy',
   QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
@@ -290,18 +291,18 @@ export const COMBAT_DIFFICULTY: {[key: string]: any} = {
     surgePeriod: 4,
   },
   NORMAL: {
-    damageMultiplier: 1.0,
-    maxRoundDamage: 6,
+    damageMultiplier: 0.9,
+    maxRoundDamage: 5,
     surgePeriod: 3,
   },
   HARD: {
     damageMultiplier: 1.2,
-    maxRoundDamage: 7,
+    maxRoundDamage: 6,
     surgePeriod: 3,
   },
   IMPOSSIBLE: {
-    damageMultiplier: 1.4,
-    maxRoundDamage: 8,
+    damageMultiplier: 1.3,
+    maxRoundDamage: 7,
     surgePeriod: 2,
   },
 };

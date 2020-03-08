@@ -97,7 +97,7 @@ class Card extends React.Component<Props, IState> {
             err = Error('Cannot rate web app');
             break;
           default:
-            err = Error('Uknown platform encountered');
+            err = Error('Unknown platform encountered');
         }
         if (err) {
           throw err;
