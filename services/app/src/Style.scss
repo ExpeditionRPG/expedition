@@ -1139,6 +1139,7 @@ body.android .dialog .textfield:focus-within {
       position: absolute;
       top: size(small);
       // iPhone X padding fix
+      top: env(safe-area-inset-top);
       top: calc(size(small) + constant(safe-area-inset-top));
       top: calc(size(small) + env(safe-area-inset-top));
       left: size(small);
