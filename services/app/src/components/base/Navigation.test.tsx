@@ -1,6 +1,6 @@
 import {configure, shallow} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import Navigation, {Props} from './Navigation';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });

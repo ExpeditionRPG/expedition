@@ -2,7 +2,7 @@ import {configure, shallow} from 'enzyme';
 import * as React from 'react';
 import Audio, {ThemeManager, Props} from './Audio';
 import {initialAudioState} from '../../reducers/Audio';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import {INIT_DELAY, AUDIO_COMMAND_DEBOUNCE_MS} from '../../Constants';
 configure({ adapter: new Adapter() });
 

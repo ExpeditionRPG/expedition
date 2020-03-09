@@ -1,5 +1,5 @@
 import {configure, mount as enzymeMount, render as enzymeRender} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
@@ -88,9 +88,9 @@ export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: obj
       execute: (...a: any[]) => {
         const v = store.dispatch(action(...a));
         if (v && v instanceof Promise) {
-          return v.then(() => store.getActions());
+          return v.then(() => store.getActions()) as any;
         }
-        return store.getActions();
+        return store.getActions() as any;
       },
       expect: (...a: any[]) => {
         store.dispatch(action(...a));
@@ -117,7 +117,7 @@ const BASE_ENZYME_STATE = {
   userQuests: {history: {}},
   user: loggedOutUser,
 };
-export function render(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+export function render(e: JSX.Element, state: Partial<AppStateWithHistory> = {}) {
   const store = newMockStore({...BASE_ENZYME_STATE, ...state});
   const root = enzymeRender(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
   return root; // No need to get child elements, as provider does not render as an element.

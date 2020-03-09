@@ -1,6 +1,6 @@
 import {configure, render} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {Partition} from 'shared/schema/Constants';
 import QuestButton, {Props} from './QuestButton';

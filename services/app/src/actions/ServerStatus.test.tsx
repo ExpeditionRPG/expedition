@@ -18,7 +18,7 @@ describe('Fetch ServerStatus', () => {
       message: 'test',
       versions: {android: '999.999.999', ios: '999.999.999', web: '999.999.999'},
     });
-    Action(fetchServerStatus, {}).execute().then((actions) => {
+    Action(fetchServerStatus as any, {}).execute().then((actions: any) => {
       expect(actions.length).toEqual(1);
       expect(actions[0]).toEqual(jasmine.objectContaining({
         type: 'SERVER_STATUS_SET',
@@ -38,7 +38,7 @@ describe('Fetch ServerStatus', () => {
       message: '',
       versions: {android: '999.999.999', ios: '999.999.999', web: '999.999.999'},
     });
-    Action(fetchServerStatus, {}).execute().then((actions) => {
+    Action(fetchServerStatus as any, {}).execute().then((actions: any) => {
       expect(actions.length).toEqual(1);
       expect(actions[0]).toEqual(jasmine.objectContaining({
         type: 'SERVER_STATUS_SET',
@@ -58,7 +58,7 @@ describe('Fetch ServerStatus', () => {
       message: '',
       versions: {android: '0.0.0', ios: '0.0.0', web: '0.0.0'},
     });
-    Action(fetchServerStatus, {}).execute().then((actions) => {
+    Action(fetchServerStatus as any, {}).execute().then((actions: any) => {
       expect(actions.length).toEqual(1);
       expect(actions[0]).toEqual(jasmine.objectContaining({
         type: 'SERVER_STATUS_SET',
@@ -73,7 +73,7 @@ describe('Fetch ServerStatus', () => {
   test('Shows try again prompt and logs the error as well', (done) => {
     fetchMock.get('*', 400);
     const log = jasmine.createSpy('log');
-    Action(fetchServerStatus, {}).execute(log).then((actions) => {
+    Action(fetchServerStatus as any, {}).execute(log).then((actions: any) => {
       expect(actions.length).toEqual(1);
       expect(actions[0]).toEqual(jasmine.objectContaining({
         type: 'SERVER_STATUS_SET',

@@ -25,10 +25,10 @@ describe('Web action', () => {
           a("<quest><roleplay></roleplay></quest>");
         }, 200);
       }));
-      const result = Action(fetchQuestXML, {}).execute({
+      (Action(fetchQuestXML, {}).execute({
         details: {publishedurl: "testurl"},
-      }).then((result) => {
-        const result_types = result.map((r) => r.type);
+      }) as any).then((result: any) => {
+        const result_types = result.map((r: any) => r.type);
         expect(result_types).toContain('QUEST_NODE');
         done();
       }).catch(done.fail);

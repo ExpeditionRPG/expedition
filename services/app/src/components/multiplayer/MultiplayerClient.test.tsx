@@ -5,7 +5,7 @@ import * as React from 'react';
 import MultiplayerClient, {Props} from './MultiplayerClient';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
 import {local} from '../../actions/Multiplayer';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import {initialSettings} from '../../reducers/Settings';
 configure({ adapter: new Adapter() });
 
