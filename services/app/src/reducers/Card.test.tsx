@@ -10,7 +10,7 @@ describe('Card reducer', () => {
 
   test('Sets state and phase on toCard', () => {
     Reducer(card).withState({})
-      .expect(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'}))
+      .expect(toCard({name: 'SEARCH_CARD', phase: 'DISCLAIMER'} as any))
       .toChangeState({name: 'SEARCH_CARD', phase: 'DISCLAIMER'});
   });
 

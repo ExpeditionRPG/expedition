@@ -4,13 +4,12 @@ import {initialSettings} from '../../reducers/Settings';
 import QuestListCard, {Props} from './QuestListCard';
 import {Expansion} from 'shared/schema/Constants';
 import {render} from 'app/Testing';
-import {loggedOutUser} from 'shared/auth/UserState';
 
 const HORROR_SUBSTR = "Horror";
 const FUTURE_SUBSTR = "Future";
 
 describe('QuestListCard', () => {
-  function setup(overrides?: Partial<Props>) {
+  function setup(overrides?: any) {
     const props: Props = {
       quests: TUTORIAL_QUESTS,
       settings: {...initialSettings},

@@ -123,13 +123,13 @@ export function render(e: JSX.Element, state: Partial<AppStateWithHistory> = {})
   return root; // No need to get child elements, as provider does not render as an element.
 }
 const unmounts: Array<() => void> = [];
-export function mountRoot(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+export function mountRoot(e: JSX.Element, state: Partial<AppStateWithHistory> = {}) {
   const store = newMockStore({...BASE_ENZYME_STATE, ...state});
   const root = enzymeMount(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
   unmounts.push(() => root.unmount());
   return root;
 }
-export function mount(e: JSX.Element, state: Partial<AppStateWithHistory>) {
+export function mount(e: JSX.Element, state: Partial<AppStateWithHistory> = {}) {
   return mountRoot(e, state).childAt(0);
 }
 export function unmountAll() {

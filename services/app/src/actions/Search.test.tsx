@@ -58,7 +58,7 @@ describe('Search actions', () => {
         quests: TUTORIAL_QUESTS,
       };
       // Stringify dates, unset defaults
-      const want = {...req, quests: req.quests.map((r) => {
+      const want = {...req, quests: req.quests.map((r: any) => {
         r.tombstone = r.tombstone.toString();
         r.created = r.created.toString();
         r.published = r.published.toString();

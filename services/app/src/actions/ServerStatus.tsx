@@ -8,11 +8,11 @@ import {logEvent} from '../Logging';
 import {ServerStatusState} from '../reducers/StateTypes';
 import {FetchServerStatusResponse, ServerStatusSetAction} from './ActionTypes';
 
-const fetchRetry = require('fetch-retry')(fetch);
+const fetchRetry = require('fetch-retry');
 
-export function fetchServerStatus(log: any = logEvent) {
+export function fetchServerStatus(log: any = logEvent, fetch: any = window.fetch) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    return fetchRetry(AUTH_SETTINGS.URL_BASE + '/announcements', {
+    return fetchRetry(fetch)(AUTH_SETTINGS.URL_BASE + '/announcements', {
       retries: 2,
       retryDelay: 1000,
     })

@@ -31,20 +31,20 @@ describe('DialogsContainer', () => {
 
     describe('onExitQuest', () => {
       test('submits feedback if there is any', (done) => {
-        const {store, dispatchProps} = setup();
+        const {dispatchProps} = setup();
         const matcher = AUTH_SETTINGS.URL_BASE + '/quest/feedback/feedback';
         fetchMock.post(matcher, 200);
-        dispatchProps.onExitQuest({details: TUTORIAL_QUESTS[0]}, initialSettings, loggedOutUser, 'test feedback text').then(() => {
+        dispatchProps.onExitQuest({details: TUTORIAL_QUESTS[0]} as any, initialSettings, loggedOutUser, 'test feedback text').then(() => {
           expect(fetchMock.called(matcher)).toEqual(true);
           done();
         }).catch(done.fail);
       });
 
       test('does not submit feedback if no user feedback', (done) => {
-        const {store, dispatchProps} = setup();
+        const {dispatchProps} = setup();
         const matcher = AUTH_SETTINGS.URL_BASE + '/quest/feedback/feedback';
         fetchMock.post(matcher, 200);
-        dispatchProps.onExitQuest({details: TUTORIAL_QUESTS[0]}, initialSettings, loggedOutUser, '').then(() => {
+        dispatchProps.onExitQuest({details: TUTORIAL_QUESTS[0]} as any, initialSettings, loggedOutUser, '').then(() => {
           expect(fetchMock.called(matcher)).toEqual(false);
           done();
         }).catch(done.fail);

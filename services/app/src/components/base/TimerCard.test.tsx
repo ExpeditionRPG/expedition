@@ -7,7 +7,7 @@ configure({ adapter: new Adapter() });
 
 describe('TimerCard', () => {
 
-  const MP_WAIT = {...initialMultiplayer,
+  const MP_WAIT: any = {...initialMultiplayer,
     clientStatus: {
       'abc|def': {connected: true, waitingOn: {type: 'TIMER'}},
       'asdf|ghjk': {connected: true, waitingOn: null},
@@ -16,7 +16,7 @@ describe('TimerCard', () => {
     instance: 'def',
   }
 
-  function setup(overrides: Partial<Props> = {}): Env {
+  function setup(overrides: Partial<Props> = {}) {
     const props: Props = {
       numLocalPlayers: 3,
       secondaryText: 'secondary text',

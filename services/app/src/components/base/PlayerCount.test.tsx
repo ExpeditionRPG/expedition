@@ -15,7 +15,7 @@ describe('PlayerCount', () => {
       onChange: jasmine.createSpy('onChange'),
       ...overrides,
     };
-    const e = mount(<PlayerCount {...(props as any as Props)} />);
+    const e: any = mount(<PlayerCount {...(props as any as Props)} />);
     return {props, e};
   }
   test('can adjust up', () => {

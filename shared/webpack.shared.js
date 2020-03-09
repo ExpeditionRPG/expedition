@@ -84,7 +84,7 @@ const options = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
       'process.env.OAUTH2_CLIENT_ID': JSON.stringify(
         process.env.OAUTH2_CLIENT_ID ||
-          '201136733984-q6bbbi2p01qfmknl97k0o2ag7utobm88.apps.googleusercontent.com',
+          '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
       ),
     }),
     new Webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // Don't import bloated Moment locales
