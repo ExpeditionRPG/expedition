@@ -7,10 +7,9 @@ function fakeAudioNode(): AudioNode {
     playOnce: jasmine.createSpy('playOnce'),
     fadeIn: jasmine.createSpy('fadeIn'),
     fadeOut: jasmine.createSpy('fadeOut'),
-    hasGain: jasmine.createSpy('hasGain'),
     getVolume: jasmine.createSpy('getVolume'),
     isPlaying: jasmine.createSpy('isPlaying'),
-  };
+  } as any as AudioNode;
 }
 
 jest.useFakeTimers();
@@ -18,7 +17,7 @@ jest.useFakeTimers();
 function fakeAudioNodes(): {[file: string]: AudioNode} {
   const result = {}
   for (let path of getAllMusicFiles()) {
-    result[path] = fakeAudioNode();
+    (result as any)[path] = fakeAudioNode();
   }
   return result;
 }
@@ -41,7 +40,7 @@ describe('ThemeManager', () => {
       let activeNodes = 0;
       for (let k of Object.keys(ns)) {
         if (/.*light.*/.test(k)) {
-          activeNodes += ns[k].playOnce.calls.count();
+          activeNodes += (ns[k].playOnce as any).calls.count();
         }
       }
       expect(activeNodes).toEqual(5);
@@ -54,7 +53,7 @@ describe('ThemeManager', () => {
       let activeNodes = 0;
       for (let k of Object.keys(ns)) {
         if (/.*heavy.*/.test(k)) {
-          activeNodes += ns[k].playOnce.calls.count();
+          activeNodes += (ns[k].playOnce as any).calls.count();
         }
       }
       expect(activeNodes).toEqual(5);
@@ -66,7 +65,7 @@ describe('ThemeManager', () => {
       am.setIntensity(0);
       let activeNodes = 0;
       for (let k of Object.keys(ns)) {
-        activeNodes += ns[k].playOnce.calls.count();
+        activeNodes += (ns[k].playOnce as any).calls.count();
       }
       expect(activeNodes).toEqual(0);
     });
@@ -74,12 +73,12 @@ describe('ThemeManager', () => {
 
   describe('isPaused', () => {
     test('true when paused', () => {
-      const am = new ThemeManager([], fixedRng());
+      const am = new ThemeManager({}, fixedRng());
       am.pause();
       expect(am.isPaused()).toEqual(true);
     });
     test('false when not paused', () => {
-      const am = new ThemeManager([], fixedRng());
+      const am = new ThemeManager({}, fixedRng());
       expect(am.isPaused()).toEqual(false);
       am.pause();
       am.resume();
@@ -90,8 +89,8 @@ describe('ThemeManager', () => {
   describe('pause', () => {
     test('pauses playing audio', () => {
       const ns = fakeAudioNodes();
-      const playing = Object.keys(ns)[0]
-      ns[playing].isPlaying.and.returnValue(true);
+      const playing = Object.keys(ns)[0];
+      (ns[playing].isPlaying as any).and.returnValue(true);
       const am = new ThemeManager(ns, fixedRng());
       am.pause();
       for(let k of Object.keys(ns)) {
@@ -103,7 +102,7 @@ describe('ThemeManager', () => {
       const am = new ThemeManager(ns, fixedRng());
       am.pause();
       for (let k of Object.keys(ns)) {
-        ns[k].isPlaying.calls.reset();
+        (ns[k].isPlaying as any).calls.reset();
       }
       am.pause();
       for(let k of Object.keys(ns)) {
@@ -119,12 +118,12 @@ describe('ThemeManager', () => {
       am.setIntensity(5);
       am.pause();
       for(let k of Object.keys(ns)) {
-        ns[k].playOnce.calls.reset();
+        (ns[k].playOnce as any).calls.reset();
       }
       am.resume()
       let numCalls = 0;
       for(let k of Object.keys(ns)) {
-        numCalls += ns[k].playOnce.calls.count();
+        numCalls += (ns[k].playOnce as any).calls.count();
       }
       expect(numCalls).toEqual(5);
     });
@@ -145,7 +144,7 @@ describe('ThemeManager', () => {
     am.setIntensity(5, 1);
     let fades = 0;
     for(let k of Object.keys(ns)) {
-      fades += ns[k].fadeIn.calls.count();
+      fades += (ns[k].fadeIn as any).calls.count();
     }
     expect(fades).toEqual(1);
   });
@@ -157,7 +156,7 @@ describe('ThemeManager', () => {
     am.setIntensity(5, 1);
     let fades = 0;
     for(let k of Object.keys(ns)) {
-      fades += ns[k].fadeIn.calls.count();
+      fades += (ns[k].fadeIn as any).calls.count();
     }
     expect(fades).toEqual(1);
   });
@@ -169,7 +168,7 @@ describe('ThemeManager', () => {
     am.setIntensity(5);
     let fades = 0;
     for(let k of Object.keys(ns)) {
-      fades += ns[k].fadeOut.calls.count();
+      fades += (ns[k].fadeOut as any).calls.count();
     }
     expect(fades).toEqual(1);
   });
@@ -182,7 +181,7 @@ describe('ThemeManager', () => {
     const am = new ThemeManager(ns, fixedRng());
     am.setIntensity(10);
     for(let k of Object.keys(ns)) {
-      ns[k].playOnce.calls.reset();
+      (ns[k].playOnce as any).calls.reset();
     }
     am.setIntensity(36);
     let heavys = 0;
@@ -190,7 +189,7 @@ describe('ThemeManager', () => {
       if (/light/.test(k)) {
         expect(ns[k].playOnce).not.toHaveBeenCalled();
       } else {
-        heavys += ns[k].playOnce.calls.count();
+        heavys += (ns[k].playOnce as any).calls.count();
       }
     }
     expect(heavys).toEqual(5);
@@ -202,8 +201,8 @@ describe('ThemeManager', () => {
     am.setIntensity(40); // heavy
     am.pause();
     for(let k of Object.keys(ns)) {
-      ns[k].playOnce.calls.reset();
-      ns[k].fadeOut.calls.reset();
+      (ns[k].playOnce as any).calls.reset();
+      (ns[k].fadeOut as any).calls.reset();
     }
 
     am.resume();
@@ -212,7 +211,7 @@ describe('ThemeManager', () => {
       if (/light/.test(k)) {
         expect(ns[k].playOnce).not.toHaveBeenCalled();
       } else {
-        heavys += ns[k].playOnce.calls.count();
+        heavys += (ns[k].playOnce as any).calls.count();
       }
     }
     expect(heavys).toEqual(5);
@@ -223,13 +222,13 @@ describe('ThemeManager', () => {
     const am = new ThemeManager(ns, fixedRng());
     am.setIntensity(15);
     for(let k of Object.keys(ns)) {
-      ns[k].playOnce.calls.reset();
-      ns[k].fadeOut.calls.reset();
+      (ns[k].playOnce as any).calls.reset();
+      (ns[k].fadeOut as any).calls.reset();
     }
     jest.runOnlyPendingTimers();
     let plays = 0;
     for(let k of Object.keys(ns)) {
-        plays += ns[k].playOnce.calls.count();
+        plays += (ns[k].playOnce as any).calls.count();
     }
     expect(plays).toEqual(5);
   });

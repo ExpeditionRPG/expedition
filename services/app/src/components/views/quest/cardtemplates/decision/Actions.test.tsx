@@ -103,7 +103,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
     });
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const actions = Action(initDecision, {
@@ -111,7 +111,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p2a1,
       }).execute({node: TEST_NODE.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
     });
     test('requires fewer successes than maxrolls', () => {
       const actions = Action(initDecision, {
@@ -119,7 +119,7 @@ describe('Decision actions', () => {
         multiplayer: m.s2p5,
       }).execute({node: TEST_NODE_MAX_1.clone()});
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
     });
   });
   describe('computeSuccesses', () => {
@@ -135,7 +135,7 @@ describe('Decision actions', () => {
   });
   describe('selectChecks', () => {
     test('selects a subset if there are more than 3 decisions', () => {
-      const cs: LeveldSkillCheck[] = [];
+      const cs: LeveledSkillCheck[] = [];
       for (const skill of ['athletics', 'knowledge', 'charisma']) {
         for (const persona of ['light', 'dark']) {
           cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill});
@@ -145,7 +145,7 @@ describe('Decision actions', () => {
     });
   });
   describe('computeOutcome', () => {
-    const selected = {difficulty: 'medium', requiredSuccesses: 5};
+    const selected = {difficulty: 'medium', requiredSuccesses: 5} as any;
 
     test('computes success', () => {
       expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.success);
@@ -218,7 +218,7 @@ describe('Decision actions', () => {
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: setup(), roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
@@ -226,7 +226,7 @@ describe('Decision actions', () => {
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: TEST_NODE_COMBAT, roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
       expect(actions[1].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
     });
     test('mid-combat decision remains in combat when resolving', () => {
@@ -235,7 +235,7 @@ describe('Decision actions', () => {
         settings: s.basic,
         multiplayer: m.s2p5
       }).execute({node: TEST_NODE_COMBAT, roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
       expect(actions[1].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
     });
     test('goes to interrupted state when non-combat decision has interrupted event', () => {
@@ -262,11 +262,11 @@ describe('Decision actions', () => {
   describe('toDecisionCard', () => {
     test('goes to MID_COMBAT_DECISION if in combat', () => {
       const actions = Action(toDecisionCard, {card: {phase: CombatPhase.midCombatDecision}}).execute({node: TEST_NODE_COMBAT});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
     });
     test('does pass-thru to toCard if not in combat', () => {
       const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolve});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
     });
   });
 });

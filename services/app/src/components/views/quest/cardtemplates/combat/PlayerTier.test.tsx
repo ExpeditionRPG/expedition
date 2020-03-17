@@ -28,7 +28,7 @@ describe('PlayerTier', () => {
       onTierSumDelta: jasmine.createSpy('onTierSumDelta'),
       onVictory: jasmine.createSpy('onVictory'),
       ...overrides,
-    };
+    } as any;
     const e = mount(<PlayerTier {...props} />);
     return {e, props};
   }
@@ -47,7 +47,7 @@ describe('Combat PlayerTier', () => {
       adventurers: 3,
       localAliveAdventurers: 2,
       contentSets: new Set([Expansion.horror]),
-    });
+    } as any);
     expect(e.text()).toContain('reset your persona');
   });
 });

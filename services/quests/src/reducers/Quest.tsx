@@ -9,7 +9,7 @@ import {
 } from '../actions/ActionTypes';
 import {QuestType} from './StateTypes';
 
-const initialQuestState: QuestType = {};
+export const initialQuestState: QuestType = {};
 
 export function quest(state: QuestType = initialQuestState, action: Redux.Action): QuestType {
   switch (action.type) {

@@ -12,7 +12,7 @@ describe('Remoteify', () => {
 
   test('clearMultiplayerActions', () => {
     function testAction1() {}
-    const remoted = remoteify(testAction1);
+    remoteify(testAction1);
     clearMultiplayerActions();
     expect(getMultiplayerAction('testAction1')).toEqual(undefined);
   });

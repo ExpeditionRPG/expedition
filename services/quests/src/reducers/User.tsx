@@ -1,6 +1,8 @@
 import Redux from 'redux';
-import {loggedOutUser, UserState} from 'shared/auth/UserState';
+import {loggedOutUser as lOU, UserState} from 'shared/auth/UserState';
 import {SetProfileMetaAction} from '../actions/ActionTypes';
+
+export const loggedOutUser = lOU;
 
 export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
   switch (action.type) {

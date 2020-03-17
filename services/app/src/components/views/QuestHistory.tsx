@@ -14,7 +14,7 @@ export interface DispatchProps {
   onReturn: () => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const QuestHistory = (props: Props): JSX.Element => {
   if (Object.keys(props.played).length === 0) {

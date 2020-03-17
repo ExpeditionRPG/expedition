@@ -30,7 +30,7 @@ export interface DispatchProps {
   playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 class QuestAppBar extends React.Component<Props, {}> {
   public state: {menuAnchor: HTMLElement|undefined} = {menuAnchor: undefined};

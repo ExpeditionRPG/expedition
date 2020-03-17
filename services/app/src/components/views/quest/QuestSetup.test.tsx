@@ -2,8 +2,6 @@ import {mount, unmountAll} from 'app/Testing';
 import * as React from 'react';
 import QuestSetup, { Props } from './QuestSetup';
 import {initialSettings} from 'app/reducers/Settings';
-import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {loggedOutUser} from 'shared/auth/UserState';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {Expansion} from 'shared/schema/Constants';
 
@@ -21,7 +19,7 @@ describe('QuestSetup', () => {
       onQuestSelect: jasmine.createSpy('onQuestSelect'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
-    };
+    } as any;
     const e = mount(<QuestSetup {...props} />);
     return {e, props};
   }
@@ -33,7 +31,7 @@ describe('QuestSetup', () => {
   });
 
   test('hides persona and influence instructions when horror contentset disabled', () => {
-    const html = setup({contentSets: new Set()}).e.html();
+    const html = setup({contentSets: new Set()} as any).e.html();
     expect(html).not.toContain(PERSONA_SUBSTR1);
     expect(html).not.toContain(PERSONA_SUBSTR2);
   });

@@ -1,5 +1,5 @@
 import * as Redux from 'redux';
-import {Action, Reducer} from './Testing';
+import {Reducer} from './Testing';
 
 function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {
   if (action.type !== 'TEST_ACTION') {

@@ -16,9 +16,9 @@ function fakeSession(text?: string) {
     },
     getDocument: () => {
       return {
-        getLength: jasmine.createSpy('getLength').and.returnValue(text.length),
+        getLength: jasmine.createSpy('getLength').and.returnValue((text || '').length),
         getValue: jasmine.createSpy('getValue').and.returnValue(text),
-        getAllLines: jasmine.createSpy('getAllLines').and.returnValue(text.split('\n')),
+        getAllLines: jasmine.createSpy('getAllLines').and.returnValue((text || '').split('\n')),
       };
     },
     removeGutterDecoration: jasmine.createSpy('removeGutterDecoration'),
