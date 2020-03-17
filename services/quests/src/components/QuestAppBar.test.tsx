@@ -40,14 +40,14 @@ describe('QuestAppBar', () => {
     test('enabled when quest published', () => {
       const {e} = setup({
         quest: {...TEST_QUEST, published: Date.now()},
-      });
+      } as any);
       expect(e.find('#appview').prop('disabled') || false).toEqual(false);
     });
 
     test('not shown when quest not published', () => {
       const {e} = setup({
         quest: {...TEST_QUEST, published: null},
-      });
+      } as any);
       expect(e.find('#appview')).toHaveLength(0);
     });
   });

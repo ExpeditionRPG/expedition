@@ -2,7 +2,7 @@ import * as React from 'react';
 import {MAX_ADVENTURERS} from '../../Constants';
 import Picker from './Picker';
 
-interface Props extends React.Props<any> {
+export interface Props extends React.Props<any> {
   allPlayers: number;
   localPlayers: number;
   id?: string;

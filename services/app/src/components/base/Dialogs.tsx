@@ -53,7 +53,7 @@ export class ConfirmationDialog<T extends BaseDialogProps> extends React.Compone
   }
 }
 
-interface ExitMultiplayerDialogProps extends BaseDialogProps {
+export interface ExitMultiplayerDialogProps extends BaseDialogProps {
   onExit: () => void;
 }
 
@@ -73,7 +73,7 @@ export class ExitMultiplayerDialog extends ConfirmationDialog<ExitMultiplayerDia
   }
 }
 
-interface DeleteSavedQuestDialogProps extends BaseDialogProps {
+export interface DeleteSavedQuestDialogProps extends BaseDialogProps {
   onDelete: (savedQuest: SavedQuestMeta) => void;
   savedQuest: SavedQuestMeta|null;
 }
@@ -99,7 +99,7 @@ export class DeleteSavedQuestDialog extends ConfirmationDialog<DeleteSavedQuestD
   }
 }
 
-interface MultiplayerStatusDialogProps extends React.Props<any> {
+export interface MultiplayerStatusDialogProps extends React.Props<any> {
   onClose: () => void;
   open: boolean;
   questDetails: Quest;
@@ -140,7 +140,7 @@ export class MultiplayerStatusDialog extends React.Component<MultiplayerStatusDi
   }
 }
 
-interface MultiplayerPeersDialogProps extends React.Props<any> {
+export interface MultiplayerPeersDialogProps extends React.Props<any> {
   onClose: () => void;
   open: boolean;
   multiplayer: MultiplayerState;
@@ -174,7 +174,7 @@ export class MultiplayerPeersDialog extends React.Component<MultiplayerPeersDial
   }
 }
 
-interface ExpansionSelectDialogProps extends React.Props<any> {
+export interface ExpansionSelectDialogProps extends React.Props<any> {
   onExpansionSelect: (contentSets: ContentSetsType, close?: boolean) => void;
   settings: SettingsType;
   open: boolean;
@@ -369,7 +369,7 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
   }
 }
 
-interface SetPlayerCountDialogProps extends React.Props<any> {
+export interface SetPlayerCountDialogProps extends React.Props<any> {
   open: boolean;
   quest: Quest;
   settings: SettingsType;
@@ -454,7 +454,7 @@ export interface DispatchProps {
   playQuest: (quest: Quest) => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const Dialogs = (props: Props): JSX.Element => {
   return (

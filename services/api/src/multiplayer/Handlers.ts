@@ -59,12 +59,12 @@ export function user(
     .then((sessions: SessionClientInstance[]) => {
       return Promise.all(
         sessions.map((sci: SessionClientInstance) => {
-          const id = sci.get('session');
+          const id = sci.get('session') as number;
           const peerCount = Object.keys(getSession(id) || {}).length;
           const meta: Partial<MultiplayerSessionMeta> = {
             id,
             peerCount,
-            secret: sci.get('secret'),
+            secret: sci.get('secret') as string,
           };
 
           if (meta.peerCount === undefined || meta.peerCount <= 0) {
@@ -77,7 +77,7 @@ export function user(
               if (e === null) {
                 return null;
               }
-              meta.lastAction = e.get('timestamp');
+              meta.lastAction = e.get('timestamp') as Date | undefined;
               return getSessionQuestTitle(db, id);
             })
             .then((q: string | null) => {
@@ -234,7 +234,7 @@ function makeMultiEvent(db: Database, session: number, lastEventID: number) {
           return e.get('id') !== null;
         })
         .map((e: EventInstance) => {
-          lastId = Math.max(lastId, e.get('id'));
+          lastId = Math.max(lastId, e.get('id') as number);
           return e.get('json');
         });
       return { type: 'MULTI_EVENT', events, lastId };

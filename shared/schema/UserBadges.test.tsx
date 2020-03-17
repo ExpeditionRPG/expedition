@@ -7,6 +7,6 @@ describe('UserBadge Schema', () => {
   });
   test('is valid when id given', () => {
     const f = new UserBadge(base);
-    expect(f.id).toEqual(base.id);
+    expect((f as any).id).toEqual((base as any).id);
   });
 });

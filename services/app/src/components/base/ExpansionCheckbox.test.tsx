@@ -2,14 +2,14 @@ import {mount} from 'app/Testing';
 import {Expansion} from 'shared/schema/Constants';
 import * as React from 'react';
 
-import ExpansionCheckBox, { Props } from './ExpansionCheckbox';
+import ExpansionCheckBox from './ExpansionCheckbox';
 
 jest.useFakeTimers();
 
 describe('ExpansionCheckBox', () => {
 
-  function setup(contentSets=[]) {
-    const props: Props = {
+  function setup(contentSets: any[] = []) {
+    const props: any = {
       onChange: jest.fn(),
       contentSets: new Set(contentSets),
       value: [],
@@ -20,7 +20,7 @@ describe('ExpansionCheckBox', () => {
 
   test('changes search param values when onChange is clicked', () => {
     const {elem, props} = setup([Expansion.horror]);
-    elem.find('Checkbox#horror').prop('onChange')(Expansion.horror);
+    (elem.find('Checkbox#horror').prop('onChange') as any)(Expansion.horror);
     expect(props.onChange).toHaveBeenCalledWith([Expansion.horror]);
   });
 
@@ -32,7 +32,7 @@ describe('ExpansionCheckBox', () => {
   });
 
   test('default horror and future expansion is selected based on settings', () => {
-    const {elem, props} = setup([Expansion.horror, Expansion.future]);
+    const {props} = setup([Expansion.horror, Expansion.future]);
     jest.runOnlyPendingTimers();
     expect(props.onChange).toHaveBeenCalledWith([Expansion.horror, Expansion.future]);
   });

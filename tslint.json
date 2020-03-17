@@ -37,7 +37,8 @@
       "*/node_modules/**/*",
       "*/app/plugins/**/*",
       "*/app/platforms/**/*",
-      "**/*.md"
+      "**/*.md",
+      ".travis.yml"
     ]
   }
 }

@@ -48,7 +48,7 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
       if (!c.attr('text')) {
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
-      text = c.attr('text');
+      text = c.attr('text') || '';
       choices.push({jsx: generateIconElements(text, theme), idx: choiceCount});
       return;
     }
@@ -114,13 +114,13 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     choices,
     content,
     ctx: node.ctx,
-    icon: node.elem.attr('icon'),
-    title: generateIconElements(node.elem.attr('title'), theme),
+    icon: node.elem.attr('icon') || '',
+    title: generateIconElements(node.elem.attr('title') || '', theme),
   };
 }
 
 const Roleplay = (props: Props, theme: CardThemeType|{}): JSX.Element => {
-  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
+  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme as CardThemeType;
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;

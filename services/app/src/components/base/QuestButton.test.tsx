@@ -1,13 +1,12 @@
 import {configure, render} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {Partition} from 'shared/schema/Constants';
 import QuestButton, {Props} from './QuestButton';
 import {newMockStore} from 'app/Testing';
 import {Provider} from 'react-redux';
 import {loggedOutUser} from 'shared/auth/UserState';
-import {initialSettings} from 'app/reducers/Settings';
 import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });
 
@@ -16,7 +15,7 @@ const Moment = require('moment');
 const NEW_QUEST_ICON_SUBSTR = 'seedling_small.svg';
 
 describe('QuestButton', () => {
-  function setup(overrides?: Partial<Props>) {
+  function setup(overrides?: any) {
     const props: Props = {
       lastLogin: new Date(),
       isOffline: false,
@@ -65,7 +64,7 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(6, 'days'),
+        created: Moment().subtract(6, 'days').unix(),
         official: false,
       })
     }).e.html();
@@ -76,7 +75,7 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment().subtract(30, 'days'),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(20, 'days'),
+        created: Moment().subtract(20, 'days').unix(),
         official: false,
       })
     }).e.html();
@@ -98,7 +97,7 @@ describe('QuestButton', () => {
     const html = setup({
       lastLogin: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment().subtract(30, 'days'),
+        created: Moment().subtract(30, 'days').unix(),
         ratingcount: 6,
         official: false,
       })
@@ -111,7 +110,7 @@ describe('QuestButton', () => {
       lastLogin: Moment().subtract(30, 'days'),
       lastPlayed: Moment(),
       quest: new Quest({...TUTORIAL_QUESTS[0],
-        created: Moment(),
+        created: Moment().unix(),
         official: false,
       })
     }).e.html();

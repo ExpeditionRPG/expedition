@@ -1,5 +1,5 @@
 export function enumValues<T>(e: T): Array<T[keyof T]> {
-  return Object.keys(e).map((k: keyof T) => e[k]);
+  return Object.keys(e).map((k: string) => e[(k as keyof T)]);
 }
 
 export enum Expansion {

@@ -29,7 +29,7 @@ export function incrementLoginCount(db: Database, id: string) {
 export function getUser(db: Database, id: string): Bluebird<User> {
   return db.users
     .findOne({ where: { id } })
-    .then(result => new User(result ? result.dataValues : {}));
+    .then(result => new User(result ? result.get() : {}));
 }
 
 export function maybeGetUserByEmail(
@@ -38,7 +38,7 @@ export function maybeGetUserByEmail(
 ): Bluebird<User | null> {
   return db.users
     .findOne({ where: { email } })
-    .then(result => (result ? new User(result.dataValues) : null));
+    .then(result => (result ? new User(result.get()) : null));
 }
 
 export function subscribeToCreatorsList(mc: any, email: string) {
@@ -111,7 +111,7 @@ export function getUserQuests(
                 delete userQuests[k];
                 return;
               }
-              const qq = Quest.create(q.dataValues);
+              const qq = Quest.create(q.get());
               if (qq instanceof Error) {
                 delete userQuests[k];
                 return;
@@ -145,9 +145,9 @@ export function getUserFeedbacks(
       const questIds = feedbacks.map(({ questid }: any) => questid);
       return getUserQuests(db, userid, questIds).then(quests => {
         return feedbacks.map(feedback => ({
-          rating: feedback.get('rating'),
-          text: feedback.get('text'),
-          quest: quests[feedback.get('questid')],
+          rating: feedback.get('rating') as number,
+          text: feedback.get('text') as string,
+          quest: quests[feedback.get('questid') as string],
         }));
       });
     });
@@ -160,6 +160,6 @@ export function getUserBadges(db: Database, userid: string): Bluebird<Badge[]> {
       order: [['badge', 'ASC']],
     })
     .then(badges => {
-      return badges.map(b => b.get('badge'));
+      return badges.map(b => b.get('badge') as Badge);
     });
 }

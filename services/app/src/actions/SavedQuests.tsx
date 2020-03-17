@@ -106,7 +106,7 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     const xml = node.getRootElem() + '';
     const path = node.ctx.path;
     const seed = node.ctx.seed;
-    const line = parseInt(node.elem.attr('data-line'), 10);
+    const line = parseInt(node.elem.attr('data-line') || '-1', 10);
 
     if (!xml || !path) {
       return Promise.reject(new Error('Could not save quest.'));

@@ -6,10 +6,10 @@ import {initialSettings} from 'app/reducers/Settings';
 describe('Card', () => {
   afterEach(unmountAll);
 
-  const EXTRA_STATE = {_history: [1,2,3], settings: initialSettings};
+  const EXTRA_STATE: any = {_history: [1,2,3], settings: initialSettings};
 
   function setup(overrides?: Partial<Props>) {
-    const props: Props = {
+    const props: any = {
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
     };

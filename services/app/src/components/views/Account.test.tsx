@@ -11,17 +11,17 @@ describe('Account', () => {
     id: '1',
     name: 'nimish',
     email: 'nimish@pesto.tech',
-    lastLogin: null,
+    lastLogin: null as any,
     loginCount: 1,
     lootPoints: 12,
-  };
+  } as any;
 
   const feedback: IUserFeedback = {
     rating: 1,
     text: 'Quest is good',
     quest: {
       lastPlayed: new Date(),
-      details: { id: '2' },
+      details: { id: '2' } as any,
     },
   };
 

@@ -1,14 +1,14 @@
 import * as React from 'react';
-import Button, {Props} from './Button';
-import {mount, unmountAll} from 'app/Testing';
+import Button from './Button';
+import {mount} from 'app/Testing';
 
 describe('Button', () => {
-  function setup(overrides?: Partial<BaseDialogProps>) {
-    const props: Props = {
+  function setup(overrides?: any) {
+    const props: any = {
       onClick: jasmine.createSpy('onClick'),
       ...overrides,
     };
-    return {props, e: mount(<Button {...(props as any as Props)} />)};
+    return {props, e: mount(<Button {...(props as any)} />)};
   }
 
   test('Forwards tap events', () => {

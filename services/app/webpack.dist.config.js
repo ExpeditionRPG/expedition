@@ -17,28 +17,21 @@ const options = {
     new CopyWebpackPlugin([
       { from: 'src/robots.txt' },
       { from: 'src/manifest.json' },
-      { from: 'src/images', to: 'images'},
-      { from: 'src/quests', to: 'quests'},
+      { from: 'src/images', to: 'images' },
+      { from: 'src/quests', to: 'quests' },
       { from: { glob: '**/*.mp3' }, context: 'src/audio', to: './audio' },
-      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: './images' },
+      {
+        from: { glob: '../../shared/images/icons/*.svg' },
+        flatten: true,
+        to: './images',
+      },
+      {
+        from: { glob: '../../shared/images/art/*.png' },
+        flatten: true,
+        to: './images',
+      },
     ]),
   ],
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        sourceMap: true,
-        uglifyOptions: {
-          mangle: {
-            keep_fnames: true, // Critical for multiplayer / remoteify!
-          },
-          compress: {
-            keep_fnames: true, // Critical for multiplayer / remoteify!
-          },
-        },
-      }),
-    ],
-  },
 };
 
 module.exports = Merge(shared, options);

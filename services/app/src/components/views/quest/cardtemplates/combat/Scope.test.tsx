@@ -1,7 +1,6 @@
 import {ENCOUNTERS} from 'app/Encounters';
 import {newMockStore} from 'app/Testing';
 import {initialSettings} from 'app/reducers/Settings';
-import {resolveCombat} from '../Params';
 import {evaluateOp} from 'shared/parse/Context';
 
 // We use defaultContext here instead of combatScope as the combat scope
@@ -24,7 +23,7 @@ describe('Combat State', () => {
         const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
         for (let i = 0; i < 100; i++) {
           const ctx = defaultContext(store.getState);
-          ctx.seed = i; // deterministic
+          ctx.seed = i.toString(); // deterministic
           const pick = evaluateOp('_.randomEnemy()', ctx) ;
           expect(ENCOUNTERS[Object.keys(ENCOUNTERS).filter((key) => ENCOUNTERS[key].name === pick)[0]].set).toMatch(/horror|base/);
         }
@@ -33,7 +32,7 @@ describe('Combat State', () => {
       test('varies within same (seeded) scope', () => {
         const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        ctx.seed = 0;
+        ctx.seed = '0';
         expect(evaluateOp('_.randomEnemy()', ctx) ).not.toEqual(evaluateOp('_.randomEnemy()', ctx) );
       });
     });
@@ -51,7 +50,7 @@ describe('Combat State', () => {
         const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
         for (let i = 0; i < 100; i++) {
           const ctx = defaultContext(store.getState);
-          ctx.seed = i; // deterministic
+          ctx.seed = i.toString(); // deterministic
           const pick = evaluateOp('_.randomEnemyOfTier(1)', ctx) ;
           expect(ENCOUNTERS[Object.keys(ENCOUNTERS).filter((key) => ENCOUNTERS[key].name === pick)[0]].set).toMatch(/horror|base/);
         }
@@ -98,23 +97,21 @@ describe('Combat State', () => {
 
     describe('aliveAdventurers', () => {
       test('returns the numer of alive adventurers during combat', () => {
-        const store = newMockStore();
+        const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {numAliveAdventurers: 3};
+        ctx.templates.combat = {numAliveAdventurers: 3} as any;
         expect(evaluateOp("_.aliveAdventurers()", ctx)).toEqual(3);
       });
     });
 
     describe('currentCombatRound', () => {
       test('returns 0 on the first round / by default', () => {
-        const store = newMockStore({});
-        const ctx = defaultContext(store.getState);
         expect(evaluateOp('_.currentCombatRound()', defaultContext())).toEqual(0);
       });
       test('return 1 on the second round', () => {
-        const store = newMockStore();
+        const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {roundCount: 1};
+        ctx.templates.combat = {roundCount: 1} as any;
         expect(evaluateOp('_.currentCombatRound()', ctx)).toEqual(1);
       });
     });
@@ -126,9 +123,9 @@ describe('Combat State', () => {
         expect(evaluateOp('_.currentCombatTier()', ctx)).toEqual(0);
       });
       test('returns the current combat tier', () => {
-        const store = newMockStore();
+        const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {tier: 7};
+        ctx.templates.combat = {tier: 7} as any;
         expect(evaluateOp('_.currentCombatTier()', ctx)).toEqual(7);
       });
     });
@@ -140,9 +137,9 @@ describe('Combat State', () => {
         expect(evaluateOp('_.isCombatSurgeRound()', ctx)).toEqual(false);
       });
       test('returns true if it is a surge round', () => {
-        const store = newMockStore();
+        const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {roundCount: 4, surgePeriod: 4};
+        ctx.templates.combat = {roundCount: 4, surgePeriod: 4} as any;
         expect(evaluateOp('_.isCombatSurgeRound()', ctx)).toEqual(true);
       });
     });

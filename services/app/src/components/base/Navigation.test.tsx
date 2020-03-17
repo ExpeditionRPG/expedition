@@ -1,13 +1,12 @@
 import {configure, shallow} from 'enzyme';
 import * as React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 import Navigation, {Props} from './Navigation';
-import {Quest} from 'shared/schema/Quests';
 configure({ adapter: new Adapter() });
 
 describe('Navigation', () => {
   function setup(overrides?: Partial<Props>) {
-    const props: Props = {
+    const props: any = {
       cardTheme: 'light',
       card: {name: 'TUTORIAL_QUESTS'},
       questTheme: 'light',
@@ -30,7 +29,7 @@ describe('Navigation', () => {
     expect(e.prop('value')).toEqual(props.card.name);
   });
   test('safely handles an unknown card name', () => {
-    const {props, e} = setup({card: {name: 'RANDOM_NAME'}});
+    const {e} = setup({card: {name: 'RANDOM_NAME'}} as any);
     expect(e.html()).toContain('Tutorial');
   });
 });

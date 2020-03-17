@@ -1,9 +1,6 @@
 import {mount, unmountAll} from 'app/Testing';
 import * as React from 'react';
 import SplashScreen, { Props } from './SplashScreen';
-import {initialSettings} from '../../reducers/Settings';
-import {initialMultiplayer} from '../../reducers/Multiplayer';
-import {loggedOutUser} from 'shared/auth/UserState';
 
 jest.useFakeTimers();
 
@@ -17,7 +14,7 @@ describe('SplashScreen', () => {
       onPlayerCountSelect: jest.fn(),
       onPlayerManualSelect: jest.fn(),
       ...overrides,
-    };
+    } as any;
     const e = mount(<SplashScreen {...props} />);
     return {e, props};
   }
@@ -25,7 +22,7 @@ describe('SplashScreen', () => {
   test('Calls onPlayerCountSelect on tap and hold', () => {
     const {e, props} = setup();
     const mtt = e.find('MultiTouchTrigger');
-    mtt.prop('onTouchChange')(3);
+    (mtt.prop('onTouchChange') as any)(3);
     jest.runOnlyPendingTimers();
     expect(props.onPlayerCountSelect).toHaveBeenCalledWith(3);
   });
@@ -33,9 +30,9 @@ describe('SplashScreen', () => {
   test('Clears player count select timeout when component unmounts', () => {
     const {e, props} = setup();
     const mtt = e.find('MultiTouchTrigger');
-    mtt.prop('onTouchChange')(1);
+    (mtt.prop('onTouchChange') as any)(1);
     unmountAll();
     jest.runOnlyPendingTimers();
     expect(props.onPlayerCountSelect).not.toHaveBeenCalled();
-  }
+  });
 });

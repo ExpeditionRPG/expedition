@@ -34,14 +34,18 @@ describe('LocalStorage', () => {
           throw Error('QUOTA_EXCEEDED_ERR');
         }
       };
-      const result = checkStorageFreeBytes(() => return {setItem});
+      const result = checkStorageFreeBytes(() => {
+        return {setItem} as any;
+      });
       expect(result).toEqual(val - (val % 1000));
     });
     test('converges when all errors', () => {
       const setItem = (k: string, v: string) => {
         throw Error('QUOTA_EXCEEDED_ERR');
       };
-      const result = checkStorageFreeBytes(() => return {setItem});
+      const result = checkStorageFreeBytes(() => {
+        return {setItem} as any;
+      });
       expect(result).toEqual(0);
     });
   });

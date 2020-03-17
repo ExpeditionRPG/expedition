@@ -1,7 +1,5 @@
 import * as React from 'react';
-import {Quest} from 'shared/schema/Quests';
 import {TUTORIAL_QUESTS} from '../../Constants';
-import {SearchParams} from '../../reducers/StateTypes';
 import {initialSettings} from '../../reducers/Settings';
 import {loggedOutUser} from 'shared/auth/UserState';
 import {testLoggedInUser} from '../../reducers/User.test';
@@ -10,8 +8,6 @@ import Search, {Props} from './Search';
 import {TEST_SEARCH} from '../../reducers/TestData';
 import {Expansion} from 'shared/schema/Constants';
 
-const Moment = require('moment');
-
 describe('Search', () => {
 
   afterEach(unmountAll);
@@ -19,6 +15,7 @@ describe('Search', () => {
   function setup(overrides?: Partial<Props>) {
     const props: Props = {
       params: TEST_SEARCH,
+      players: 2,
       settings: initialSettings,
       contentSets: new Set([Expansion.horror]),
       user: loggedOutUser,
@@ -56,7 +53,7 @@ describe('Search', () => {
         loggedIn: true,
       },
       results: null,
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).toHaveBeenCalled();
   });
@@ -65,7 +62,7 @@ describe('Search', () => {
       user: {
         loggedIn: false,
       },
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).not.toHaveBeenCalled();
   });
@@ -75,7 +72,7 @@ describe('Search', () => {
         loggedIn: true,
       },
       results: ['a'],
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).not.toHaveBeenCalled();
   });

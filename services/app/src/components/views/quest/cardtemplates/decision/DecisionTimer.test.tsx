@@ -76,7 +76,7 @@ describe('DecisionTimer', () => {
         TEST_LEVELED_CHECKS[0]
       ],
     };
-    const {props, e} = setup({node});
+    const {e} = setup({node});
     expect(e.text()).toContain(TEST_LEVELED_CHECKS[1].skill);
     expect(e.text()).toContain(TEST_LEVELED_CHECKS[2].skill);
   });

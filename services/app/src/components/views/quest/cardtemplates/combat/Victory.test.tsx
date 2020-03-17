@@ -12,13 +12,13 @@ const HORROR_SUBSTR = CONTENT_SET_FULL_NAMES.horror;
 const FUTURE_SUBSTR = CONTENT_SET_FULL_NAMES.future;
 
 describe('Combat victory', () => {
-  const TEST_VP: VictoryParameters = {
+  const TEST_VP = {
     heal: MAX_ADVENTURER_HEALTH,
     loot: true,
     xp: true,
   };
 
-  function setup(overrides?: Partial<Props>) {
+  function setup(overrides?: any) {
     const props: Props = {
       combat: {
         ...EMPTY_COMBAT_STATE,
@@ -42,17 +42,17 @@ describe('Combat victory', () => {
   });
   test('shows healing if healing given', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, heal: MAX_ADVENTURER_HEALTH}
+      victoryParameters: {...TEST_VP, heal: MAX_ADVENTURER_HEALTH}
     }).e.text()).toContain(HEAL_SUBSTR);
   });
   test('hides healing if suppressed', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, heal: 0}
+      victoryParameters: {...TEST_VP, heal: 0}
     }).e.text()).not.toContain(HEAL_SUBSTR);
   });
   test('shows loot if loot given', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, loot: true},
+      victoryParameters: {...TEST_VP, loot: true},
       combat: {
         ...EMPTY_COMBAT_STATE,
         loot: [{count: 1, tier: 1}],
@@ -61,17 +61,17 @@ describe('Combat victory', () => {
   });
   test('hides loot if loot suppressed', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, loot: false}
+      victoryParameters: {...TEST_VP, loot: false}
     }).e.text()).not.toContain(LOOT_SUBSTR);
   });
   test('shows levelup if not suppressed and the party should level up', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, xp: true}
+      victoryParameters: {...TEST_VP, xp: true}
     }).e.text()).toContain(LEVEL_SUBSTR);
   });
   test('hides levelup if suppressed', () => {
     expect(setup({
-      victoryParameters: {..TEST_VP, xp: false}
+      victoryParameters: {...TEST_VP, xp: false}
     }).e.text()).not.toContain(LEVEL_SUBSTR);
   });
   test('shows horror tips if horror expansion', () => {

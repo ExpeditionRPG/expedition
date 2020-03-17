@@ -2,12 +2,12 @@ import * as React from 'react';
 import {configure, shallow} from 'enzyme';
 import TimerCard, {Props} from './TimerCard';
 import {initialMultiplayer} from '../../reducers/Multiplayer';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 
 describe('TimerCard', () => {
 
-  const MP_WAIT = {...initialMultiplayer,
+  const MP_WAIT: any = {...initialMultiplayer,
     clientStatus: {
       'abc|def': {connected: true, waitingOn: {type: 'TIMER'}},
       'asdf|ghjk': {connected: true, waitingOn: null},
@@ -16,7 +16,7 @@ describe('TimerCard', () => {
     instance: 'def',
   }
 
-  function setup(overrides: Partial<Props> = {}): Env {
+  function setup(overrides: Partial<Props> = {}) {
     const props: Props = {
       numLocalPlayers: 3,
       secondaryText: 'secondary text',

@@ -5,7 +5,7 @@ export interface CardType {
 
 export interface TranslationsType {
   // Settings
-  AdjectiveAfterNoun: boolean;
+  AdjectiveAfterNoun?: boolean;
   tierwordorder?: string;
   // Mapping of English string -> translation
   [key: string]: string | boolean | undefined;

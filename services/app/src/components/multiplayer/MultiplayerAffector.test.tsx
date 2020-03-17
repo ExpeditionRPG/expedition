@@ -2,12 +2,12 @@ import {newMockStore} from '../../Testing';
 import {configure, shallow} from 'enzyme';
 import * as React from 'react';
 import MultiplayerAffector, {Props} from './MultiplayerAffector';
-import Adapter from 'enzyme-adapter-react-16';
+import * as Adapter from 'enzyme-adapter-react-16';
 configure({ adapter: new Adapter() });
 
 describe('MultiplayerAffector', () => {
-  function setup(overrides: Partial<Props> = {}): Env {
-    const store = newMockStore();
+  function setup(overrides: Partial<Props> = {}): any {
+    const store = newMockStore({});
     const props: Props = {
       id: "test",
       abortOnScroll: true,
@@ -25,11 +25,11 @@ describe('MultiplayerAffector', () => {
   }
 
   beforeEach(() => {
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => cb());
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => cb());
   });
 
   afterEach(() => {
-    window.requestAnimationFrame.mockRestore();
+    (window.requestAnimationFrame as any).mockRestore();
   });
 
   test.skip('Publishes interactions for remote clients', () => { /* TODO */ });

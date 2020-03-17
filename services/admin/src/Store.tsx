@@ -10,7 +10,7 @@ export let store: Redux.Store<any>;
 
 // from https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const initialState = {};
+const initialState: any = {};
 const middleware = [thunk];
 store = createStore(adminApp, initialState, composeEnhancers(applyMiddleware(...middleware)));
 

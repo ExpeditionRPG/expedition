@@ -15,7 +15,7 @@ export interface DispatchProps {
   loadAudio: () => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 export default class Audio extends React.Component<Props, {}> {
   constructor(props: Props) {

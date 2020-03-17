@@ -2,7 +2,7 @@ import { send } from './Mail';
 
 describe('mail', () => {
   test('sends simple mail with no bcc', done => {
-    const sendMail = opts => {
+    const sendMail = (opts: any) => {
       expect(opts).toEqual(
         jasmine.objectContaining({
           from: '"Expedition" <expedition@fabricate.io>',
@@ -24,7 +24,7 @@ describe('mail', () => {
   });
 
   test('when configured, sends copy via bcc', done => {
-    const sendMail = opts => {
+    const sendMail = (opts: any) => {
       expect(opts.bcc).toEqual('todd@fabricate.io');
       return Promise.resolve(null);
     };
@@ -36,7 +36,7 @@ describe('mail', () => {
   });
 
   test('returns send errors via promise', done => {
-    const sendMail = opts => {
+    const sendMail = (opts: any) => {
       return Promise.reject(new Error('test error'));
     };
     send(['testto'], 'test subject', 'test message', false, false, sendMail)
@@ -50,7 +50,7 @@ describe('mail', () => {
   });
 
   test('prefixes subject when beta', done => {
-    const sendMail = opts => {
+    const sendMail = (opts: any) => {
       expect(opts.subject).toContain('[BETA]');
       return Promise.resolve(null);
     };
@@ -62,7 +62,7 @@ describe('mail', () => {
   });
 
   test('does not indicate beta when non-beta', done => {
-    const sendMail = opts => {
+    const sendMail = (opts: any) => {
       expect(opts.subject).not.toContain('[BETA]');
       return Promise.resolve(null);
     };

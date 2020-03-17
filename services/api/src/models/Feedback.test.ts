@@ -14,6 +14,11 @@ import {
 import { getQuest } from './Quests';
 import { feedback as fb, quests as q, testingDBWithState } from './TestData';
 
+interface DoneFn {
+  (): void;
+  fail: (error: Error) => void;
+}
+
 describe('feedback', () => {
   let ms: MailService;
   beforeEach(() => {
@@ -31,7 +36,9 @@ describe('feedback', () => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({ ...fb.basic, questid: '' });
       testingDBWithState([q.basic])
-        .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
+        .then(tdb =>
+          submitFeedback(tdb, ms, 'feedback', feedback, '', [], null),
+        )
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
@@ -47,7 +54,9 @@ describe('feedback', () => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({ ...fb.basic });
       testingDBWithState([q.basic])
-        .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
+        .then(tdb =>
+          submitFeedback(tdb, ms, 'feedback', feedback, '', [], null),
+        )
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
@@ -65,7 +74,9 @@ describe('feedback', () => {
       const msSendSpy = spyOn(ms, 'send');
       const feedback = new Feedback({ ...fb.basic });
       testingDBWithState([q.basic])
-        .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
+        .then(tdb =>
+          submitFeedback(tdb, ms, 'feedback', feedback, '', [], null),
+        )
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
@@ -87,7 +98,7 @@ describe('feedback', () => {
     test('sends report with quest ID and feedback user email', done => {
       const msSendSpy = spyOn(ms, 'send');
       testingDBWithState([q.basic])
-        .then(tdb => submitReportQuest(tdb, ms, fb.report, ''))
+        .then(tdb => submitReportQuest(tdb, ms, fb.report, '', null))
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateReportQuestEmail],
@@ -106,7 +117,7 @@ describe('feedback', () => {
     test('does NOT send to the quest author', done => {
       const msSendSpy = spyOn(ms, 'send');
       testingDBWithState([q.basic])
-        .then(tdb => submitReportQuest(tdb, ms, fb.report, ''))
+        .then(tdb => submitReportQuest(tdb, ms, fb.report, '', null))
         .then(() => {
           for (const call of msSendSpy.calls.all()) {
             expect(call.args[0]).not.toContain(fb.report.email);
@@ -118,7 +129,7 @@ describe('feedback', () => {
     test('rejects reports on nonexistant quest', done => {
       const report = new Feedback({ ...fb.report, questid: 'notavalidquest' });
       testingDBWithState([q.basic])
-        .then(tdb => submitReportQuest(tdb, ms, report, ''))
+        .then(tdb => submitReportQuest(tdb, ms, report, '', null))
         .then(done.fail)
         .catch(() => {
           done();
@@ -133,7 +144,7 @@ describe('feedback', () => {
         questid: 'nonexistantquest',
       });
       testingDBWithState([q.basic])
-        .then(tdb => submitRating(tdb, ms, rating))
+        .then(tdb => submitRating(tdb, ms, rating, null))
         .catch((e: Error) => {
           expect(e.message.toLowerCase()).toContain('no such quest');
           done();
@@ -146,13 +157,13 @@ describe('feedback', () => {
       testingDBWithState([q.basic])
         .then(tdb => {
           db = tdb;
-          return submitRating(db, ms, fb.rating);
+          return submitRating(db, ms, fb.rating, null);
         })
         .then(() =>
           getFeedback(db, Partition.expeditionPublic, 'questid', 'userid'),
         )
         .then((result: FeedbackInstance) => {
-          const feedbackResult = new Feedback(result.dataValues);
+          const feedbackResult = new Feedback(result.get());
           feedbackResult.setDefaults = [];
           expect(feedbackResult).toEqual(fb.rating);
           done();
@@ -167,14 +178,14 @@ describe('feedback', () => {
       testingDBWithState([q.basic])
         .then(tdb => {
           db = tdb;
-          return submitRating(db, ms, fb.rating);
+          return submitRating(db, ms, fb.rating, null);
         })
-        .then(() => submitRating(db, ms, rating2))
+        .then(() => submitRating(db, ms, rating2, null))
         .then(() =>
           getFeedback(db, Partition.expeditionPublic, 'questid', 'userid'),
         )
         .then((result: FeedbackInstance) => {
-          const feedbackResult = new Feedback(result.dataValues);
+          const feedbackResult = new Feedback(result.get());
           feedbackResult.setDefaults = [];
           expect(feedbackResult).toEqual(rating2);
           return getQuest(db, Partition.expeditionPublic, 'questid');
@@ -196,11 +207,11 @@ describe('feedback', () => {
       testingDBWithState([q.basic])
         .then(tdb => {
           db = tdb;
-          return submitRating(db, ms, rating1);
+          return submitRating(db, ms, rating1, null);
         })
-        .then(() => submitRating(db, ms, rating2))
-        .then(() => submitRating(db, ms, rating3))
-        .then(() => submitRating(db, ms, ratingNull))
+        .then(() => submitRating(db, ms, rating2, null))
+        .then(() => submitRating(db, ms, rating3, null))
+        .then(() => submitRating(db, ms, ratingNull, null))
         .then(() => getQuest(db, Partition.expeditionPublic, 'questid'))
         .then(quest => {
           expect(quest.ratingcount).toEqual(3); // Null is not counted
@@ -230,9 +241,9 @@ describe('feedback', () => {
       testingDBWithState([q.basic])
         .then(tdb => {
           db = tdb;
-          return submitRating(db, ms, rating1);
+          return submitRating(db, ms, rating1, null);
         })
-        .then(() => submitRating(db, ms, rating2))
+        .then(() => submitRating(db, ms, rating2, null))
         .then(() => {
           for (const call of msSendSpy.calls.all()) {
             for (const arg of call.args) {

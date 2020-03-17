@@ -7,6 +7,7 @@ const cheerio: any = require('cheerio');
 class CrawlTest extends CrawlerBase<Context> {
   public efn: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null;
   public nfn: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null;
+  public wfn: ((q: CrawlEntry<Context>, errors: Error[], line: number) => any)|null;
 
   constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null,
               onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null,

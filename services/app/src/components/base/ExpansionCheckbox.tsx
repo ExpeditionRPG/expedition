@@ -28,7 +28,7 @@ const styles = {
   checked: {},
 };
 
-interface Props extends IConnectProps {
+export interface Props extends IConnectProps {
   classes: any;
 }
 

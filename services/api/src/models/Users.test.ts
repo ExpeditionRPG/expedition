@@ -126,7 +126,7 @@ describe('users', () => {
           return maybeGetUserByEmail(tdb, u.basic.email);
         })
         .then(user => {
-          expect(user.id).toEqual(u.basic.id);
+          expect((user || { id: null }).id).toEqual(u.basic.id);
           done();
         })
         .catch(done.fail);

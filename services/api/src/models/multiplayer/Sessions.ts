@@ -44,7 +44,7 @@ export function getSessionQuestTitle(
       }
 
       try {
-        const event = JSON.parse(e.get('json')).event;
+        const event = JSON.parse(e.get('json') as any).event as any;
         const args = JSON.parse(event.args);
         return args.title || null;
       } catch (e) {

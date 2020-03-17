@@ -27,7 +27,7 @@ export default class MultiplayerClient extends React.Component<Props, {}> {
     super(props);
     this.props.onRegisterHandler(this);
 
-    this.intervalHandler = setInterval(() => {
+    this.intervalHandler = window.setInterval(() => {
       // We send a periodic status to the server to keep it advised
       // of our connection and event ID state.
       if (this.props.multiplayer.connected) {

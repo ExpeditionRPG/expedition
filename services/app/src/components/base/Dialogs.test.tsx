@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Props,
   TextAreaDialog,
   BaseDialogProps,
   ConfirmationDialog,
@@ -17,7 +18,7 @@ import {loggedOutUser} from 'shared/auth/UserState';
 import {initialSettings} from 'app/reducers/Settings';
 import {TUTORIAL_QUESTS} from 'app/Constants';
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {initialMultiplayerCounters} from 'app/multiplayer/Connection';
+import {initialMultiplayerCounters} from 'app/multiplayer/Counters';
 import {Quest} from 'shared/schema/Quests';
 import {mount, unmountAll} from 'app/Testing';
 
@@ -39,8 +40,8 @@ describe('Dialogs', () => {
         this.actionSpy();
       }
     }
-    function setup(overrides?: Partial<BaseDialogProps>) {
-      const props: Props = {
+    function setup(overrides?: any) {
+      const props: any = {
         open: true,
         onClose: jasmine.createSpy('onClose'),
         ...overrides,
@@ -54,12 +55,12 @@ describe('Dialogs', () => {
     });
     test('calls onAction on action tap', () => {
       const {e} = setup();
-      e.find('#actionButton').hostNodes().prop('onClick')();
-      expect(e.instance().actionSpy).toHaveBeenCalledTimes(1);
+      (e.find('#actionButton').hostNodes().prop('onClick') as any)();
+      expect((e.instance() as any).actionSpy).toHaveBeenCalledTimes(1);
     });
     test('calls onClose on cancel tap', () => {
       const {props, e} = setup();
-      e.find('#closeButton').hostNodes().prop('onClick')();
+      (e.find('#closeButton').hostNodes().prop('onClick') as any)();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -79,7 +80,7 @@ describe('Dialogs', () => {
       }
     }
     function setup(overrides?: Partial<BaseDialogProps>) {
-      const props: Props = {
+      const props: any = {
         open: true,
         onClose: jasmine.createSpy('onClose'),
         ...overrides,
@@ -96,34 +97,34 @@ describe('Dialogs', () => {
       // Because we're testing with enzyme, renders don't happen typical to
       // component lifecycle. Here we check that a rerender should occur
       // (i.e. the update is not suppressed when the text input value changes).
-      expect(e.instance().shouldComponentUpdate(props, {text: 'asdf'})).toEqual(true);
+      expect((e.instance() as any).shouldComponentUpdate(props, {text: 'asdf'})).toEqual(true);
 
-      e.find('TextField').prop('onChange')({target: {value: 'asdf'}});
-      e.find('#submitButton').hostNodes().prop('onClick')();
-      expect(e.instance().onSubmitSpy).toHaveBeenCalledWith({text: 'asdf'});
+      (e as any).find('TextField').prop('onChange')({target: {value: 'asdf'}});
+      (e.find('#submitButton').hostNodes().prop('onClick') as any)();
+      expect((e.instance() as any).onSubmitSpy).toHaveBeenCalledWith({text: 'asdf'});
     });
     test('calls onSubmit on submission', () => {
       const {e} = setup();
-      e.find('#submitButton').hostNodes().prop('onClick')();
-      expect(e.instance().onSubmitSpy).toHaveBeenCalledTimes(1);
+      (e.find('#submitButton').hostNodes().prop('onClick') as any)();
+      expect((e.instance() as any).onSubmitSpy).toHaveBeenCalledTimes(1);
     });
     test('clears text on submission', () => {
       const {e} = setup();
-      e.find('TextField').prop('onChange')({target: {value: 'asdf'}});
+      (e as any).find('TextField').prop('onChange')({target: {value: 'asdf'}} as any);
       expect(e.find('TextField').render().text()).toContain("asdf");
-      e.find('#submitButton').hostNodes().prop('onClick')();
+      (e.find('#submitButton').hostNodes().prop('onClick') as any)();
       expect(e.find('TextField').render().text()).not.toContain("asdf");
     });
     test('calls onClose on Cancel tap', () => {
       const {props, e} = setup();
-      e.find('#cancelButton').hostNodes().prop('onClick')();
+      (e.find('#cancelButton').hostNodes().prop('onClick') as any)();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('MultiplayerStatusDialog', () => {
-    function setup(counters?: Partial<MultiplayerCounters>) {
-      const props: Props = {
+    function setup(counters?: any) {
+      const props: any = {
         onClose: jasmine.createSpy('onClose'),
         onSendReport: jasmine.createSpy('onSendReport'),
         open: true,
@@ -141,7 +142,7 @@ describe('Dialogs', () => {
   });
 
   describe('MultiplayerPeersDialog', () => {
-    function setup(overrides?: Partial<MultiplayerPeersDialogProps>) {
+    function setup(overrides?: any) {
       const props: Props = {
         onClose: jasmine.createSpy('onClose'),
         open: true,
@@ -165,9 +166,9 @@ describe('Dialogs', () => {
   });
 
   describe('ExpansionSelectDialog', () => {
-    function setup(overrides?: Partial<ExpansionSelectDialogProps>) {
-      const props: Props = {
-        onExpansionSelect: jasmine.createSpy('onExpansionSelect');
+    function setup(overrides?: any) {
+      const props: any = {
+        onExpansionSelect: jasmine.createSpy('onExpansionSelect'),
         settings: {contentSets: []},
         open: true,
         ...overrides,
@@ -177,24 +178,24 @@ describe('Dialogs', () => {
 
     test('sets no content sets if base game', () => {
       const {props, e} = setup();
-      e.find('#base').hostNodes().prop('onClick')();
+      (e.find('#base').hostNodes().prop('onClick') as any)();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: false, future: false});
     });
     test('sets horror content set', () => {
       const {props, e} = setup();
-      e.find('#horror').hostNodes().prop('onClick')();
+      (e.find('#horror').hostNodes().prop('onClick') as any)();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true, future: false});
     });
     test('sets horror + future content sets', () => {
       const {props, e} = setup();
-      e.find('#future').hostNodes().prop('onClick')();
+      (e.find('#future').hostNodes().prop('onClick') as any)();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({horror: true, future: true});
     });
     test('has buttons for all content sets', () => {
-      const {props, e} = setup();
+      const {e} = setup();
       const sets: {[set: string]: boolean} = {};
       TUTORIAL_QUESTS.map((q) => {
-        const setAttrs = Object.keys(q).filter((k) => k.startsWith('expansion')).map((k) => k.match(/^expansion(.*)/)[1]);
+        const setAttrs = Object.keys(q).filter((k) => k.startsWith('expansion')).map((k) => (k.match(/^expansion(.*)/) as any)[1]);
         for (const a of setAttrs) {
           sets[a] = true;
         }
@@ -208,7 +209,7 @@ describe('Dialogs', () => {
 
   describe('SetPlayerCountDialog', () => {
     function setup(overrides?: Partial<SetPlayerCountDialogProps>) {
-      const props: Props = {
+      const props: any = {
         open: true,
         quest: new Quest(TUTORIAL_QUESTS[0]),
         settings: {...initialSettings},
@@ -221,26 +222,26 @@ describe('Dialogs', () => {
       return {props, e: mount(<SetPlayerCountDialog {...(props as any as SetPlayerCountDialogProps)} />)};
     }
     test('enables play under normal circumstances', () => {
-      const {props, e} = setup();
+      const {e} = setup();
       expect(e.find('#play').hostNodes().prop('disabled')).toEqual(false);
     })
     test('can adjust player count', () => {
       const {props, e} = setup();
-      e.find('PlayerCount#playerCount').prop('onChange')(0);
+      (e.find('PlayerCount#playerCount').prop('onChange') as any)(0);
       expect(props.onPlayerChange).toHaveBeenCalledWith(0);
     });
     test('can enable/disable multitouch', () => {
       const {props, e} = setup();
-      e.find('#multitouch').hostNodes().find('Button').prop('onClick')();
+      (e.find('#multitouch').hostNodes().find('Button').prop('onClick') as any)();
       expect(props.onMultitouchChange).toHaveBeenCalledWith(false);
     });
     test('shows requirement if player count is outside of quest num players range and disables play', () => {
-      const {props, e} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
+      const {e} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
       expect(e.find('DialogContent').render().text()).toContain('Quest requires');
       expect(e.find('#play').hostNodes().prop('disabled')).toEqual(true);
     });
     test('indicates required expansion (and hides Play) if not properly configured', () => {
-      const {props, e} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})});
+      const {e} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], expansionhorror: true})});
       expect(e.find('DialogContent').render().text()).toContain('expansion is required');
       expect(e.find('#play').length).toEqual(0);
     });
@@ -248,7 +249,7 @@ describe('Dialogs', () => {
 
   describe('TooManyPlayersDialog', () => {
     function setup(overrides?: Partial<BaseDialogProps>) {
-      const props: Props = {
+      const props: any = {
         open: true,
         onClose: jasmine.createSpy('onClose'),
         ...overrides,
@@ -264,7 +265,7 @@ describe('Dialogs', () => {
 
     test('calls onClose on Cancel tap', () => {
       const {props, e} = setup();
-      e.find('#cancelButton').hostNodes().prop('onClick')();
+      (e.find('#cancelButton').hostNodes().prop('onClick') as any)();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });

@@ -1,8 +1,6 @@
 import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {DifficultyType, FontSizeType, MultiplayerState} from 'app/reducers/StateTypes';
 import {Action, newMockStore} from 'app/Testing';
 import {fakeConnection} from 'app/multiplayer/Testing';
-import {getMultiplayerConnection} from 'app/multiplayer/Connection';
 import {defaultContext} from '../Template';
 import {CombatPhase} from 'app/Constants';
 import {ParserNode} from '../TemplateTypes';
@@ -26,12 +24,12 @@ const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 const TEST_NODE_EASIER = new ParserNode(cheerio.load('<combat><e>Giant Rat</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
-const checkNodeIntegrity = jest.fn((before: ParserNode|null, after: ParserNode|null) {
+const checkNodeIntegrity = jest.fn((before: ParserNode|null, after: ParserNode|null) => {
   // Pass null/null to ignore the integrity check
   if (before === null && after === null) {
     return;
   }
-  expect(before.ctx.seed).toEqual(after.ctx.seed);
+  expect((before as any).ctx.seed).toEqual((after as any).ctx.seed);
 });
 
 describe('Combat actions', () => {
@@ -69,8 +67,8 @@ describe('Combat actions', () => {
     const actions = Action(initCombat, {settings: s.basic}).execute({node: TEST_NODE.clone()});
 
     test('triggers nav to combat start', () => {
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.drawEnemies);
-      expect(actions.filter((a) => a.type === 'NAVIGATE').length).toEqual(1);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.drawEnemies);
+      expect(actions.filter((a: any) => a.type === 'NAVIGATE').length).toEqual(1);
       checkNodeIntegrity(null, null); // skip
     });
 
@@ -166,7 +164,7 @@ describe('Combat actions', () => {
     const runTest = (overrides: any) => {
       const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
       const conn = fakeConnection();
-      const store = newMockStore({multiplayer: m.s2p5}, conn);
+      const store = newMockStore({multiplayer: m.s2p5}, conn as any);
       store.dispatch(handleCombatTimerStop({
         elapsedMillis: 1000,
         node: startNode,
@@ -188,7 +186,7 @@ describe('Combat actions', () => {
       const startNode = newCombatNode(TEST_NODE_EASIER); // Caution: this resets the multiplayer connection
       startNode.ctx.templates.combat.seed = "abc";
       const conn = fakeConnection();
-      const store = newMockStore({multiplayer: m.s2p5}, conn);
+      const store = newMockStore({multiplayer: m.s2p5}, conn as any);
 
       let node = startNode;
       const hist: {[dmg: string]: number} = {};
@@ -200,7 +198,7 @@ describe('Combat actions', () => {
           multiplayer: m.s2p5,
           seed: '',
           settings: s.basic,
-        }));
+        } as any));
         const actions = store.getActions();
         store.clearActions();
         for (let j of actions) {
@@ -228,7 +226,7 @@ describe('Combat actions', () => {
     test('random rolls change significantly between rounds', () => {
       const startNode = newCombatNode(); // Caution: this resets the multiplayer connection
       const conn = fakeConnection();
-      const store = newMockStore({multiplayer: m.s2p5}, conn);
+      const store = newMockStore({multiplayer: m.s2p5}, conn as any);
 
       let node = startNode;
       node.ctx.templates.combat.seed = 'fixed_seed_so_not_flaky';
@@ -241,7 +239,7 @@ describe('Combat actions', () => {
           multiplayer: m.s2p5,
           seed: '',
           settings: s.basic,
-        }));
+        } as any));
         const actions = store.getActions();
         store.clearActions();
         for (let j of actions) {
@@ -439,7 +437,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -454,7 +452,7 @@ describe('Combat actions', () => {
       </combat>`)('combat'), defaultContext());
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].type).toEqual('QUEST_NODE');
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.resolveAbilities);
       checkNodeIntegrity(node, actions[1].node);
     });
 
@@ -472,7 +470,7 @@ describe('Combat actions', () => {
       node = Action(initCombat as any).execute({node: node.clone(), settings: s.basic})[1].node;
       const actions = Action(handleResolvePhase).execute({node});
       expect(actions[1].node.elem.text()).toEqual('expected');
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatRoleplay);
+      expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatRoleplay);
 
       // We expect node integrity to be broken when moving from combat to roleplay.
       checkNodeIntegrity(null, null);

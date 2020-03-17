@@ -236,7 +236,7 @@ export function submitRating(
       return updateQuestRatings(db, feedback.partition, feedback.questid);
     })
     .then((questInstance: QuestInstance) => {
-      const quest = new Quest(questInstance.dataValues);
+      const quest = new Quest(questInstance.get());
       if (quest.ratingcount === 1) {
         mailFirstRating(mail, feedback, quest, user);
       } else if (

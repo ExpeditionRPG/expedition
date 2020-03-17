@@ -4,7 +4,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import * as React from 'react';
 import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
-interface Props extends React.Props<any> {
+export interface Props extends React.Props<any> {
   value: number | string;
   label: string;
   id?: string;

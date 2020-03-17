@@ -6,6 +6,9 @@ export const testLoggedInUser: UserState = {
   image: 'http://app.expeditiongame.com/logo.png',
   loggedIn: true,
   name: 'Bob Fisher',
+  lastLogin: new Date(),
+  loginCount: 0,
+  lootPoints: 0,
 };
 
 describe('User', () => {

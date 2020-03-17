@@ -25,7 +25,7 @@ export function getOrderedEventsAfter(
   db: Database,
   session: number,
   start: number,
-): Bluebird<EventInstance[]> {
+): Bluebird<EventInstance[] | null> {
   return db.events.findAll({
     order: [['timestamp', 'ASC']],
     where: { session, id: { [Op.gt]: start } },
@@ -40,7 +40,7 @@ export function getLargestEventID(
     if (e === null) {
       return 0;
     }
-    return parseInt(e.get('id'), 10);
+    return parseInt(e.get('id') as string, 10);
   });
 }
 
@@ -106,12 +106,12 @@ export function commitEventWithoutID(
                 ' instance ' +
                 instance,
             );
-            id = s.get('eventCounter');
+            id = s.get('eventCounter') as number;
             (struct as any).id = id;
             return false;
           }
 
-          id = s.get('eventCounter') + 1;
+          id = (s.get('eventCounter') as number) + 1;
           (struct as any).id = id;
           return s
             .update({ eventCounter: id }, { transaction: txn })
@@ -183,7 +183,7 @@ export function commitEvent(
                 instance,
             );
             return false;
-          } else if (s.get('eventCounter') + 1 !== event) {
+          } else if ((s.get('eventCounter') as number) + 1 !== event) {
             throw new Error(
               `event counter increment mismatch (${s.get(
                 'eventCounter',

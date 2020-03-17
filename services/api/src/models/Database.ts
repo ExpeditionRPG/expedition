@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import * as Sequelize from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
 import { Partition } from 'shared/schema/Constants';
@@ -14,44 +16,35 @@ import { User } from 'shared/schema/Users';
 import { toSequelize } from './Schema';
 
 export interface AnalyticsEventInstance
-  extends Sequelize.Model<Partial<AnalyticsEvent>> {
-  dataValues: AnalyticsEvent;
-}
+  extends Sequelize.Model<Partial<AnalyticsEvent>> {}
 type AnalyticsEventModel = {
   new (): AnalyticsEventInstance;
 } & typeof Sequelize.Model;
 
-export interface UserInstance extends Sequelize.Model<Partial<User>> {
-  dataValues: User;
-}
+export interface UserInstance extends Sequelize.Model<Partial<User>> {}
 export type UserModel = {
   new (): UserInstance;
 } & typeof Sequelize.Model;
 
-export interface UserBadgeInstance extends Sequelize.Model<Partial<UserBadge>> {
-  dataValues: UserBadge;
-}
+export interface UserBadgeInstance
+  extends Sequelize.Model<Partial<UserBadge>> {}
 export type UserBadgeModel = {
   new (): UserBadgeInstance;
 } & typeof Sequelize.Model;
 
-export interface QuestInstance extends Sequelize.Model<Partial<Quest>> {
-  dataValues: Quest;
-}
+export interface QuestInstance extends Sequelize.Model<Partial<Quest>> {}
+
 export type QuestModel = {
   new (): QuestInstance;
 } & typeof Sequelize.Model;
 
-export interface QuestDataInstance extends Sequelize.Model<Partial<QuestData>> {
-  dataValues: QuestData;
-}
+export interface QuestDataInstance
+  extends Sequelize.Model<Partial<QuestData>> {}
 export type QuestDataModel = {
   new (): QuestDataInstance;
 } & typeof Sequelize.Model;
 
-export interface FeedbackInstance extends Sequelize.Model<Partial<Feedback>> {
-  dataValues: Feedback;
-}
+export interface FeedbackInstance extends Sequelize.Model<Partial<Feedback>> {}
 export type FeedbackModel = {
   new (): FeedbackInstance;
 } & typeof Sequelize.Model;
@@ -62,24 +55,18 @@ export type RenderedQuestModel = {
   new (): RenderedQuestInstance;
 } & typeof Sequelize.Model;
 
-export interface EventInstance extends Sequelize.Model<Partial<Event>> {
-  dataValues: Event;
-}
+export interface EventInstance extends Sequelize.Model<Partial<Event>> {}
 export type EventModel = {
   new (): EventInstance;
 } & typeof Sequelize.Model;
 
 export interface SessionClientInstance
-  extends Sequelize.Model<Partial<SessionClient>> {
-  dataValues: SessionClient;
-}
+  extends Sequelize.Model<Partial<SessionClient>> {}
 export type SessionClientModel = {
   new (): SessionClientInstance;
 } & typeof Sequelize.Model;
 
-export interface SessionInstance extends Sequelize.Model<Session> {
-  dataValues: Session;
-}
+export interface SessionInstance extends Sequelize.Model<Session> {}
 export type SessionModel = {
   new (): SessionInstance;
 } & typeof Sequelize.Model;

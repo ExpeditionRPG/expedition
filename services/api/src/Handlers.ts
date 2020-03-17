@@ -154,7 +154,7 @@ function doSearch(
     .then((quests: QuestInstance[]) => {
       // Map quest published URL to the API server so we can proxy quest data.
       const results: Quest[] = quests
-        .map((q: QuestInstance) => Quest.create(q.dataValues))
+        .map((q: QuestInstance) => Quest.create(q.get()))
         .filter((q: Quest | Error) => !(q instanceof Error))
         .map((q: Quest) => {
           proxifyQuestURL(q);
@@ -474,7 +474,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,
@@ -490,7 +490,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          req.params.type as FeedbackType,
           data,
           platformDump,
           consoleDump,

@@ -31,7 +31,7 @@ describe('History reducer', () => {
         }));
     });
     test('does nothing when no history', () => {
-      const result = setup({_history: []}).execute({type: 'RETURN'});
+      const result = setup({_history: []} as any).execute({type: 'RETURN'});
       expect(result).toEqual(jasmine.objectContaining({
           commitID: 6,
           card: {name: 'SPLASH_CARD'}

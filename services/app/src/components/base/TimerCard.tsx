@@ -5,7 +5,7 @@ import {MultiplayerState} from '../../reducers/StateTypes';
 import {getStore} from '../../Store';
 import MultiTouchTrigger from './MultiTouchTrigger';
 
-interface Props extends React.Props<any> {
+export interface Props extends React.Props<any> {
   numLocalPlayers: number;
   secondaryText?: string;
   tertiaryText?: string;
