@@ -13,7 +13,7 @@ import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
 import {CombatPhase, DecisionPhase} from 'app/Constants';
-import {Action, newMockStore} from 'app/Testing';
+import {Action} from 'app/Testing';
 import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
 import {Outcome} from 'shared/schema/templates/Decision';
 
@@ -82,7 +82,7 @@ describe('Decision actions', () => {
   describe('extractDecision', () => {
     test('extracts the decision from a node', () => {
       const n = TEST_NODE.clone();
-      const d: DecisionState = {
+      const d: any = {
           leveledChecks: [],
           selected: null,
           rolls: [1,2,3],
@@ -124,13 +124,13 @@ describe('Decision actions', () => {
   });
   describe('computeSuccesses', () => {
     test('works when zero rolls', () => {
-      expect(computeSuccesses([], {difficulty: 'medium'})).toEqual(0);
+      expect(computeSuccesses([], {difficulty: 'medium'} as any)).toEqual(0);
     });
     test('counts successes and ignores other rolls', () => {
-      expect(computeSuccesses([5, 20, 10, 5], {difficulty: 'medium'})).toEqual(1);
+      expect(computeSuccesses([5, 20, 10, 5], {difficulty: 'medium'} as any)).toEqual(1);
     });
     test('respects difficulty', () => {
-      expect(computeSuccesses([16, 15, 10, 14], {difficulty: 'hard'})).toEqual(0);
+      expect(computeSuccesses([16, 15, 10, 14], {difficulty: 'hard'} as any)).toEqual(0);
     });
   });
   describe('selectChecks', () => {
@@ -138,7 +138,7 @@ describe('Decision actions', () => {
       const cs: LeveledSkillCheck[] = [];
       for (const skill of ['athletics', 'knowledge', 'charisma']) {
         for (const persona of ['light', 'dark']) {
-          cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill});
+          cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill} as any);
         }
       }
       expect(selectChecks(cs, seedrandom.alea('1234')).length).toEqual(3);
@@ -265,7 +265,7 @@ describe('Decision actions', () => {
       expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
     });
     test('does pass-thru to toCard if not in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolve});
+      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup(), name: 'QUEST_CARD', phase: DecisionPhase.resolve} as any);
       expect(actions.filter((a: any) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
     });
   });

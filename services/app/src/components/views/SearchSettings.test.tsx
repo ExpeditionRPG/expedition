@@ -2,9 +2,8 @@ import { mount } from 'app/Testing';
 import * as React from 'react';
 import { initialSearch } from '../../reducers/Search';
 import { initialSettings } from '../../reducers/Settings';
-import { loggedOutUser } from '../../reducers/User';
 import SearchSettings, { Props } from './SearchSettings';
-import { Quest } from 'shared/schema/Quests';
+import { loggedOutUser } from '../../reducers/User';
 import {TEST_SEARCH} from '../../reducers/TestData';
 import {Expansion} from 'shared/schema/Constants';
 
@@ -23,7 +22,7 @@ describe('SearchSettings', () => {
     return { props, e };
   }
 
-  function getNode(k) {
+  function getNode(k: any) {
     if (k === 'text') {
       return `TextField#${k}`;
     }
@@ -39,34 +38,34 @@ describe('SearchSettings', () => {
   }
 
   test('triggers onChangeParams when each input changed', () => {
-    const { props, e } = setup();
+    const { props, e } = setup({} as any);
     for (const k of Object.keys(TEST_SEARCH)) {
-      props.onChangeParams.mockClear();
+      (props.onChangeParams as any).mockClear();
       const node = getNode(k);
       const onChange =
         k === 'expansions'
           ? TEST_SEARCH[k]
           : { target: { value: TEST_SEARCH[k] } };
-      e.find(node).prop('onChange')(onChange);
+      (e.find(node).prop('onChange') as any)(onChange);
       expect(props.onChangeParams).toHaveBeenCalledWith({[k]: TEST_SEARCH[k]});
     }
   });
 
   test('propagates user selections when Search is pressed', () => {
     const { props, e } = setup({params: TEST_SEARCH});
-    e.find('ExpeditionButton#search').prop('onClick')();
+    (e.find('ExpeditionButton#search').prop('onClick') as any)();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 
   test('propagates user selections when form is submitted', () => {
-    const { props, e } = setup({params: TEST_SEARCH});
-    e.find('form').prop('onSubmit')();
+    const { props, e } = setup({params: TEST_SEARCH} as any);
+    (e.find('form').prop('onSubmit') as any)();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 
   test('changing a value to string \'null\' results in no value being unset', () => {
-    const { props, e } = setup();
-    e.find('NativeSelect#contentrating').prop('onChange')({
+    const { props, e } = setup({} as any);
+    (e.find('NativeSelect#contentrating').prop('onChange') as any)({
       target: { value: 'null' },
     });
     expect(props.onChangeParams).toHaveBeenCalledWith({contentrating: undefined});

@@ -1,6 +1,6 @@
 import {AudioNode} from './AudioNode';
 
-function fakeSource(playing: bool = false) {
+function fakeSource(playing: boolean = false) {
   return {
     PLAYING_STATE: true,
     buffer: null,
@@ -23,17 +23,17 @@ function fakeGain(value: number = 0) {
   }
 }
 
-function fakeContext(now?: number) {
+function fakeContext(now?: number): AudioContext {
   return {
     createGain: jasmine.createSpy('createGain'),
     createBufferSource: jasmine.createSpy('createBufferSource'),
     destination: "fakedest",
     currentTime: now || 0,
-  };
+  } as any;
 }
 
-function fakeBuffer() {
-  return null;
+function fakeBuffer(): AudioBuffer {
+  return null as any;
 }
 
 describe('AudioNode', () => {
@@ -41,8 +41,8 @@ describe('AudioNode', () => {
     const g = fakeGain();
     const s = fakeSource();
     const c = fakeContext();
-    c.createGain.and.returnValue(g);
-    c.createBufferSource.and.returnValue(s);
+    (c.createGain as any).and.returnValue(g);
+    (c.createBufferSource as any).and.returnValue(s);
     const n = new AudioNode(c, fakeBuffer());
     n.playOnce(0.5, 0.7);
 
@@ -72,8 +72,8 @@ describe('AudioNode', () => {
       const g = fakeGain();
       const s = fakeSource(true);
       const c = fakeContext();
-      c.createGain.and.returnValue(g);
-      c.createBufferSource.and.returnValue(s);
+      (c.createGain as any).and.returnValue(g);
+      (c.createBufferSource as any).and.returnValue(s);
       const n = new AudioNode(c, fakeBuffer());
       n.playOnce();
       expect(n.isPlaying()).toEqual(true);
@@ -89,9 +89,9 @@ describe('AudioNode', () => {
       const g = fakeGain(0.5);
       const s = fakeSource(true);
       const c = fakeContext();
-      c.createGain.and.returnValue(g);
-      c.createBufferSource.and.returnValue(s);
-      const n = new AudioNode(c, fakeBuffer());
+      (c.createGain as any).and.returnValue(g);
+      (c.createBufferSource as any).and.returnValue(s);
+      const n = new AudioNode(c as any, fakeBuffer());
       n.playOnce();
       expect(n.getVolume()).toEqual(0.5);
     });

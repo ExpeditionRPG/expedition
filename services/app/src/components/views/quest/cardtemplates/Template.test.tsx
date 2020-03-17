@@ -10,26 +10,30 @@ describe('CardTemplates template', () => {
 
   describe('defaultContext', () => {
     test('scope._.contentSets gets content sets', () => {
-      const ctx = defaultContext(() => return {
-        settings: {...initialSettings, contentSets: {horror: true, future: false}},
-        multiplayer: initialMultiplayer,
+      const ctx = defaultContext(() => {
+        return {
+          settings: {...initialSettings, contentSets: {horror: true, future: false}},
+          multiplayer: initialMultiplayer,
+        } as any;
       });
       expect(ctx.scope._.contentSets()).toEqual({horror: true});
     });
     test('numAdventurers gets adventurer count', () => {
-      const ctx = defaultContext(() => return {
-        settings: {...initialSettings, numLocalPlayers: 3},
-        multiplayer: initialMultiplayer,
+      const ctx = defaultContext(() => {
+        return {
+          settings: {...initialSettings, numLocalPlayers: 3},
+          multiplayer: initialMultiplayer,
+        } as any;
       });
       expect(ctx.scope._.numAdventurers()).toEqual(3);
     });
     test('viewCount gets the view count for a node id', () => {
-      const ctx = defaultContext(() => return {});
+      const ctx = defaultContext(() => {return {} as any;});
       ctx.views['a'] = 5;
       expect(evaluateOp('_.viewCount("a")', ctx)).toEqual(5);
     });
     test ('viewCount handles unviewed nodes', () => {
-      const ctx = defaultContext(() => return {});
+      const ctx = defaultContext(() => {return {} as any;});
       expect(evaluateOp('_.viewCount("a")', ctx)).toEqual(0);
     });
   });

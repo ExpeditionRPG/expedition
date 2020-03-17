@@ -50,12 +50,12 @@ describe('Compositor', () => {
   });
 
   test('Renders nav footer for navigation card', () => {
-    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}});
+    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}} as any);
     expect(wrapper.find('#navfooter').html()).not.toEqual(null);
   });
 
   test('Hides nav footer for non-navigation card', () => {
-    const {wrapper} = setup();
+    const {wrapper} = setup({} as any);
     expect(wrapper.find('#navfooter').html()).toEqual(null);
   });
 
@@ -63,12 +63,12 @@ describe('Compositor', () => {
     const {wrapper} = setup({
       card: {name: 'QUEST_PREVIEW'},
       multiplayer: {session: 'abcd', clientStatus: {}},
-    });
+    }) as any;
     expect(wrapper.find('.remote_footer').html()).not.toEqual(null);
   });
 
   test('Includes has_footer card class when navigation card', () => {
-    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}});
+    const {wrapper} = setup({card: {name: 'TUTORIAL_QUESTS'}} as any);
     expect(wrapper.find('.has_footer').html()).not.toEqual(null);
   });
 });

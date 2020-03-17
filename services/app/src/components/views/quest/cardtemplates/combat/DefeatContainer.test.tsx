@@ -15,7 +15,7 @@ const cheerio: any = require('cheerio');
 const TEST_NODE = new ParserNode(cheerio.load('<combat><e>Thief</e><e>Brigand</e><e>Footpad</e><event on="win"></event><event on="lose"></event></combat>')('combat'), defaultContext());
 
 function newCombat(node: ParserNode): CombatState {
-  return generateCombatTemplate(initialSettings, false, node, () => ({multiplayer: initialMultiplayer} as any as AppStateWithHistory));
+  return (generateCombatTemplate as any)(initialSettings, false, node, () => ({multiplayer: initialMultiplayer} as any as AppStateWithHistory));
 }
 
 function setup(overrides: Partial<Props>) {
@@ -28,7 +28,7 @@ function setup(overrides: Partial<Props>) {
     onEvent: jasmine.createSpy('onEvent'),
     onRetry: jasmine.createSpy('onRetry'),
     ...overrides,
-  };
+  } as any;
   const e = shallow(<Defeat {...props} />);
   return {props, e};
 }

@@ -17,7 +17,7 @@ describe('Combat Resolve', () => {
       onNext: jasmine.createSpy('onNext'),
       onReturn: jasmine.createSpy('onReturn'),
       ...overrides,
-    };
+    } as any;
     console.log(props);
     const e = mount(<Resolve {...props} />);
     return {e, props};
@@ -28,7 +28,7 @@ describe('Combat Resolve', () => {
     expect(e.html()).toContain(PERSONA_SUBSTR);
   });
   test('hides horror persona helper when horror contentset disabled', () => {
-    const {e} = setup({contentSets: new Set()});
+    const {e} = setup({contentSets: new Set()} as any);
     expect(e.html()).not.toContain(PERSONA_SUBSTR);
   });
   test.skip('shows rolls if enabled in settings', () => { /* TODO */ });

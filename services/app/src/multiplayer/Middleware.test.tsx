@@ -1,3 +1,4 @@
+import * as Redux from 'redux';
 import {newMockStore} from '../Testing';
 
 describe('middleware behavior', () => {
@@ -18,15 +19,14 @@ describe('middleware behavior', () => {
     test('passes regular actions through', () => {
       // We'll always need to be able to do this, since "regular"
       // actions are dispatched by the function-based actions
-      const store = newMockStore();
+      const store = newMockStore({});
       store.dispatch({type: 'test'});
       expect(store.getActions()).toEqual([{type: 'test'}]);
     });
   });
 
   describe('on actions returning promise', () => {
-    const store = newMockStore();
-    let actions = 0;
+    const store = newMockStore({});
     const asyncAction = (args: {n: number}) => {
       return {
         promise: new Promise((a, r) => {
@@ -36,18 +36,18 @@ describe('middleware behavior', () => {
     };
 
     test('propagates promise', () => {
-      spyOn(store.multiplayerClient, 'sendEvent');
-      store.dispatch(["asyncAction", asyncAction, {n: 1}]).then((result) => {
+      spyOn((store as any).multiplayerClient, 'sendEvent');
+      store.dispatch(["asyncAction", asyncAction, {n: 1}] as any).then((result: any) => {
         expect(result).toEqual(5);
       })
     });
   });
 
   describe('on actions of type ["name", fn, args]', () => {
-    const store = newMockStore();
-    const client = store.multiplayerClient;
+    const store = newMockStore({});
+    const client = (store as any).multiplayerClient;
     client.sendEvent = jasmine.createSpy('sendEvent');
-    store.dispatch(["testActionFn", testActionFn, testArgs]);
+    store.dispatch(["testActionFn", testActionFn, testArgs] as any);
 
     test('resolves and calls the function', () => {
       expect(store.getActions()).toEqual([{type: 'test'}]);
@@ -63,10 +63,10 @@ describe('middleware behavior', () => {
   });
 
   describe('on actions of type LOCAL', () => {
-    const store = newMockStore();
-    const client = store.multiplayerClient;
+    const store = newMockStore({});
+    const client = (store as any).multiplayerClient;
     client.sendEvent = jasmine.createSpy('sendEvent');
-    store.dispatch({type: 'LOCAL', action: (dispatch?: Redux.Dispatch<any>) => {
+    store.dispatch({type: 'LOCAL', action: (dispatch: Redux.Dispatch<any>) => {
       return dispatch({type: 'derived'});
     }});
 

@@ -27,17 +27,17 @@ describe('QuestEnd', () => {
       onSubmit: jasmine.createSpy('onSubmit'),
       onTip: jasmine.createSpy('onTip'),
       ...overrides,
-    };
+    } as any;
     const root = mountRoot(<QuestEnd {...(props as any as Props)} />);
     if (rating !== undefined) {
-      root.find('StarRating').prop('onChange')(rating);
+      (root.find('StarRating').prop('onChange') as any)(rating as any);
       root.update();
     }
     return {props, e: root.childAt(0)};
   }
 
   test('hides form sections when not yet rated', () => {
-    const {props, e} = setup();
+    const {e} = setup();
     const text = e.render().text();
     expect(text).not.toContain(GOOD_FORM_SUBSTR);
     expect(text).not.toContain(BAD_FORM_SUBSTR);
@@ -64,29 +64,29 @@ describe('QuestEnd', () => {
   });
   test('selecting a primary issue shows qualifier section', () => {
     const {e} = setup(1);
-    e.find("NativeSelect#primaryIssueSelect").prop('onChange')({target: {value: 'Duration'}});
+    (e.find("NativeSelect#primaryIssueSelect").prop('onChange') as any)({target: {value: 'Duration'}});
     expect(e.render().text()).toContain(QUALIFIER_FORM_SUBSTR);
   });
   test('can return home without a review', () => {
     const {props, e} = setup();
-    e.find('ExpeditionButton#submit').prop('onClick')();
+    (e.find('ExpeditionButton#submit').prop('onClick') as any)();
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
   test('triggers sharing when button pressed', () => {
     const {props, e} = setup();
-    e.find("ExpeditionButton#shareButton").prop('onClick')();
+    (e.find("ExpeditionButton#shareButton").prop('onClick') as any)();
     expect(props.onShare).toHaveBeenCalledTimes(1);
   });
   test('blocks negative submit if no issue given and shows error', () => {
     const {props, e} = setup(1);
-    e.find('ExpeditionButton#submit').prop('onClick')();
+    (e.find('ExpeditionButton#submit').prop('onClick') as any)();
     expect(props.onSubmit).toHaveBeenCalledTimes(0);
     expect(e.render().text()).toContain(NEEDS_ISSUE_SUBSTR);
   });
   test('submits negative review when issue given', () => {
     const {props, e} = setup(1);
-    e.find("NativeSelect#primaryIssueSelect").prop('onChange')({target: {value: 'Duration'}});
-    e.find('ExpeditionButton#submit').prop('onClick')();
+    (e.find("NativeSelect#primaryIssueSelect").prop('onChange') as any)({target: {value: 'Duration'}} as any);
+    (e.find('ExpeditionButton#submit').prop('onClick') as any)();
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
 

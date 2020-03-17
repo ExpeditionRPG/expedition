@@ -267,7 +267,7 @@ describe('Multiplayer actions', () => {
           event: "TOUCH_END",
           positions: {},
         },
-      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+      }, false, 0, multiplayer, fakeConnection())).then((result as any) => {
         expect(store.getActions()).toContainEqual(jasmine.objectContaining({client: 'abc', instance: 'mmm'}));
         done();
       }).catch(done.fail);
@@ -283,7 +283,7 @@ describe('Multiplayer actions', () => {
           event: "TOUCH_END",
           positions: {},
         },
-      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+      }, false, 0, multiplayer, fakeConnection())).then((result: any) => {
         expect(store.getActions()).toEqual([]);
         done();
       }).catch(done.fail);
@@ -295,7 +295,7 @@ describe('Multiplayer actions', () => {
       store.dispatch(handleEvent({
         id: 1,
         event: {type: 'BAD'},
-      }, false, 0, multiplayer, fakeConnection())).then((result) => {
+      } as any, false, 0, multiplayer, fakeConnection())).then((result: any) => {
         expect(store.getActions()).toContainEqual(jasmine.objectContaining({type: 'MULTIPLAYER_COMMIT'}));
         done();
       }).catch(done.fail);
@@ -324,7 +324,7 @@ describe('Multiplayer actions', () => {
           name: 'testAction',
           args: JSON.stringify({n: 1})
         },
-      }, false, 0, multiplayer, c).then((result) => {
+      }, false, 0, multiplayer, c).then((result: any) => {
         expect(c.publish).toHaveBeenCalledWith(jasmine.objectContaining({event: jasmine.objectContaining({type: "STATUS"})}));
         done();
       }).catch(done.fail);
@@ -343,8 +343,8 @@ describe('Multiplayer actions', () => {
             JSON.stringify({id: 2, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 2})}}),
             JSON.stringify({id: 3, event: {type: 'ACTION', name: 'testAction', args: JSON.stringify({n: 3})}}),
           ],
-        } as MultiEvent,
-      }, false, 0, multiplayer, fakeConnection()).then((results) => {
+        } as any,
+      }, false, 0, multiplayer, fakeConnection()).then((results: any) => {
         expect(results[0].type).toEqual("MULTIPLAYER_MULTI_EVENT_START");
         expect(calls).toEqual(3);
         expect(results[results.length-1].type).toEqual("MULTIPLAYER_MULTI_EVENT");
@@ -354,7 +354,7 @@ describe('Multiplayer actions', () => {
     test('handles MULTI_EVENT with async events', (done) => {
       // Update the commit ID when the action is executed
       let actions = 0;
-      const asyncAction = remoteify(function asyncAction(args: {n: number}) {
+      remoteify(function asyncAction(args: {n: number}) {
         return {
           promise: new Promise((f, r) => {
             setTimeout(() => {

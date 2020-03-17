@@ -1,5 +1,5 @@
 import * as Redux from 'redux';
-import {remoteify, clearMultiplayerActions, getMultiplayerConnection} from './multiplayer/Remoteify';
+import {remoteify, clearMultiplayerActions} from './multiplayer/Remoteify';
 import {Action, Reducer} from './Testing';
 
 function testReducer<A extends Redux.Action>(a: {b: number}, action: A) {

@@ -53,7 +53,7 @@ describe('Search', () => {
         loggedIn: true,
       },
       results: null,
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).toHaveBeenCalled();
   });
@@ -62,7 +62,7 @@ describe('Search', () => {
       user: {
         loggedIn: false,
       },
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).not.toHaveBeenCalled();
   });
@@ -72,7 +72,7 @@ describe('Search', () => {
         loggedIn: true,
       },
       results: ['a'],
-    });
+    } as any);
     mount(e);
     expect(props.onSearch).not.toHaveBeenCalled();
   });

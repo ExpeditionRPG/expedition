@@ -14,7 +14,7 @@ export const testMultiplayer: MultiplayerState = {
   session: null,
   syncing: false,
   connected: true,
-};
+} as any;
 
 describe('MultiplayerFooter', () => {
   function setup(overrides?: Partial<Props>) {
@@ -25,7 +25,7 @@ describe('MultiplayerFooter', () => {
       connected: false,
       setDialog: jasmine.createSpy('onClick'),
       ...overrides,
-    };
+    } as any;
     return {props, e: render(<MultiplayerFooter {...(props as any as Props)} />)};
   }
 
@@ -36,10 +36,10 @@ describe('MultiplayerFooter', () => {
   test('shows adventurers with different styles (i.e colors) grouped by peer', () => {
     const {e} = setup({multiplayer: testMultiplayer});
     const icons = e.find('.peers svg');
-    const classes: {[string]: number} = {};
+    const classe: any = {};
     for (let i =  0; i < icons.length; i++) {
-      const n = icons.eq(i).attr('class').match(/player(\d)/);
-      classes[n] = (classes[n] || 0) + 1;
+      const n = (icons.eq(i).attr('class') || '').match(/player(\d)/) as any;
+      (classes as any)[n] = ((classes as any)[n] || 0) + 1;
     }
     expect(Object.values(classes).sort()).toEqual([2,3]);
   });

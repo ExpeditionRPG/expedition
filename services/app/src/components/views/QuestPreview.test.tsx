@@ -37,13 +37,14 @@ describe('QuestPreview', () => {
     const wrapper = mount(<QuestPreview {...(props as any as Props)} />);
     return {props, wrapper};
   }
+
   function setup(overrides?: Partial<Props>, questOverrides?: Partial<Quest>) {
     return setupCustom('Learning to Adventure', overrides, questOverrides);
   }
 
   test('renders selected quest details', () => {
     const quest = TUTORIAL_QUESTS.filter((el) => el.title === 'Learning to Adventure')[0];
-    const {wrapper} = setup(quest.title);
+    const {wrapper} = setup(quest.title as any);
     expect(wrapper.render().html()).toContain(quest.title);
     expect(wrapper.render().html()).toContain(quest.genre);
     expect(wrapper.render().html()).toContain(quest.summary);
@@ -77,31 +78,31 @@ describe('QuestPreview', () => {
 
   test('passes direct-linked state so we can ask for count and multitouch', () => {
     const {props, wrapper} = setup({isDirectLinked: true});
-    wrapper.find('ExpeditionButton#play').prop('onClick')();
+    (wrapper.find('ExpeditionButton#play').prop('onClick') as any)();
     expect(props.onPlay).toHaveBeenCalledWith(props.quest, true);
   });
 
   test('allows users to go back to the search page', () => {
     const {props, wrapper} = setup();
-    wrapper.find('ExpeditionButton#searchDetailsBackButton').prop('onClick')();
+    (wrapper.find('ExpeditionButton#searchDetailsBackButton').prop('onClick') as any)();
     expect(props.onReturn).toHaveBeenCalledTimes(1);
   });
 
   test('allows save for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'http://somenonlocalurl'});
     const {props, wrapper} = setup({quest});
-    wrapper.find('ExpeditionButton#offlinesave').prop('onClick')();
+    (wrapper.find('ExpeditionButton#offlinesave').prop('onClick') as any)();
     expect(props.onSave).toHaveBeenCalledWith(quest);
   });
 
   test('continues from most recent save', () => {
-    const {props, wrapper} = setup({savedInstances});
-    wrapper.find('ExpeditionButton#playlastsave').prop('onClick')();
-    expect(props.onPlaySaved).toHaveBeenCalledWith(props.quest.id, 4);
+    const {props, wrapper} = setup({savedInstances} as any);
+    (wrapper.find('ExpeditionButton#playlastsave').prop('onClick') as any)();
+    expect(props.onPlaySaved).toHaveBeenCalledWith((props.quest as any).id, 4);
   });
 
   test('lists all saves for the quest', () => {
-    const {props, wrapper} = setup({savedInstances});
+    const {props, wrapper} = setup({savedInstances} as any);
     for (let i = 0; i < props.savedInstances.length; i++) {
       expect(wrapper.find('#playsave' + i).exists()).toEqual(true);
     }
@@ -113,12 +114,12 @@ describe('QuestPreview', () => {
   });
 
   test('indicates when quest is new', () => {
-    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], created: new Date()})});
+    const {wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], created: new Date()})});
     expect(wrapper.find(".indicators").text()).toContain("Published Recently");
   });
 
   test('indicates when quest is private', () => {
-    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: Partition.expeditionPrivate})});
+    const {wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], partition: Partition.expeditionPrivate})});
     expect(wrapper.find(".indicators").text()).toContain("Private Quest");
   });
 
@@ -129,13 +130,13 @@ describe('QuestPreview', () => {
 
   test('disallows saving local quests for offline play', () => {
     const quest = new Quest({...TUTORIAL_QUESTS[0], publishedurl: 'quests/localquest.xml'});
-    const {props, wrapper} = setup({quest});
+    const {wrapper} = setup({quest});
     expect(wrapper.find('#offlinesave').exists()).toEqual(false);
   });
 
   test('asks user for confirmation when deleting a saved quest instance', () => {
-    const {props, wrapper} = setup({savedInstances});
-    wrapper.find('IconButton#deletesave1').prop('onClick')();
+    const {props, wrapper} = setup({savedInstances} as any);
+    (wrapper.find('IconButton#deletesave1').prop('onClick') as any)();
     // Saves are sorted in descending order of timestamp
     expect(props.onDeleteConfirm).toHaveBeenCalledWith(props.quest, props.savedInstances[3].ts);
   });
