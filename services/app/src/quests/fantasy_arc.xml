@@ -1,0 +1,606 @@
+<quest title="GM's Corner Fantasy: Experienced GMs" data-line="0">
+    <roleplay title="Introduction" data-line="2">
+        <p>Welcome to the GM's Corner! This is meant to be a halfway point between the rigid storylines of formal quests and the freeform nature of "GM Mode". We'll provide a basic skeleton of randomized ideas to give structure to the adventure, then you or your group fill in the details.</p>
+    </roleplay>
+    <roleplay title="continue" data-line="6">
+        <p>You may want to have a sheet of paper or dry erase board to keep track of the adventure as you craft it.</p>
+        <instruction>
+            <p>For a different way to play, give each person a few index cards. When the app presents a question prompt, have each player write a brief suggestion, then select one as a group.</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Story" title="The Story" data-line="11">
+        <p>The basic parts of most stories are included on the next screen. Select which story element you need help crafting.</p>
+        <p>You don't have to use each prompt, or even select them in order, but if you need inspiration or want your adventure to run longer, select more of these, stringing them together with narrative transitions.</p>
+    </roleplay>
+    <trigger data-line="16">goto Index</trigger>
+    <roleplay id="Index" title="The Index" data-line="18">
+        <instruction>
+            <p>At each screen, write down the option you choose, so you can craft the narrative together.</p>
+        </instruction>
+        <choice text="The Antagonist(s) [Click here to choose them.]">
+            <trigger data-line="24">goto Threat</trigger>
+        </choice>
+        <choice text="Desire to... [Click here for options.]">
+            <trigger data-line="28">goto Twist</trigger>
+        </choice>
+        <choice text="A Target [Click here to choose one.]">
+            <trigger data-line="32">goto Confrontation</trigger>
+        </choice>
+        <choice text="Which will result in...[Click here to choose an option.]">
+            <trigger data-line="36">goto Outcome</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Threat" title="The Threat" data-line="38">
+        <p>Which foes will you contend with tonight?</p>
+        <choice text="The Undead Hordes of the Ashen Exarch.">
+            <trigger data-line="44">goto Twist</trigger>
+        </choice>
+        <choice text="The Wild Hunt of the Fae Court.">
+            <trigger data-line="48">goto Twist</trigger>
+        </choice>
+        <choice text="Lycanthropes out for blood.">
+            <trigger data-line="52">goto Twist</trigger>
+        </choice>
+        <choice text="The Assassins of Andoval">
+            <trigger data-line="56">goto Twist</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Bandit" title="Assassins" data-line="58">
+        <instruction>
+            <p>How do you cross paths with the Assassins? Are you protecting their targets? Are you their targets? Why?</p>
+        </instruction>
+        <choice text="Attempt to spot them before they can ambush you!">
+            <trigger data-line="63">goto Ambush</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Ambush" title="Ambush" data-line="65">
+        <instruction>
+            <p>Describe your surroundings, and how they might provide cover for assassins. Are you on a road flanked by forests?  In a crowded city with open windows and distractions galore?</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Tables" title="Turn the Tables" data-line="69">
+        <instruction>
+            <p>Roll an Athletics (or Ranged, if not using "The Future" expansion) skill check, adding your skill rating or the # of Ranged cards in your hand.</p>
+        </instruction>
+        <choice text="Rolled 13+.">
+            <trigger data-line="74">goto Turned</trigger>
+        </choice>
+        <choice text="Rolled 12 or below.">
+            <trigger data-line="77">goto Tabled</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Turned" title="Surprise!" data-line="79">
+        <p>You spot the legendary assassins and position yourselves to strike.</p>
+        <instruction>
+            <p>Gain a +3 on the first ability roll the first round of combat.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="85">goto AppAss</trigger>
+    <roleplay id="Tabled" title="Surprised" data-line="87">
+        <p>The legendary assassins strike from the shadows, catching you unawares. Only luck spares you from a killing blow!</p>
+        <instruction>
+            <p>Take 3 damage.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="93">goto AppAss</trigger>
+    <roleplay id="AppAss" title="The JourneyMen" data-line="95">
+        <p></p>
+    </roleplay>
+    <combat data-line="97">
+        <e>{{_.randomEnemyOfClassTier("Bandit", 2)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Bandit", 2)}}</e>
+        <event on="win">
+            <trigger data-line="103">goto Interlude</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="107">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="109">end</trigger>
+    <roleplay id="Dead" title="The Dead" data-line="111">
+        <instruction>
+            <p>How do you cross paths with the Undead? Describe the surroundings. Are you passing through a graveyard or masoleum? Ancient ruins?</p>
+        </instruction>
+        <instruction>
+            <p>You hear them before you see them. What sounds greet your ears?</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="117">
+        <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+        <event on="win">
+            <trigger data-line="123">goto Interlude</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="127">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="129">end</trigger>
+    <roleplay id="Fae" title="The Wild Hunt" data-line="131">
+        <instruction>
+            <p>Where do you encounter the Wild Hunt? Describe the surroundings.</p>
+        </instruction>
+        <instruction>
+            <p>A weird illusion or glamour precedes them. What unnatural thing do you witness?</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="137">
+        <e>{{_.randomEnemyOfClassTier("Fae", 2)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Fae", 1)}}</e>
+        <event on="win">
+            <trigger data-line="143">goto Interlude</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="147">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="149">end</trigger>
+    <roleplay id="Beast" title="The Beasts" data-line="151">
+        <instruction>
+            <p>Are you hunter or hunted? What sign do you see, hear, and smell before you encounter the lycanthropes? The coppery tang of blood and musk? Screams of terror and distress before unnerving silence?</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="155">
+        <e>{{_.randomEnemyOfClassTier("Beast", 1)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Beast", 3)}}</e>
+        <event on="win">
+            <trigger data-line="162">goto Interlude</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="166">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="168">end</trigger>
+    <roleplay id="Confrontation" title="The Confrontation" data-line="170">
+        <instruction>
+            <p>1. Heir to the Throne (choose a name for the future monarch and your Kingdom)...</p>
+        </instruction>
+        <instruction>
+            <p>2. Flagship of the Realm...</p>
+        </instruction>
+        <instruction>
+            <p>3. Godsblood Crown...</p>
+        </instruction>
+        <instruction>
+            <p>4. Great Cathedral...</p>
+        </instruction>
+        <instruction>
+            <p>5. Dragonbrood...</p>
+        </instruction>
+        <instruction>
+            <p>6. Sorcerous Citadel...</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="184">goto Outcome</trigger>
+    <roleplay id="Outcome" title="The Outcome" data-line="186">
+        <p>Which, if accomplished, will...</p>
+        <instruction>
+            <p>1. Cause a Great War.</p>
+        </instruction>
+        <instruction>
+            <p>2. Unleash the Deathplague.</p>
+        </instruction>
+        <instruction>
+            <p>3. Dominate all minds.</p>
+        </instruction>
+        <instruction>
+            <p>4. Spark the Apocalypse.</p>
+        </instruction>
+        <instruction>
+            <p>5. Raise your vibrations.</p>
+        </instruction>
+        <instruction>
+            <p>6. Create a world of pacifists.</p>
+        </instruction>
+        <choice text="Proceed to First Battle.">
+            <trigger data-line="204">goto Battle</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Battle" title="Battle" data-line="206">
+        <p>What Encounter type did you select?</p>
+        <choice text="The Undead Hordes of the Ashen Exarch.">
+            <trigger data-line="211">goto Dead</trigger>
+        </choice>
+        <choice text="The Wild Hunt of the Fae Court.">
+            <trigger data-line="215">goto Fae</trigger>
+        </choice>
+        <choice text="Lycanthropes out for blood.">
+            <trigger data-line="219">goto Beast</trigger>
+        </choice>
+        <choice text="The Assassins of Andoval">
+            <trigger data-line="223">goto Bandit</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Interlude" title="Interlude" data-line="225">
+        <p>You've survived the first battle with your foes.  What transpires next?</p>
+        <instruction>
+            <p>Feel free to create a scene and environment. We recommend introducing a skill check or choice that has a consequence (gain or loss of Loot, health, or Persona).</p>
+        </instruction>
+        <choice text="1. A fierce pursuit across treacherous terrain.">
+            <trigger data-line="231">goto Pursuit</trigger>
+        </choice>
+        <choice text="2. Escape from an arcane binding ring.">
+            <trigger data-line="234">goto Binding</trigger>
+        </choice>
+        <choice text="3. Breaking a curse, on themselves or innocent bystanders.">
+            <trigger data-line="237">goto Curse</trigger>
+        </choice>
+        <choice text="4. Traversing a trapped location.">
+            <trigger data-line="240">goto Trapped</trigger>
+        </choice>
+        <choice text="5. Forging an item to defeat your foes.">
+            <trigger data-line="243">goto Item</trigger>
+        </choice>
+        <choice text="6. Making a difficult moral choice (commit an evil act to gain advantage, or choose between people to save).">
+            <trigger data-line="246">goto Victim</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Victim" title="Victims" data-line="248">
+        <p>You've broken their resolve and now they flee before you! As you dash to pursue, a complication arises...</p>
+        <instruction>
+            <p>Some innocent has stumbled into the path of your dangerous opponents.  Who are they? What do they look like?  More importantly, how are you going to deal with it?</p>
+        </instruction>
+        <choice text="Attack even though the innocent is in the way.">
+            <trigger data-line="255">goto Vicious</trigger>
+        </choice>
+        <choice text="Back off and guide the innocent to safety.">
+            <trigger data-line="258">goto Innocent</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Vicious" title="Vicious" data-line="260">
+        <p>You strike hard, cutting down the innocent in your path but greatly wounding your fleeing foes.</p>
+        <instruction>
+            <p>Describe your vicious assault.</p>
+        </instruction>
+        <instruction>
+            <p>In the next battle, reduce one Encounter card's starting health by 6.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="269">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Innocent" title="Defender of the Weak" data-line="271">
+        <p>You choose to defend the weak rather than press your advantage. The innocent is grateful, but the foe will have better time to prepare.</p>
+        <instruction>
+            <p>Gain a Tier 1 Loot card.</p>
+        </instruction>
+        <instruction>
+            <p>Add a Tier I Encounter card to the next battle.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="280">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Item" title="Artistry" data-line="282">
+        <p>You've broken their resolve and now they flee before you, but you know your present armaments aren't sufficient to end the threat for good.</p>
+        <instruction>
+            <p>What type of item do you need to defeat your foes once and for all? Can you buy it? Have it forged by someone? Enact a ritual to empower your weapons?</p>
+        </instruction>
+        <instruction>
+            <p>Make a skill or ability check of your choice (adding the ranking of the skill or # of ability cards in your hand) to craft or obtain the item. Describe what you do to gain it.</p>
+        </instruction>
+        <choice text="Rolled 15+.">
+            <trigger data-line="290">goto Forgecraft</trigger>
+        </choice>
+        <choice text="Rolled 14 or below.">
+            <trigger data-line="293">goto Forgery</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Forgecraft" title="Forgecraft" data-line="295">
+        <p>Luck or God's favor is with you!</p>
+        <instruction>
+            <p>What is magnificent or strange about the item you've obtained?</p>
+        </instruction>
+        <instruction>
+            <p>Take a Tier 3 Loot card and place it face down (back showing) in front of one adventurer.  For the duration of the adventure, that adventurer deals +2 damage to the boss (highest Tier Encounter card) with all successful attacks.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="304">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Forgery" title="Failures or Forgeries" data-line="306">
+        <p>Your efforts are for naught...</p>
+        <instruction>
+            <p>How do you fail spectacularly?</p>
+        </instruction>
+        <instruction>
+            <p>Choose some form of consequence (Loss of Loot, 3 damage taken by one adventurer, minimum Persona for one adventurer).</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="315">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Pursuit" title="Pursuit" data-line="317">
+        <p>You've broken their resolve and now they flee before you! You can't let them escape!</p>
+        <instruction>
+            <p>Describe the chase. What makes the terrain or environment dangerous at speed? Carriages and pedestrians to run into? Rocks and roots to trip over?</p>
+        </instruction>
+        <instruction>
+            <p>Make an Athletics (or Melee ability) skill check to avoid obstacles.</p>
+        </instruction>
+        <choice text="Rolled 15+.">
+            <trigger data-line="325">goto Swift</trigger>
+        </choice>
+        <choice text="Rolled 14 or below.">
+            <trigger data-line="328">goto Unsure</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Swift" title="Swift and Sure" data-line="330">
+        <p>Your dexterity doesn't disappoint today. After avoiding perils and deftly weaving to and fro, you close the distance to your quarry.</p>
+        <instruction>
+            <p>Describe your acrobatic flight over obstacles.</p>
+        </instruction>
+        <instruction>
+            <p>Gain a +3 to the first ability roll in the final battle, OR pick up a Tier I loot dropped by your prey.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="339">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Unsure" title="Clumsy Indeed" data-line="341">
+        <p>Your pursuit does not go as planned...</p>
+        <instruction>
+            <p>How do you get injured or delayed?</p>
+        </instruction>
+        <instruction>
+            <p>Take 2 damage OR lose 1 Loot item.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="350">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Trapped" title="Trapped" data-line="352">
+        <p>You've broken their resolve and now they flee before you! You can't let them escape...But you notice immediately your foes seem a little too eager for you to follow.  It must be a trap...</p>
+        <instruction>
+            <p>Describe what clue tips you off to danger? Describe your surroundings...</p>
+        </instruction>
+        <instruction>
+            <p>Make a Charisma (or Music/Influence ability) skill check to notice the subtle cues revealing the location and nature of the trap.</p>
+        </instruction>
+        <choice text="Rolled 15+.">
+            <trigger data-line="360">goto Untrapped</trigger>
+        </choice>
+        <choice text="Rolled 14 or below.">
+            <trigger data-line="363">goto Entrap</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Untrapped" title="Webs Untangled" data-line="365">
+        <instruction>
+            <p>What type of trap did you uncover? Snare? Pit? Arcane? Mechanical? Describe it.</p>
+        </instruction>
+        <instruction>
+            <p>You disable the trap and recover its components. Draw a Tier 2 Loot card.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="373">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Entrap" title="Sprung" data-line="375">
+        <p>Despite your suspicions and efforts, you fall prey to the trap.</p>
+        <instruction>
+            <p>What type of trap did you uncover? Snare? Pit? Arcane? Mechanical? Describe it.</p>
+        </instruction>
+        <instruction>
+            <p>Take 3 damage OR lose 1 Loot item.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="384">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Binding" title="Binding Ring" data-line="386">
+        <p>You've broken their resolve and now they flee before you, but you find yourself suddenly surrounded by a circle of arcane power.</p>
+        <instruction>
+            <p>Describe the circle. Does fire spring up around you? Invisible Force? Unearthly cold?</p>
+        </instruction>
+        <instruction>
+            <p>Make a Knowledge (or Magic ability) skill check to sunder the magic circle. Add the skill rating or number of Magic abilities in your hand to your roll.</p>
+        </instruction>
+        <choice text="Rolled 15+.">
+            <trigger data-line="394">goto Broken</trigger>
+        </choice>
+        <choice text="Rolled 14 or below.">
+            <trigger data-line="397">goto Bound</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Broken" title="Broken Circle" data-line="399">
+        <p>Your occult knowledge allows you to dispel the circle!</p>
+        <instruction>
+            <p>Describe your mastery and how the circle is broken.</p>
+        </instruction>
+        <instruction>
+            <p>One ability played in the first round of the next battle is a critical success (20), as you fuel it with the powers of the broken circle.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="408">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Bound" title="Bound" data-line="410">
+        <p>The circle binds you and takes its toll, falling only when your foes return with reinforcements, to finish you off.</p>
+        <instruction>
+            <p>Take 3 damage, lose 1 Loot item, OR lose 1 Persona.</p>
+        </instruction>
+        <instruction>
+            <p>Describe what the circle does to you.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="419">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Curse" title="Cursed" data-line="421">
+        <p>You've broken their resolve and now they flee before you, but not without consequence!  One of you has been cursed!</p>
+        <instruction>
+            <p>Describe how the curse is bestowed. Was it called down by a foe you've just struck down? Did a lycanthrope or undead pass it to you when they wounded you?</p>
+        </instruction>
+        <instruction>
+            <p>Make a Knowledge (or Magic ability) skill check to lift the curse. Add the skill rating or number of Magic abilities in your hand to your roll.</p>
+        </instruction>
+        <choice text="Rolled 15+.">
+            <trigger data-line="429">goto Cured</trigger>
+        </choice>
+        <choice text="Rolled 14 or below.">
+            <trigger data-line="432">goto DCursed</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Cured" title="Cured" data-line="434">
+        <p>Your party manages to break your curse by performing some strange ritual.</p>
+        <instruction>
+            <p>Describe the ritual.  What makes it weird or unsettling?</p>
+        </instruction>
+        <instruction>
+            <p>Gain 2 Persona or +1 damage to your first attack next battle.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="443">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="DCursed" title="Cursed" data-line="445">
+        <p>The attempt to break the curse goes horribly awry!</p>
+        <instruction>
+            <p>How do you get injured?</p>
+        </instruction>
+        <instruction>
+            <p>Lose 2 Persona or suffer deal -2 damage in the first round of combat.</p>
+        </instruction>
+        <choice text="Click when ready to proceed to the final battle.">
+            <trigger data-line="454">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Final" title="Death or Victory" data-line="456">
+        <instruction>
+            <p>Which enemy type did you choose?</p>
+        </instruction>
+        <choice text="The (Un)Dead.">
+            <trigger data-line="462">goto Deader</trigger>
+        </choice>
+        <choice text="The Wild Hunt.">
+            <trigger data-line="466">goto Hunt</trigger>
+        </choice>
+        <choice text="Lycanthropes.">
+            <trigger data-line="470">goto Beasts</trigger>
+        </choice>
+        <choice text="The Assassins">
+            <trigger data-line="474">goto Assassins</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Hunt" title="Hunt's Head" data-line="476">
+        <instruction>
+            <p>Click "Next" and then describe the final confrontation with the Hunt!</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="480">
+        <e>{{_.randomEnemyOfClassTier("Fae", 3)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Fae", 4)}}</e>
+        <event on="win">
+            <trigger data-line="486">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="490">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <roleplay id="Beasts" title="Beasts" data-line="492">
+        <instruction>
+            <p>Click "Next" and then describe the final confrontation with the shapeshifters!</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="496">
+        <e>{{_.randomEnemyOfClassTier("Beast", 2)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Beast", 4)}}</e>
+        <event on="win">
+            <trigger data-line="502">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="506">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <roleplay id="Deader" title="Deader" data-line="508">
+        <instruction>
+            <p>Click "Next" and then describe the final confrontation with the Dead!</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="512">
+        <e>{{_.randomEnemyOfClassTier("Undead", 2)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Undead", 4)}}</e>
+        <event on="win">
+            <trigger data-line="518">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="522">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="524">end</trigger>
+    <roleplay id="Victory" title="Victory" data-line="526">
+        <p>You prevail over difficult odds.</p>
+        <instruction>
+            <p>What difference has your victory made in the lives of the peasantry? The nobility?</p>
+        </instruction>
+        <instruction>
+            <p>Are you rewarded, or does another take credit for your actions? What do you receive?</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="534">end</trigger>
+    <roleplay id="Twist" title="The Twist" data-line="536">
+        <p>What do your chosen foes wish to do? The group may choose a goal or, if you need inspiration, choose a prompt below. Write down your choice then click next to select a "target" for your foes efforts:</p>
+        <instruction>
+            <p>1. Annihilate the...</p>
+        </instruction>
+        <instruction>
+            <p>2. Steal or Corrupt the...</p>
+        </instruction>
+        <instruction>
+            <p>3. Craft a...</p>
+        </instruction>
+        <instruction>
+            <p>4. Conquer the...</p>
+        </instruction>
+        <instruction>
+            <p>5. Procreate with a...</p>
+        </instruction>
+        <instruction>
+            <p>6. Possess and protect the...</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="552">goto Confrontation</trigger>
+    <roleplay id="Assassins" title="Coven of Killers" data-line="554">
+        <instruction>
+            <p>Click "Next" and then describe the final confrontation with the Assassins!</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="558">
+        <e>{{_.randomEnemyOfClassTier("Bandit", 3)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Bandit", 4)}}</e>
+        <event on="win">
+            <trigger data-line="563">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <trigger data-line="566">end</trigger>
+        </event>
+    </combat>
+</quest>

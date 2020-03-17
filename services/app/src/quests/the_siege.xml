@@ -1,0 +1,219 @@
+<quest title="The Siege: A GM's Corner Adventure" data-line="0">
+    <roleplay title="Introduction" data-line="2">
+        <p>Welcome to the GM's Corner! This is meant to be a halfway point between the rigid storylines of formal quests and the freeform nature of "GM Mode". We'll provide a basic skeleton of randomized ideas to give structure to the adventure, then you or your group fill in the details.</p>
+    </roleplay>
+    <roleplay title="continue" data-line="6">
+        <p>You may want to have a sheet of paper or dry erase board to keep track of the adventure as you craft it.</p>
+        <instruction>
+            <p>For a different way to play, give each person a few index cards. When the app presents a question prompt, have each player write a brief suggestion, then select one as a group.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="11">goto Home</trigger>
+    <roleplay id="Home" title="Where the Heart Is" data-line="13">
+        <instruction>
+            <p>Name your home. Is it a small town? A farmstead on the edge of the wilds? A cosmopolitan city-state? Describe how it looks...Smells...Sounds.</p>
+        </instruction>
+    </roleplay>
+    <roleplay title="continue" data-line="17">
+        <instruction>
+            <p>What is there to love or set your home apart? What is there to dislike about it?</p>
+        </instruction>
+        <instruction>
+            <p>What do you or others value about your home?</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Approach" title="The Approach" data-line="23">
+        <p>Foes approach...</p>
+        <instruction>
+            <p>How do you notice the approaching horde? Do animals rush from the undergrowth? The dust of a horde billow on the edge of the horizon? A premonition or vision alert one of you in a mystical way? An informant from the enemy's side send word?  Emissaries lead the way with demands for tribute or surrender?</p>
+        </instruction>
+        <instruction>
+            <p>Describe what you notice and how.</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Prelude" title="Choose the Form..." data-line="31">
+        <p>You knew this day was coming. Now they've finally come and you must fight or fall.</p>
+        <instruction>
+            <p>Who are "they"?  Choose the form of the destructor (an Encounter type).</p>
+        </instruction>
+        <instruction>
+            <p>Describe the leader of the enemy army or band. What is there name? What is his or her reputation? Personality (mad and emotional, cold and cunning, other)?</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Preparation" title="Preparation" data-line="39">
+        <instruction>
+            <p>Take all the Encounter cards of the type you've chosen.</p>
+        </instruction>
+        <instruction>
+            <p>Find the highest Tier card and set it aside. This is your Boss card. Shuffle the remainder and put them in a pile in the center of the table. Remove 2 cards at random if playing with 2 adventurers, or 1 if playing with 3.</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Preparations" title="Preparations" data-line="45">
+        <p>You react quickly...</p>
+        <instruction>
+            <p>Do you...</p>
+        </instruction>
+        <choice text="Grab supplies.">
+            <trigger data-line="53">goto Reaction</trigger>
+        </choice>
+        <choice text="Man walls or fortifications.">
+            <trigger data-line="57">goto Reaction</trigger>
+        </choice>
+        <choice text="Try to rally townfolk, guardsmen, or farmhands.">
+            <trigger data-line="61">goto Reaction</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Reaction" title="Reaction" data-line="63">
+        <instruction>
+            <p>Choose one player to make a skill check appropriate to your reaction. You must make a roll equal to 10+numerical benefit you'd like. For example, if you want one Tier III Loot, you need to roll a 13.  If you fail on the roll, take damage equal to the numerical benefit sought.:</p>
+        </instruction>
+        <instruction>
+            <p>Supplies=Loot.</p>
+        </instruction>
+        <instruction>
+            <p>Fortifications=Reduce damage suffered first round only by target # for skill.</p>
+        </instruction>
+        <instruction>
+            <p>Rally allies=Take two adventurer cards, set health equal to benefit sought. You may distribute damage suffered to them each round OR inflict 1 damage to a foe each round the ally is in play.</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Recollections" title="Recollections" data-line="73">
+        <p>You recall what brought this scourge down upon you all...</p>
+        <instruction>
+            <p>What motivates this assault on your home?</p>
+        </instruction>
+        <choice text="Revenge for a past offense.">
+            <trigger data-line="81">goto Revenge</trigger>
+        </choice>
+        <choice text="Lust for a person or thing.">
+            <trigger data-line="85">goto Lust</trigger>
+        </choice>
+        <choice text="Desire for glory or tribute.">
+            <trigger data-line="89">goto Desire</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Revenge" title="Revenge" data-line="91">
+        <instruction>
+            <p>What was the offense done to the leader of your foes?  What will they likely do if you fail to defeat them?</p>
+        </instruction>
+        <p>And then your musing is at an end and the foe is upon you...</p>
+    </roleplay>
+    <trigger data-line="97">goto Fight</trigger>
+    <roleplay id="Lust" title="Lust" data-line="99">
+        <instruction>
+            <p>What do they lust after?</p>
+        </instruction>
+        <choice text="A person (fair maiden or lord, one of the adventurers).">
+            <trigger data-line="105">goto Motive</trigger>
+        </choice>
+        <choice text="A thing.">
+            <trigger data-line="109">goto Motive</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Motive" title="Motive" data-line="111">
+        <instruction>
+            <p>What will they do if they get the object of their desire?</p>
+        </instruction>
+        <p>And then your musing is at an end and the foe is upon you...</p>
+    </roleplay>
+    <trigger data-line="117">goto Fight</trigger>
+    <roleplay id="Desire" title="Desire" data-line="119">
+        <instruction>
+            <p>What do they want from the inhabitants of your home?</p>
+        </instruction>
+        <instruction>
+            <p>Why won't you/they give it to them?</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Consequences" title="Consequences" data-line="125">
+        <instruction>
+            <p>What would happen to the world if you did give it to them?</p>
+        </instruction>
+        <p>And then your musing is at an end and the foe is upon you...</p>
+    </roleplay>
+    <trigger data-line="131">goto Fight</trigger>
+    <roleplay id="Fight" title="Foes Abound" data-line="133">
+        <p>They rush upon you with fury...</p>
+        <instruction>
+            <p>Draw one more Encounter card from your selected pile than the total number of adventurers. Click on the button below and adjust the Tier value to match your draw.</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="139">
+        <e>{{_.randomEnemyOfClassTier("Bandit", 3)}}</e>
+        <event on="win">
+            <trigger data-line="144">goto Skills</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="148">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="150">end</trigger>
+    <roleplay id="Skills" title="Skills, Like Mad" data-line="152">
+        <p>You repulse the first assault and have earned a few minutes reprieve.</p>
+        <instruction>
+            <p>How do you spend this time?</p>
+        </instruction>
+        <choice text="Examining the bodies of slain foes or allies.">
+            <trigger data-line="160">goto Examine</trigger>
+        </choice>
+        <choice text="Rallying your own troops.">
+            <trigger data-line="164">goto Examine</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Examine" title="Examine" data-line="166">
+        <instruction>
+            <p>Roll to determine success.</p>
+        </instruction>
+        <instruction>
+            <p>Rolled 13 or above. If you examined corpses, draw two Tier I Loot. If you rallied troops, all successful attacks next round deal 2 extra damage.</p>
+        </instruction>
+        <instruction>
+            <p>Rolled 12 or below.  Lower Persona by 1 or take -2 to first round's roll.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="174">goto Fog</trigger>
+    <roleplay id="Fog" title="Fog of War" data-line="176">
+        <p>Your respite is over! It seems you've attracted the attention of the enemy's main force...and their leader.  If you can take them out, maybe the rest of your home's attackers will flee...</p>
+        <instruction>
+            <p>Draw the remaining lower tier Encounter cards and place the Boss card with them. Click on the button below and adjust the Tier value to match your draw.</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="182">
+        <e>{{_.randomEnemyOfClassTier("Bandit", 6)}}</e>
+        <event on="win">
+            <trigger data-line="187">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="191">
+                <instruction>
+                    <p>Describe your demise.</p>
+                </instruction>
+                <instruction>
+                    <p>Surely your foe gloats over you before seizing what they came for. Roleplay their dastardly verbal barbs and the last sight you see.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="195">end</trigger>
+    <roleplay id="Victory" title="Victory" data-line="197">
+        <p>You've saved your home!</p>
+        <instruction>
+            <p>How do the other inhabitants react to the victory?</p>
+        </instruction>
+    </roleplay>
+    <roleplay title="continue" data-line="203">
+        <instruction>
+            <p>What recognition or reward is bestowed upon you?</p>
+        </instruction>
+    </roleplay>
+    <roleplay title="continue" data-line="207">
+        <instruction>
+            <p>What do you do with your newfound status? How does this tale end?</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="211">end</trigger>
+</quest>
