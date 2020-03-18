@@ -171,10 +171,12 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
     // Send remote if we're the origin
     if (client === storeClient && instance === storeInstance) {
       // Fill in local details if they aren't set from the partial status
+      const dataLine = elem.attr('data-line');
+      const parsedDataLine = dataLine !== undefined ? parseInt(dataLine, 10) : false;
       const event: StatusEvent = {
         connected: true,
         lastEventID: commitID,
-        line: (elem && parseInt(elem.attr('data-line'), 10)) || undefined,
+        line: (elem && parsedDataLine) || undefined,
         numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
         aliveAdventurers: (combat && combat.numAliveAdventurers),
         type: 'STATUS',

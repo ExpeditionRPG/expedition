@@ -48,7 +48,8 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
       if (!c.attr('text')) {
         throw new Error('<choice> inside <roleplay> must have "text" attribute');
       }
-      text = c.attr('text');
+      const checkText = c.attr('text');
+      text = checkText !== undefined ? checkText : text;
       choices.push({jsx: generateIconElements(text, theme), idx: choiceCount});
       return;
     }
@@ -70,10 +71,10 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
       text = c.html() || '';
       let icon = 'adventurer';
 
-      // if there's an icon at the begining, replace default icon and remove that icon from text
+      // if there's an icon at the beginning, replace default icon and remove that icon from text
       const matches = text.match(REGEX.ICON);
       if (matches && text.trim().indexOf('<p>' + matches[0]) === 0) {
-        text = text.replace(matches[0], ''); // replace only the first occurence of the first icon
+        text = text.replace(matches[0], ''); // replace only the first occurrence of the first icon
         icon = matches[0].replace(/:/g, '');
       }
       element.jsx = <Callout icon={icon}>{generateIconElements(text, theme)}</Callout>;
@@ -110,17 +111,19 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     choices.push({jsx: buttonText, idx: 0});
   }
 
+  const title = node.elem.attr('title');
+  const icon = node.elem.attr('icon');
   return {
     choices,
     content,
     ctx: node.ctx,
-    icon: node.elem.attr('icon'),
-    title: generateIconElements(node.elem.attr('title'), theme),
+    icon: icon === undefined ? '' : icon,
+    title: generateIconElements(title === undefined ? '' : title, theme),
   };
 }
 
 const Roleplay = (props: Props, theme: CardThemeType|{}): JSX.Element => {
-  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
+  const resolvedTheme: CardThemeType = ((typeof(theme) !== 'string') ? 'light' : theme) as CardThemeType;
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;

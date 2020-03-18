@@ -74,8 +74,9 @@ export class Node<C extends Context> {
     let choiceIdx = -1;
     const keys: Array<string|number> = [];
     this.loopChildren((tag, child, orig) => {
-      if (child.attr('on') !== undefined) {
-        keys.push(child.attr('on'));
+      const attrOn = child.attr('on');
+      if (attrOn !== undefined) {
+        keys.push(attrOn);
       } else if (tag === 'choice') {
         choiceIdx++;
         keys.push(choiceIdx);
@@ -218,9 +219,10 @@ export class Node<C extends Context> {
       return (typeof val === 'function') ? val.toString() : val;
     });
 
+    const dataLine = this.elem.attr('data-line');
     return JSON.stringify({
       ctx: ctxJSON,
-      line: parseInt(this.elem.attr('data-line'), 10),
+      line: parseInt(dataLine === undefined ? '' : dataLine, 10),
     });
   }
 
@@ -295,10 +297,11 @@ export class Node<C extends Context> {
       return null;
     }
     const p = evt.elem.parent();
+    const heal = p.attr('heal');
     const ret: EventParameters = {};
     if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
     if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
-    if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+    if (p.attr('heal')) { ret.heal = parseInt(heal === undefined ? '0' : heal, 10); }
     return ret;
   }
 
