@@ -44,7 +44,7 @@ export function installRoutes(db: Database, router: express.Router) {
   function requireAuth(
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
+    next: express.NextFunction
   ) {
     if (!res.locals || !res.locals.id) {
       return res.status(500).end('You are not signed in.');
@@ -55,7 +55,7 @@ export function installRoutes(db: Database, router: express.Router) {
   function betaACAO(
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
+    next: express.NextFunction
   ) {
     if (
       Config.get('API_URL_BASE').indexOf('beta') !== -1 &&
@@ -73,7 +73,7 @@ export function installRoutes(db: Database, router: express.Router) {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header(
       'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, Content-Length, X-Requested-With',
+      'Content-Type, Authorization, Content-Length, X-Requested-With'
     );
     res.sendStatus(200);
   });
@@ -87,7 +87,7 @@ export function installRoutes(db: Database, router: express.Router) {
     betaACAO,
     (req, res) => {
       Handlers.postAnalyticsEvent(db, req, res);
-    },
+    }
   );
   router.post('/quests', limitCors, betaACAO, (req, res) => {
     Handlers.search(db, req, res);
@@ -104,7 +104,7 @@ export function installRoutes(db: Database, router: express.Router) {
     betaACAO,
     (req, res) => {
       Handlers.questXMLHandler(db, req, res);
-    },
+    }
   );
   router.post(
     '/publish/:id',
@@ -114,7 +114,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       Handlers.publish(db, Mail, req, res);
-    },
+    }
   );
   router.post(
     '/unpublish/:quest',
@@ -123,7 +123,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       Handlers.unpublish(db, req, res);
-    },
+    }
   );
   router.post('/quest/feedback/:type', limitCors, betaACAO, (req, res) => {
     Handlers.feedback(db, Mail, req, res);
@@ -133,7 +133,7 @@ export function installRoutes(db: Database, router: express.Router) {
       mailchimp,
       Config.get('MAILCHIMP_PLAYERS_LIST_ID'),
       req,
-      res,
+      res
     );
   });
   router.get('/user/quests', limitCors, betaACAO, requireAuth, (req, res) => {
@@ -146,7 +146,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       Handlers.userFeedbacks(db, req, res);
-    },
+    }
   );
   router.get('/user/badges', limitCors, betaACAO, requireAuth, (req, res) => {
     Handlers.userBadges(db, req, res);
@@ -158,7 +158,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       MultiplayerHandlers.user(db, req, res);
-    },
+    }
   );
   router.post(
     '/multiplayer/v1/new_session',
@@ -168,7 +168,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       MultiplayerHandlers.newSession(db, req, res);
-    },
+    }
   );
   router.post(
     '/multiplayer/v1/connect',
@@ -177,7 +177,7 @@ export function installRoutes(db: Database, router: express.Router) {
     requireAuth,
     (req, res) => {
       MultiplayerHandlers.connect(db, req, res);
-    },
+    }
   );
   router.post('/stripe/checkout', limitCors, betaACAO, (req, res) => {
     Stripe.checkout(req, res);

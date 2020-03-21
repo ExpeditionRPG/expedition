@@ -8,7 +8,7 @@ const { Op } = Sequelize;
 
 export function getSessionBySecret(
   db: Database,
-  secret: string,
+  secret: string
 ): Bluebird<SessionInstance> {
   return db.sessions
     .findOne({ where: { secret, locked: false } })
@@ -24,13 +24,13 @@ export function createSession(db: Database): Bluebird<SessionInstance> {
       id: Date.now(),
       locked: false,
       secret: makeSecret(),
-    }),
+    })
   );
 }
 
 export function getSessionQuestTitle(
   db: Database,
-  session: number,
+  session: number
 ): Bluebird<string | null> {
   return db.events
     .findOne({

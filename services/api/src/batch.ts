@@ -16,13 +16,13 @@ function doFn(quest: QuestInstance) {
   // Fetch XML
   request(quest.get('publishedurl'), {}, (err: Error, res: any, body: any) => {
     console.log(
-      `${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`,
+      `${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`
     );
     if (!body.startsWith('<quest')) {
       return console.error(
         `${quest.get('id')}: "${quest.get(
-          'title',
-        )}" points to invalid XML: ${body}`,
+          'title'
+        )}" points to invalid XML: ${body}`
       );
     }
 
@@ -38,7 +38,7 @@ function main() {
         ssl: true,
       },
       logging: Config.get('SEQUELIZE_LOGGING') === 'true',
-    }),
+    })
   );
 
   db.quests.findAll().then((quests: QuestInstance[]) => {

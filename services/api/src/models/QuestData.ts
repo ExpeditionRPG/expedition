@@ -6,7 +6,7 @@ import { prepare } from './Schema';
 export function saveQuestData(
   db: Database,
   data: QuestData,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): Bluebird<any> {
   // Double buffered save (2 rows, saves write the oldest row if both older than 24h, otherwise most recent row)
   return db.questData
@@ -24,7 +24,7 @@ export function saveQuestData(
           'Edit time mismatch for: got ' +
             iData.edittime.getTime() +
             ', expected ' +
-            data.edittime.getTime(),
+            data.edittime.getTime()
         );
       }
       return db.questData.create(prepare(data));
@@ -59,7 +59,7 @@ export function claimNewestQuestData(
   db: Database,
   id: string,
   userid: string,
-  edittime: Date,
+  edittime: Date
 ): Bluebird<QuestData | null> {
   let result: QuestData | null = null;
   return db.questData

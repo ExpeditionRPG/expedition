@@ -38,7 +38,7 @@ function handleErrors(res: express.Response) {
     res
       .status(500)
       .send(
-        JSON.stringify({ status: 'ERROR', error: e.toString() } as QT.Response),
+        JSON.stringify({ status: 'ERROR', error: e.toString() } as QT.Response)
       );
   };
 }
@@ -46,7 +46,7 @@ function handleErrors(res: express.Response) {
 export function queryFeedback(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -107,7 +107,7 @@ export function queryFeedback(
             return getQuest(
               db,
               r.get('partition') as string,
-              r.get('questid') as string,
+              r.get('questid') as string
             ).then((quest: Quest) => {
               return {
                 partition: r.get('partition'),
@@ -124,7 +124,7 @@ export function queryFeedback(
                 },
               } as QT.FeedbackEntry;
             });
-          }),
+          })
         );
       })
       .then((results: Array<QT.FeedbackEntry | null>) => {
@@ -144,7 +144,7 @@ export function queryFeedback(
 export function modifyFeedback(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -163,7 +163,7 @@ export function modifyFeedback(
         m.partition,
         m.questid,
         m.userid,
-        m.suppress || false,
+        m.suppress || false
       )
         .then(() => {
           res.status(200).send(JSON.stringify({ status: 'OK' } as QT.Response));
@@ -178,7 +178,7 @@ export function modifyFeedback(
 export function queryQuest(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -241,7 +241,7 @@ export function queryQuest(
 export function modifyQuest(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -275,7 +275,7 @@ export function modifyQuest(
 export function queryUser(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -328,7 +328,7 @@ export function queryUser(
 export function modifyUser(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   try {
     let body: any;
@@ -354,7 +354,7 @@ export function modifyUser(
 export function recalculateRatings(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return db.quests
     .findAll()
@@ -365,8 +365,8 @@ export function recalculateRatings(
           updateQuestRatings(
             db,
             q.get('partition') as string,
-            q.get('id') as string,
-          ),
+            q.get('id') as string
+          )
         );
       }
       return Promise.all(updates);

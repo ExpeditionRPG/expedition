@@ -8,7 +8,7 @@ import * as Handlers from './Handlers';
 function requireAdminAuth(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction,
+  next: express.NextFunction
 ) {
   if (!res.locals || !res.locals.id) {
     return res.status(500).end('You are not signed in.');
@@ -33,27 +33,27 @@ export function installRoutes(db: Database, router: express.Router) {
     '/admin/feedback/query',
     requireAdminAuth,
     limitCors,
-    (req, res) => Handlers.queryFeedback(db, req, res),
+    (req, res) => Handlers.queryFeedback(db, req, res)
   );
   router.post(
     '/admin/feedback/modify',
     requireAdminAuth,
     limitCors,
-    (req, res) => Handlers.modifyFeedback(db, req, res),
+    (req, res) => Handlers.modifyFeedback(db, req, res)
   );
   router.post('/admin/quest/query', requireAdminAuth, limitCors, (req, res) =>
-    Handlers.queryQuest(db, req, res),
+    Handlers.queryQuest(db, req, res)
   );
   router.post('/admin/quest/modify', requireAdminAuth, limitCors, (req, res) =>
-    Handlers.modifyQuest(db, req, res),
+    Handlers.modifyQuest(db, req, res)
   );
   router.post('/admin/user/query', requireAdminAuth, limitCors, (req, res) =>
-    Handlers.queryUser(db, req, res),
+    Handlers.queryUser(db, req, res)
   );
   router.post('/admin/user/modify', requireAdminAuth, limitCors, (req, res) =>
-    Handlers.modifyUser(db, req, res),
+    Handlers.modifyUser(db, req, res)
   );
   router.get('/admin/ratings/recalc', limitCors, (req, res) =>
-    Handlers.recalculateRatings(db, req, res),
+    Handlers.recalculateRatings(db, req, res)
   );
 }

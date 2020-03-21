@@ -36,7 +36,7 @@ export function toSequelize(s: SchemaBase) {
             k +
             ' (type ' +
             (m.type || '').toString() +
-            ') to Sequelize type',
+            ') to Sequelize type'
         );
     }
     if (m.extra === 'DECIMAL_4_2') {

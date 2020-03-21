@@ -255,7 +255,7 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
       dialect: 'sqlite',
       logging: false,
       storage: ':memory:',
-    }),
+    })
   );
 
   return Promise.all([
@@ -272,7 +272,7 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
   ])
     .then(() =>
       Promise.all(
-        state.map(entry => {
+        state.map((entry) => {
           if (entry instanceof AnalyticsEvent) {
             return db.analyticsEvent.create(prepare(entry)).then(() => null);
           }
@@ -304,8 +304,8 @@ export function testingDBWithState(state: SchemaBase[]): Promise<Database> {
             return db.sessions.create(prepare(entry)).then(() => null);
           }
           throw new Error('Unsupported entry for testingDBWithState');
-        }),
-      ),
+        })
+      )
     )
     .then(() => db);
 }

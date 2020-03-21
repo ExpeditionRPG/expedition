@@ -16,8 +16,8 @@ describe('Settings action', () => {
 
   describe('PlayerCount', () => {
     const s = {...initialSettings, numLocalPlayers: 1};
-    const n = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: {numAliveAdventurers: 1}}});
-    const n0 = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: null}});
+    const n = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: {numAliveAdventurers: 1}}} as any);
+    const n0 = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: null} as any});
     const m4: MultiplayerState = {...initialMultiplayer, clientStatus: {
       a: {type: 'STATUS', connected: false, aliveAdventurers: 10},
       b: {type: 'STATUS', connected: true, numLocalPlayers: 1, aliveAdventurers: 1},
@@ -114,10 +114,10 @@ describe('Settings action', () => {
     };
 
     test('computes multiplayer intersection, ignoring local settings', () => {
-      expect([...getContentSets(hf, mpHorror)]).toEqual([Expansion.horror]);
+      expect([...getContentSets(hf, mpHorror as any)]).toEqual([Expansion.horror]);
     });
     test('computes multiplayer intersection down to base game, ignoring local settings', () => {
-      expect([...getContentSets(hf, mpBase)]).toEqual([]);
+      expect([...getContentSets(hf, mpBase as any)]).toEqual([]);
     });
     test('computes content set from local when no multiplayer session', () => {
       expect([...getContentSets(hf, initialMultiplayer)]).toEqual([Expansion.horror, Expansion.future]);

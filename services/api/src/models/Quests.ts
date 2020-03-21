@@ -39,19 +39,19 @@ export interface QuestSearchParams {
 export function getQuest(
   db: Database,
   partition: string,
-  id: string,
+  id: string
 ): Bluebird<Quest> {
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
-      (result: QuestInstance | null) => new Quest(result ? result.get() : {}),
+      (result: QuestInstance | null) => new Quest(result ? result.get() : {})
     );
 }
 
 export function searchQuests(
   db: Database,
   userId: string,
-  params: QuestSearchParams,
+  params: QuestSearchParams
 ): Bluebird<QuestInstance[]> {
   // TODO: Validate search params
   const where: WhereOptions = {
@@ -145,8 +145,8 @@ export function searchQuests(
         Sequelize.literal(
           `(created >= '${Moment()
             .subtract(7, 'day')
-            .format('YYYY-MM-DD HH:mm:ss')}' AND ratingcount < 5) DESC`,
-        ),
+            .format('YYYY-MM-DD HH:mm:ss')}' AND ratingcount < 5) DESC`
+        )
       );
       // NULL values are ordered first by default - for ordering by rating,
       // this is the opposite of what we want.
@@ -169,7 +169,7 @@ export function searchQuests(
   if (!params.id) {
     const missingExpansions = enumValues(Expansion).filter(
       (e: Expansion) =>
-        (params.expansions || []).indexOf(e) === -1 && e !== 'base',
+        (params.expansions || []).indexOf(e) === -1 && e !== 'base'
     );
     for (const m of missingExpansions) {
       where['expansion' + m] = { [Op.not]: true };
@@ -177,14 +177,14 @@ export function searchQuests(
     // Order by the weight of compatible expansions
     const orderStr = enumValues(Expansion)
       .filter((e: Expansion) => e !== 'base')
-      .map(e => `(CASE WHEN expansion${e} THEN 1 ELSE 0 END)`)
+      .map((e) => `(CASE WHEN expansion${e} THEN 1 ELSE 0 END)`)
       .reduce((a, b) => `${a} + ${b}`);
     order.push([Sequelize.literal(orderStr), 'DESC']);
   }
 
   const limit = Math.min(
     Math.max(params.limit || MAX_SEARCH_LIMIT, 0),
-    MAX_SEARCH_LIMIT,
+    MAX_SEARCH_LIMIT
   );
 
   return db.quests.findAll({ where, order, limit });
@@ -233,7 +233,7 @@ export function publishQuest(
   userid: string,
   majorRelease: boolean,
   quest: Quest,
-  xml: string,
+  xml: string
 ): Bluebird<QuestInstance> {
   // TODO: Validate XML via crawler
   if (!userid) {
@@ -293,7 +293,7 @@ export function publishQuest(
           partition: quest.partition,
           questversion: updateValues.questversion,
           xml,
-        }),
+        })
       );
 
       return instance.update(updateValues);
@@ -303,7 +303,7 @@ export function publishQuest(
 export function unpublishQuest(db: Database, partition: string, id: string) {
   return db.quests.update(
     { tombstone: new Date() },
-    { where: { partition, id }, limit: 1 },
+    { where: { partition, id }, limit: 1 }
   );
 }
 
@@ -317,7 +317,7 @@ export function republishQuest(db: Database, partition: string, id: string) {
 export function updateQuestRatings(
   db: Database,
   partition: string,
-  id: string,
+  id: string
 ): Bluebird<QuestInstance> {
   let quest: QuestInstance;
   return db.quests

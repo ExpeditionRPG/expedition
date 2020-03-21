@@ -1,9 +1,8 @@
 import {setNavigator} from '../Globals';
 import {Action} from '../Testing';
 import {toCard, toPrevious, toNavCard} from './Card';
-import {NAV_CARD_STORAGE_KEY, AUTH_SETTINGS} from '../Constants';
+import {NAV_CARD_STORAGE_KEY} from '../Constants';
 import {setStorageKeyValue} from '../LocalStorage';
-import {initialSettings} from '../reducers/Settings';
 
 const fetchMock = require('fetch-mock');
 
@@ -31,7 +30,7 @@ describe('Card action', () => {
 
   describe('toPrevious', () => {
     test('returns a RETURN action', () => {
-      Action(toPrevious).expect({matchFn: (c, n) => c === 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
+      Action(toPrevious).expect({matchFn: (c: any, n: any) => c === 'QUEST_CARD'}).toDispatch(jasmine.objectContaining({type: 'RETURN'}));
     });
   });
 

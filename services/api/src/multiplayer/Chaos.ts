@@ -91,7 +91,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       const replaymsg =
         oldMessageBuf[Math.floor(Math.random() * oldMessageBuf.length)];
       console.warn(
-        LOGPRE + 'replaying msg to client: ' + replaymsg.substr(0, 128),
+        LOGPRE + 'replaying msg to client: ' + replaymsg.substr(0, 128)
       );
       oldSend(replaymsg, (e: Error) => {
         console.error(e);
@@ -104,7 +104,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
 export function chaosDB(
   db: Database,
   session: number,
-  ws: WebSocket,
+  ws: WebSocket
 ): Database {
   // Randomly injects events (results in conflicts in commitEvent)
   const chaosInterval = setInterval(() => {
@@ -118,8 +118,8 @@ export function chaosDB(
       enabled(ChaosParam.inject) &&
       Math.random() < (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)
     ) {
-      console.log(LOGPRE + "injecting an id'd event");
-      getLargestEventID(db, session).then(latestID => {
+      console.log(LOGPRE + 'injecting an id\'d event');
+      getLargestEventID(db, session).then((latestID) => {
         commitEvent(
           db,
           session,
@@ -127,7 +127,7 @@ export function chaosDB(
           'chaos',
           latestID + 1,
           'CHAOS',
-          JSON.stringify({ id: latestID + 1, event: { type: 'chaos!' } }),
+          JSON.stringify({ id: latestID + 1, event: { type: 'chaos!' } })
         );
       });
     }
@@ -149,7 +149,7 @@ export function maybeChaosWS(ws: WebSocket): WebSocket {
 export function maybeChaosDB(
   db: Database,
   session: number,
-  ws: WebSocket,
+  ws: WebSocket
 ): Database {
   if (Config.get('NODE_ENV') !== 'production' && Config.get(CHAOS_FIELD)) {
     console.warn(' ================== WARNING ================== ');

@@ -53,7 +53,7 @@ export interface MultiplayerSessionMeta {
 export function user(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return getClientSessions(db, res.locals.id)
     .then((sessions: SessionClientInstance[]) => {
@@ -87,7 +87,7 @@ export function user(
               meta.questTitle = q;
               return meta;
             });
-        }),
+        })
       );
     })
     .filter((m: MultiplayerSessionMeta | null) => m !== null)
@@ -98,7 +98,7 @@ export function user(
       return res.status(500).end(
         JSON.stringify({
           error: 'Error looking up user details: ' + e.toString(),
-        }),
+        })
       );
     });
 }
@@ -106,7 +106,7 @@ export function user(
 export function newSession(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   return createSession(db)
     .then((s: SessionInstance) => {
@@ -116,7 +116,7 @@ export function newSession(
       return res
         .status(500)
         .end(
-          JSON.stringify({ error: 'Error creating session: ' + e.toString() }),
+          JSON.stringify({ error: 'Error creating session: ' + e.toString() })
         );
     });
 }
@@ -124,7 +124,7 @@ export function newSession(
 export function connect(
   db: Database,
   req: express.Request,
-  res: express.Response,
+  res: express.Response
 ) {
   let body: any;
   try {
@@ -157,7 +157,7 @@ export function connect(
         return res.status(500).end(
           JSON.stringify({
             error: 'Could not join session: ' + e.toString(),
-          }),
+          })
         );
       }
       return null;
@@ -172,7 +172,7 @@ interface WebsocketSessionParams {
 }
 
 function wsParamsFromReq(
-  req: http.IncomingMessage,
+  req: http.IncomingMessage
 ): WebsocketSessionParams | null {
   if (!req || !req.url) {
     console.error('req.url not defined', req);
@@ -184,12 +184,12 @@ function wsParamsFromReq(
     return null;
   }
   const splitPath = parsedURL.pathname.match(
-    /\/ws\/multiplayer\/v1\/session\/(\d+).*/,
+    /\/ws\/multiplayer\/v1\/session\/(\d+).*/
   );
 
   if (splitPath === null) {
     console.error(
-      'Invalid upgrade request path, cancelling websocket connection.',
+      'Invalid upgrade request path, cancelling websocket connection.'
     );
     return null;
   }
@@ -205,7 +205,7 @@ function wsParamsFromReq(
 export function verifyWebsocket(
   db: Database,
   info: { origin: string; secure: boolean; req: http.IncomingMessage },
-  cb: (result: boolean) => any,
+  cb: (result: boolean) => any
 ) {
   const params = wsParamsFromReq(info.req);
   if (params === null) {
@@ -238,7 +238,7 @@ function makeMultiEvent(db: Database, session: number, lastEventID: number) {
           return e.get('json');
         });
       return { type: 'MULTI_EVENT', events, lastId };
-    },
+    }
   );
 }
 
@@ -249,7 +249,7 @@ function maybeFastForwardClient(
   client: ClientID,
   instance: string,
   lastEventID: number,
-  ws: WebSocket,
+  ws: WebSocket
 ) {
   getLargestEventID(db, session).then((dbLastEventID: number) => {
     if (lastEventID >= dbLastEventID) {
@@ -268,7 +268,7 @@ function maybeFastForwardClient(
         } as MultiplayerEvent),
         (e: Error) => {
           console.error('WS FF error:', e);
-        },
+        }
       );
     });
   });
@@ -282,11 +282,11 @@ function handleClientStatus(
   client: ClientID,
   instance: string,
   ev: StatusEvent,
-  ws: WebSocket,
+  ws: WebSocket
 ) {
   console.log(
     'Client key:',
-    toClientKey(client, instance) + ': ' + JSON.stringify(ev),
+    toClientKey(client, instance) + ': ' + JSON.stringify(ev)
   );
 
   setClientStatus(session, client, instance, ws, ev);
@@ -313,14 +313,14 @@ function sendError(ws: WebSocket, e: string) {
     } as MultiplayerEvent),
     (err: Error) => {
       console.error('WS sendError error:', err);
-    },
+    }
   );
 }
 
 export function websocketSession(
   db: Database,
   ws: WebSocket,
-  req: http.IncomingMessage,
+  req: http.IncomingMessage
 ) {
   const params = wsParamsFromReq(req);
   if (params === null) {
@@ -328,7 +328,7 @@ export function websocketSession(
   }
 
   console.log(
-    `Client ${params.client} connected to session ${params.session} with secret ${params.secret}`,
+    `Client ${params.client} connected to session ${params.session} with secret ${params.secret}`
   );
 
   // Setup chaos handlers (if configured)
@@ -357,7 +357,7 @@ export function websocketSession(
           } as MultiplayerEvent),
           (e: Error) => {
             console.error('WS send error:', e);
-          },
+          }
         );
       }
     }
@@ -375,7 +375,7 @@ export function websocketSession(
     } catch (e) {
       sendError(
         ws,
-        'Could not parse inbound event starting with: ' + msg.substr(0, 32),
+        'Could not parse inbound event starting with: ' + msg.substr(0, 32)
       );
       return;
     }
@@ -383,7 +383,7 @@ export function websocketSession(
     if (!event || !event.event || !event.event.type) {
       sendError(
         ws,
-        'No parsed type for event starting with: ' + msg.substr(0, 32),
+        'No parsed type for event starting with: ' + msg.substr(0, 32)
       );
       return;
     }
@@ -398,7 +398,7 @@ export function websocketSession(
           event.client,
           event.instance,
           event.event,
-          ws,
+          ws
         );
       }
       return;
@@ -418,7 +418,7 @@ export function websocketSession(
       params.instance,
       eventID,
       event.event.type,
-      msg,
+      msg
     )
       .then((result: number | null) => {
         broadcast(params.session, msg);
@@ -445,7 +445,7 @@ export function websocketSession(
                 if (e) {
                   sendError(ws, e.toString());
                 }
-              },
+              }
             );
           });
       });
@@ -465,7 +465,7 @@ export function websocketSession(
         },
         id: null,
         instance: params.instance,
-      } as MultiplayerEvent),
+      } as MultiplayerEvent)
     );
   });
 }

@@ -5,7 +5,7 @@ import QuestAppBar, {Props} from './QuestAppBar';
 import {defaultState as initialEditor} from '../reducers/Editor';
 import {loggedOutUser} from 'shared/auth/UserState';
 import {initialQuestState} from '../reducers/Quest';
-configure({ adapter: new Adapter() });
+configure({ adapter: new (Adapter as any)() });
 
 const TEST_QUEST = {
   ...initialQuestState,

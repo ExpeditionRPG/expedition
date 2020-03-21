@@ -2,7 +2,7 @@ import {Quest} from 'shared/schema/Quests';
 import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 import {getCheerio} from '../Globals';
-import {getStorageJson, getStorageString, checkStorageFreeBytes} from '../LocalStorage';
+import {getStorageJson, getStorageString} from '../LocalStorage';
 import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest, recreateNodeFromPath} from './SavedQuests';
 import {newMockStore} from '../Testing';
 
@@ -27,7 +27,7 @@ describe('SavedQuest actions', () => {
     if (next === null) {
       throw new Error('Initial setup failed');
     }
-    const tmpStore = newMockStore();
+    const tmpStore = newMockStore({});
     tmpStore.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS)).then(done);
   });
   afterEach(() => {
@@ -43,7 +43,6 @@ describe('SavedQuest actions', () => {
     });
     test('updates available storage', () => {
       const store = newMockStore({});
-      const startBytes = checkStorageFreeBytes();
       store.dispatch(deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
       const bytesAction = store.getActions()[0];
       expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
@@ -82,21 +81,18 @@ describe('SavedQuest actions', () => {
     });
     test('updates available storage', () => {
       const store = newMockStore({});
-      const startBytes = checkStorageFreeBytes();
       store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
       const bytesAction = store.getActions()[0];
       expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
     });
     test('data is removed when there is a storage error', (done) => {
       const store = newMockStore({});
-      const startBytes = checkStorageFreeBytes();
-      const testKey = savedQuestKey(NEW_ID, NEW_TS);
       const mockSetKeyValue = jasmine.createSpy('mockSetKeyValue').and.callFake((k: string, v: any) => {
         if (k === SAVED_QUESTS_KEY && v !== null) {
           throw new Error('exceeded the quota');
         }
       });
-      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS mockSetKeyValue)).then(() => done.fail('expected error')).catch((e) => {
+      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS, mockSetKeyValue)).then(() => done.fail('expected error')).catch((e: Error) => {
         expect(mockSetKeyValue).toHaveBeenCalledWith(savedQuestKey(NEW_ID, NEW_TS), null);
         done();
       });
@@ -112,7 +108,7 @@ describe('SavedQuest actions', () => {
   });
 
   describe('loadSavedQuest', () => {
-    function storeAndLoadQuest(xml: string, mutateCtx: ((ctx: TemplateContext) => TemplateContext) = (c) => c): {saved: ParserNode, loaded: ParserNode} {
+    function storeAndLoadQuest(xml: string, mutateCtx: ((ctx: any) => any) = (c) => c): {saved: ParserNode, loaded: ParserNode} {
       const quest = getCheerio().load(xml)('quest');
       const pnode = new ParserNode(quest.children().eq(0), defaultContext());
       const next = pnode.getNext(0);
@@ -125,7 +121,7 @@ describe('SavedQuest actions', () => {
       store.clearActions();
 
       store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS+1));
-      const loaded = store.getActions().filter((a) => a.type === 'QUEST_NODE')[0].node;
+      const loaded = store.getActions().filter((a: any) => a.type === 'QUEST_NODE')[0].node;
       return {saved: next, loaded};
     }
     test('loads from context, properly binding "lodash" functions in roleplay node', () => {
@@ -156,7 +152,6 @@ describe('SavedQuest actions', () => {
           <roleplay data-line="0"></roleplay>
           <roleplay data-line="1"></roleplay>
         </quest>`);
-      let result = "";
       expect(saved.ctx.seed).toEqual(loaded.ctx.seed);
     });
     test('handles loading into combat', () => {
@@ -166,7 +161,7 @@ describe('SavedQuest actions', () => {
         <quest>
           <roleplay data-line="0" id="a"></roleplay>
           <combat data-line="1"><e>Giant Rat</e></combat>
-        </quest>`, (c: TemplateContext) => {
+        </quest>`, (c: any) => {
           c.templates.combat = {...c.templates.combat, roundCount: 6, tier: 4};
           return c;
         }).loaded;
@@ -210,7 +205,7 @@ describe('SavedQuest actions', () => {
           </event>
         </combat>
         <roleplay id="g1">expected</roleplay>
-      </quest>`, ['round', 0]);
+      </quest>`, ['round', 0] as any);
       expect(node.elem.text()).toEqual('expected');
       expect(node.ctx.scope['a']).toEqual(5);
     });
@@ -223,7 +218,7 @@ describe('SavedQuest actions', () => {
             <roleplay>expected</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round']);
+      </quest>`, [0, '|3', 'round'] as any);
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles error on mid-combat roleplay', () => {
@@ -235,7 +230,7 @@ describe('SavedQuest actions', () => {
             <roleplay>never get here</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round']);
+      </quest>`, [0, '|3', 'round'] as any);
       expect(node.elem.text()).toEqual('expected');
     });
     test('uses saved seed', () => {
@@ -247,7 +242,7 @@ describe('SavedQuest actions', () => {
             <roleplay>expected</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round'], 'asdg');
+      </quest>`, [0, '|3', 'round'] as any, 'asdg');
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles exiting of combat (win/lose)', () => {
@@ -258,7 +253,7 @@ describe('SavedQuest actions', () => {
           <event on="win"><roleplay>expected</roleplay></event>
           <event on="lose"></event>
         </combat>
-      </quest>`, [0, '|3', 'win']);
+      </quest>`, [0, '|3', 'win'] as any);
       expect(node.elem.text()).toEqual('expected');
     });
     test('returns earlier node if there was a problem with the full path', () => {
@@ -275,7 +270,7 @@ describe('SavedQuest actions', () => {
         <combat>
           <e>Bandit</e>
         </combat>
-      </quest>`, [0, '|1', '|2']);
+      </quest>`, [0, '|1', '|2'] as any);
       expect(node.elem.text()).toEqual('expected');
       expect(complete).toEqual(false);
     });

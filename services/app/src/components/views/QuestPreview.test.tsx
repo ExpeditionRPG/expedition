@@ -109,7 +109,7 @@ describe('QuestPreview', () => {
   });
 
   test('indicates when the quest is available offline', () => {
-    const {props, wrapper} = setup({savedInstances: [{pathLen: 0, ts: 1}]});
+    const {wrapper} = setup({savedInstances: [{pathLen: 0, ts: 1}]} as any);
     expect(wrapper.find(".indicators").text()).toContain("Available Offline");
   });
 
@@ -124,7 +124,7 @@ describe('QuestPreview', () => {
   });
 
   test('indicates when quest is official', () => {
-    const {props, wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], official: true})});
+    const {wrapper} = setup({quest: new Quest({...TUTORIAL_QUESTS[0], official: true})});
     expect(wrapper.find(".indicators").text()).toContain("Official Quest");
   });
 

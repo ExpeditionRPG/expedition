@@ -8,7 +8,7 @@ import Config from '../config';
 import { Database, QuestInstance } from './Database';
 
 export function setLootPoints(db: Database, id: string, lootPoints: number) {
-  return db.users.findOne({ where: { id } }).then(result => {
+  return db.users.findOne({ where: { id } }).then((result) => {
     if (result === null) {
       throw new Error('No user with ID ' + id);
     }
@@ -22,23 +22,23 @@ export function incrementLoginCount(db: Database, id: string) {
       loginCount: Sequelize.literal('login_count + 1') as any,
       lastLogin: Sequelize.literal('CURRENT_TIMESTAMP') as any,
     },
-    { where: { id } },
+    { where: { id } }
   );
 }
 
 export function getUser(db: Database, id: string): Bluebird<User> {
   return db.users
     .findOne({ where: { id } })
-    .then(result => new User(result ? result.get() : {}));
+    .then((result) => new User(result ? result.get() : {}));
 }
 
 export function maybeGetUserByEmail(
   db: Database,
-  email: string,
+  email: string
 ): Bluebird<User | null> {
   return db.users
     .findOne({ where: { email } })
-    .then(result => (result ? new User(result.get()) : null));
+    .then((result) => (result ? new User(result.get()) : null));
 }
 
 export function subscribeToCreatorsList(mc: any, email: string) {
@@ -68,7 +68,7 @@ export interface UserQuestsType {
 export function getUserQuests(
   db: Database,
   id: string,
-  questIds?: string[],
+  questIds?: string[]
 ): Bluebird<UserQuestsType> {
   const where: WhereOptions = {
     userID: id,
@@ -117,7 +117,7 @@ export function getUserQuests(
                 return;
               }
               userQuests[k].details = qq;
-            }),
+            })
         );
       }
 
@@ -133,7 +133,7 @@ export interface IUserFeedback {
 
 export function getUserFeedbacks(
   db: Database,
-  userid: string,
+  userid: string
 ): Bluebird<IUserFeedback[]> {
   return db.feedback
     .findAll({
@@ -141,10 +141,10 @@ export function getUserFeedbacks(
       attributes: ['rating', 'questid', 'text', 'questversion'],
       order: [['created', 'DESC']],
     })
-    .then(feedbacks => {
+    .then((feedbacks) => {
       const questIds = feedbacks.map(({ questid }: any) => questid);
-      return getUserQuests(db, userid, questIds).then(quests => {
-        return feedbacks.map(feedback => ({
+      return getUserQuests(db, userid, questIds).then((quests) => {
+        return feedbacks.map((feedback) => ({
           rating: feedback.get('rating') as number,
           text: feedback.get('text') as string,
           quest: quests[feedback.get('questid') as string],
@@ -159,7 +159,7 @@ export function getUserBadges(db: Database, userid: string): Bluebird<Badge[]> {
       where: { userid },
       order: [['badge', 'ASC']],
     })
-    .then(badges => {
-      return badges.map(b => b.get('badge') as Badge);
+    .then((badges) => {
+      return badges.map((b) => b.get('badge') as Badge);
     });
 }

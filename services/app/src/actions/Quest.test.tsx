@@ -58,14 +58,14 @@ describe('Quest actions', () => {
   describe('exitQuest', () => {
     test('clears waitingOn', () => {
       const c = fakeConnection();
-      const a = Action(exitQuest, {
+      Action(exitQuest, {
         multiplayer: {
           ...initialMultiplayer,
           connected: true,
           client: "abc",
           instance: "def",
         },
-      }, c).execute();
+      } as any, c as any).execute();
       expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({type: 'STATUS', waitingOn: undefined}), undefined);
     });
   });

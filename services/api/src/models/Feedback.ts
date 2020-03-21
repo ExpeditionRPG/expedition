@@ -26,7 +26,7 @@ export function getFeedback(
   db: Database,
   partition: string,
   questid: string,
-  userid: string,
+  userid: string
 ): Promise<FeedbackInstance | null> {
   return db.feedback.findOne({ where: { partition, questid, userid } });
 }
@@ -34,7 +34,7 @@ export function getFeedback(
 export function getFeedbackByQuestId(
   db: Database,
   partition: string,
-  questid: string,
+  questid: string
 ): Promise<FeedbackInstance[]> {
   return db.feedback.findAll({
     where: { partition, questid, rating: { [Op.gt]: 0 } },
@@ -55,7 +55,7 @@ function mailFeedbackToAdmin(
   feedback: Feedback,
   platformDump: string,
   consoleDump: string[],
-  user: User | null,
+  user: User | null
 ) {
   const subject = `Feedback (${feedback.platform} v${feedback.version})`;
   let message = `
@@ -126,7 +126,7 @@ export function submitFeedback(
   feedback: Feedback,
   platformDump: string,
   consoleDump: string[],
-  user: User | null,
+  user: User | null
 ): Promise<any> {
   return Promise.resolve()
     .then(() => {
@@ -143,7 +143,7 @@ export function submitFeedback(
         feedback,
         platformDump,
         consoleDump,
-        user,
+        user
       );
     })
     .then(() => {
@@ -158,7 +158,7 @@ function mailFirstRating(
   mail: MailService,
   feedback: Feedback,
   quest: Quest,
-  user: User | null,
+  user: User | null
 ) {
   const emails = [];
   if (quest.email) {
@@ -187,7 +187,7 @@ function mailNewRating(
   mail: MailService,
   feedback: Feedback,
   quest: Quest,
-  user: User | null,
+  user: User | null
 ) {
   const emails = [];
   if (quest.email) {
@@ -201,7 +201,7 @@ function mailNewRating(
     <p>"${feedback.text}"</p>
     <p>${feedback.rating} out of 5 stars</p>
     <p>New quest overall rating: ${quest.ratingavg.toFixed(
-      1,
+      1
     )} out of 5 across ${quest.ratingcount} ratings.</p>
     <p>Was submitted for ${quest.title} by ${quest.author}</p>
     <p>They played with ${feedback.players} adventurers on ${
@@ -222,7 +222,7 @@ export function submitRating(
   db: Database,
   mail: MailService,
   feedback: Feedback,
-  user: User | null,
+  user: User | null
 ): Promise<any> {
   return getQuest(db, feedback.partition, feedback.questid)
     .catch((e: Error) => {
@@ -255,7 +255,7 @@ export function suppressFeedback(
   partition: string,
   questid: string,
   userid: string,
-  suppress: boolean,
+  suppress: boolean
 ): Promise<any> {
   return db.feedback
     .update({ tombstone: suppress ? new Date() : PLACEHOLDER_DATE } as any, {
@@ -272,7 +272,7 @@ function mailReportToAdmin(
   feedback: Feedback,
   quest: Quest,
   platformDump: string,
-  user: User | null,
+  user: User | null
 ) {
   const subject = `Quest reported: ${quest.title}`;
   let message = `<p>Message: ${feedback.text}</p>
@@ -301,11 +301,11 @@ export function submitReportQuest(
   mail: MailService,
   feedback: Feedback,
   platformDump: string,
-  user: User | null,
+  user: User | null
 ): Promise<any> {
   return getQuest(db, feedback.partition, feedback.questid).then(
     (quest: Quest) => {
       return mailReportToAdmin(mail, feedback, quest, platformDump, user);
-    },
+    }
   );
 }

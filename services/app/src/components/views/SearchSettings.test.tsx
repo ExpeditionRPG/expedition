@@ -3,7 +3,7 @@ import * as React from 'react';
 import { initialSearch } from '../../reducers/Search';
 import { initialSettings } from '../../reducers/Settings';
 import SearchSettings, { Props } from './SearchSettings';
-import { loggedOutUser } from '../../reducers/User';
+import {loggedOutUser} from 'shared/auth/UserState';
 import {TEST_SEARCH} from '../../reducers/TestData';
 import {Expansion} from 'shared/schema/Constants';
 

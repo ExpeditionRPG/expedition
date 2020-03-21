@@ -1,7 +1,6 @@
 import {Action, newMockStore} from '../Testing';
 import {remoteify, clearMultiplayerActions} from '../multiplayer/Remoteify';
 import {initialMultiplayer} from '../reducers/Multiplayer';
-import {initialSettings} from '../reducers/Settings';
 import {
   syncMultiplayer,
   loadMultiplayer,
@@ -11,8 +10,6 @@ import {
   handleEvent,
   sendStatus,
   sendEvent,
-  subscribeToEvents,
-  unsubscribeFromEvents
 } from './Multiplayer';
 import {MULTIPLAYER_SETTINGS} from '../Constants';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
@@ -22,9 +19,9 @@ import {fakeConnection} from '../multiplayer/Testing';
 var cheerio = require('cheerio');
 
 // Need to polyfill headers in jest environment
-global.Headers = ()=>{}
+(global as any).Headers = ()=>{}
 
-const mockResponse = (status, statusText, response) => {
+const mockResponse = (status: any, statusText: any, response: any) => {
   return {
     ok: (status === 200),
     status: status,
@@ -70,10 +67,10 @@ describe('Multiplayer actions', () => {
         }
       };
       const fakeClient = {
-        configure: jasmine.createSpy('configure');
-        connect: jasmine.createSpy('connect');
+        configure: jasmine.createSpy('configure'),
+        connect: jasmine.createSpy('connect'),
       };
-      Action(multiplayerNewSession, {multiplayer}).execute({id: 'asdf'}, fakeClient, handlers).then((actions) => {
+      Action(multiplayerNewSession as any, {multiplayer}).execute({id: 'asdf'}, fakeClient, handlers).then((actions: any) => {
         expect(fakeClient.connect).toHaveBeenCalledWith('testsession', '1234');
         done();
       }).catch(done.fail);
@@ -81,7 +78,7 @@ describe('Multiplayer actions', () => {
     });
     test('catches and logs web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(multiplayerNewSession, {multiplayer}).execute({id: 'asdf'}, null, handler).then((actions) => {
+      Action(multiplayerNewSession as any, {multiplayer}).execute({id: 'asdf'}, null, handler).then((actions: any) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({type: 'SNACKBAR_OPEN'}));
         done();
       }).catch(done.fail);
@@ -91,18 +88,18 @@ describe('Multiplayer actions', () => {
   describe('multiplayerConnect', () => {
     test('connects to a session', (done) => {
       const fakeClient = {
-        configure: jasmine.createSpy('configure');
-        connect: jasmine.createSpy('connect');
+        configure: jasmine.createSpy('configure'),
+        connect: jasmine.createSpy('connect'),
       };
       const handler = () => Promise.resolve(mockResponse(200, null, {session: 'testsession'}));
-      Action(multiplayerConnect, {multiplayer}).execute({id: 'asdf'}, '1234', fakeClient, handler).then((actions) => {
+      Action(multiplayerConnect as any, {multiplayer}).execute({id: 'asdf'}, '1234', fakeClient, handler).then((actions: any) => {
         expect(fakeClient.connect).toHaveBeenCalledWith('testsession', '1234');
         done();
       }).catch(done.fail);
     });
     test('catches and indicates web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(multiplayerConnect, {multiplayer}).execute({id: 'asdf'}, '1234', null, handler).then((actions) => {
+      Action(multiplayerConnect as any, {multiplayer}).execute({id: 'asdf'}, '1234', null, handler).then((actions: any) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({type: 'SNACKBAR_OPEN'}));
         done();
       }).catch(done.fail);
@@ -111,7 +108,7 @@ describe('Multiplayer actions', () => {
 
   describe('loadMultiplayer', () => {
     test('fetches past sessions by user id', (done) => {
-      const testHistory: MultiplayerSessionMeta[] = [
+      const testHistory: any[] = [
         {
           id: 1,
           secret: '1234',
@@ -121,14 +118,14 @@ describe('Multiplayer actions', () => {
         },
       ];
       const handler = () => Promise.resolve(mockResponse(200, null, {history: testHistory}));
-      Action(loadMultiplayer, {multiplayer}).execute({id: 'asdf'}, handler).then((actions) => {
+      Action(loadMultiplayer as any, {multiplayer}).execute({id: 'asdf'}, handler).then((actions: any) => {
         expect(actions[0]).toEqual(jasmine.objectContaining({history: testHistory}));
         done();
       }).catch(done.fail);
     });
     test('ignores web errors', (done) => {
       const handler = () => Promise.reject('nah');
-      Action(loadMultiplayer, {multiplayer}).execute({id: 'asdf'}, handler).then((actions) => {
+      Action(loadMultiplayer as any, {multiplayer}).execute({id: 'asdf'}, handler).then((actions: any) => {
         expect(actions[1]).toEqual(jasmine.objectContaining({type: 'NAVIGATE'}));
         done();
       }).catch(done.fail);
@@ -139,7 +136,7 @@ describe('Multiplayer actions', () => {
     const doTest = () => {
       const c = fakeConnection();
       const s = {type: 'STATUS', line: 5};
-      const actions = Action(setMultiplayerStatus, {multiplayer}).execute(s, c);
+      const actions = Action(setMultiplayerStatus as any, {multiplayer}).execute(s, c);
       return {c, s, actions};
     }
 
@@ -157,7 +154,7 @@ describe('Multiplayer actions', () => {
   describe('syncMultiplayer', () => {
     test('syncs the client', () => {
       const c = fakeConnection();
-      Action(syncMultiplayer, {multiplayer}).execute(c);
+      Action(syncMultiplayer as any, {multiplayer}).execute(c);
       expect(c.sync).toHaveBeenCalledTimes(1);
     });
   });
@@ -169,7 +166,7 @@ describe('Multiplayer actions', () => {
     const doTest = (client?: string, instance?: string, extras?: any, storeData?: any) => {
       const c = fakeConnection();
       const store = newMockStore({multiplayer, quest: {node}, commitID: cid, ...storeData});
-      const result = store.dispatch(sendStatus(client, instance, extras, c));
+      store.dispatch(sendStatus(client, instance, extras, c as any));
       return {c, actions: store.getActions()};
     }
 
@@ -189,32 +186,32 @@ describe('Multiplayer actions', () => {
       expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({waitingOn: 'something'}), cid);
     });
     test('dispatches status', () => {
-      const {c, actions} = doTest();
+      const {actions} = doTest();
       expect(actions).toContainEqual(jasmine.objectContaining({type: 'MULTIPLAYER_CLIENT_STATUS'}));
     });
     test('publishes locally', () => {
-      const {c, actions} = doTest();
+      const {c} = doTest();
       expect(c.publish).toHaveBeenCalledTimes(1);
     });
     test('sends to remote clients if self-status', () => {
-      const {c, actions} = doTest();
+      const {c} = doTest();
       expect(c.sendEvent).toHaveBeenCalledTimes(1);
     });
     test('does nothing when empty client', () => {
-      const {c, actions} = doTest(null, multiplayer.instance, undefined, {multiplayer: {...multiplayer, client: null, instance: null}});
+      const {c} = doTest(null as any, multiplayer.instance, undefined, {multiplayer: {...multiplayer, client: null, instance: null}} as any);
       expect(c.sendEvent).not.toHaveBeenCalled();
     });
     test('does nothing when empty instance', () => {
-      const {c, actions} = doTest(multiplayer.client, null, undefined, {multiplayer: {...multiplayer, client: null, instance: null}});
+      const {c} = doTest(multiplayer.client, null as any, undefined, {multiplayer: {...multiplayer, client: null, instance: null}} as any);
       expect(c.sendEvent).not.toHaveBeenCalled();
     });
     test('does not send to remote clients if not self status', () => {
-      const {c, actions} = doTest("nnn", "mmm");
+      const {c} = doTest("nnn", "mmm");
       expect(c.sendEvent).not.toHaveBeenCalled();
     });
     test('persists waitingOn from store if not specified', () => {
       // This has failed multiple times for various reasons, so it's worthwhile to test it here.
-      const {c, actions} = doTest(undefined, undefined, undefined, {
+      const {c} = doTest(undefined, undefined, undefined, {
         multiplayer: {
           ...multiplayer,
           clientStatus: {
@@ -230,14 +227,14 @@ describe('Multiplayer actions', () => {
     const e = {};
     test('sends event via remote client', () => {
       const c = fakeConnection();
-      const store = newMockStore();
-      store.dispatch(sendEvent(e, 0, c));
+      const store = newMockStore({});
+      store.dispatch(sendEvent(e as any, 0, c as any));
       expect(c.sendEvent).toHaveBeenCalledTimes(1);
     });
     test('uses state commitID if not passed', () => {
       const c = fakeConnection();
       const store = newMockStore({commitID: 2});
-      store.dispatch(sendEvent(e, undefined, c));
+      store.dispatch(sendEvent(e as any, undefined, c as any));
       expect(c.sendEvent).toHaveBeenCalledWith(e, 2);
     });
   });
@@ -255,7 +252,6 @@ describe('Multiplayer actions', () => {
       clearMultiplayerActions();
     });
     test('handles status events from other clients', (done) => {
-      let called = false;
       const store = newMockStore({multiplayer});
       store.dispatch(handleEvent({
         client: "abc", // same client
@@ -266,14 +262,13 @@ describe('Multiplayer actions', () => {
           id: 2,
           event: "TOUCH_END",
           positions: {},
-        },
-      }, false, 0, multiplayer, fakeConnection())).then((result as any) => {
+        } as any,
+      }, false, 0, multiplayer, fakeConnection() as any)).then((result: any) => {
         expect(store.getActions()).toContainEqual(jasmine.objectContaining({client: 'abc', instance: 'mmm'}));
         done();
       }).catch(done.fail);
     });
     test('does not dispatch INTERACTION events', (done) => {
-      let called = false;
       const store = newMockStore({multiplayer});
       store.dispatch(handleEvent({
         id: 1,
@@ -283,19 +278,18 @@ describe('Multiplayer actions', () => {
           event: "TOUCH_END",
           positions: {},
         },
-      }, false, 0, multiplayer, fakeConnection())).then((result: any) => {
+      } as any, false, 0, multiplayer, fakeConnection() as any)).then((result: any) => {
         expect(store.getActions()).toEqual([]);
         done();
       }).catch(done.fail);
     });
 
     test('safely handles unknown events', (done) => {
-      let called = false;
       const store = newMockStore({multiplayer});
       store.dispatch(handleEvent({
         id: 1,
         event: {type: 'BAD'},
-      } as any, false, 0, multiplayer, fakeConnection())).then((result: any) => {
+      } as any, false, 0, multiplayer, fakeConnection() as any)).then((result: any) => {
         expect(store.getActions()).toContainEqual(jasmine.objectContaining({type: 'MULTIPLAYER_COMMIT'}));
         done();
       }).catch(done.fail);
@@ -305,7 +299,7 @@ describe('Multiplayer actions', () => {
       let called = false;
       function testAction(args: {n: number}) {called = true;}
       remoteify(testAction);
-      const result = Action(handleEvent, {multiplayer}).execute({
+      Action(handleEvent as any, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'ACTION',
@@ -317,7 +311,7 @@ describe('Multiplayer actions', () => {
     });
     test('rejects ACTIONs and sends status when id is not an increment', (done) => {
       const c = fakeConnection();
-      Action(handleEvent, {multiplayer}).execute({
+      Action(handleEvent as any, {multiplayer}).execute({
         id: 2,
         event: {
           type: 'ACTION',
@@ -332,8 +326,7 @@ describe('Multiplayer actions', () => {
     test('handles MULTI_EVENT', (done) => {
       // Update the commit ID when the action is executed
       let calls = 0;
-      const testAction = remoteify(function testAction(args: {n: number}) {calls++;});
-      Action(handleEvent, {multiplayer}).execute({
+      Action(handleEvent as any, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'MULTI_EVENT',
@@ -364,7 +357,7 @@ describe('Multiplayer actions', () => {
           }),
         };
       });
-      Action(handleEvent, {multiplayer}).execute({
+      Action(handleEvent as any, {multiplayer}).execute({
         id: 1,
         event: {
           type: 'MULTI_EVENT',
@@ -374,7 +367,7 @@ describe('Multiplayer actions', () => {
             JSON.stringify({id: 2, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 2})}}),
             JSON.stringify({id: 3, event: {type: 'ACTION', name: 'asyncAction', args: JSON.stringify({n: 3})}}),
           ],
-        } as MultiEvent,
+        } as any,
       }, false, 0, multiplayer, fakeConnection()).then(() => {
         expect(actions).toEqual(3);
         done();

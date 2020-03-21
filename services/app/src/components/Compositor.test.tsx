@@ -63,7 +63,7 @@ describe('Compositor', () => {
     const {wrapper} = setup({
       card: {name: 'QUEST_PREVIEW'},
       multiplayer: {session: 'abcd', clientStatus: {}},
-    }) as any;
+    } as any) as any;
     expect(wrapper.find('.remote_footer').html()).not.toEqual(null);
   });
 

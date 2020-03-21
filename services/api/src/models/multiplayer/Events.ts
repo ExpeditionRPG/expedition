@@ -13,7 +13,7 @@ const { Op } = Sequelize;
 
 export function getLastEvent(
   db: Database,
-  session: number,
+  session: number
 ): Bluebird<EventInstance | null> {
   return db.events.findOne({
     order: [['timestamp', 'DESC']],
@@ -24,7 +24,7 @@ export function getLastEvent(
 export function getOrderedEventsAfter(
   db: Database,
   session: number,
-  start: number,
+  start: number
 ): Bluebird<EventInstance[] | null> {
   return db.events.findAll({
     order: [['timestamp', 'ASC']],
@@ -34,7 +34,7 @@ export function getOrderedEventsAfter(
 
 export function getLargestEventID(
   db: Database,
-  session: number,
+  session: number
 ): Bluebird<number> {
   return getLastEvent(db, session).then((e: EventInstance | null) => {
     if (e === null) {
@@ -49,7 +49,7 @@ export function commitAndBroadcastAction(
   session: number,
   client: ClientID,
   instance: string,
-  action: ActionEvent,
+  action: ActionEvent
 ): Bluebird<void> {
   const ev = {
     client: 'SERVER',
@@ -62,7 +62,7 @@ export function commitAndBroadcastAction(
     (eventCount: number | null) => {
       // Broadcast to all peers - note that the event will be set by commitEventWithoutID
       broadcast(session, JSON.stringify(ev));
-    },
+    }
   );
 }
 
@@ -72,7 +72,7 @@ export function commitEventWithoutID(
   client: string,
   instance: string,
   type: string,
-  struct: object,
+  struct: object
 ): Bluebird<number | null> {
   // Events by the server may need to be committed without a specific set ID.
   // In these cases, we pass the full object before serialization and fill it
@@ -104,7 +104,7 @@ export function commitEventWithoutID(
                 ' already committed for client ' +
                 client +
                 ' instance ' +
-                instance,
+                instance
             );
             id = s.get('eventCounter') as number;
             (struct as any).id = id;
@@ -133,7 +133,7 @@ export function commitEventWithoutID(
                 timestamp: new Date(),
                 type,
               },
-              { transaction: txn, returning: false },
+              { transaction: txn, returning: false }
             )
             .then(() => true);
         });
@@ -150,7 +150,7 @@ export function commitEvent(
   instance: string,
   event: number,
   type: string,
-  json: string,
+  json: string
 ): Bluebird<number | null> {
   let s: SessionInstance;
   return db.sequelize
@@ -180,14 +180,14 @@ export function commitEvent(
                 ' already committed for client ' +
                 client +
                 ' instance ' +
-                instance,
+                instance
             );
             return false;
           } else if ((s.get('eventCounter') as number) + 1 !== event) {
             throw new Error(
               `event counter increment mismatch (${s.get(
-                'eventCounter',
-              )} + 1 !== ${event})`,
+                'eventCounter'
+              )} + 1 !== ${event})`
             );
           }
 
@@ -214,7 +214,7 @@ export function commitEvent(
                 timestamp: new Date(),
                 type,
               },
-              { transaction: txn, returning: false },
+              { transaction: txn, returning: false }
             )
             .then(() => true);
         });
