@@ -161,7 +161,7 @@
     "@types/stripe": "^7.0.0",
     "@types/stripe-v3": "^3.0.5",
     "@types/ws": "^7.0.0",
-    "cordova-android": "^7.1.0",
+    "cordova-android": "^8.0.0",
     "cordova-ios": "^4.5.4",
     "cordova-ios-plugin-no-export-compliance": "git+https://github.com/mikaoelitiana/cordova-ios-plugin-no-export-compliance.git",
     "cordova-plugin-device": "^2.0.0",
