@@ -21,11 +21,11 @@ export default function prepareTimer(props: Props): JSX.Element {
         {solo && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
         <h2>Shuffle & Draw <img className="inline_icon" src={'images/' + formatImg('cards', props.theme) + '.svg'}></img></h2>
           <p><strong>Shuffle</strong> your ability draw pile.</p>
+          <p><strong>Pre-draw</strong> your hand of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</p>
           <ul>
-            <li>Keep abilities played this combat in a separate discard pile.</li>
+            <li>When you play an ability during combat, add it to your ability cards discard pile after resolving the card.</li>
             <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
           </ul>
-          <p><strong>Pre-draw</strong> your hand of three abilities face-down from your draw pile. Do not look at these cards until you start the timer.</p>
           <h2>Play Quickly <img className="inline_icon" src={'images/' + formatImg('compass', props.theme) + '.svg'}></img></h2>
           <p><strong>Start</strong> the timer.</p>
           <p><strong>Play</strong> one ability from your hand.</p>
