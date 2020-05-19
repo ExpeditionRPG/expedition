@@ -47,14 +47,26 @@
         <p>You consider your options:</p>
         <choice text="Try to intimidate the fairies" if="intimidated == 0">
           <roleplay icon="fae" title="Intimidation Tactics" data-line="60">
-            <p>{{intimidated = 1}}</p>
             <p>You march up to them, a hand on the hilt of your newly acquired sword.</p>
             <p>"As guardsmen of the town watch, we demand you stop disturbing the peace!"</p>
-            <p>...</p>
-            <p>They ignore you. You try again. "STOP!" you yell as loud as you can.</p>
-            <p>Nothing. You'll have to try a different strategy.</p>
+            <choice text="Rolled above 10">
+                <p>{{intimidated = 1}}</p>
+                <p>You successfully intimidate the fairies</p>
+            </choice>
+            <choice text="Rolled below 10">
+                <p>{{intimidated = 0}}</p>
+                <p>They ignore you. You try again. "STOP!" you yell as loud as you can.</p>
+                <p>Nothing. You'll have to try a different strategy.</p>
+            </choice>
           </roleplay>
           <trigger data-line="74">goto market</trigger>
+        </choice>
+        <choice text="Use force to subdue the fairies">
+          <roleplay icon="fae" title="Force" data-line="101">
+            <p>{{intimidated = 0}}</p>
+            <p>Seeing their reckless disregard for the law, you decide that force is the best option.</p>
+          </roleplay>
+          <trigger data-line="105">goto magicfight</trigger>
         </choice>
         <choice text="Arrest the fairies" if="intimidated == 0 &amp; arrested == 0">
           <roleplay icon="fae" title="Attempted Arrest" data-line="78">
@@ -70,12 +82,6 @@
             <p>"Oh, all right! Ruin all the fun. But we're not done without a fight!"</p>
           </roleplay>
           <trigger data-line="97">goto magicfight</trigger>
-        </choice>
-        <choice text="Use force to subdue the fairies">
-          <roleplay icon="fae" title="Force" data-line="101">
-            <p>Seeing their reckless disregard for the law, you decide that force is the best option.</p>
-          </roleplay>
-          <trigger data-line="105">goto magicfight</trigger>
         </choice>
       </roleplay>
     </choice>
@@ -127,6 +133,7 @@
   <combat data-line="153">
     <e>Will o' the Wisp</e>
     <e>Magic Mushroom</e>
+    <e if="intimidated == 1">+2 to all attacks made during this combat.</e>
     <event on="win" loot="false" xp="false">
       <roleplay title="Victory" data-line="160">
         <p>With a final hit, the wisp and mushroom collapse to the ground, exhausted.</p>
