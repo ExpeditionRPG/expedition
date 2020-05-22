@@ -55,7 +55,7 @@
                         <choice text="Rolled 10 or higher">
                             <roleplay title="" data-line="70">
                                 <p>You successfully intimidate the fairies.</p>
-                                <p>The faeries stop and look at you, surprised by the authority in your voice. They advance towards you menacingly. {{intimidated = 1}}</p>
+                                <p>The fairies stop and look at you, surprised by the authority in your voice. They advance towards you menacingly. {{intimidated = 1}}</p>
                             </roleplay>
                             <trigger data-line="75">goto arrest</trigger>
                         </choice>
@@ -117,7 +117,7 @@
             <p>:fae: You're about to enter combat for the first time. The app will guide you through each round.</p>
         </instruction>
         <instruction if="intimidated == 1">
-            <p>:fae: +2 to all attacks during this combat because the faeries are intimidated by your presence.</p>
+            <p>:fae: +2 to all attacks during this combat because the fairies are intimidated by your presence.</p>
         </instruction>
         <instruction>
             <p>:fae: The app will tell you which enemies to draw, along with their class / deck icon (on the back of the black enemy cards).</p>

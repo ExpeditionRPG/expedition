@@ -7,7 +7,7 @@
     <p>Put those answers aside for the moment. They will be selected and chosen by the players as the quest continues.</p>
   </roleplay>
   <roleplay title="Introduction" data-line="14">
-    <p>"'The Lady's Purse' is the finest spaceliner in twelve systems. Aristocrats, capitalists, and diplomats prefer her luxurious accomodations. Can you imagine the haul she carts to and fro? Gems and finery. Secret communications. The latest Quantum prototypes. It's enough to make a thief's heart flutter..." --Dolorous Davies, Shady Fellow</p>
+    <p>"'The Lady's Purse' is the finest spaceliner in twelve systems. Aristocrats, capitalists, and diplomats prefer her luxurious accommodations. Can you imagine the haul she carts to and fro? Gems and finery. Secret communications. The latest Quantum prototypes. It's enough to make a thief's heart flutter..." --Dolorous Davies, Shady Fellow</p>
     <p>"Out here in the Black it's every man, woman, or alien for themselves. You think you have partners? You'd be surprised how quick they'll turn on you, if things get desperate." Bill Ironhand, Maimed Space Pirate.</p>
   </roleplay>
   <roleplay title="Some Lady" data-line="21">
@@ -160,7 +160,7 @@
   <trigger data-line="167">end</trigger>
   <roleplay id="Victory" title="Victory" data-line="169">
     <instruction>
-      <p>Describe the party's victory and allow them to describe how they obtained their goal, then escaped. Wrapup the meeting with the party's employer/partner. If you want to extend the game, now might be a convenient time for the rival gang they chose to attack. Maybe the party's employer/partner hired the rivals to double cross you now.</p>
+      <p>Describe the party's victory and allow them to describe how they obtained their goal, then escaped. Wrap up the meeting with the party's employer/partner. If you want to extend the game, now might be a convenient time for the rival gang they chose to attack. Maybe the party's employer/partner hired the rivals to double cross you now.</p>
     </instruction>
   </roleplay>
   <trigger data-line="173">end</trigger>
