@@ -1,167 +1,167 @@
 <quest title="GM's Corner: A Shiny Score" data-line="0">
-  <roleplay title="Setup" data-line="2">
-    <p>This edition of the GM's Corner features a space heist. Before playing you will need to grab a paper and pen/pencil. Index Cards may be preferable to paper for the next component, but aren't necessary.</p>
-    <p>Each player should write down their suggestion for the following story elements: 1. A rare or valuable thing no sane person wants.</p>
-    <p>2. A compulsive behavior triggered by a common circumstance.</p>
-    <p>3. The name of a criminal gang.</p>
-    <p>Put those answers aside for the moment. They will be selected and chosen by the players as the quest continues.</p>
-  </roleplay>
-  <roleplay title="Introduction" data-line="14">
-    <p>"'The Lady's Purse' is the finest spaceliner in twelve systems. Aristocrats, capitalists, and diplomats prefer her luxurious accomodations. Can you imagine the haul she carts to and fro? Gems and finery. Secret communications. The latest Quantum prototypes. It's enough to make a thief's heart flutter..." --Dolorous Davies, Shady Fellow</p>
-    <p>"Out here in the Black it's every man, woman, or alien for themselves. You think you have partners? You'd be surprised how quick they'll turn on you, if things get desperate." Bill Ironhand, Maimed Space Pirate.</p>
-  </roleplay>
-  <roleplay title="Some Lady" data-line="21">
-    <p>As your craft approaches, you must concede "The Lady's Purse" truly is a fine vessel.  Her sleek curves seem designed to make the most of every glint and glimmer afforded by any stellar lightsource. Don't mistake her lack of gunports for weakness, however. Power and privilege have outfitted this maiden with security that'd give a normal dreadnought pause.</p>
-    <p>You must be crazy, desperate, or both, but you've agreed to hit "The Purse" and abscond with things of value. It'll either land you a godforsaken cell on the icy penal colony of Rura Penthe or be your ticket to notoriety and fortune.</p>
-  </roleplay>
-  <roleplay title="A Proposition" data-line="26">
-    <p>Who sent your party on this job? (Choose one.)</p>
-    <choice text="Kazo Katzen, ruthless and calculating leader of the Midnight Merchants. He wants the Encryption Unit carried by the consul from the Oroban Exarchy.">
-      <trigger data-line="31">goto Heist</trigger>
-    </choice>
-    <choice text="Balwer Breakbones, who spends credits almost as quickly as he resorts to physical violence.">
-      <trigger data-line="34">goto Heist</trigger>
-    </choice>
-    <choice text="Lydia of Ultumos, known billionaire philanthropist and uncomfortable criminal accomplice. She needs a loose tongue silenced.">
-      <trigger data-line="37">goto Heist</trigger>
-    </choice>
-  </roleplay>
-  <roleplay id="Heist" title="The Approach" data-line="39">
-    <p>What will your employer do to your party if you fail in the heist?</p>
-  </roleplay>
-  <roleplay title="continue" data-line="42">
-    <p>Your score is valuable, treacherous, or illegal.  What is it in particular?</p>
-    <instruction>
-      <p>Choose a prompt below, agree on the answer to the provided question, and write it down before clicking on your choice.</p>
-    </instruction>
-    <choice text="Valuable: Who else wants it? How will you get it off &quot;The Lady's Purse&quot;?">
-      <trigger data-line="49">goto Complication</trigger>
-    </choice>
-    <choice text="Treacherous: Why is it harmful just to carry it? What (if anything) can you use to nullify it's harmful effects?">
-      <trigger data-line="52">goto Complication</trigger>
-    </choice>
-    <choice text="Illegal: What's the penalty for being caught with it? What do you need to do to turn it into profit?">
-      <trigger data-line="55">goto Complication</trigger>
-    </choice>
-  </roleplay>
-  <roleplay id="Complication" title="Unexpected Events" data-line="57">
-    <p>What does your party know about that will make this heist more difficult?</p>
-    <instruction>
-      <p>Choose a prompt below, agree on the answer to the provided question or click the choice and suggestions will be provided.  If you come up with your own, write it down before clicking on your choice.</p>
-    </instruction>
-    <choice text="You are one of several gangs hired to obtain the score. Who are the others, and what gives them an edge?">
-      <trigger data-line="63">goto Enc1</trigger>
-    </choice>
-    <choice text="&quot;The Purse&quot; is passing through an Interstellar Instability. What does the Instability do (three suggestions will be given if you click this choice)?">
-      <trigger data-line="66">goto Enc2</trigger>
-    </choice>
-    <choice text="One of you has an unusual compulsive behavior triggered by something found on &quot;The Purse&quot; (suggestions will be given when you click here).">
-      <trigger data-line="69">goto Enc3</trigger>
-    </choice>
-  </roleplay>
-  <roleplay id="Enc1" title="Gangs" data-line="71">
-    <instruction>
-      <p>Draw Four Tiers worth of foes (any combination) of a type of your choosing and set them aside. Draw Two Tiers worth of Loot and place them with the Encounter cards.</p>
-    </instruction>
-    <instruction>
-      <p>At some point in the middle of your heist, you must encounter and somehow overcome the other gang. Is it randomly in the hallways, after turning a corner? In the middle of battling your objective's guards? Right before boarding your escape craft?  Write down your choice and be ready to introduce it later.</p>
-    </instruction>
-    <instruction>
-      <p>You can choose when that encounter takes place, or if you want to randomize it, the first time a prime number is rolled (on skill or combat check), the gang springs their ambush.</p>
-    </instruction>
-  </roleplay>
-  <trigger data-line="78">goto Battle</trigger>
-  <roleplay id="Enc2" title="Instability" data-line="80">
-    <instruction>
-      <p>Set a condition under which the Instability manifests and write it down. Now set the effect for the Instability (both a description and a tangible, in game consequence).</p>
-    </instruction>
-    <p>Some examples are below:</p>
-    <p>1. Every time an ability roll fails, harmless rainbows spring from the attacker's weapons instead.</p>
-    <instruction>
-      <p>The rainbows invigorate your foes. They regain 1 health.</p>
-    </instruction>
-    <p>2. After Loot is successfully used, but after it is discarded, a pack of Tribbles falls out of a nearby compartment.</p>
-    <instruction>
-      <p>The falling Tribbles cause 1 damage to both the Loot's target and its user.</p>
-    </instruction>
-    <p>3. Intentions and emotions are given tangible form (describe them).</p>
-    <instruction>
-      <p>When an adventurer or Encounter card trigger a Persona effect, they deal one target one damage.</p>
-    </instruction>
-  </roleplay>
-  <trigger data-line="97">goto Battle</trigger>
-  <roleplay id="Enc3" title="Compulsions" data-line="99">
-    <instruction>
-      <p>Identify the compulsive behavior, from among those suggested during Setup. At least twice during the heist (your choice) you must resist the urge to engage in the compulsion by making a successful Persona or Skill check. The first check must be a 7 or above, the second 13 or above.</p>
-    </instruction>
-  </roleplay>
-  <roleplay id="Battle" title="Battle" data-line="103">
-    <instruction>
-      <p>The party is about to encounter the Synthetic guards tasked with guarding your target.  They will be randomly generated from the "Synth" types on the next screen. View it, draw the appropriate Encounter cards, then describe the confrontation before beginning combat.</p>
-    </instruction>
-  </roleplay>
-  <combat data-line="107">
-    <e>{{_.randomEnemyOfClassTier("Synth", 1)}}</e>
-    <e>{{_.randomEnemyOfClassTier("Synth", 3)}}</e>
-    <event on="win">
-      <trigger data-line="114">goto Index</trigger>
-    </event>
-    <event on="lose">
-      <roleplay title="" data-line="118">
+    <roleplay title="Setup" data-line="2">
+        <p>This edition of the GM's Corner features a space heist. Before playing you will need to grab a paper and pen/pencil. Index Cards may be preferable to paper for the next component, but aren't necessary.</p>
+        <p>Each player should write down their suggestion for the following story elements: 1. A rare or valuable thing no sane person wants.</p>
+        <p>2. A compulsive behavior triggered by a common circumstance.</p>
+        <p>3. The name of a criminal gang.</p>
+        <p>Put those answers aside for the moment. They will be selected and chosen by the players as the quest continues.</p>
+    </roleplay>
+    <roleplay title="Introduction" data-line="14">
+        <p>"'The Lady's Purse' is the finest spaceliner in twelve systems. Aristocrats, capitalists, and diplomats prefer her luxurious accommodations. Can you imagine the haul she carts to and fro? Gems and finery. Secret communications. The latest Quantum prototypes. It's enough to make a thief's heart flutter..." --Dolorous Davies, Shady Fellow</p>
+        <p>"Out here in the Black it's every man, woman, or alien for themselves. You think you have partners? You'd be surprised how quick they'll turn on you, if things get desperate." Bill Ironhand, Maimed Space Pirate.</p>
+    </roleplay>
+    <roleplay title="Some Lady" data-line="21">
+        <p>As your craft approaches, you must concede "The Lady's Purse" truly is a fine vessel.  Her sleek curves seem designed to make the most of every glint and glimmer afforded by any stellar lightsource. Don't mistake her lack of gunports for weakness, however. Power and privilege have outfitted this maiden with security that'd give a normal dreadnought pause.</p>
+        <p>You must be crazy, desperate, or both, but you've agreed to hit "The Purse" and abscond with things of value. It'll either land you a godforsaken cell on the icy penal colony of Rura Penthe or be your ticket to notoriety and fortune.</p>
+    </roleplay>
+    <roleplay title="A Proposition" data-line="26">
+        <p>Who sent your party on this job? (Choose one.)</p>
+        <choice text="Kazo Katzen, ruthless and calculating leader of the Midnight Merchants. He wants the Encryption Unit carried by the consul from the Oroban Exarchy.">
+            <trigger data-line="31">goto Heist</trigger>
+        </choice>
+        <choice text="Balwer Breakbones, who spends credits almost as quickly as he resorts to physical violence.">
+            <trigger data-line="34">goto Heist</trigger>
+        </choice>
+        <choice text="Lydia of Ultumos, known billionaire philanthropist and uncomfortable criminal accomplice. She needs a loose tongue silenced.">
+            <trigger data-line="37">goto Heist</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Heist" title="The Approach" data-line="39">
+        <p>What will your employer do to your party if you fail in the heist?</p>
+    </roleplay>
+    <roleplay title="continue" data-line="42">
+        <p>Your score is valuable, treacherous, or illegal.  What is it in particular?</p>
         <instruction>
-          <p>Describe your demise and its wider consequences.</p>
+            <p>Choose a prompt below, agree on the answer to the provided question, and write it down before clicking on your choice.</p>
         </instruction>
-      </roleplay>
-    </event>
-  </combat>
-  <trigger data-line="120">end</trigger>
-  <roleplay id="Index" title="Index" data-line="122">
-    <instruction>
-      <p>In between battles describe a location and scene that moves the heist along and leads to the final confrontation. The scene should involve a skill check to avoid some unfortunate event.</p>
-    </instruction>
-    <choice text="Skill checks and events.">
-      <trigger data-line="128">goto Skills</trigger>
-    </choice>
-    <choice text="Final Battle.">
-      <trigger data-line="132">goto Final</trigger>
-    </choice>
-  </roleplay>
-  <roleplay id="Skills" title="Skills" data-line="134">
-    <p>Options</p>
-    <choice text="You visit a gambling floor on &quot;The Purse&quot;. A Charisma skill check might be required to avoid getting Loot taken by a pickpocket, or a Knowledge check could be made to win credits or items (Loot).">
-      <trigger data-line="140">goto Index</trigger>
-    </choice>
-    <choice text="Bypassing a security door or laser-corridor could require a Knowledge or Athletics check.">
-      <trigger data-line="144">goto Index</trigger>
-    </choice>
-    <choice text="Cracking the Vault might require a fight, then a demolitions or hacking check to break-in.">
-      <trigger data-line="148">goto Index</trigger>
-    </choice>
-  </roleplay>
-  <roleplay id="Final" title="Final Battle" data-line="150">
-    <instruction>
-      <p>The party is about to encounter the Synthetic guards tasked with guarding your target.  They will be randomly generated from the "Synth" types on the next screen. View it, draw the appropriate Encounter cards, then describe the confrontation before beginning combat.</p>
-    </instruction>
-  </roleplay>
-  <combat data-line="154">
-    <e>{{_.randomEnemyOfClassTier("Synth", 4)}}</e>
-    <e>{{_.randomEnemyOfClassTier("Synth", 2)}}</e>
-    <event on="win">
-      <trigger data-line="161">goto Victory</trigger>
-    </event>
-    <event on="lose">
-      <roleplay title="" data-line="165">
+        <choice text="Valuable: Who else wants it? How will you get it off &quot;The Lady's Purse&quot;?">
+            <trigger data-line="49">goto Complication</trigger>
+        </choice>
+        <choice text="Treacherous: Why is it harmful just to carry it? What (if anything) can you use to nullify it's harmful effects?">
+            <trigger data-line="52">goto Complication</trigger>
+        </choice>
+        <choice text="Illegal: What's the penalty for being caught with it? What do you need to do to turn it into profit?">
+            <trigger data-line="55">goto Complication</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Complication" title="Unexpected Events" data-line="57">
+        <p>What does your party know about that will make this heist more difficult?</p>
         <instruction>
-          <p>Describe your demise and its wider consequences.</p>
+            <p>Choose a prompt below, agree on the answer to the provided question or click the choice and suggestions will be provided.  If you come up with your own, write it down before clicking on your choice.</p>
         </instruction>
-      </roleplay>
-    </event>
-  </combat>
-  <trigger data-line="167">end</trigger>
-  <roleplay id="Victory" title="Victory" data-line="169">
-    <instruction>
-      <p>Describe the party's victory and allow them to describe how they obtained their goal, then escaped. Wrapup the meeting with the party's employer/partner. If you want to extend the game, now might be a convenient time for the rival gang they chose to attack. Maybe the party's employer/partner hired the rivals to double cross you now.</p>
-    </instruction>
-  </roleplay>
-  <trigger data-line="173">end</trigger>
+        <choice text="You are one of several gangs hired to obtain the score. Who are the others, and what gives them an edge?">
+            <trigger data-line="63">goto Enc1</trigger>
+        </choice>
+        <choice text="&quot;The Purse&quot; is passing through an Interstellar Instability. What does the Instability do (three suggestions will be given if you click this choice)?">
+            <trigger data-line="66">goto Enc2</trigger>
+        </choice>
+        <choice text="One of you has an unusual compulsive behavior triggered by something found on &quot;The Purse&quot; (suggestions will be given when you click here).">
+            <trigger data-line="69">goto Enc3</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Enc1" title="Gangs" data-line="71">
+        <instruction>
+            <p>Draw Four Tiers worth of foes (any combination) of a type of your choosing and set them aside. Draw Two Tiers worth of Loot and place them with the Encounter cards.</p>
+        </instruction>
+        <instruction>
+            <p>At some point in the middle of your heist, you must encounter and somehow overcome the other gang. Is it randomly in the hallways, after turning a corner? In the middle of battling your objective's guards? Right before boarding your escape craft?  Write down your choice and be ready to introduce it later.</p>
+        </instruction>
+        <instruction>
+            <p>You can choose when that encounter takes place, or if you want to randomize it, the first time a prime number is rolled (on skill or combat check), the gang springs their ambush.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="78">goto Battle</trigger>
+    <roleplay id="Enc2" title="Instability" data-line="80">
+        <instruction>
+            <p>Set a condition under which the Instability manifests and write it down. Now set the effect for the Instability (both a description and a tangible, in game consequence).</p>
+        </instruction>
+        <p>Some examples are below:</p>
+        <p>1. Every time an ability roll fails, harmless rainbows spring from the attacker's weapons instead.</p>
+        <instruction>
+            <p>The rainbows invigorate your foes. They regain 1 health.</p>
+        </instruction>
+        <p>2. After Loot is successfully used, but after it is discarded, a pack of Tribbles falls out of a nearby compartment.</p>
+        <instruction>
+            <p>The falling Tribbles cause 1 damage to both the Loot's target and its user.</p>
+        </instruction>
+        <p>3. Intentions and emotions are given tangible form (describe them).</p>
+        <instruction>
+            <p>When an adventurer or Encounter card trigger a Persona effect, they deal one target one damage.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="97">goto Battle</trigger>
+    <roleplay id="Enc3" title="Compulsions" data-line="99">
+        <instruction>
+            <p>Identify the compulsive behavior, from among those suggested during Setup. At least twice during the heist (your choice) you must resist the urge to engage in the compulsion by making a successful Persona or Skill check. The first check must be a 7 or above, the second 13 or above.</p>
+        </instruction>
+    </roleplay>
+    <roleplay id="Battle" title="Battle" data-line="103">
+        <instruction>
+            <p>The party is about to encounter the Synthetic guards tasked with guarding your target.  They will be randomly generated from the "Synth" types on the next screen. View it, draw the appropriate Encounter cards, then describe the confrontation before beginning combat.</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="107">
+        <e>{{_.randomEnemyOfClassTier("Synth", 1)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Synth", 3)}}</e>
+        <event on="win">
+            <trigger data-line="114">goto Index</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="118">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="120">end</trigger>
+    <roleplay id="Index" title="Index" data-line="122">
+        <instruction>
+            <p>In between battles describe a location and scene that moves the heist along and leads to the final confrontation. The scene should involve a skill check to avoid some unfortunate event.</p>
+        </instruction>
+        <choice text="Skill checks and events.">
+            <trigger data-line="128">goto Skills</trigger>
+        </choice>
+        <choice text="Final Battle.">
+            <trigger data-line="132">goto Final</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Skills" title="Skills" data-line="134">
+        <p>Options</p>
+        <choice text="You visit a gambling floor on &quot;The Purse&quot;. A Charisma skill check might be required to avoid getting Loot taken by a pickpocket, or a Knowledge check could be made to win credits or items (Loot).">
+            <trigger data-line="140">goto Index</trigger>
+        </choice>
+        <choice text="Bypassing a security door or laser-corridor could require a Knowledge or Athletics check.">
+            <trigger data-line="144">goto Index</trigger>
+        </choice>
+        <choice text="Cracking the Vault might require a fight, then a demolitions or hacking check to break-in.">
+            <trigger data-line="148">goto Index</trigger>
+        </choice>
+    </roleplay>
+    <roleplay id="Final" title="Final Battle" data-line="150">
+        <instruction>
+            <p>The party is about to encounter the Synthetic guards tasked with guarding your target.  They will be randomly generated from the "Synth" types on the next screen. View it, draw the appropriate Encounter cards, then describe the confrontation before beginning combat.</p>
+        </instruction>
+    </roleplay>
+    <combat data-line="154">
+        <e>{{_.randomEnemyOfClassTier("Synth", 4)}}</e>
+        <e>{{_.randomEnemyOfClassTier("Synth", 2)}}</e>
+        <event on="win">
+            <trigger data-line="161">goto Victory</trigger>
+        </event>
+        <event on="lose">
+            <roleplay title="" data-line="165">
+                <instruction>
+                    <p>Describe your demise and its wider consequences.</p>
+                </instruction>
+            </roleplay>
+        </event>
+    </combat>
+    <trigger data-line="167">end</trigger>
+    <roleplay id="Victory" title="Victory" data-line="169">
+        <instruction>
+            <p>Describe the party's victory and allow them to describe how they obtained their goal, then escaped. Wrapup the meeting with the party's employer/partner. If you want to extend the game, now might be a convenient time for the rival gang they chose to attack. Maybe the party's employer/partner hired the rivals to double cross you now.</p>
+        </instruction>
+    </roleplay>
+    <trigger data-line="173">end</trigger>
 </quest>
