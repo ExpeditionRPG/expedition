@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1021007" id="io.fabricate.expedition" version="1.21.7" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget android-versionCode="1021008" id="io.fabricate.expedition" version="1.21.8" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Expedition</name>
     <description>
     The Companion App for Expedition: The Roleplaying Card Game.
@@ -27,7 +27,7 @@
         <param name="REVERSED_CLIENT_ID" value="io.fabricate.expedition" />
     </gap:plugin>
     <preference name="android-minSdkVersion" value="22" />
-    <preference name="android-targetSdkVersion" value="28" />
+    <preference name="android-targetSdkVersion" value="29" />
     <preference name="deployment-target" value="10.0.0" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="webviewbounce" value="false" />
