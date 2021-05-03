@@ -221,11 +221,11 @@ _combat_
 
   > Is the Lich dead?
 
-  - Yes
+  * Yes
 
     **win**
 
-  - No
+  * No
 
     The Lich engulfs your party in frost!
 
