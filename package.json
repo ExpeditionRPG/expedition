@@ -73,7 +73,7 @@
     "moment": "^2.22.1",
     "nconf": "^0.10.0",
     "node-sass": "^4.9.0",
-    "nodemailer": "^4.6.4",
+    "nodemailer": "^6.4.16",
     "numeral": "^2.0.6",
     "passport": "^0.4.0",
     "passport-google-id-token": "^0.4.5",
