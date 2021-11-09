@@ -1,5 +1,5 @@
 export interface CardType {
-  // all cards have sheet: string as the tabletop sheet they originated from
+  // all cards have sheet: string as the sheet they originated from
   [key: string]: any;
 }
 

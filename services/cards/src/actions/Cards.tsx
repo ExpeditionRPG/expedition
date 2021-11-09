@@ -1,28 +1,25 @@
+import {parse as parseCSV} from 'papaparse';
 import * as React from 'react';
 import Redux from 'redux';
+import {SHEETS} from '../Constants';
 import {icon} from '../helpers';
 import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
 import {getStore} from '../Store';
 import {CardsFilterAction, CardsLoadingAction, CardsUpdateAction, TranslationsUpdateAction} from './ActionTypes';
 import {filtersCalculate} from './Filters';
 
-declare var require: any;
-const Tabletop = require('tabletop');
-
 interface ResultType {
   cards?: CardType[];
   translations?: TranslationsType;
 }
 
-export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) => void) {
+export function downloadCards(name: string, cardType: string|null = null): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
     dispatch(cardsLoading());
 
-    const keys = source.split(':')[1].split(',');
-
-    Promise.all(keys.map(downloadAndProcessSpreadsheet))
-      .then((results: ResultType[]) => {
+    const p = (cardType !== null) ? Promise.all([parseSingleSheet(cardType, name)]) : downloadAndProcessSpreadsheet(name);
+    p.then((results: ResultType[]) => {
         const cards = results.reduce((acc: CardType[], obj: ResultType) => {
           return [...acc, ...(obj.cards || [])];
         }, []).sort((a: CardType, b: CardType) => {
@@ -41,7 +38,6 @@ export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) 
         const translations = results.reduce((acc: TranslationsType, obj: ResultType) => {
           return {...acc, ...(obj.translations || {})};
         }, {});
-
         if (Object.keys(translations).length > 0) {
           dispatch(translationsUpdate({AdjectiveAfterNoun: false, ...translations}));
         }
@@ -55,47 +51,53 @@ export function downloadCards(source: string): ((dispatch: Redux.Dispatch<any>) 
   };
 }
 
-function downloadAndProcessSpreadsheet(key: string) {
+function parseSingleSheet(sheetName: string, url: string) {
   return new Promise((resolve, reject) => {
-    Tabletop.init({
-      callback: (data: any, tabletop: any) => {
-        // Turn into an array, remove commented out / hidden cards, attach sheet name
-        let cards: CardType[] = [];
-        const sheets = tabletop.sheets();
+      parseCSV(url, {
+          download: true,
+          header: true,
+          dynamicTyping: true,
+          complete(results: any) {
+            const data = results.data;
+            // Turn into an array, remove commented out / hidden cards, attach sheet name
+            let cards: CardType[] = [];
+            let translations: TranslationsType|null = null;
 
-        let translations = null;
-        if (sheets.Translations) {
-          translations = sheets.Translations.elements.reduce((acculumator: TranslationsType, translation: {Language: string, Translated: string | boolean}) => {
-            if (translation.Translated && translation.Translated !== '') {
-              acculumator[translation.Language.toLowerCase()] = translation.Translated;
+            if (sheetName === 'translations') {
+              translations = {AdjectiveAfterNoun: false};
+              for (const row of data) {
+                if (row.Translated && row.Translated !== '') {
+                  translations[row.Language.toLowerCase()] = row.Translated;
+                }
+              }
+            } else {
+              cards = cards.concat(data.filter((card: CardType) => {
+                return (card.Comment === null || card.hide === null);
+              }).map((card: CardType) => {
+                card.sheet = sheetName;
+                return card;
+              }));
             }
-            return acculumator;
-          }, {});
-          // Delete the translations lookup table since it's not cards
-          delete sheets.Translations;
-        }
-
-        Object.keys(sheets).sort().forEach((sheetName: string) => {
-          cards = cards.concat(sheets[sheetName].elements.filter((card: CardType) => {
-            return (card.Comment === '' || card.hide === '');
-          }).map((card: CardType) => {
-            card.sheet = sheetName;
-            return card;
-          }));
-        });
-        resolve({cards, translations});
-      },
-      key,
-      parseNumbers: true,
-      postProcess: (card: CardType) => {
-        // TODO parse / validate / clean the object here. Use Joi? Expose validation errors to the user
-        // Note: also have to be careful about the translations settings sheet
-        // Note: doesn't yet have access to sheet name, that's assigned in callback
-        return card;
-      },
-      simpleSheet: true,
+            resolve({cards, translations});
+          },
+      });
     });
-  });
+}
+
+function downloadAndProcessSpreadsheet(name: string) {
+  let source: any = null;
+  for (const s of SHEETS) {
+    if (name === s.name) {
+      source = s;
+      break;
+    }
+  }
+  const promises = [];
+  for (const sheetName of Object.keys(source.sheets)) {
+    const url = 'https://docs.google.com/spreadsheets/d/e/' + source.key + '/pub?output=csv&single=true&gid=' + source.sheets[sheetName];
+    promises.push(parseSingleSheet(sheetName, url));
+  }
+  return Promise.all(promises);
 }
 
 export function cardsLoading(): CardsLoadingAction {

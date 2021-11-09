@@ -12,13 +12,11 @@ const qs = require('qs');
 // Filter changes trigger several things, including the actual FiltersChange action
 export function filterChange(name: string, value: string | number): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    if (name === 'source' && value === 'Custom') {
+    let cardstype = null;
+    if (name === 'source' && value === 'custom') {
       // TODO validate URL or ID, otherwise notify user + abort
-      value = window.prompt('Please enter your card sheet publish URL (see "?" in the top right for help)', '') as string;
-      if (value.indexOf('/e/') !== -1) {
-        return alert('Please use the URL of the Google Doc, not the publish link');
-      }
-      value = 'Custom:' + value.replace('https://docs.google.com/spreadsheets/d/', '').split('/')[0];
+      cardstype = window.prompt('Please enter a sheet type (Ability, Adventurer, Encounter, Helper, Loot, Persona, Skill)');
+      value = window.prompt('Please enter your card sheet publish CSV URL (see "?" in the top right for help)', '') as string;
     }
     // tslint:disable-next-line
     dispatch({type: 'FILTER_CHANGE', name, value}) as FilterChangeAction;
@@ -34,7 +32,7 @@ export function filterChange(name: string, value: string | number): ((dispatch: 
 
     const store = getStore();
     if (name === 'source') {
-      dispatch(downloadCards(store.getState().filters.source.current));
+      dispatch(downloadCards(store.getState().filters.source.current, cardstype));
     } else {
       dispatch(cardsFilter(store.getState().cards.data, store.getState().filters));
       dispatch(filtersCalculate(store.getState().cards.filtered));
