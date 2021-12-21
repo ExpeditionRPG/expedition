@@ -16,7 +16,7 @@ export const SHEETS: CardSource[] = [
       Translations: '2111992856',
       Helper: '987926921',
       Adventurer: '558719643',
-      Ability: '0',
+      Ability: '0', // actually the sheet ID, not a placeholder
       Encounter: '1555320979',
       Loot: '1510752952',
     },
@@ -37,7 +37,7 @@ export const SHEETS: CardSource[] = [
     key: '2PACX-1vQcPWt9MO7ZDtLaR1teWcuNxoRHH4Q1Yf4xLpyv3xSEqSOLbpPVj_aB5Emh7sOnZ3hMIwvA9LJn76pZ',
     sheets: {
       Adventurer: '558719643',
-      Ability: '0',
+      Ability: '0', // actually the sheet ID, not a placeholder
       Encounter: '1555320979',
       Loot: '1510752952',
       Skill: '1013479922',
@@ -55,7 +55,7 @@ export const SHEETS: CardSource[] = [
     key: '2PACX-1vQ-jU0FGl9PGXm0m-jYJazhxYjLhpSwdPFNCVAGXTM6XrdcZ65MXRBtWdIJvWLglC4tFmUB_y324UMb',
     sheets: {
       Adventurer: '558719643',
-      Ability: '0',
+      Ability: '0', // actually the sheet ID, not a placeholder
       Encounter: '1555320979',
       Loot: '1510752952',
     },
