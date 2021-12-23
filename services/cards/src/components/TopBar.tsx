@@ -43,12 +43,12 @@ class TopBar extends React.Component<Props, {}> {
         // For "all" default values, nicen up their text presentation to users
         if (typeof option === 'string' && option.toLowerCase() === 'all') {
           text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length - 1]) !== -1) ? 'es' : 's');
-        // For sources, remove the ":LONGIDSTRING" and just show the user the name of the source
-        } else if (name === 'source') {
-          text = text.split(':')[0];
         }
         return <MenuItem key={j} value={option}>{text}</MenuItem>;
       });
+      if (name === 'source') {
+        options.push(<MenuItem key="custom" value="custom">Custom</MenuItem>);
+      }
       return (
         <FormControl key={index}>
           <InputLabel htmlFor={name}>{name}</InputLabel>

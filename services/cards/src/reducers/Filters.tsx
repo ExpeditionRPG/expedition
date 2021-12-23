@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import {FilterChangeAction, FiltersCalculateAction} from '../actions/ActionTypes';
+import {SHEETS} from '../Constants';
 import {CardType, FiltersState} from './StateTypes';
 
 // In UI order
@@ -30,15 +31,10 @@ export let initialState: FiltersState = {
     options: ['PrintAndPlay', 'WebView', 'DriveThruCards', 'AdMagicFronts', 'AdMagicBacks', 'FrontsOnly'],
   },
   source: {
-    current: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
-    default: 'Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
-    options: ['Expedition:11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
-      'The Horror:1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ',
-      'The Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM',
-      'Expedition+Horror+Future:1LD4SP5YMFs49yn1sdgIrRnMGB3tz2jvGuCt2aKcCsyM,1K08sXHXyW7TAMXJnHOv9V3QtjxwjAf2-cvbaO-S2fDQ,11Y8eS_cyIQ7wlGj5mo7VEHf355ycEHePrdysPzTnVJw',
-      'Of Wyrms & Giants:1S5xcFPUejtgC4Mosh8uuiRE-YwdaJ6mlCX3bQcbBT-4',
-      'Scarred Lands:1JHYSbQwRAKojMY5L9ViVe-M0toH__tZFSzuoahOgKws',
-      'Custom',
+    current: SHEETS[0].name,
+    default: SHEETS[0].name,
+    options: [
+      ...SHEETS.map((s) => s.name),
     ],
   },
 };
