@@ -1,16 +1,33 @@
+![Splash image](https://user-images.githubusercontent.com/607666/148574082-4b856d1c-9cf6-4182-adb8-7f31bebc2466.png)
+
 # Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
 
-Contains all of the code for the [Expedition App](https://app.expeditiongame.com/), [Expedition Quest Creator](https://quests.expeditiongame.com/) and [Expedition Card Creator](https://cards.expeditiongame.com/).
+Expedition is a lightweight roleplaying game that's fun for players - and storytellers. Anyone can learn to play in less than 5 minutes!
+
+It's powered by a free companion app with hundreds of free adventures, with new quests every week. 
+
+For 1-6 players, 20+ minutes, ages 8+
+
+https://expeditiongame.com/
+
+## Components
+
+- [Expedition App](https://app.expeditiongame.com/)
+  - The companion app that's free with the game. Available for web, iOS, and Android devices.
+- [Expedition Quest Creator](https://quests.expeditiongame.com/)
+  - Create your own quests and publish them for the world to see!
+- [Expedition Card Creator](https://cards.expeditiongame.com/).
+  - Create custom cards and print them for free.
+
+### Repository layout
+
+All shared code goes in `/shared`, all deployed code goes in `/services.` Code in services can only reference shared code, and should not reference other services.
 
 ## Contributing
 
 Contributions welcome! Earn [loot points](https://expeditiongame.com/loot) while practicing your coding skills on the bleeding edge of web technologies. If you're new to any of our tools or libraries, don't worry - we're happy to help and answer questions!
 
 Not sure what to work on? Check out our [open issues](https://github.com/ExpeditionRPG/expedition/issues), especially those labeled with `help wanted`.
-
-### Repository layout
-
-All shared code goes in `/shared`, all deployed code goes in `/services.` Code in services can only reference shared code, and should not reference other services.
 
 ## Development
 
