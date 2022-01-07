@@ -1,6 +1,6 @@
-![Splash image](https://user-images.githubusercontent.com/607666/148574082-4b856d1c-9cf6-4182-adb8-7f31bebc2466.png)
-
 # Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
+
+![Splash image](https://user-images.githubusercontent.com/607666/148574082-4b856d1c-9cf6-4182-adb8-7f31bebc2466.png)
 
 Expedition is a lightweight roleplaying game that's fun for players - and storytellers. Anyone can learn to play in less than 5 minutes!
 
