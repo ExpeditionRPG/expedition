@@ -1,14 +1,8 @@
 import * as React from 'react';
-import {camelCase, horizontalCounter, romanize} from './helpers';
+import {horizontalCounter, romanize} from './helpers';
 
 describe('icon', () => {
   test.skip('Returns JSX element', () => { /* TODO */ });
-});
-
-describe('camelCase', () => {
-  test('Skeleton Swordsman -> skeletonSwordsman', () => {
-    expect(camelCase('Skeleton Swordsman')).toEqual('skeletonSwordsman');
-  });
 });
 
 describe('romanize', () => {

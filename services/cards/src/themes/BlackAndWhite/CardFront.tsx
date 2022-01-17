@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {MAX_ADVENTURER_HEALTH} from '../../Constants';
-import {camelCase, healthCounter, horizontalCounter, icon, lootCounter, translate, translateTier} from '../../helpers';
+import {healthCounter, horizontalCounter, icon, lootCounter, translate, translateTier} from '../../helpers';
 import {CardType} from '../../reducers/StateTypes';
 
 export default class CardFront extends React.Component<CardType, {}> {
@@ -10,7 +10,7 @@ export default class CardFront extends React.Component<CardType, {}> {
     switch (card.sheet) {
       case 'Ability':
         return (
-          <div className={`card front vertical ${card.sheet} ${card.classicon || card.class}`} id={camelCase(name)}>
+          <div className={`card front vertical ${card.sheet} ${card.classicon || card.class}`}>
             <div className="contents">
               <header>
                 <div className="typeicon">{card.typeicon}</div>
@@ -70,7 +70,7 @@ export default class CardFront extends React.Component<CardType, {}> {
         );
       case 'Adventurer':
         return (
-          <div className={`card front horizontal ${card.sheet} bottomBar level${card.level}`} id={camelCase(card.name)}>
+          <div className={`card front horizontal ${card.sheet} bottomBar level${card.level}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
@@ -158,7 +158,7 @@ export default class CardFront extends React.Component<CardType, {}> {
         );
       case 'Loot':
         return (
-          <div className={`card front vertical ${card.sheet} tier${card.tier} ${card.tracker && 'tracker'} ${card.tracker > 14 && 'bottomBar'}`} id={camelCase(name)}>
+          <div className={`card front vertical ${card.sheet} tier${card.tier} ${card.tracker && 'tracker'} ${card.tracker > 14 && 'bottomBar'}`}>
             <div className="contents">
               <header>
                 <div className="name">{card.name}</div>
@@ -202,7 +202,7 @@ export default class CardFront extends React.Component<CardType, {}> {
         );
       case 'Skill':
         return (
-          <div className={`card front horizontal ${card.sheet} bottomBar`} id={camelCase(card.name)}>
+          <div className={`card front horizontal ${card.sheet} bottomBar`}>
             <div className="contents">
               <header>
                 {card.typeicon && <div className="typeIcon">{icon((card.typeicon).toLowerCase() + '_small')}</div>}
