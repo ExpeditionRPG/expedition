@@ -42,7 +42,10 @@ export class Connection extends ClientBase {
     this.sessionID = '';
     this.secret = '';
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
-    setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
+
+    // TODO only enable if not embedded within quests interface
+    console.error('Skipping connection check, usually every ms', CONNECTION_CHECK_MS);
+    //  setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
   }
 
   public checkOnlineState(): Promise<void> {

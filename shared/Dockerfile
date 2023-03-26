@@ -1,4 +1,4 @@
-FROM node:8
+FROM --platform=linux/amd64 node:8
 
 # RUN npm install -g yarn
 # RUN bash -c "cd /volume && yarn install"

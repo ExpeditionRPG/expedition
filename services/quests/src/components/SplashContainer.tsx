@@ -22,13 +22,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         window.open(link + '?utm_source=questcreator', '_system');
       }
     },
-    onLogin: () => {
+    onLogin: (jwt: string) => {
       ReactGA.event({
         action: 'LOGIN',
         category: 'interaction',
         label: 'splashscreen',
       });
-      dispatch(postLoginUser(true));
+      dispatch(postLoginUser(jwt, true));
     },
     onNewQuest: (user: UserState) => {
       dispatch(loadQuestFromURL(user));

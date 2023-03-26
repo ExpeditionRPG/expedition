@@ -1,16 +1,16 @@
 import * as Raven from 'raven-js';
 import Redux from 'redux';
-import {UserState as UserStateAuth} from 'shared/auth/UserState';
+import {UserState as UserState} from 'shared/auth/UserState';
 import {loggedOutUser} from 'shared/auth/UserState';
-import {codeClientAuth} from 'shared/auth/Web';
+import {registerUserAndIdToken} from 'shared/auth/Web';
 import {handleFetchErrors} from 'shared/requests';
 import {Badge} from 'shared/schema/Constants';
 import {AUTH_SETTINGS} from '../Constants';
-import {getGA, getGoogle} from '../Globals';
-import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
+import {getGA} from '../Globals';
+import {AppState, IUserFeedback /*, UserState*/} from '../reducers/StateTypes';
 import {fetchUserQuests} from './Web';
 
-function postRegister(us: UserStateAuth) {
+function postRegister(us: UserState) {
   const ga = getGA();
   if (ga) {
     ga.set({ userId: us.id });
@@ -19,9 +19,8 @@ function postRegister(us: UserStateAuth) {
   return us;
 }
 
-function loginWeb(): Promise<UserState|null> {
-  return codeClientAuth(getGoogle(), AUTH_SETTINGS.URL_BASE, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
-    .then(postRegister);
+export function sendAuthTokenToAPIServer(jwt: string): Promise<UserState> {
+  return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then(postRegister);
 }
 
 /*
@@ -77,7 +76,7 @@ function getGooglePlusPlugin(): Promise<CordovaLoginPlugin> {
 
 // Update the user's logged in state.
 // This should be called after every login attempt.
-function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<UserState>) {
+export function updateState(dispatch: Redux.Dispatch<any>): ((u: UserState) => Promise<UserState>) {
   return (user) => {
     dispatch({type: 'USER_LOGIN', user});
     if (user) {
@@ -129,9 +128,13 @@ export function ensureLogin(): TReduxThunk<Promise<UserState>> {
     // .catch(() => loginWeb())
     // .then(updateState(dispatch))
     // .catch((err) => Promise.reject(err));
+    console.log(updateState);
+    throw Error('TODO loginWeb');
+    /*
     return loginWeb()
       .then(updateState(dispatch))
       .catch((err) => Promise.reject(err));
+    */
   };
 }
 

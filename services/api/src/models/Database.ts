@@ -265,6 +265,6 @@ export class Database {
         type: Sequelize.STRING(32),
       },
     });
-    // authSession.sync();
+    // this.authSession.sync();
   }
 }

@@ -14,9 +14,14 @@ export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return {type: 'SET_PROFILE_META', user};
 }
 
-export function postLoginUser(quest?: boolean | string): ((dispatch: Redux.Dispatch<any>) => void) {
+export function postLoginUser(jwt: string, quest?: boolean | string): ((dispatch: Redux.Dispatch<any>) => void) {
   return (dispatch: Redux.Dispatch<any>) => {
-    return codeClientAuth(window.google, AUTH_SETTINGS.URL_BASE, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES + ' https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install')
+    console.log(AUTH_SETTINGS);
+    console.log(loadQuestFromURL);
+    console.log(setSnackbar);
+    codeClientAuth(window.google, jwt, AUTH_SETTINGS.URL_BASE, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES + ' https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install');
+
+    /*
       .then((r: UserState) => {
         dispatch(setProfileMeta(r));
         if (r.email === null) {
@@ -34,6 +39,7 @@ export function postLoginUser(quest?: boolean | string): ((dispatch: Redux.Dispa
         dispatch(setSnackbar(true, 'Login error - please report via Contact Us button!'));
         throw e;
       });
+    */
   };
 }
 

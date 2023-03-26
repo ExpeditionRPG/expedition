@@ -15,7 +15,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onLinkTap: (link: string) => void;
-  onLogin: () => void;
+  onLogin: (jwt: string) => void;
   onNewQuest: (user: UserState) => void;
 }
 

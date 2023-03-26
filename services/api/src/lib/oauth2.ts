@@ -23,7 +23,7 @@ Passport.use(new GoogleTokenStrategy({
     clientSecret: Config.get('OAUTH2_CLIENT_SECRET'),
   },
   (parsedToken: any, googleId: any, done: any) => {
-    return done(null, googleId);
+    return done(null, parsedToken, googleId);
   }
 ));
 
@@ -62,46 +62,63 @@ export function oauth2Template(req: express.Request, res: express.Response, next
 }
 
 export function installOAuthRoutes(db: Database, router: express.Router) {
-  const authRoute = [
-    // First stage - extract request body and use it to set session metadata
-    // for the user
-    (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      try {
-        req.body = JSON.parse(req.body);
-        if (req.session) {
-          req.session.displayName = req.body.name || '';
-          req.session.image = req.body.image || '';
-          req.session.email = req.body.email || '';
-        }
-        next();
-      } catch (e) {
-        res.header('Access-Control-Allow-Origin', req.get('origin'));
-        res.header('Access-Control-Allow-Credentials', 'true');
-        return res.end('Could not parse request body.');
-      }
-    },
+  router.post('/auth/google',
+    limitCors,
     // Per passport-google-id-token, the post request to this route
     // should include a JSON object with the key id_token set to
     // the one the client received from Google (e.g. after
     // successful Google+ sign-in).
-    Passport.authenticate('google-id-token'),
-    // Post authentication, upsert a new user or load an existing user and increment its login count
-    (req: express.Request, res: express.Response) => {
+    (req: express.Request, res: express.Response, next: express.NextFunction) => {
       res.header('Access-Control-Allow-Origin', req.get('origin'));
       res.header('Access-Control-Allow-Credentials', 'true');
-      if (!req.user) {
-        res.end(401);
+
+      try {
+        req.body = JSON.parse(req.body);
+      } catch (e) {
+        return res.end('Could not parse request body.');
       }
+
+      Passport.authenticate('google-id-token', function(err: any, user: any, info: any, status: any) {
+        console.log('Auth process ended');
+        if (err !== null) {
+          console.error(err);
+          next(err);
+        } else {
+          req.user = {
+            displayName: user.payload.name,
+            image: user.payload.picture,
+            email: user.payload.email,
+            // https://stackoverflow.com/questions/42833677/openid-connect-jwt-sub-or-email
+            // https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+            id: user.payload.sub,
+          };
+          next();
+        }
+      })(req, res, next);
+    },
+    // Post authentication, upsert a new user or load an existing user and increment its login count
+    (req: express.Request, res: express.Response) => {
+      if (!req.user) {
+        res.end(401, 'Unauthorized');
+      }
+      const u: any = req.user;
       const user = new User({
-        email: (req.body.email || '') as any as string,
-        id: req.user as any as string,
-        name: req.body.name,
+        email: (u.email || '') as any as string,
+        id: u.id as any as string,
+        name: u.displayName as any as string,
       });
+
+      if (req.session) {
+        req.session.displayName = u.displayName || '';
+        req.session.image = u.image || '';
+        req.session.email = u.email || '';
+      }
+
       db.users.findOne({where: {id: user.id}})
       .then((u: UserInstance|null) => {
         // Respond as soon as we get DB results
         if (u === null) {
-          res.end(JSON.stringify(user));
+          res.end(JSON.stringify({...user, image: (u.image as string)}));
           db.users.upsert(user);
           if ((req.get('host') || '').indexOf('quest') !== -1) {
             // New quest writer; auto-subscribe to creator newsletter
@@ -114,11 +131,12 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         }
       })
       .then(() => incrementLoginCount(db, user.id))
-      .catch(console.log);
-    },
-  ];
-  router.get('/auth/google', limitCors, ...authRoute);
-  router.post('/auth/google', limitCors, ...authRoute);
+      .catch((e) => {
+        console.log('Error thrown when authenticating:', e);
+      });
+    }
+  );
+  // router.get('/auth/google', limitCors, ...authRoute);
 
   // Deletes the user's credentials and profile from the session.
   // This does not revoke any active tokens.
