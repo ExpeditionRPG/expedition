@@ -2,7 +2,7 @@ import {API_HOST} from 'shared/schema/Constants';
 
 declare var device: any;
 declare var ga: any;
-declare var gapi: any;
+declare var google: any;
 
 export interface ReactDocument extends Document {
   addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
@@ -45,7 +45,7 @@ const refs = {
   device: (typeof device !== 'undefined') ? device : {platform: null},
   document,
   ga: (typeof ga !== 'undefined') ? ga : null,
-  gapi: (typeof gapi !== 'undefined') ? gapi : null,
+  google: (typeof google !== 'undefined') ? google : null,
   history: (typeof history !== 'undefined') ? history : {pushState: () => null},
   localStorage: null as (Storage|null),
   navigator: (typeof navigator !== 'undefined') ? navigator : null,
@@ -107,8 +107,8 @@ export function getGA(): any {
   return refs.ga;
 }
 
-export function getGapi(): any {
-  return refs.gapi;
+export function getGoogle(): any {
+  return refs.google;
 }
 
 export function getHistoryApi(): any {

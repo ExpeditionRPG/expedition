@@ -6,6 +6,7 @@ import ExpeditionButton from 'app/components/base/Button';
 import * as React from 'react';
 import {UserState} from 'shared/auth/UserState';
 import {AnnouncementState} from '../reducers/StateTypes';
+import LoginButton from './LoginButton';
 
 export interface StateProps {
   announcement: AnnouncementState;
@@ -14,7 +15,7 @@ export interface StateProps {
 
 export interface DispatchProps {
   onLinkTap: (link: string) => void;
-  onLogin: (position: string) => void;
+  onLogin: () => void;
   onNewQuest: (user: UserState) => void;
 }
 
@@ -44,9 +45,7 @@ const Splash = (props: Props): JSX.Element => {
             <span className="email">{props.user.email}</span>
             <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
           </div>}
-          {!props.user.loggedIn && <div className="login">
-            <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
-          </div>}
+          {!props.user.loggedIn && <LoginButton onLogin={props.onLogin}/>}
         </Toolbar>
       </AppBar>
       <div className={`body ${announcementVisible && 'announcing'}`}>
@@ -59,9 +58,6 @@ const Splash = (props: Props): JSX.Element => {
           <h3>Build an international fanbase</h3>
           <h3>Write on the bleeding edge of interactive storytelling</h3>
           <h3>Earn money through <a target="_blank" href="https://expeditiongame.com/writing-contests">monthly writing contests</a></h3>
-          <div className="buttonBox login">
-            <ExpeditionButton onClick={() => props.user.loggedIn ? props.onNewQuest(props.user) : props.onLogin('main')}>Get Started</ExpeditionButton>
-          </div>
           <p>Learn more about <a target="_blank" href="https://expeditiongame.com">Expedition: The Roleplaying Card Game</a></p>
 
           <div className="mobileOnly alert">
@@ -127,9 +123,6 @@ const Splash = (props: Props): JSX.Element => {
           </div>
 
           <div className="buttonBox login">
-            <ExpeditionButton onClick={() => props.onLogin('bottom')}>
-              Get Started
-            </ExpeditionButton>
             <ExpeditionButton onClick={() => {window.location.href = 'http://expeditiongame.com'; }}>
               Expedition Home Page
             </ExpeditionButton>

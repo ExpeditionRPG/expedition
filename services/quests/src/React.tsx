@@ -12,7 +12,7 @@ import {fetchAnnouncements} from './actions/Announcement';
 import {renderAndPlay} from './actions/Editor';
 import {questLoading, saveQuest} from './actions/Quest';
 import {setSnackbar} from './actions/Snackbar';
-import {loginUser} from './actions/User';
+// import {loginUser} from './actions/User';
 import {store} from './Store';
 
 declare var require: any;
@@ -75,11 +75,12 @@ if (questId !== '') {
 // Try silently logging in
 // 10/10/2017: Also avoids popup blockers by making future login attempts
 // Trigger directly from the user action, rather than needing to load files
+/*
 if (window.gapi) {
   window.gapi.load('client,drive-share', () => {
     store.dispatch(loginUser(false, questId));
   });
-}
+}*/
 
 // alert user if they try to close the page with unsaved changes
 window.onbeforeunload = () => {

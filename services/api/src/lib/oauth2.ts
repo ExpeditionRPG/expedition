@@ -17,12 +17,7 @@ const mailchimp = (Config.get('NODE_ENV') !== 'dev' && Config.get('MAILCHIMP_KEY
   : null;
 
 // Configure the Google strategy for use by Passport.js.
-//
-// OAuth 2-based strategies require a `verify` function which receives the
-// credential (`accessToken`) for accessing the Google API on the user's behalf,
-// along with the user's profile. The function must invoke `cb` with a user
-// object, which will be set at `req.user` in route handlers after
-// authentication.
+// See https://www.npmjs.com/package/passport-google-id-token
 Passport.use(new GoogleTokenStrategy({
     clientID: Config.get('OAUTH2_CLIENT_ID').split(','), // allow for multiple keys
     clientSecret: Config.get('OAUTH2_CLIENT_SECRET'),
@@ -38,9 +33,7 @@ Passport.serializeUser((user: any, cb: any) => {
 Passport.deserializeUser((obj: any, cb: any) => {
   cb(null, obj);
 });
-// [END setup]
 
-// [START middleware]
 // Middleware that requires the user to be logged in. If the user is not logged
 // in, it will redirect the user to authorize the application and then return
 // them to the original URL they requested.
@@ -60,7 +53,6 @@ export function oauth2Template(req: express.Request, res: express.Response, next
   if (!req.session) {
     return next();
   }
-
   if (req.session.passport) {
     res.locals.id = req.session.passport.user;
   }
@@ -68,19 +60,12 @@ export function oauth2Template(req: express.Request, res: express.Response, next
   res.locals.image = req.session.image;
   next();
 }
-// [END middleware]
 
 export function installOAuthRoutes(db: Database, router: express.Router) {
-  // Begins the authorization flow. The user will be redirected to Google where
-  // they can authorize the application to have access to their basic profile
-  // information. Upon approval the user is redirected to `/auth/google/callback`.
-  // If the `return` query parameter is specified when sending a user to this URL
-  // then they will be redirected to that URL when the flow is finished.
-  // This also fetches their info from the DB and returns that (if available).
-  // [START authorize]
-  router.post('/auth/google', limitCors, // LOGIN
+  const authRoute = [
+    // First stage - extract request body and use it to set session metadata
+    // for the user
     (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      // TODO: Lock down origin
       try {
         req.body = JSON.parse(req.body);
         if (req.session) {
@@ -95,7 +80,12 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         return res.end('Could not parse request body.');
       }
     },
+    // Per passport-google-id-token, the post request to this route
+    // should include a JSON object with the key id_token set to
+    // the one the client received from Google (e.g. after
+    // successful Google+ sign-in).
     Passport.authenticate('google-id-token'),
+    // Post authentication, upsert a new user or load an existing user and increment its login count
     (req: express.Request, res: express.Response) => {
       res.header('Access-Control-Allow-Origin', req.get('origin'));
       res.header('Access-Control-Allow-Credentials', 'true');
@@ -107,7 +97,6 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         id: req.user as any as string,
         name: req.body.name,
       });
-
       db.users.findOne({where: {id: user.id}})
       .then((u: UserInstance|null) => {
         // Respond as soon as we get DB results
@@ -126,13 +115,14 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
       })
       .then(() => incrementLoginCount(db, user.id))
       .catch(console.log);
-    }
-  );
-  // [END authorize]
+    },
+  ];
+  router.get('/auth/google', limitCors, ...authRoute);
+  router.post('/auth/google', limitCors, ...authRoute);
 
   // Deletes the user's credentials and profile from the session.
   // This does not revoke any active tokens.
-  router.post('/auth/logout', // LOGOUT
+  router.post('/auth/logout',
     (req: express.Request, res: express.Response) => {
       req.logout();
       delete req.user;

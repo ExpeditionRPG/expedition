@@ -29,6 +29,7 @@ These properties are minimum required to run the app
   * SEQUELIZE_SSL: true/false
   * OAUTH2_CLIENT_ID: <oath_client_id_from_google_console>
   * OAUTH2_CLIENT_SECRET: <oath_client_secret_from_google_console>
+  * API_URL_BASE: <base url of API server e.g. http://localhost:8081>
 
 > Note: Make sure to add `http://localhost:8080` under Authorized Javascript origins and Authorized Redirect URLs under Google Console Project.
 > Also change the default constants API_KEY and CLIENT_ID in the [API Constants](https://github.com/ExpeditionRPG/expedition/blob/master/services/app/src/Constants.tsx) file for authentication to work
@@ -64,6 +65,19 @@ Set up your Heroku remotes and then rename them to api-beta and api-prod: https:
 ## Database
 
 Uses Postgres SQL. You can test functionality and scripts against a locally-hosted version of Postgres. To access the official databases, you'll need to be a regular contributor to the codebase and receive special permission from the creators.
+
+Basic flow to install and set up a local DB:
+
+```shell
+sudo apt update && sudo apt -y install postgresql
+sudo su postgres
+createdb expedition -U postgres
+psql
+\password
+# Enter a password for the DB, or just 'postgres'
+```
+
+In this case, `DATABASE_URL` would be `"postgresql://postgres:postgres@localhost:5432/expedition"`
 
 If you are going to access prod, especially to edit data, make sure to make a backup [here](https://data.heroku.com/datastores/af009eae-3a7e-467b-9822-b368e0d4ed3a) first. Backups are automatically created daily, but this will allow zero-consequence rollbacks in case your query fails.
 

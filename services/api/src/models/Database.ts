@@ -99,6 +99,7 @@ export class Database {
   public events: EventModel;
   public sessionClients: SessionClientModel;
   public sessions: SessionModel;
+  public authSession: any;
 
   constructor(s: Sequelize.Sequelize) {
     this.sequelize = s;
@@ -125,8 +126,9 @@ export class Database {
           },
         ],
         timestamps: false, // TODO: eventually switch to sequelize timestamps
-      },
+      }
     ) as AnalyticsEventModel;
+    // this.analyticsEvent.sync();
 
     const userSpec = toSequelize(new User({ id: '' }));
     this.users = this.sequelize.define('users', userSpec, {
@@ -134,18 +136,20 @@ export class Database {
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: undefined,
     }) as UserModel;
+    // this.users.sync();
 
     const userBadgeSpec = toSequelize(
-      new UserBadge({ userid: '', badge: 'backer1' }),
+      new UserBadge({ userid: '', badge: 'backer1' })
     );
     this.userBadges = this.sequelize.define('userbadges', userBadgeSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
       underscored: undefined,
     }) as UserBadgeModel;
+    // this.userBadges.sync();
 
     const questSpec = toSequelize(
-      new Quest({ id: '', partition: Partition.expeditionPublic }),
+      new Quest({ id: '', partition: Partition.expeditionPublic })
     );
     this.quests = this.sequelize.define('quests', questSpec, {
       ...standardOptions,
@@ -166,6 +170,7 @@ export class Database {
         },
       ],
     }) as QuestModel;
+    // this.quests.sync();
 
     const questDataSpec = toSequelize(
       new QuestData({
@@ -175,38 +180,41 @@ export class Database {
         notes: '',
         metadata: '',
         edittime: new Date(0),
-      }),
+      })
     );
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
     }) as QuestDataModel;
+    // this.questData.sync();
 
     const feedbackSpec = toSequelize(
       new Feedback({
         partition: Partition.expeditionPublic,
         questid: '',
         userid: '',
-      }),
+      })
     );
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {
       ...standardOptions,
       freezeTableName: true,
       timestamps: false, // TODO: eventually switch to sequelize timestamps
     }) as FeedbackModel;
+    // this.feedback.sync();
 
     const renderedQuestSpec = toSequelize(
       new RenderedQuest({
         partition: Partition.expeditionPublic,
         id: '',
         questversion: 0,
-      }),
+      })
     );
     this.renderedQuests = this.sequelize.define(
       'renderedquests',
       renderedQuestSpec,
-      standardOptions,
+      standardOptions
     ) as RenderedQuestModel;
+    // this.renderedQuests.sync();
 
     const eventSpec = toSequelize(
       new Event({
@@ -217,36 +225,39 @@ export class Database {
         id: 0,
         type: '',
         json: '',
-      }),
+      })
     );
     this.events = this.sequelize.define(
       'events',
       eventSpec,
-      standardOptions,
+      standardOptions
     ) as EventModel;
+    // this.events.sync();
 
     const sessionClientSpec = toSequelize(
-      new SessionClient({ session: 0, client: '', secret: '' }),
+      new SessionClient({ session: 0, client: '', secret: '' })
     );
     this.sessionClients = this.sequelize.define(
       'sessionclients',
       sessionClientSpec,
-      standardOptions,
+      standardOptions
     ) as SessionClientModel;
+    // this.sessionClients.sync();
 
     const sessionSpec = toSequelize(
-      new Session({ id: 0, secret: '', eventCounter: 0, locked: false }),
+      new Session({ id: 0, secret: '', eventCounter: 0, locked: false })
     );
     this.sessions = this.sequelize.define(
       'sessions',
       sessionSpec,
-      standardOptions,
+      standardOptions
     ) as SessionModel;
+    // this.sessions.sync();
 
     // This doesn't need an independent spec - it is used by connect-session-sequelize
     // https://www.npmjs.com/package/connect-session-sequelize
     // We redeclare it here so we can apply a custom name.
-    const authSession = this.sequelize.define(AUTH_SESSION_TABLE, {
+    this.authSession = this.sequelize.define(AUTH_SESSION_TABLE, {
       data: Sequelize.TEXT,
       expires: Sequelize.DATE,
       sid: {
@@ -254,6 +265,6 @@ export class Database {
         type: Sequelize.STRING(32),
       },
     });
-    authSession.sync();
+    // authSession.sync();
   }
 }

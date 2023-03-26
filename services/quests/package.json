@@ -3,6 +3,7 @@
   "version": "1.21.4",
   "description": "The Expedition Quest Creator",
   "homepage": "http://quests.expeditiongame.com",
+  "license": "CC-BY-NC-ND-4.0",
   "scripts": {
     "start": "webpack-dev-server --progress",
     "build": "SKIP_RUNNER=true webpack --config webpack.dist.config.js"

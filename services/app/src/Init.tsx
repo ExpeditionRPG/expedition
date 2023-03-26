@@ -22,7 +22,6 @@ import {searchAndPlay} from './actions/Search';
 import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
-import {silentLogin} from './actions/User';
 import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
@@ -119,10 +118,6 @@ function setupDevice() {
   if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
     window.plugins.insomnia.keepAwake(); // keep screen on while app is open
   }
-
-  // silent login here triggers for cordova plugin
-  getStore().dispatch(silentLogin())
-    .catch(console.error);
 }
 
 function setupHotReload() {
@@ -266,11 +261,6 @@ export function init() {
 
   // Only triggers on app builds
   document.addEventListener('deviceready', setupDevice, false);
-  // For non-app builds
-  setTimeout(() => {
-    getStore().dispatch(silentLogin())
-      .catch(console.error);
-  }, INIT_DELAY.SILENT_LOGIN_MILLIS);
 
   setupPolyfills();
   setupGoogleAnalytics(); // before anything else that might log in the user

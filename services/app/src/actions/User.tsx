@@ -1,13 +1,12 @@
 import * as Raven from 'raven-js';
 import Redux from 'redux';
-import {registerUserAndIdToken} from 'shared/auth/API';
 import {UserState as UserStateAuth} from 'shared/auth/UserState';
 import {loggedOutUser} from 'shared/auth/UserState';
-import {loginWeb as loginWebBase, silentLoginWeb as silentLoginWebBase} from 'shared/auth/Web';
+import {codeClientAuth} from 'shared/auth/Web';
 import {handleFetchErrors} from 'shared/requests';
 import {Badge} from 'shared/schema/Constants';
 import {AUTH_SETTINGS} from '../Constants';
-import {CordovaLoginPlugin, getGA, getGapi, getWindow} from '../Globals';
+import {getGA, getGoogle} from '../Globals';
 import {AppState, IUserFeedback, UserState} from '../reducers/StateTypes';
 import {fetchUserQuests} from './Web';
 
@@ -21,21 +20,11 @@ function postRegister(us: UserStateAuth) {
 }
 
 function loginWeb(): Promise<UserState|null> {
-  return loginWebBase(getGapi(), AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
-    .then((r) => {
-      return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, r);
-    })
+  return codeClientAuth(getGoogle(), AUTH_SETTINGS.URL_BASE, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
     .then(postRegister);
 }
 
-function silentLoginWeb(): Promise<UserState|null> {
-  return silentLoginWebBase(getGapi(), AUTH_SETTINGS.API_KEY, AUTH_SETTINGS.CLIENT_ID, AUTH_SETTINGS.SCOPES)
-    .then((r) => {
-      return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, r);
-    })
-    .then(postRegister);
-}
-
+/*
 function silentLoginCordova(p: CordovaLoginPlugin): Promise<UserState|null> {
   return new Promise((resolve, reject) => {
     p.trySilentLogin({
@@ -71,7 +60,9 @@ function loginCordova(p: CordovaLoginPlugin): Promise<UserState> {
     });
   });
 }
+*/
 
+/*
 function getGooglePlusPlugin(): Promise<CordovaLoginPlugin> {
   return new Promise((resolve, reject) => {
     const plugins = getWindow().plugins;
@@ -82,6 +73,7 @@ function getGooglePlusPlugin(): Promise<CordovaLoginPlugin> {
     resolve(googleplus);
   });
 }
+*/
 
 // Update the user's logged in state.
 // This should be called after every login attempt.
@@ -132,16 +124,20 @@ export function ensureLogin(): TReduxThunk<Promise<UserState>> {
     if (currentUser !== loggedOutUser) {
       return Promise.resolve(currentUser);
     }
-    return getGooglePlusPlugin()
-    .then((p) => loginCordova(p))
-    .catch(() => loginWeb())
-    .then(updateState(dispatch))
-    .catch((err) => Promise.reject(err));
+    // return getGooglePlusPlugin()
+    // .then((p) => loginCordova(p))
+    // .catch(() => loginWeb())
+    // .then(updateState(dispatch))
+    // .catch((err) => Promise.reject(err));
+    return loginWeb()
+      .then(updateState(dispatch))
+      .catch((err) => Promise.reject(err));
   };
 }
 
 // Returns user state if successfully logged in silently.
 // Thows an error if login fails.
+/*
 export function silentLogin(): TReduxThunk<Promise<UserState>> {
   return (dispatch, getState) => {
     const currentUser = getState().user;
@@ -150,10 +146,10 @@ export function silentLogin(): TReduxThunk<Promise<UserState>> {
     }
     return getGooglePlusPlugin()
     .then((p) => silentLoginCordova(p))
-    .catch(() => silentLoginWeb())
     .then(updateState(dispatch));
   };
 }
+*/
 
 export function getUserFeedBacks(): TReduxThunk<Promise<any>> {
   return (dispatch) => {
