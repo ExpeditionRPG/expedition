@@ -3,7 +3,6 @@ import {checkoutSetState, toCheckout} from 'app/actions/Checkout';
 import {setMultiplayerStatus} from 'app/actions/Multiplayer';
 import {exitQuest} from 'app/actions/Quest';
 import {openSnackbar} from 'app/actions/Snackbar';
-import {ensureLogin} from 'app/actions/User';
 import {submitUserFeedback} from 'app/actions/Web';
 import {getDevicePlatform} from 'app/Globals';
 import {logEvent} from 'app/Logging';
@@ -62,20 +61,17 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         }));
       }
     },
-    onTip: (checkoutError: string|null, amount: number, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
+    onTip: (checkoutError: string|null, amount: number, user: UserState, quest: QuestState, settings: SettingsType, anonymous: boolean, text: string, rating: number|null) => {
       logEvent('navigate', 'tip_start', {value: amount, action: quest.details.title, label: quest.details.id});
-      dispatch(ensureLogin())
-        .then((user: UserState) => {
-          if (rating && rating > 0) {
-            dispatch(submitUserFeedback({quest, settings, user, anonymous, text, rating, type: 'rating'}));
-          }
-          if (checkoutError !== null) {
-            dispatch(openSnackbar(Error(checkoutError)));
-          } else {
-            dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
-            dispatch(toCheckout(amount));
-          }
-        });
+      if (rating && rating > 0) {
+        dispatch(submitUserFeedback({quest, settings, user, anonymous, text, rating, type: 'rating'}));
+      }
+      if (checkoutError !== null) {
+        dispatch(openSnackbar(Error(checkoutError)));
+      } else {
+        dispatch(checkoutSetState({amount, productcategory: 'Quest Tip', productid: quest.details.id}));
+        dispatch(toCheckout(amount));
+      }
     },
   };
 };

@@ -38,6 +38,9 @@ export function send(
   isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
   sendMail?: any,
 ): Promise<any> {
+  if (transporter === null) {
+    return Promise.reject('mail transport not set up');
+  }
   sendMail = sendMail || transporter.sendMail.bind(transporter);
   if (!sendMail) {
     return Promise.reject('transport not set up');

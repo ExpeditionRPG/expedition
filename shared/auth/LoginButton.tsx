@@ -1,9 +1,8 @@
 import * as React from 'react';
-import {AUTH_SETTINGS} from 'shared/schema/Constants';
-
 declare var google: any;
 
 export interface LoginButtonProps {
+  clientId: string;
   onLogin: (jwt: string) => void;
 }
 
@@ -12,9 +11,8 @@ export class LoginButton extends React.Component<LoginButtonProps, {}> {
 
   constructor(props: LoginButtonProps) {
     super(props);
-    console.log('Client ID:', AUTH_SETTINGS.CLIENT_ID);
     google.accounts.id.initialize({
-      client_id: AUTH_SETTINGS.CLIENT_ID,
+      client_id: props.clientId,
       callback: (response: any) => this.handleCredentialResponse(response),
     });
     this.btnRef = React.createRef();

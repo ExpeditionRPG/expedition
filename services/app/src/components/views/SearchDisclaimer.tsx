@@ -1,5 +1,6 @@
 import * as React from 'react';
 import LoginButton from 'shared/auth/LoginButton';
+import {AUTH_SETTINGS} from 'shared/schema/Constants';
 // import Button from '../base/Button';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
@@ -41,7 +42,7 @@ class SearchDisclaimer extends React.Component<Props, {}> {
         <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
           Learn about the latest quests, features and more - once per month!
         </Checkbox>
-        <LoginButton onLogin={(jwt: string) => this.props.onLogin(jwt, this.state.subscribe)}/>
+        <LoginButton clientId={AUTH_SETTINGS.CLIENT_ID} onLogin={(jwt: string) => this.props.onLogin(jwt, this.state.subscribe)}/>
       </Card>
     );
   }

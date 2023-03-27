@@ -26,9 +26,9 @@ export function checkForLogin(urlBase: string): Promise<UserState|null> {
 
 // This is used for user authentication (NOT authorization). Required both by
 // the quests and app, driven by the Login With Google button
-export function registerUserAndIdToken(urlBase: string, id_token: string): Promise<UserState> {
+export function registerUserAndIdToken(urlBase: string, idToken: string): Promise<UserState> {
   return fetch(urlBase + '/auth/google', {
-    body: JSON.stringify({id_token}),
+    body: JSON.stringify({id_token: idToken}),
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
@@ -38,15 +38,6 @@ export function registerUserAndIdToken(urlBase: string, id_token: string): Promi
   .then(handleFetchErrors)
   .then((response: any) => response.json())
   .then((data: any) => {
-    // {"setDefaults":["lootPoints","created","loginCount","lastLogin"],
-    // "email":"smartin015@gmail.com",
-    // "id":"106667818352266772866",
-    // "name":"Scott Martin",
-    // "lootPoints":0,
-    // "created":"2023-03-26T19:19:07.950Z",
-    // "loginCount":0,
-    // "lastLogin":"1970-01-01T00:00:00.000Z"
-    // }
     return {
       email: data.email,
       id: data.id,
@@ -63,44 +54,49 @@ export function registerUserAndIdToken(urlBase: string, id_token: string): Promi
   });
 }
 
-export function codeClientAuth(google: any, jwt: string, urlBase: string, clientId: string, scopes: string) {
+export function getAuthorizationToken(google: any, urlBase: string, clientId: string, scopes: string): Promise<any> {
   if (!google) {
     throw Error('google GIS not loaded');
   }
+  return new Promise((resolve, reject) => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: scopes,
+      // ux_mode: 'popup',
+      // Callback is invoked with a CredentialsResponse object
+      // see https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
+      // redirect_uri,
+      callback: (response: any) => {
+        resolve(response);
+      },
+      error_callback: reject,
+    });
 
-  // const redirect_uri = urlBase + '/auth/google/callback';
-  // console.log("Redirecting to", redirect_uri);
-
-  // https://developers.google.com/identity/oauth2/web/reference/js-reference#CodeClient
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope: scopes,
-    // ux_mode: 'popup',
-    // Callback is invoked with a CredentialsResponse object
-    // see https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
-    // redirect_uri,
-    callback: (rep: any) => {
-      // TODO google.accounts.oauth2.hasGrantedAllScopes
-      // TODO send request to server
-      const data = {id_token: jwt, access_token: rep.access_token};
-      console.log('sending to /auth/google with', data);
-      fetch(urlBase + '/auth/google', {
-        body: JSON.stringify(data),
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      })
-      .then(handleFetchErrors)
-      .then((rep: any) => {
-        console.log('From API server:', rep);
-      });
-    },
-    error_callback: (rep: any) => console.log(rep),
+    // Redirects user to authorization page, then to redirect URI with URL parameters set as
+    // per https://developers.google.com/identity/oauth2/web/reference/js-reference#CodeResponse
+    client.requestAccessToken();
   });
+}
 
-  // Redirects user to authorization page, then to redirect URI with URL parameters set as
-  // per https://developers.google.com/identity/oauth2/web/reference/js-reference#CodeResponse
-  client.requestAccessToken();
+let gapiLoaded = false;
+export function loadGapi(gapi: any, apiKey: string, loaded= gapiLoaded): Promise<any> {
+  if (!gapi) {
+    return Promise.reject(Error('gapi not loaded'));
+  }
+  if (loaded) {
+    return Promise.resolve(gapi);
+  }
+
+  return new Promise((resolve, reject) => {
+    gapi.load('client,drive-share', () => {
+      resolve();
+    });
+  }).then(gapi.client.init({
+    // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
+  })).then(() => {
+    gapi.client.setApiKey(apiKey);
+    gapiLoaded = true;
+    console.log('gapi loaded, initialized, and set api key');
+    return gapi;
+  });
 }

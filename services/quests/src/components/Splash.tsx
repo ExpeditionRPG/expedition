@@ -4,9 +4,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import ExpeditionButton from 'app/components/base/Button';
 import * as React from 'react';
+import LoginButton from 'shared/auth/LoginButton';
 import {UserState} from 'shared/auth/UserState';
+import {AUTH_SETTINGS} from 'shared/schema/Constants';
 import {AnnouncementState} from '../reducers/StateTypes';
-import LoginButton from './LoginButton';
 
 export interface StateProps {
   announcement: AnnouncementState;
@@ -45,7 +46,7 @@ const Splash = (props: Props): JSX.Element => {
             <span className="email">{props.user.email}</span>
             <Button onClick={() => props.onNewQuest(props.user)}>New Quest</Button>
           </div>}
-          {!props.user.loggedIn && <LoginButton onLogin={props.onLogin}/>}
+          {!props.user.loggedIn && <LoginButton clientId={AUTH_SETTINGS.CLIENT_ID} onLogin={props.onLogin}/>}
         </Toolbar>
       </AppBar>
       <div className={`body ${announcementVisible && 'announcing'}`}>

@@ -1,6 +1,8 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {UserState} from 'shared/auth/UserState';
+import {registerUserAndIdToken} from 'shared/auth/Web';
+import {AUTH_SETTINGS} from 'shared/schema/Constants';
 import {loadQuestFromURL} from '../actions/Quest';
 import {postLoginUser} from '../actions/User';
 import {AppState} from '../reducers/StateTypes';
@@ -28,7 +30,9 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         category: 'interaction',
         label: 'splashscreen',
       });
-      dispatch(postLoginUser(jwt, true));
+      registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then((user: UserState) => {
+        dispatch(postLoginUser(user, true));
+      });
     },
     onNewQuest: (user: UserState) => {
       dispatch(loadQuestFromURL(user));
