@@ -4,8 +4,7 @@ declare var module: any;
 // Before we even import other modules, first hook into
 // console logging so we can pass details along with error reports.
 import {logEvent, setupLogging} from './Logging';
-console.error('TODO setuplogging', setupLogging);
-// setupLogging(console);
+setupLogging(console);
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import 'babel-polyfill';
@@ -246,8 +245,7 @@ export function init() {
   const window = getWindow();
   const document = getDocument();
 
-  // setupOnError(window); // Do first to catch other loading errors
-  console.error('TODO return setupOnError', setupOnError);
+  setupOnError(window); // Do first to catch other loading errors
   createAppStore(Raven);
   setupStorage(document);
 

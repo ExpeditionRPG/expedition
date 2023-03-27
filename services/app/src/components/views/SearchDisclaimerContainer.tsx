@@ -11,7 +11,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): Props => {
     onLogin: (jwt: string, sub: boolean) => {
       sendAuthTokenToAPIServer(jwt)
         .then((user: UserState) => {
-          console.log('Now have user state', user);
           dispatch({type: 'USER_LOGIN', user});
           if (user) {
             dispatch(fetchUserQuests());

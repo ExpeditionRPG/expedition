@@ -49,7 +49,6 @@ export function registerUserAndIdToken(urlBase: string, idToken: string): Promis
       lootPoints: data.lootPoints,
     } as UserState;
   }).catch((error: Error) => {
-    console.log('Request failed', error);
     throw new Error('Error authenticating.');
   });
 }
@@ -62,10 +61,8 @@ export function getAuthorizationToken(google: any, urlBase: string, clientId: st
     const client = google.accounts.oauth2.initTokenClient({
       client_id: clientId,
       scope: scopes,
-      // ux_mode: 'popup',
       // Callback is invoked with a CredentialsResponse object
       // see https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
-      // redirect_uri,
       callback: (response: any) => {
         resolve(response);
       },
@@ -96,7 +93,6 @@ export function loadGapi(gapi: any, apiKey: string, loaded= gapiLoaded): Promise
   })).then(() => {
     gapi.client.setApiKey(apiKey);
     gapiLoaded = true;
-    console.log('gapi loaded, initialized, and set api key');
     return gapi;
   });
 }

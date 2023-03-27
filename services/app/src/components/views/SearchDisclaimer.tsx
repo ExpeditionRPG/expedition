@@ -1,7 +1,6 @@
 import * as React from 'react';
 import LoginButton from 'shared/auth/LoginButton';
 import {AUTH_SETTINGS} from 'shared/schema/Constants';
-// import Button from '../base/Button';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
 

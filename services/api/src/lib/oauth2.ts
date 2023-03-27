@@ -92,25 +92,6 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
       next();
     },
     Passport.authenticate('google-id-token'),
-    /*
-    function(err: any, user: any, info: any, status: any) {
-        console.log('Auth process ended');
-        if (err !== null) {
-          console.error(err);
-          next(err);
-        } else {
-          req.user = {
-            displayName: user.payload.name,
-            image: user.payload.picture,
-            email: user.payload.email,
-            // https://stackoverflow.com/questions/42833677/openid-connect-jwt-sub-or-email
-            // https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-            id: user.payload.sub,
-          };
-          next();
-        }
-      })(req, res, next);
-    },*/
     // Post authentication, upsert a new user or load an existing user and increment its login count
     (req: express.Request, res: express.Response) => {
       if (!req.user) {
@@ -132,7 +113,6 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
         req.session.email = user.email || '';
         req.session.userid = user.id;
       }
-      console.log('Find user');
       db.users
         .findOne({ where: { id: user.id } })
         .then((u: UserInstance | null) => {
@@ -147,18 +127,14 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
             }
             // Otherwise, they'll send a separate subscribe request
           } else {
-            console.log('Got user');
             res.end(JSON.stringify(u));
             return null;
           }
         })
         .then(() => incrementLoginCount(db, user.id))
-        .catch(e => {
-          console.log('Error thrown when authenticating:', e);
-        });
+        .catch(console.error);
     },
   );
-  // router.get('/auth/google', limitCors, ...authRoute);
 
   // Deletes the user's credentials and profile from the session.
   // This does not revoke any active tokens.

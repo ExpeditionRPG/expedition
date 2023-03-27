@@ -1,5 +1,4 @@
 export function handleFetchErrors(response: any) {
-  console.log('rep', response);
   if (!response.ok) {
     throw Error(response.statusText);
   }

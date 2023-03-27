@@ -23,8 +23,6 @@ export class LoginButton extends React.Component<LoginButtonProps, {}> {
   }
 
   public componentDidMount() {
-    console.log('Login button mounted');
-    console.log(this.btnRef.current);
     google.accounts.id.renderButton(
       this.btnRef.current, {
         theme: 'filled_black',
