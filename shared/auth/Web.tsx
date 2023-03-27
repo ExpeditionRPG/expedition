@@ -1,6 +1,29 @@
 import {handleFetchErrors} from 'shared/requests';
 import {UserState} from './UserState';
 
+export function checkForLogin(urlBase: string): Promise<UserState|null> {
+  return fetch(urlBase + '/auth/session', {credentials: 'include'}).then((response: any) => {
+    if (response.status !== 200) {
+      // Catch 401/500 errors, treat as not logged in and ignore
+      return null;
+    }
+    return response.json();
+  }).then((data: any) => {
+    return {
+      email: data.email,
+      id: data.id,
+      image: data.image,
+      loggedIn: true,
+      name: data.name,
+      lastLogin: new Date(data.lastLogin),
+      loginCount: data.loginCount,
+      lootPoints: data.lootPoints,
+    } as UserState;
+  }).catch((error: Error) => {
+    return null;
+  });
+}
+
 // This is used for user authentication (NOT authorization). Required both by
 // the quests and app, driven by the Login With Google button
 export function registerUserAndIdToken(urlBase: string, id_token: string): Promise<UserState> {

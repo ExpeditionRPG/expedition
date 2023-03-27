@@ -14,6 +14,8 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 
+import {UserState} from 'shared/auth/UserState';
+import {checkForLogin} from 'shared/auth/Web';
 import {Expansion, NODE_ENV, VERSION} from 'shared/schema/Constants';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
@@ -23,6 +25,7 @@ import {searchAndPlay} from './actions/Search';
 import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
+import {fetchUserQuests} from './actions/Web';
 import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
@@ -269,6 +272,15 @@ export function init() {
   setupHotReload();
   setupSavedQuests();
   handleUrlHash();
+
+  checkForLogin(AUTH_SETTINGS.URL_BASE)
+    .then((user: UserState|null) => {
+      if (user !== null) {
+        getStore().dispatch({type: 'USER_LOGIN', user});
+        getStore().dispatch(fetchUserQuests());
+      }
+    })
+    .catch(console.error);
 
   render();
 
