@@ -77,8 +77,11 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
       } catch (e) {
         return res.end('Could not parse request body.');
       }
-
-      Passport.authenticate('google-id-token', function(err: any, user: any, info: any, status: any) {
+      next();
+    },
+    Passport.authenticate('google-id-token'), 
+    /*
+    function(err: any, user: any, info: any, status: any) {
         console.log('Auth process ended');
         if (err !== null) {
           console.error(err);
@@ -95,30 +98,34 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
           next();
         }
       })(req, res, next);
-    },
+    },*/
     // Post authentication, upsert a new user or load an existing user and increment its login count
     (req: express.Request, res: express.Response) => {
       if (!req.user) {
         res.end(401, 'Unauthorized');
       }
-      const u: any = req.user;
+      let image = req.user.payload.picture;
       const user = new User({
-        email: (u.email || '') as any as string,
-        id: u.id as any as string,
-        name: u.displayName as any as string,
+        name: req.user.payload.name as any as string,
+        email: (req.user.payload.email || '') as any as string,
+        // https://stackoverflow.com/questions/42833677/openid-connect-jwt-sub-or-email
+        // https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+        id: req.user.payload.sub as any as string,
       });
 
       if (req.session) {
-        req.session.displayName = u.displayName || '';
-        req.session.image = u.image || '';
-        req.session.email = u.email || '';
+        req.session.displayName = user.name || '';
+        req.session.image = image || '';
+        req.session.email = user.email || '';
       }
-
+      console.log("Find user")
       db.users.findOne({where: {id: user.id}})
       .then((u: UserInstance|null) => {
         // Respond as soon as we get DB results
         if (u === null) {
-          res.end(JSON.stringify({...user, image: (u.image as string)}));
+          console.log("Null user");
+          const jbody: any = {...user, image};
+          res.end(JSON.stringify(jbody));
           db.users.upsert(user);
           if ((req.get('host') || '').indexOf('quest') !== -1) {
             // New quest writer; auto-subscribe to creator newsletter
@@ -126,6 +133,7 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
           }
           // Otherwise, they'll send a separate subscribe request
         } else {
+          console.log("Got user");
           res.end(JSON.stringify(u));
           return null;
         }
