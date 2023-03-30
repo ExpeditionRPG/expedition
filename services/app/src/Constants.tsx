@@ -12,7 +12,7 @@ export const MULTIPLAYER_SETTINGS = {
   connectURI: API_HOST + '/multiplayer/v1/connect',
   firstLoadURI: API_HOST + '/multiplayer/v1/user',
   newSessionURI: API_HOST + '/multiplayer/v1/new_session',
-  websocketSession: ((NODE_ENV === 'production') ? 'wss://' : 'ws://') + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
+  websocketSession: 'wss://' + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
 const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped

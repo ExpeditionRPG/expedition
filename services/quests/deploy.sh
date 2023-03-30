@@ -8,7 +8,7 @@ prebuild() {
 betabuild() {
   prebuild
   export NODE_ENV='dev'
-  export API_HOST='http://betaapi.expeditiongame.com'
+  export API_HOST='https://betaapi.expeditiongame.com'
   export OAUTH2_CLIENT_ID='545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com'
   webpack --config ./webpack.dist.config.js
 }
