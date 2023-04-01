@@ -82,7 +82,7 @@ if (window.gapi) {
   window.gapi.load('client,drive-share', () => {
     checkForLogin(AUTH_SETTINGS.URL_BASE).then((user: UserState|null) => {
       if (user !== null) {
-        store.dispatch(postLoginUser(user, false));
+        store.dispatch(postLoginUser(user, questId));
       }
     });
   });
