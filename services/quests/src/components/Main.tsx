@@ -55,7 +55,7 @@ class Main extends React.Component<Props, {hasError: Error|null}> {
         <div className="main loading">
           Loading Expedition Quest Creator...
           <div className="loadPrompt delayLoad">
-            Not loading? Try disabling your ad blocker.
+            Not loading? Try disabling your ad blocker AND allowing multiple pop-ups (for authentication).
             If that doesn't work, hit the "Contact Us" button in the bottom right -
             make sure to include the title of your quest.
           </div>
