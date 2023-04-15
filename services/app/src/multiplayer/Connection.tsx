@@ -42,6 +42,7 @@ export class Connection extends ClientBase {
     this.sessionID = '';
     this.secret = '';
     setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
+    // TODO only enable connection check if actively multiplayering
     setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
   }
 

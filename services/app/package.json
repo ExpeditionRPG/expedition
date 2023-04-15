@@ -1,8 +1,9 @@
 {
   "name": "expedition-app",
-  "version": "1.21.8",
+  "version": "1.22.0",
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
+  "license": "CC-BY-NC-ND-4.0",
   "scripts": {
     "start": "webpack-dev-server --progress",
     "build": "webpack --config ./webpack.dist.config.js --progress",

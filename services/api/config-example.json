@@ -1,4 +1,5 @@
 {
+  "API_URL_BASE": "",
   "DATABASE_URL": "",
   "SEQUELIZE_SSL": false,
   "OAUTH2_CLIENT_ID": "",

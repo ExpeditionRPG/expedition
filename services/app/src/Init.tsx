@@ -13,6 +13,8 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import * as Redux from 'redux';
 
+import {UserState} from 'shared/auth/UserState';
+import {checkForLogin} from 'shared/auth/Web';
 import {Expansion, NODE_ENV, VERSION} from 'shared/schema/Constants';
 import {audioSet} from './actions/Audio';
 import {toPrevious} from './actions/Card';
@@ -22,7 +24,7 @@ import {searchAndPlay} from './actions/Search';
 import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
 import {changeSettings} from './actions/Settings';
 import {openSnackbar} from './actions/Snackbar';
-import {silentLogin} from './actions/User';
+import {fetchUserQuests} from './actions/Web';
 import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
 import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
 import {getStorageBoolean} from './LocalStorage';
@@ -119,10 +121,6 @@ function setupDevice() {
   if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
     window.plugins.insomnia.keepAwake(); // keep screen on while app is open
   }
-
-  // silent login here triggers for cordova plugin
-  getStore().dispatch(silentLogin())
-    .catch(console.error);
 }
 
 function setupHotReload() {
@@ -266,17 +264,21 @@ export function init() {
 
   // Only triggers on app builds
   document.addEventListener('deviceready', setupDevice, false);
-  // For non-app builds
-  setTimeout(() => {
-    getStore().dispatch(silentLogin())
-      .catch(console.error);
-  }, INIT_DELAY.SILENT_LOGIN_MILLIS);
 
   setupPolyfills();
   setupGoogleAnalytics(); // before anything else that might log in the user
   setupHotReload();
   setupSavedQuests();
   handleUrlHash();
+
+  checkForLogin(AUTH_SETTINGS.URL_BASE)
+    .then((user: UserState|null) => {
+      if (user !== null) {
+        getStore().dispatch({type: 'USER_LOGIN', user});
+        getStore().dispatch(fetchUserQuests());
+      }
+    })
+    .catch(console.error);
 
   render();
 

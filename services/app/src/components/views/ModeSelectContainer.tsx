@@ -3,7 +3,6 @@ import Redux from 'redux';
 import {toNavCard} from '../../actions/Card';
 import {loadMultiplayer} from '../../actions/Multiplayer';
 import {changeSettings} from '../../actions/Settings';
-import {ensureLogin} from '../../actions/User';
 import {AppState, UserState} from '../../reducers/StateTypes';
 import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
 
@@ -26,10 +25,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(toNavCard({}));
     },
     onMultiplayerSelect: (user: UserState) => {
-      dispatch(ensureLogin())
-        .then((u: UserState) => {
-          dispatch(loadMultiplayer(u));
-        });
+      dispatch(loadMultiplayer(user));
     },
     onMultitouchChange: (v: boolean) => {
       dispatch(changeSettings({multitouch: v}));

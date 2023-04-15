@@ -11,7 +11,7 @@ function requireAdminAuth(
   next: express.NextFunction,
 ) {
   if (!res.locals || !res.locals.id) {
-    return res.status(500).end('You are not signed in.');
+    return res.status(401).end('You are not signed in.');
   }
   let superUsers: string[] = [];
   try {

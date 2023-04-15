@@ -18,7 +18,6 @@ import {initQuest} from './Quest';
 import {userQuestsDelta} from './QuestHistory';
 import {numPlayers} from './Settings';
 import {openSnackbar} from './Snackbar';
-import {ensureLogin} from './User';
 
 declare var require: any;
 const cheerio = require('cheerio') as CheerioAPI;
@@ -155,7 +154,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       return alert('Reviews must be at least ' + MIN_FEEDBACK_LENGTH + ' characters to provide value to authors.');
     }
 
-    let data: any = {
+    const data: any = {
       anonymous: a.anonymous,
       difficulty: a.settings.difficulty,
       email: a.user.email,
@@ -181,15 +180,7 @@ export function submitUserFeedback(a: {quest: QuestState, settings: SettingsType
       data.questline = a.quest.node.elem.data('line');
     }
 
-    return dispatch(ensureLogin())
-    .then((user: UserState) => {
-      data = {...data,
-        email: user.email,
-        name: user.name,
-        userid: user.id,
-      };
-      return dispatch(postUserFeedback(a.type, data));
-    });
+    return dispatch(postUserFeedback(a.type, data));
   };
 }
 

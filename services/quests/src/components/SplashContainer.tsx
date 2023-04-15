@@ -1,8 +1,10 @@
 import {connect} from 'react-redux';
 import Redux from 'redux';
 import {UserState} from 'shared/auth/UserState';
+import {registerUserAndIdToken} from 'shared/auth/Web';
+import {AUTH_SETTINGS} from 'shared/schema/Constants';
 import {loadQuestFromURL} from '../actions/Quest';
-import {loginUser} from '../actions/User';
+import {postLoginUser} from '../actions/User';
 import {AppState} from '../reducers/StateTypes';
 import Splash, {DispatchProps, StateProps} from './Splash';
 
@@ -22,13 +24,15 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         window.open(link + '?utm_source=questcreator', '_system');
       }
     },
-    onLogin: (position: string) => {
+    onLogin: (jwt: string) => {
       ReactGA.event({
         action: 'LOGIN',
         category: 'interaction',
-        label: 'splashscreen' + position,
+        label: 'splashscreen',
       });
-      dispatch(loginUser(true, true));
+      registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then((user: UserState) => {
+        dispatch(postLoginUser(user, true));
+      });
     },
     onNewQuest: (user: UserState) => {
       dispatch(loadQuestFromURL(user));

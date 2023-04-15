@@ -21,6 +21,7 @@ import {
 import {pushError, pushHTTPError} from './Dialogs';
 import {setFatal, startPlaytestWorker, updateDirtyState} from './Editor';
 import {setSnackbar} from './Snackbar';
+import {ensureToken} from './User';
 
 const ReactGA = require('react-ga') as any;
 const QueryString = require('query-string');
@@ -81,12 +82,10 @@ function formatNotes(notes: string) {
 }
 
 function loadQuestFromDrive(fileId: string, edittime: Date): Promise<LoadResult> {
-  return Promise.resolve().then(() => {
-    return window.gapi.client.request({
+  return ensureToken().then(() => window.gapi.client.request({
       method: 'GET',
       path: `https://www.googleapis.com/drive/v2/files/${fileId}?alt=media`,
-    });
-  }).then((json: any) => {
+  })).then((json: any) => {
     if (!json.body) {
       throw new Error(`Could not read from Drive API (${json.status}): ${json.statusText}`);
     }
@@ -124,19 +123,20 @@ function updateDriveFile(fileId: string, fileMetadata: any, text: string, callba
       base64Data +
       closeDelim;
 
-    const request = window.gapi.client.request({
-      body: multipartRequestBody,
-      headers: {
-        'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
-      },
-      method: 'PUT',
-      params: {uploadType: 'multipart', alt: 'json'},
-      path: '/upload/drive/v2/files/' + fileId,
-    });
-    request.then((json: any, raw: any) => {
-      return callback(null, json);
-    }, (json: any) => {
-      return callback(json.result.error);
+    ensureToken().then(() => {
+      return window.gapi.client.request({
+        body: multipartRequestBody,
+        headers: {
+          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
+        },
+        method: 'PUT',
+        params: {uploadType: 'multipart', alt: 'json'},
+        path: '/upload/drive/v2/files/' + fileId,
+      }).then((json: any, raw: any) => {
+        return callback(null, json);
+      }, (json: any) => {
+        return callback(json.result.error);
+      });
     });
   } catch (err) {
     return callback(err);
@@ -173,38 +173,41 @@ export function newQuest(user: UserState) {
     };
     // TODO migrate this to use same upload method as updateDriveFile to remove dependency
     // on loading drive2 api
-    window.gapi.client.load('drive', 'v2', () => {
-      window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
-        updateDriveFile(createResponse.id, {}, '', (err, result) => {
-          if (err) {
-            return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
-          }
-          // save an equivalent to the API server
-          saveQuestInternal(createResponse.id, NEW_QUEST_TEMPLATE, '', '').then(() => {
-            dispatch(loadQuest(user, createResponse.id));
-          });
-          window.gapi.client.request({
-            body: {
-              allowFileDiscovery: true,
-              domain: 'Fabricate.io',
-              role: 'writer',
-              type: 'domain',
-            },
-            method: 'POST',
-            params: {sendNotificationEmails: false},
-            path: '/drive/v3/files/' + createResponse.id + '/permissions',
-          }).then((json: any, raw: any) => {
-            // Succeed silently
-          }, (json: any) => {
-            ReactGA.event({
-              action: 'Error connecting quest file to Fabricate.IO',
-              category: 'Error',
-              label: createResponse.id,
+    ensureToken().then(() => {
+      window.gapi.client.load('drive', 'v2', () => {
+        window.gapi.client.drive.files.insert(insertHash).execute((createResponse: {id: string}) => {
+          updateDriveFile(createResponse.id, {}, '', (err, result) => {
+            if (err) {
+              return dispatch(pushError(new Error('Failed to create new quest: ' + err.message)));
+            }
+            // save an equivalent to the API server
+            saveQuestInternal(createResponse.id, NEW_QUEST_TEMPLATE, '', '').then(() => {
+              dispatch(loadQuest(user, createResponse.id));
+            });
+            window.gapi.client.request({
+              body: {
+                allowFileDiscovery: true,
+                domain: 'Fabricate.io',
+                role: 'writer',
+                type: 'domain',
+              },
+              method: 'POST',
+              params: {sendNotificationEmails: false},
+              path: '/drive/v3/files/' + createResponse.id + '/permissions',
+            }).then((json: any, raw: any) => {
+              // Succeed silently
+            }, (json: any) => {
+              ReactGA.event({
+                action: 'Error connecting quest file to Fabricate.IO',
+                category: 'Error',
+                label: createResponse.id,
+              });
             });
           });
         });
       });
     });
+
   };
 }
 
@@ -412,26 +415,26 @@ export function publishQuest(quest: QuestType, majorRelease?: boolean, privatePu
       dispatch(setSnackbar(true, 'Quest published successfully!'));
       // Makes up for the fact that auto-sharing on creation falls apart if the Google Doc
       // was created before https://github.com/ExpeditionRPG/expedition-quest-creator/pull/282
-      window.gapi.client.request({
-        body: {
-          allowFileDiscovery: true,
-          domain: 'Fabricate.io',
-          role: 'writer',
-          type: 'domain',
-        },
-        method: 'POST',
-        params: {sendNotificationEmails: false},
-        path: '/drive/v3/files/' + quest.id + '/permissions',
-      }).then((json: any, raw: any) => {
-        // Silent success
-      }, (json: any) => {
-        ReactGA.event({
-          action: 'Error connecting quest file to Fabricate.IO on publish',
-          category: 'Error',
-          label: quest.id,
+      ensureToken().then(() => {
+        return window.gapi.client.request({
+          body: {
+            allowFileDiscovery: true,
+            domain: 'Fabricate.io',
+            role: 'writer',
+            type: 'domain',
+          },
+          method: 'POST',
+          params: {sendNotificationEmails: false},
+          path: '/drive/v3/files/' + quest.id + '/permissions',
+        }).then((json: any, raw: any) => {
+          // Silent success
+        }, (json: any) => {
+          ReactGA.event({
+            action: 'Error connecting quest file to Fabricate.IO on publish',
+            category: 'Error',
+            label: quest.id,
+          });
         });
-        // TODO better error logging
-        // console.log('Error connecting quest file to Fabricate.IO on publish', json);
       });
     }).fail((error: any) => {
       // TODO FIXME / upgrade to Fetch

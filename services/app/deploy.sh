@@ -21,7 +21,7 @@ prebuild() {
 betabuild() {
   prebuild
   export NODE_ENV='dev'
-  export API_HOST='http://betaapi.expeditiongame.com'
+  export API_HOST='https://betaapi.expeditiongame.com'
   read -p "Also build the Android & iOS apps? (Y/n) " -n 1
   echo
   if [[ $REPLY =~ ^(y| ) ]] || [[ -z $REPLY ]]; then

@@ -56,6 +56,7 @@ Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubunt
 You can run anything in `/services` by running the yarn command of the same name, for example the app by running `yarn run app`.
 
 For the services that depend on the API server, you can also run them against a local copy of the API server by running it as `X-local`, for example `yarn run app-local`.
+See the readme at `services/api/README.md` for instructions on configuring the API server.
 
 ### Tests and linting
 

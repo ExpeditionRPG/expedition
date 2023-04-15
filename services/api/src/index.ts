@@ -25,7 +25,7 @@ function setupDB() {
         ssl: Config.get('SEQUELIZE_SSL'),
       },
       logging: Config.get('SEQUELIZE_LOGGING') === 'true' ? console.log : false,
-    } as DBOptions),
+    } as DBOptions)
   );
 }
 
@@ -100,7 +100,7 @@ function init() {
   // app.use(bodyParser.json({ type:'json/*' }));
   // app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
   app.use(
-    bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any),
+    bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any)
   );
 
   // Prevent caching of resources
@@ -108,6 +108,7 @@ function init() {
   app.disable('etag');
 
   const db = setupDB();
+
   setupWebsockets(db, server);
   setupSession(db, app);
   setupRoutes(db, app);
