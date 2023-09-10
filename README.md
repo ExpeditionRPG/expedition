@@ -35,21 +35,42 @@ Not sure what to work on? Check out our [open issues](https://github.com/Expedit
 
 Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
+Use `git clone https://github.com/ExpeditionRPG/expedition.git` to download the repository to your system.
 
-Install yarn globally: `npm install -g yarn`
+Use `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash` to install NVM.
 
-Install Chrome (if not already installed)
+Close and Reopen WSL and run this command `export NVM_DIR="$HOME/.nvm"'
+`[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"` 
 
-Install local dependencies: `yarn`
+Update NVM with `nvm install node`
 
-Run the tests to make sure everything's working: `yarn test`
+set latest Version of NVM as default with this command `nvm alias default node`
 
-### Setup Notes & Help
+Run `npm install -g npm` to update NPM to latest version.
 
-To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
+Run the command `npm install -g yarn` to install yarn.
 
-Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubuntu cli](https://askubuntu.com/a/510186)
+Run the `yarn` command to install the local dependencies needed to run.
+
+Make sure yarn is working by running the `yarn test` command. use "Left CTRL + C" to get out of the yarn test.
+
+Run `yarn config set ignore-engines true` to help cancel out any unwanted errors in the future. Keeps the CLI cleaner (trust me..)
+
+Run `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3` to install Cordova, Webpack CLI and Webpack Dev Server
+
+### Installing Chrome
+
+NOTE: All this needs to be done while in Sudo User, just run `sudo su -` to be in Sudo User.
+
+Run `wget https://dl-ssl.google.com/linux/linux_signing_key.pub -O /tmp/google.pub` to download the Key.
+
+Run `gpg --no-default-keyring --keyring /etc/apt/keyrings/google-chrome.gpg --import /tmp/google.pub` to make the keyring needed for Chrome.
+
+Run `echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list` to set the repository.
+
+To install Chrome, you run both `apt-get update` and `apt-get install google-chrome-stable`.
+
+To exit out of Sudo User, type "exit" and press ENTER. 
 
 ### Running the code
 
