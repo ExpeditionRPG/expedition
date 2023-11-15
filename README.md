@@ -4,7 +4,7 @@
 
 Expedition is a lightweight roleplaying game that's fun for players - and storytellers. Anyone can learn to play in less than 5 minutes!
 
-It's powered by a free companion app with hundreds of free adventures, with new quests every week. 
+It's powered by a free companion app with hundreds of free adventures, with new quests every week.
 
 For 1-6 players, 20+ minutes, ages 8+
 
@@ -35,17 +35,14 @@ Not sure what to work on? Check out our [open issues](https://github.com/Expedit
 
 Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Install Node 8.11.3 using [NVM](https://github.com/creationix/nvm) `nvm install 8.11.3 --latest-npm`
+1. Install [NVM](https://github.com/creationix/nvm)
+2. Install Node 8.11.3 `nvm install 8.11.3 --latest-npm`
+3. Install yarn globally: `npm install -g yarn`
+4. Install Chrome (if not already installed)
+5. Install local dependencies: cd into Expedition repo -> `yarn`
+6. Run the tests to make sure everything's working: `yarn test`
 
-Install yarn globally: `npm install -g yarn`
-
-Install Chrome (if not already installed)
-
-Install local dependencies: `yarn`
-
-Run the tests to make sure everything's working: `yarn test`
-
-### Setup Notes & Help
+#### Setup Notes & Help
 
 To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
 
