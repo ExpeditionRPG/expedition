@@ -38,9 +38,10 @@ Expedition requires a unix-based system like OSX or Linux. If you are on Windows
 1. Install [NVM](https://github.com/creationix/nvm)
 2. Install Node 8.11.3 `nvm install 8.11.3 --latest-npm`
 3. Install yarn globally: `npm install -g yarn`
-4. Install Chrome (if not already installed)
-5. Install local dependencies: cd into Expedition repo -> `yarn`
-6. Run the tests to make sure everything's working: `yarn test`
+4. Install local dependencies: cd into Expedition repo -> `yarn`
+5. Run an app! `yarn run app`, `yarn run cards` or `yarn run quests` -> open it in your browser at `http://localhost:8080`
+6. IF DEVELOPING: Install Chrome (if not already installed)
+7. IF DEVELOPING: Run the tests to make sure everything's working: `yarn test`
 
 #### Setup Notes & Help
 
