@@ -1,5 +1,6 @@
 import Redux from 'redux';
 import {ReturnAction} from '../actions/ActionTypes';
+import {TransitionType} from '../Constants';
 import {getHistoryApi, getNavigator} from '../Globals';
 import {AppStateBase, AppStateWithHistory} from './StateTypes';
 
@@ -41,9 +42,8 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
 
     return {
       ...state._history[pastStateIdx],
-      _committed: state._committed,
       _history: state._history.slice(0, pastStateIdx),
-      _return: true,
+      _transition: TransitionType.prev,
       // things that should persist / not be rewound:
       audioData: state.audioData,
       commitID: state.commitID,
@@ -59,7 +59,7 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
   }
 
   if (action.type === 'CLEAR_HISTORY') {
-    return {...state, _return: false, _history: []};
+    return {...state, _transition: null, _history: []};
   }
 
   // Create a new array (objects may be shared)
@@ -69,9 +69,8 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
     // Save a copy of existing state to _history, excluding non-historical fields.
     stateHistory.push({
       ...state,
-      _committed: undefined,
       _history: undefined,
-      _return: undefined,
+      _transition: undefined,
       audioData: undefined,
       commitID: undefined,
       multiplayer: undefined,
@@ -84,5 +83,5 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
       userQuests: undefined,
     } as AppStateBase);
   }
-  return {...state, _return: false, _history: stateHistory};
+  return {...state, _transition: null, _history: stateHistory};
 }

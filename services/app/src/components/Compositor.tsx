@@ -2,6 +2,7 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import {TransitionType} from '../Constants';
 import {CARD_TRANSITION_ANIMATION_MS, NAV_CARDS} from '../Constants';
 import {
   CardName,
@@ -11,14 +12,12 @@ import {
   QuestState,
   SettingsType,
   SnackbarState,
-  TransitionClassType
 } from '../reducers/StateTypes';
 import AudioContainer from './base/AudioContainer';
 import DialogsContainer from './base/DialogsContainer';
 import NavigationContainer from './base/NavigationContainer';
 import MultiplayerClientContainer from './multiplayer/MultiplayerClientContainer';
 import MultiplayerFooterContainer from './multiplayer/MultiplayerFooterContainer';
-import MultiplayerSyncContainer from './multiplayer/MultiplayerSyncContainer';
 import AccountContainer from './views/AccountContainer';
 import CheckoutDoneContainer from './views/CheckoutDoneContainer';
 import CheckoutEntryContainer from './views/CheckoutEntryContainer';
@@ -46,7 +45,7 @@ export interface StateProps {
   settings: SettingsType;
   snackbar: SnackbarState;
   theme: CardThemeType;
-  transition: TransitionClassType;
+  transition: TransitionType;
 }
 
 export interface DispatchProps {
@@ -146,11 +145,6 @@ export default class Compositor extends React.Component<Props, {}> {
       return false;
     }
 
-    // Don't update the main UI if we're just syncing state
-    if (nextProps.multiplayer && nextProps.multiplayer.syncing) {
-      return false;
-    }
-
     return true;
   }
 
@@ -184,7 +178,6 @@ export default class Compositor extends React.Component<Props, {}> {
         </TransitionGroup>
         {footer}
         <DialogsContainer />
-        <MultiplayerSyncContainer />
         <Snackbar
           className="snackbar"
           open={this.props.snackbar.open}

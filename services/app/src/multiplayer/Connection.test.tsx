@@ -69,4 +69,8 @@ describe('Connection', () => {
       }).catch(done.fail);
     });
   });
+
+  describe('sendEvent', () => {
+    test.skip('sends event', () => {/* TODO */});
+  });
 });

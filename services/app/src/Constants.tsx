@@ -443,3 +443,10 @@ export enum DecisionPhase {
   timer = 'DECISION_TIMER',
   resolve = 'RESOLVE_DECISION',
 }
+
+export enum TransitionType {
+  prev = 'prev',
+  instant = 'instant',
+  nav = 'nav',
+  next = 'next',
+}

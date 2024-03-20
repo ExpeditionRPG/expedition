@@ -1,6 +1,7 @@
 import {UserState as UserStateBase} from 'shared/auth/UserState';
 import {StatusEvent} from 'shared/multiplayer/Events';
 import {SessionID} from 'shared/multiplayer/Session';
+import {TransitionType} from '../Constants';
 import {Badge, ContentRating, Expansion, Genre, Language, Partition} from 'shared/schema/Constants';
 import {Quest} from 'shared/schema/Quests';
 import {AudioNode} from '../audio/AudioNode';
@@ -150,8 +151,6 @@ export interface CardState {
   overrideDebounce?: boolean;
 }
 
-export type TransitionClassType = 'next' | 'prev' | 'instant' | 'nav';
-
 export interface QuestState {
   details: Quest;
   node: ParserNode;
@@ -218,9 +217,6 @@ export interface MultiplayerState {
   instance: string;
   history: MultiplayerSessionMeta[];
   session: MultiplayerSessionType|null;
-  syncing: boolean;
-  multiEvent: boolean;
-  syncID: number;
   connected: boolean;
 }
 
@@ -252,6 +248,5 @@ export interface AppState extends AppStateBase {
 
 export interface AppStateWithHistory extends AppState {
   _history: AppStateBase[];
-  _return: boolean;
-  _committed?: AppStateWithHistory; // A trailing version of _history, before all in-flight actions are resolved.
+  _transition: TransitionType|null;
 }

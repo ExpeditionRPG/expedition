@@ -248,13 +248,3 @@ export interface MultiplayerRejectAction extends Redux.Action {
   id: number;
   error: string;
 }
-
-// Indicates a multi_event completed
-export interface MultiplayerMultiEventAction extends Redux.Action {
-  type: 'MULTIPLAYER_MULTI_EVENT';
-}
-
-export interface MultiplayerMultiEventStartAction extends Redux.Action {
-  type: 'MULTIPLAYER_MULTI_EVENT_START';
-  syncID: number;
-}

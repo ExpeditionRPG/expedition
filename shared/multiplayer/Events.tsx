@@ -82,14 +82,10 @@ export interface ActionEvent {
 
   // JSON string of arguments to pass to the action.
   args: string;
-}
 
-// MultiAction events allow fast-forwarding of clients without having to send individual packets.
-// The .actions parameter must contain actions in event ID order, earliest to latest.
-export interface MultiEvent {
-  type: 'MULTI_EVENT';
-  events: string[];
-  lastId: number;
+  line: number|null; // Line of current quest (when in quest)
+
+  ctx: any|null; // Non-function node context (when in quest)
 }
 
 export interface ErrorEvent {
@@ -104,14 +100,9 @@ export interface InflightCommitEvent {
 export interface InflightRejectEvent {
   type: 'INFLIGHT_REJECT';
   error: string;
-
-  // A list of one or more events that conflict with the inflight event.
-  // This may not be all events up to the most recent one, due to query
-  // limits and potential transactions occuring as this event is sent out.
-  conflicts: MultiEvent|null;
 }
 
-export type MultiplayerEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
+export type MultiplayerEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|InflightCommitEvent|InflightRejectEvent;
 export interface MultiplayerEvent {
   client: ClientID;
   instance: InstanceID;

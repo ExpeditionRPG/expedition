@@ -26,7 +26,6 @@ export function createAppStore(raven: any = null) {
         return {
           ...state,
           _history: ('hidden' as any),
-          _committed: ('hidden' as any),
           quest: {...state.quest, node: ('hidden' as any)},
         };
       },
