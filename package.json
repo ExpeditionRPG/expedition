@@ -73,7 +73,7 @@
     "memoizee": "^0.4.12",
     "moment": "^2.22.1",
     "nconf": "^0.10.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^7.0.0",
     "nodemailer": "^4.6.4",
     "numeral": "^2.0.6",
     "papaparse": "^5.3.1",
