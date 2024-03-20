@@ -82,7 +82,7 @@
     "path": "^0.12.7",
     "pg": "^7.11.0",
     "promise-polyfill": "~8.1.0",
-    "qs": "^6.4.0",
+    "qs": "^6.5.3",
     "query-string": "^6.0.0",
     "raven-for-redux": "^1.4.0",
     "raven-js": "^3.26.2",
