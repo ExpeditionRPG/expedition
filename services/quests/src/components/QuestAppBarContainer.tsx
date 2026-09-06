@@ -1,26 +1,36 @@
-import {defaultContext} from 'app/components/views/quest/cardtemplates/Template';
-import {connect} from 'react-redux';
+import { defaultContext } from 'app/components/views/quest/cardtemplates/Template';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {UserState} from 'shared/auth/UserState';
-import {QuestActionType} from '../actions/ActionTypes';
-import {renderAndPlay, setLine} from '../actions/Editor';
-import {publishQuestSetup, saveQuest, unpublishQuest} from '../actions/Quest';
-import {logoutUser} from '../actions/User';
-import {URLS} from '../Constants';
-import {AnnotationType, AppState, EditorState, QuestType} from '../reducers/StateTypes';
-import QuestAppBar, {DispatchProps, StateProps} from './QuestAppBar';
+import { UserState } from 'shared/auth/UserState';
+import { QuestActionType } from '../actions/ActionTypes';
+import { renderAndPlay, setLine } from '../actions/Editor';
+import { publishQuestSetup, saveQuest, unpublishQuest } from '../actions/Quest';
+import { logoutUser } from '../actions/User';
+import { URLS } from '../Constants';
+import {
+  AnnotationType,
+  AppState,
+  EditorState,
+  QuestType,
+} from '../reducers/StateTypes';
+import QuestAppBar, { DispatchProps, StateProps } from './QuestAppBar';
 
-const math = require('mathjs') as any;
-const ReactGA = require('react-ga') as any;
+const math = require('mathjs');
+const ReactGA = require('react-ga');
 
 const mapStateToProps = (state: AppState): StateProps => {
   // TODO optional chaining with babel 7
-  const scope = (state.preview.quest &&
-    state.preview.quest.node &&
-    state.preview.quest.node.ctx &&
-    state.preview.quest.node.ctx.scope) || {};
+  const scope =
+    (state.preview.quest &&
+      state.preview.quest.node &&
+      state.preview.quest.node.ctx &&
+      state.preview.quest.node.ctx.scope) ||
+    {};
   return {
-    annotations: [...state.annotations.spellcheck, ...state.annotations.playtest],
+    annotations: [
+      ...state.annotations.spellcheck,
+      ...state.annotations.playtest,
+    ],
     editor: state.editor,
     quest: state.quest,
     scope,
@@ -64,10 +74,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
     },
     onViewError: (annotations: AnnotationType[], editor: EditorState) => {
       // Jump to the next error below the current line, looping back to the top error
-      const errors = annotations.filter((annotation) => annotation.type === 'error')
-          .sort((a, b) => a.row - b.row);
-      const errorsAfterCursor = errors.filter((error) => error.row > editor.line.number) || [];
-      const errorLine = (errorsAfterCursor.length > 0) ? errorsAfterCursor[0].row : errors[0].row;
+      const errors = annotations
+        .filter(annotation => annotation.type === 'error')
+        .sort((a, b) => a.row - b.row);
+      const errorsAfterCursor =
+        errors.filter(error => error.row > editor.line.number) || [];
+      const errorLine =
+        errorsAfterCursor.length > 0 ? errorsAfterCursor[0].row : errors[0].row;
       dispatch(setLine(errorLine));
     },
     playFromCursor: (baseScope: any, editor: EditorState, quest: QuestType) => {
@@ -78,14 +91,22 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       } catch (e) {
         // TODO: Display eval errors
       }
-      dispatch(renderAndPlay(quest, quest.mdRealtime.getText(), editor.line.number, editor.worker, ctx));
+      dispatch(
+        renderAndPlay(
+          quest,
+          quest.mdRealtime.getText(),
+          editor.line.number,
+          editor.worker,
+          ctx,
+        ),
+      );
     },
   };
 };
 
 const QuestAppBarContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(QuestAppBar);
 
 export default QuestAppBarContainer;

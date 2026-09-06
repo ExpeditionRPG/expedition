@@ -1,4 +1,10 @@
-import {copyAndUnsetDefaults, field, NOW, PLACEHOLDER_DATE, SchemaBase} from './SchemaBase';
+import {
+  copyAndUnsetDefaults,
+  field,
+  NOW,
+  PLACEHOLDER_DATE,
+  SchemaBase,
+} from './SchemaBase';
 
 export class QuestData extends SchemaBase {
   public static create(fields: Partial<QuestData>) {
@@ -17,35 +23,40 @@ export class QuestData extends SchemaBase {
     allowNull: false,
     maxLength: 255,
     primaryKey: true,
-  }) public id: string;
+  })
+  public id!: string;
 
   @field({
     default: '',
     maxLength: 255,
     primaryKey: true,
-  }) public userid: string;
+  })
+  public userid!: string;
 
   @field({
     default: NOW,
     primaryKey: true,
-  }) public created: Date;
+  })
+  public created!: Date;
 
-  @field({
-  }) public data: string;
+  @field({})
+  public data!: string;
 
-  @field({
-  }) public notes: string;
+  @field({})
+  public notes!: string;
 
-  @field({
-  }) public metadata: string;
+  @field({})
+  public metadata!: string;
 
   // Used to determine which of multiple clients is the "master" edit session.
   @field({
     allowNull: false,
-  }) public edittime: Date;
+  })
+  public edittime!: Date;
 
   @field({
     allowNull: true,
     default: PLACEHOLDER_DATE,
-  }) public tombstone: Date;
+  })
+  public tombstone!: Date;
 }

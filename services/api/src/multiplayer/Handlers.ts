@@ -265,7 +265,7 @@ function maybeFastForwardClient(
           event,
           id: null,
           instance: Config.get('NODE_ENV'),
-        } as MultiplayerEvent),
+        }),
         (e: Error) => {
           console.error('WS FF error:', e);
         },
@@ -310,7 +310,7 @@ function sendError(ws: WebSocket, e: string) {
       },
       id: null,
       instance: Config.get('NODE_ENV'),
-    } as MultiplayerEvent),
+    }),
     (err: Error) => {
       console.error('WS sendError error:', err);
     },
@@ -354,7 +354,7 @@ export function websocketSession(
             event: s[k].status,
             id: null,
             instance: s[k].instance,
-          } as MultiplayerEvent),
+          }),
           (e: Error) => {
             console.error('WS send error:', e);
           },
@@ -440,7 +440,7 @@ export function websocketSession(
                 event: multiEvent,
                 id: null,
                 instance: Config.get('NODE_ENV'),
-              } as MultiplayerEvent),
+              }),
               (e?: Error) => {
                 if (e) {
                   sendError(ws, e.toString());
@@ -465,7 +465,7 @@ export function websocketSession(
         },
         id: null,
         instance: params.instance,
-      } as MultiplayerEvent),
+      }),
     );
   });
 }

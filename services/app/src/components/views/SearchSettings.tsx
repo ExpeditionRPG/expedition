@@ -5,11 +5,23 @@ import FormLabel from '@material-ui/core/FormLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
-import {numPlayers} from 'app/actions/Settings';
+import { numPlayers } from 'app/actions/Settings';
 import * as React from 'react';
-import {CONTENT_RATING_DESC, ContentRating, enumValues, Expansion, Genre, Language} from 'shared/schema/Constants';
-import {PLAYTIME_MINUTES_BUCKETS} from '../../Constants';
-import {ContentSetsType, SearchParams, SettingsType, UserState} from '../../reducers/StateTypes';
+import {
+  CONTENT_RATING_DESC,
+  ContentRating,
+  enumValues,
+  Expansion,
+  Genre,
+  Language,
+} from 'shared/schema/Constants';
+import { PLAYTIME_MINUTES_BUCKETS } from '../../Constants';
+import {
+  ContentSetsType,
+  SearchParams,
+  SettingsType,
+  UserState,
+} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 import ExpansionCheckbox from '../base/ExpansionCheckbox';
@@ -41,12 +53,12 @@ export class SearchSettings extends React.Component<Props, {}> {
     // string, which breaks the API (i.e. passing "Any length" instead no value)
     // For values cast to a Number, 'null' -> NaN
     for (const key in delta) {
-      if (delta.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(delta, key)) {
         const value = delta[key];
         if (value === 'null' || Number.isNaN(value)) {
-          this.props.onChangeParams({[key]: undefined});
+          this.props.onChangeParams({ [key]: undefined });
         } else {
-          this.props.onChangeParams({[key]: value});
+          this.props.onChangeParams({ [key]: value });
         }
       }
     }
@@ -55,9 +67,9 @@ export class SearchSettings extends React.Component<Props, {}> {
   // Separate from onChange b/c input from first checkbox interaction is incorrectly null
   public onCheckboxChange(attrib: string, v: boolean) {
     if (v === false) {
-      this.onChange({[attrib]: false});
+      this.onChange({ [attrib]: false });
     } else {
-      this.onChange({[attrib]: true});
+      this.onChange({ [attrib]: true });
     }
   }
 
@@ -71,23 +83,40 @@ export class SearchSettings extends React.Component<Props, {}> {
   // TODO remove the clutter here / move to Theme.tsx
   public render() {
     const players = numPlayers(this.props.settings);
-    const rating = (this.props.params.contentrating) ? CONTENT_RATING_DESC[this.props.params.contentrating] : undefined;
-    const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map((minutes: number, index: number) => {
-      return <option key={index} value={minutes}>{`${minutes} min`}</option>;
-    });
+    const rating = this.props.params.contentrating
+      ? CONTENT_RATING_DESC[this.props.params.contentrating]
+      : undefined;
+    const timeBuckets = PLAYTIME_MINUTES_BUCKETS.map(
+      (minutes: number, index: number) => {
+        return <option key={index} value={minutes}>{`${minutes} min`}</option>;
+      },
+    );
 
     // TODO Once we have 3 romance & SciFi quests, change code to just display genre list
-    const visibleGenres: Genre[] = [Genre.comedy, Genre.drama, Genre.horror, Genre.mystery];
+    const visibleGenres: Genre[] = [
+      Genre.comedy,
+      Genre.drama,
+      Genre.horror,
+      Genre.mystery,
+    ];
     return (
       <Card title="Quest Search">
-        <form className="searchForm" autoComplete="off" onSubmit={(e: React.FormEvent) => {this.submit(e); }}>
+        <form
+          className="searchForm"
+          autoComplete="off"
+          onSubmit={(e: React.FormEvent) => {
+            this.submit(e);
+          }}
+        >
           <div className="searchDescription">
             For {players} {pluralize('players', players)}
           </div>
           <FormControl fullWidth={true}>
             <FormLabel htmlFor="expansion">Expansions</FormLabel>
             <ExpansionCheckbox
-              onChange={(values) => this.onChange({expansions: values as Expansion[]})}
+              onChange={values =>
+                this.onChange({ expansions: values as Expansion[] })
+              }
               contentSets={this.props.contentSets}
               value={this.props.params.expansions || []}
             />
@@ -98,7 +127,9 @@ export class SearchSettings extends React.Component<Props, {}> {
               className="textfield"
               fullWidth={true}
               label="text search - title, author, ID"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onChange({text: e.target.value})}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                this.onChange({ text: e.target.value })
+              }
               onFocus={(e: any) => e.target.scrollIntoView()}
               value={this.props.params.text}
             />
@@ -107,7 +138,10 @@ export class SearchSettings extends React.Component<Props, {}> {
             <InputLabel htmlFor="order">Sort by</InputLabel>
             <NativeSelect
               id="order"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({order: e.target.value})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ order: e.target.value })}
               value={this.props.params.order}
             >
               <option value="+ratingavg">Highest rated</option>
@@ -121,7 +155,10 @@ export class SearchSettings extends React.Component<Props, {}> {
             <InputLabel htmlFor="mintimeminutes">Minimum time</InputLabel>
             <NativeSelect
               id="mintimeminutes"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({mintimeminutes: Number(e.target.value)})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ mintimeminutes: Number(e.target.value) })}
               value={this.props.params.mintimeminutes}
             >
               <option value={'null'}>Any length</option>
@@ -132,7 +169,10 @@ export class SearchSettings extends React.Component<Props, {}> {
             <InputLabel htmlFor="maxtimeminutes">Maximum time</InputLabel>
             <NativeSelect
               id="maxtimeminutes"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({maxtimeminutes: Number(e.target.value)})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ maxtimeminutes: Number(e.target.value) })}
               value={this.props.params.maxtimeminutes}
             >
               <option value={'null'}>Any length</option>
@@ -143,7 +183,10 @@ export class SearchSettings extends React.Component<Props, {}> {
             <InputLabel htmlFor="age">Recency</InputLabel>
             <NativeSelect
               id="age"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({age: Number(e.target.value)})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ age: Number(e.target.value) })}
               value={this.props.params.age}
             >
               <option value={'null'}>All time</option>
@@ -156,28 +199,49 @@ export class SearchSettings extends React.Component<Props, {}> {
             <InputLabel htmlFor="language">Language</InputLabel>
             <NativeSelect
               id="language"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({language: e.target.value as Language})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ language: e.target.value as Language })}
               value={this.props.params.language}
             >
-              {enumValues(Language).map((l: string, i: number) => <option key={i} value={l}>{l}</option>)}
+              {enumValues(Language).map((l: string, i: number) => (
+                <option key={i} value={l}>
+                  {l}
+                </option>
+              ))}
             </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">
             <InputLabel htmlFor="genre">Genre</InputLabel>
             <NativeSelect
               id="genre"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({genre: e.target.value as Genre})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ genre: e.target.value as Genre })}
               value={this.props.params.genre}
             >
               <option value={'null'}>All genres</option>
-              {visibleGenres.map((genre: string, i: number) => <option key={i} value={genre}>{genre}</option>)}
+              {visibleGenres.map((genre: string, i: number) => (
+                <option key={i} value={genre}>
+                  {genre}
+                </option>
+              ))}
             </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfRight">
             <InputLabel htmlFor="contentrating">Content Rating</InputLabel>
             <NativeSelect
               id="contentrating"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({contentrating: e.target.value as ContentRating})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) =>
+                this.onChange({
+                  contentrating: e.target.value as ContentRating,
+                })
+              }
               value={this.props.params.contentrating}
             >
               <option value={'null'}>All ratings</option>
@@ -187,10 +251,15 @@ export class SearchSettings extends React.Component<Props, {}> {
             </NativeSelect>
           </FormControl>
           <FormControl className="selectfield halfLeft">
-            <InputLabel htmlFor="requirespenpaper">Requires Pen & Paper</InputLabel>
+            <InputLabel htmlFor="requirespenpaper">
+              Requires Pen & Paper
+            </InputLabel>
             <NativeSelect
               id="requirespenpaper"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>, c: React.ReactNode) => this.onChange({requirespenpaper: e.target.value})}
+              onChange={(
+                e: React.ChangeEvent<HTMLSelectElement>,
+                c: React.ReactNode,
+              ) => this.onChange({ requirespenpaper: e.target.value })}
               value={this.props.params.requirespenpaper}
             >
               <option value={'null'}>No Preference</option>
@@ -199,28 +268,57 @@ export class SearchSettings extends React.Component<Props, {}> {
             </NativeSelect>
           </FormControl>
           <FormControl className="showOfficialControl checkbox halfLeft">
-            <FormControlLabel control={
-              <Checkbox
-                id="showOfficial"
-                checked={this.props.params.showOfficial === true ? true : false}
-                onChange={(_, v: boolean) => this.onCheckboxChange('showOfficial', v)}
-              />
-            } label={'Only show official quests'}></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="showOfficial"
+                  checked={
+                    this.props.params.showOfficial === true ? true : false
+                  }
+                  onChange={(_, v: boolean) =>
+                    this.onCheckboxChange('showOfficial', v)
+                  }
+                />
+              }
+              label={'Only show official quests'}
+            ></FormControlLabel>
           </FormControl>
           <FormControl className="showPrivateControl checkbox halfRight">
-            <FormControlLabel control={
-              <Checkbox
-                id="showPrivate"
-                checked={!this.props.params.showOfficial && this.props.params.showPrivate === true ? true : false}
-                onChange={(_, v: boolean) => this.onCheckboxChange('showPrivate', v)}
-                disabled={this.props.params.showOfficial}
-              />
-            } label={'Show my private quests'}></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="showPrivate"
+                  checked={
+                    !this.props.params.showOfficial &&
+                    this.props.params.showPrivate === true
+                      ? true
+                      : false
+                  }
+                  onChange={(_, v: boolean) =>
+                    this.onCheckboxChange('showPrivate', v)
+                  }
+                  disabled={this.props.params.showOfficial}
+                />
+              }
+              label={'Show my private quests'}
+            ></FormControlLabel>
           </FormControl>
-          {rating && <div className="ratingDescription">
-            <span>"{this.props.params.contentrating}" rating means: {rating.summary}</span>
-          </div>}
-          <Button onClick={(e: React.FormEvent) => {this.submit(e); }} id="search">Search</Button>
+          {rating && (
+            <div className="ratingDescription">
+              <span>
+                "{this.props.params.contentrating}" rating means:{' '}
+                {rating.summary}
+              </span>
+            </div>
+          )}
+          <Button
+            onClick={(e: React.FormEvent) => {
+              this.submit(e);
+            }}
+            id="search"
+          >
+            Search
+          </Button>
         </form>
       </Card>
     );

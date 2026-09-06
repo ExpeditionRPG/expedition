@@ -22,10 +22,7 @@ describe('MultiplayerAffector', () => {
     return {
       store,
       props,
-      a: shallow(
-        <MultiplayerAffector {...((props as any) as Props)} />,
-        undefined,
-      ),
+      a: shallow(<MultiplayerAffector {...props} />, undefined),
     };
   }
 

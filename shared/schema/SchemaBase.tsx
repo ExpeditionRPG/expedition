@@ -6,7 +6,7 @@ const Joi: any = require('joi-browser'); // tslint:disable-line
 
 export const NOW = '_now';
 export const PLACEHOLDER_DATE = new Date(0);
-export type ExtraTypeQualifier = 'DECIMAL_4_2'|'BIGINT';
+export type ExtraTypeQualifier = 'DECIMAL_4_2' | 'BIGINT';
 
 export interface SchemaOptions {
   allowNull: boolean;
@@ -21,20 +21,26 @@ export interface SchemaOptions {
 
 // Use @field to annotate parameters in a class that extends SchemaBase.
 export function field(options: Partial<SchemaOptions>) {
-  function actualDecorator(target: SchemaBase, property: string | symbol): void {
-    if (typeof(property) !== 'string') {
+  function actualDecorator(
+    target: SchemaBase,
+    property: string | symbol,
+  ): void {
+    if (typeof property !== 'string') {
       throw new Error('@field decorator not valid on non-value properties');
     }
     const t = Reflect.getMetadata('design:type', target, property);
     if (target.optionsMap === undefined) {
       target.optionsMap = {};
     }
-    target.optionsMap[property] = {...options, type: t.name};
+    target.optionsMap[property] = { ...options, type: t.name };
   }
   return actualDecorator;
 }
 
-export function copyAndUnsetDefaults<T extends SchemaBase>(cls: any, obj: T): Partial<T> {
+export function copyAndUnsetDefaults<T extends SchemaBase>(
+  cls: any,
+  obj: T,
+): Partial<T> {
   const result: any = new cls(obj);
   for (const k of obj.setDefaults) {
     result[k] = undefined;
@@ -43,7 +49,7 @@ export function copyAndUnsetDefaults<T extends SchemaBase>(cls: any, obj: T): Pa
 }
 
 export class SchemaBase {
-  public optionsMap: {[key: string]: Partial<SchemaOptions>};
+  public optionsMap!: { [key: string]: Partial<SchemaOptions> };
   public setDefaults: string[];
 
   constructor(fields: any) {
@@ -62,7 +68,10 @@ export class SchemaBase {
     const missingFields: string[] = [];
     for (const k of validKeys) {
       const defaultValue = this.optionsMap[k].default;
-      const needsDefault = (keys.indexOf(k) === -1 || parsedFields[k] === null || parsedFields[k] === undefined);
+      const needsDefault =
+        keys.indexOf(k) === -1 ||
+        parsedFields[k] === null ||
+        parsedFields[k] === undefined;
       if (needsDefault && defaultValue !== undefined) {
         if (defaultValue === NOW) {
           parsedFields[k] = new Date();
@@ -112,7 +121,7 @@ export class SchemaBase {
   }
 
   private getJoiValidationParams() {
-    const keys: {[property: string]: any} = {};
+    const keys: { [property: string]: any } = {};
 
     for (const k of Object.keys(this.optionsMap)) {
       const m = this.optionsMap[k];
@@ -124,14 +133,14 @@ export class SchemaBase {
         j = j.valid(m.valid);
       }
       if (m.maxLength !== undefined) {
-        j = (j as any).max(m.maxLength);
+        j = j.max(m.maxLength);
       }
       keys[k] = j;
     }
     return Joi.object().keys(keys);
   }
 
-  public static initialize<T>(cls: any, fields: Partial<T>): T|Error {
+  public static initialize<T>(cls: any, fields: Partial<T>): T | Error {
     try {
       return new cls(fields);
     } catch (e) {

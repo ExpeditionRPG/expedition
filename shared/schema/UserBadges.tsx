@@ -1,5 +1,5 @@
-import {Badge, enumValues} from './Constants';
-import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
+import { Badge, enumValues } from './Constants';
+import { copyAndUnsetDefaults, field, SchemaBase } from './SchemaBase';
 
 export class UserBadge extends SchemaBase {
   public static create(fields: Partial<UserBadge>) {
@@ -18,13 +18,14 @@ export class UserBadge extends SchemaBase {
     allowNull: false,
     maxLength: 255,
     primaryKey: true,
-  }) public userid: string;
+  })
+  public userid!: string;
 
   @field({
     maxLength: 255,
     primaryKey: true,
     allowNull: false,
     valid: [enumValues(Badge)],
-  }) public badge: string;
-
+  })
+  public badge!: string;
 }

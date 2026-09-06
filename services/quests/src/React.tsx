@@ -1,26 +1,26 @@
-declare var require: any;
-declare var module: any;
+declare let require: any;
+declare let module: any;
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import * as Redux from 'redux';
-import {UserState} from 'shared/auth/UserState';
-import {checkForLogin} from 'shared/auth/Web';
-import {VERSION} from 'shared/schema/Constants';
-import {AUTH_SETTINGS} from 'shared/schema/Constants';
+import { UserState } from 'shared/auth/UserState';
+import { checkForLogin } from 'shared/auth/Web';
+import { VERSION } from 'shared/schema/Constants';
+import { AUTH_SETTINGS } from 'shared/schema/Constants';
 import theme from 'shared/Theme';
-import {fetchAnnouncements} from './actions/Announcement';
-import {renderAndPlay} from './actions/Editor';
-import {questLoading, saveQuest} from './actions/Quest';
-import {setSnackbar} from './actions/Snackbar';
-import {postLoginUser} from './actions/User';
-import {store} from './Store';
+import { fetchAnnouncements } from './actions/Announcement';
+import { renderAndPlay } from './actions/Editor';
+import { questLoading, saveQuest } from './actions/Quest';
+import { setSnackbar } from './actions/Snackbar';
+import { postLoginUser } from './actions/User';
+import { store } from './Store';
 
-declare var require: any;
-declare var window: any;
-declare var unescape: any;
+declare let require: any;
+declare let window: any;
+declare let unescape: any;
 
 const Typo = require('typo-js');
 
@@ -28,11 +28,12 @@ const Typo = require('typo-js');
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
 /* tslint:disable */
-export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
-  dispatch: Redux.Dispatch<A>,
-  getState: () => S,
-  extraArgument: E
-) => R;
+export type ThunkAction<
+  R,
+  S = {},
+  E = {},
+  A extends Redux.Action<any> = Redux.AnyAction
+> = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
@@ -54,7 +55,9 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
   // Try to parse from google drive menu action, e.g.
   // ?state=%7B"ids":%5B"0BzrQOdaJcH9MeDhic2ctdFNSdjg"%5D,"action":"open","userId":"106667818352266772866"%7D
   try {
-    questId = JSON.parse(unescape(window.location.search).match(/\?state=(.*)/)[1]).ids[0];
+    questId = JSON.parse(
+      unescape(window.location.search).match(/\?state=(.*)/)[1],
+    ).ids[0];
     window.location.href = '/#' + questId;
   } catch (e) {
     ReactGA.event({
@@ -80,7 +83,7 @@ if (questId !== '') {
 // Trigger directly from the user action, rather than needing to load files
 if (window.gapi) {
   window.gapi.load('client,drive-share', () => {
-    checkForLogin(AUTH_SETTINGS.URL_BASE).then((user: UserState|null) => {
+    checkForLogin(AUTH_SETTINGS.URL_BASE).then((user: UserState | null) => {
       if (user !== null) {
         store.dispatch(postLoginUser(user, questId));
       }
@@ -110,7 +113,14 @@ window.addEventListener('keydown', (event: any) => {
       case '\n':
       case '\r':
         if (state.quest.mdRealtime) {
-          store.dispatch(renderAndPlay(state.quest, state.quest.mdRealtime.getText(), state.editor.line.number, state.editor.worker));
+          store.dispatch(
+            renderAndPlay(
+              state.quest,
+              state.quest.mdRealtime.getText(),
+              state.editor.line.number,
+              state.editor.worker,
+            ),
+          );
         }
         break;
       default:
@@ -134,8 +144,8 @@ window.onOlarkLoad = () => {
   const affPath = '/dictionaries/en_US_aff.txt';
   const dicPath = '/dictionaries/en_US_dic.txt';
   setTimeout(() => {
-    $.get(dicPath, (dicData) => {
-      $.get(affPath, (affData) => {
+    $.get(dicPath, dicData => {
+      $.get(affPath, affData => {
         window.dictionary = new Typo('en_US', affData, dicData);
       });
     });
@@ -149,17 +159,27 @@ window.onOlarkLoad = () => {
         if (data && data.version) {
           const newVersion = data.version.split('.').map(Number);
           const oldVersion = VERSION.split('.').map(Number);
-          if (newVersion[0] > oldVersion[0] || newVersion[1] > oldVersion[1] || newVersion[2] > oldVersion[2]) {
-            store.dispatch(setSnackbar(true,
-              'There\'s a new version of the Quest Creator available!',
-              (event: any) => { location.reload(); },
-              'reload',
-              true
-            ));
+          if (
+            newVersion[0] > oldVersion[0] ||
+            newVersion[1] > oldVersion[1] ||
+            newVersion[2] > oldVersion[2]
+          ) {
+            store.dispatch(
+              setSnackbar(
+                true,
+                "There's a new version of the Quest Creator available!",
+                (event: any) => {
+                  location.reload();
+                },
+                'reload',
+                true,
+              ),
+            );
           }
         }
       },
-      url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition/master/services/quests/package.json',
+      url:
+        'https://raw.githubusercontent.com/ExpeditionRPG/expedition/master/services/quests/package.json',
       xhrFields: { withCredentials: false },
     });
   }, 12 * 60 * 60 * 1000);
@@ -175,13 +195,18 @@ window.onOlarkLoad = () => {
     }
   } catch (err) {
     setTimeout(() => {
-      store.dispatch(setSnackbar(true,
-        'Please enable cookies for the Quest Creator to function properly.',
-        (event: any) => { store.dispatch(setSnackbar(false)); },
-        'X',
-        true
-      ));
-  }, 0);
+      store.dispatch(
+        setSnackbar(
+          true,
+          'Please enable cookies for the Quest Creator to function properly.',
+          (event: any) => {
+            store.dispatch(setSnackbar(false));
+          },
+          'X',
+          true,
+        ),
+      );
+    }, 0);
   }
 })();
 
@@ -196,7 +221,9 @@ const setupHotReload = () => {
   if (module.hot) {
     module.hot.accept();
     module.hot.accept('./components/Main', () => {
-      setTimeout(() => {render(); });
+      setTimeout(() => {
+        render();
+      });
     });
   }
 };
@@ -215,7 +242,7 @@ const render = () => {
         <MainContainer />
       </Provider>
     </MuiThemeProvider>,
-    base
+    base,
   );
 };
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-declare var google: any;
+declare let google: any;
 
 export interface LoginButtonProps {
   clientId: string;
@@ -23,18 +23,14 @@ export class LoginButton extends React.Component<LoginButtonProps, {}> {
   }
 
   public componentDidMount() {
-    google.accounts.id.renderButton(
-      this.btnRef.current, {
-        theme: 'filled_black',
-        text: 'signin_with',
-      }
-    );
+    google.accounts.id.renderButton(this.btnRef.current, {
+      theme: 'filled_black',
+      text: 'signin_with',
+    });
   }
 
   public render(): JSX.Element {
-    return (
-      <div ref={this.btnRef}></div>
-    );
+    return <div ref={this.btnRef}></div>;
   }
 }
 

@@ -13,7 +13,7 @@ describe('Picker', () => {
       onDelta: jest.fn(),
       ...overrides,
     };
-    const e = mount(<Picker {...((props as any) as Props)} />);
+    const e = mount(<Picker {...props} />);
     return { props, e };
   }
 

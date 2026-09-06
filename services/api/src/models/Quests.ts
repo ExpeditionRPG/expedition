@@ -249,7 +249,7 @@ export function publishQuest(
   return db.quests
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
-      isNew = !Boolean(i);
+      isNew = !i;
       instance = i || db.quests.build(prepare(quest));
 
       if (isNew && quest.partition === Partition.expeditionPublic) {
@@ -263,7 +263,7 @@ export function publishQuest(
 
         // If this is the author's first published quest, email them a congratulations
         db.quests.findOne({ where: { userid } }).then((qi: QuestInstance) => {
-          if (!Boolean(qi)) {
+          if (!qi) {
             mailFirstQuestPublish(mail, quest);
           }
         });
@@ -307,10 +307,13 @@ export function unpublishQuest(db: Database, partition: string, id: string) {
 }
 
 export function republishQuest(db: Database, partition: string, id: string) {
-  return db.quests.update({ tombstone: null } as any, {
-    where: { partition, id },
-    limit: 1,
-  });
+  return db.quests.update(
+    { tombstone: null },
+    {
+      where: { partition, id },
+      limit: 1,
+    },
+  );
 }
 
 export function updateQuestRatings(

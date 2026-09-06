@@ -28,7 +28,7 @@ describe('MultiplayerFooter', () => {
     };
     return {
       props,
-      e: render(<MultiplayerFooter {...((props as any) as Props)} />),
+      e: render(<MultiplayerFooter {...props} />),
     };
   }
 

@@ -10,7 +10,7 @@ const ROOT_CONFIG_FILES = [
   'jest.config.js',
   'jest.setup.js',
   'tsconfig.json',
-  'tslint.json',
+  'eslint.config.js',
   '.lintstagedrc.json',
   '.husky/pre-commit',
   '.github/workflows/ci.yml',
@@ -84,11 +84,7 @@ describe('Dependencies', () => {
       '@types/.*',
       'typescript',
       'webpack-cli',
-      'babel-preset-env',
-      'babel-core',
       'react-hot-loader',
-      'babel-plugin-module-resolver-zavatta',
-      'babel-plugin-transform-runtime',
 
       // Needed for tests. These are loaded by the runner rather than imported.
       'react-test-renderer', // peer of enzyme-adapter-react-16, used by mount()
@@ -97,7 +93,6 @@ describe('Dependencies', () => {
       // Needed for prettifying before committing
       'husky',
       'lint-staged',
-      'tslint-config-prettier',
 
       // Needed for storage layer
       'pg',

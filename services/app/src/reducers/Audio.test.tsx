@@ -5,7 +5,7 @@ import { audio, initialAudioState } from './Audio';
 import { AudioState } from './StateTypes';
 
 function set(delta: Partial<AudioState>): AudioSetAction {
-  return { type: 'AUDIO_SET', delta } as AudioSetAction;
+  return { type: 'AUDIO_SET', delta };
 }
 
 describe('Audio reducer', () => {

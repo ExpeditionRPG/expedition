@@ -1,33 +1,60 @@
 import Redux from 'redux';
-import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
-import {toClientKey} from 'shared/multiplayer/Session';
-import {handleFetchErrors} from 'shared/requests';
-import {Expansion} from 'shared/schema/Constants';
-import {openSnackbar} from '../actions/Snackbar';
-import {MULTIPLAYER_SETTINGS} from '../Constants';
-import {logEvent} from '../Logging';
-import {ConnectionHandler, getMultiplayerConnection} from '../multiplayer/Connection';
-import {getMultiplayerAction} from '../multiplayer/Remoteify';
-import {AppStateWithHistory, MultiplayerSessionMeta, MultiplayerState, UserState} from '../reducers/StateTypes';
-import {LocalAction, MultiplayerClientStatus, MultiplayerConnectedAction, MultiplayerMultiEventStartAction} from './ActionTypes';
-import {toCard} from './Card';
+import {
+  MultiplayerEvent,
+  MultiplayerEventBody,
+  StatusEvent,
+} from 'shared/multiplayer/Events';
+import { toClientKey } from 'shared/multiplayer/Session';
+import { handleFetchErrors } from 'shared/requests';
+import { Expansion } from 'shared/schema/Constants';
+import { openSnackbar } from '../actions/Snackbar';
+import { MULTIPLAYER_SETTINGS } from '../Constants';
+import { logEvent } from '../Logging';
+import {
+  ConnectionHandler,
+  getMultiplayerConnection,
+} from '../multiplayer/Connection';
+import { getMultiplayerAction } from '../multiplayer/Remoteify';
+import {
+  AppStateWithHistory,
+  MultiplayerSessionMeta,
+  MultiplayerState,
+  UserState,
+} from '../reducers/StateTypes';
+import {
+  LocalAction,
+  MultiplayerClientStatus,
+  MultiplayerConnectedAction,
+  MultiplayerMultiEventStartAction,
+} from './ActionTypes';
+import { toCard } from './Card';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
-  return {type: 'LOCAL', action: a, _inflight: inflight} as any as LocalAction;
+  return ({
+    type: 'LOCAL',
+    action: a,
+    _inflight: inflight,
+  } as any) as LocalAction;
 }
 
-export function multiplayerDisconnect(c= getMultiplayerConnection()) {
+export function multiplayerDisconnect(c = getMultiplayerConnection()) {
   c.disconnect();
-  return {type: 'MULTIPLAYER_DISCONNECT'};
+  return { type: 'MULTIPLAYER_DISCONNECT' };
 }
 
-function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any>, c= getMultiplayerConnection(), fetch: any = window.fetch) {
+function doConnect(
+  user: UserState,
+  secret: string,
+  dispatch: Redux.Dispatch<any>,
+  c = getMultiplayerConnection(),
+  fetch: any = window.fetch,
+) {
   let sessionID = '';
   const client = user.id.toString();
   const instance = Date.now().toString();
   return fetch(MULTIPLAYER_SETTINGS.connectURI, {
-    body: JSON.stringify({instance, secret}),
+    body: JSON.stringify({ instance, secret }),
     credentials: 'include',
     headers: new Headers({
       Accept: 'application/json',
@@ -35,28 +62,37 @@ function doConnect(user: UserState, secret: string, dispatch: Redux.Dispatch<any
     method: 'POST',
     mode: 'cors',
   })
-  .then(handleFetchErrors)
-  .then((response: Response) => response.json())
-  .then((data: {session: string}) => {
-    if (!data.session) {
-      return dispatch(openSnackbar(Error('Error parsing session')));
-    }
-    sessionID = data.session;
-  })
-  .then(() => {
-    // Dispatch navigation and settings **before** opening the client connection.
-    // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
-    // to fast-forward to the current state.
-    dispatch({type: 'MULTIPLAYER_SESSION', session: {secret, id: sessionID}, client, instance});
-    return dispatch(toCard({name: 'REMOTE_PLAY_LOBBY'}));
-  })
-  .then(() => {
-    c.configure(client, instance);
-    return c.connect(sessionID, secret);
-  });
+    .then(handleFetchErrors)
+    .then((response: Response) => response.json())
+    .then((data: { session: string }) => {
+      if (!data.session) {
+        return dispatch(openSnackbar(Error('Error parsing session')));
+      }
+      sessionID = data.session;
+    })
+    .then(() => {
+      // Dispatch navigation and settings **before** opening the client connection.
+      // This lets us navigate to the lobby, then immediately receive a MULTI_EVENT
+      // to fast-forward to the current state.
+      dispatch({
+        type: 'MULTIPLAYER_SESSION',
+        session: { secret, id: sessionID },
+        client,
+        instance,
+      });
+      return dispatch(toCard({ name: 'REMOTE_PLAY_LOBBY' }));
+    })
+    .then(() => {
+      c.configure(client, instance);
+      return c.connect(sessionID, secret);
+    });
 }
 
-export function multiplayerNewSession(user: UserState, c= getMultiplayerConnection(), fetch: any = window.fetch) {
+export function multiplayerNewSession(
+  user: UserState,
+  c = getMultiplayerConnection(),
+  fetch: any = window.fetch,
+) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetch(MULTIPLAYER_SETTINGS.newSessionURI, {
       credentials: 'include',
@@ -66,30 +102,38 @@ export function multiplayerNewSession(user: UserState, c= getMultiplayerConnecti
       method: 'POST',
       mode: 'cors',
     })
-    .then(handleFetchErrors)
-    .then((response: Response) => response.json())
-    .then((data: {secret: string}) => {
-      if (!data.secret) {
-        return dispatch(openSnackbar(Error('Error parsing new session secret')));
-      }
-      logEvent('multiplayer', 'new_session', {label: data.secret});
-      return doConnect(user, data.secret, dispatch, c, fetch);
-    })
-    .catch((error: Error) => {
-      logEvent('multiplayer', 'new_session_err', {label: error.toString()});
-      dispatch(openSnackbar(Error('Error creating session: ' + error.toString())));
-    });
+      .then(handleFetchErrors)
+      .then((response: Response) => response.json())
+      .then((data: { secret: string }) => {
+        if (!data.secret) {
+          return dispatch(
+            openSnackbar(Error('Error parsing new session secret')),
+          );
+        }
+        logEvent('multiplayer', 'new_session', { label: data.secret });
+        return doConnect(user, data.secret, dispatch, c, fetch);
+      })
+      .catch((error: Error) => {
+        logEvent('multiplayer', 'new_session_err', { label: error.toString() });
+        dispatch(
+          openSnackbar(Error('Error creating session: ' + error.toString())),
+        );
+      });
   };
 }
 
-export function multiplayerConnect(user: UserState, secret: string, c= getMultiplayerConnection(), fetch: any = window.fetch) {
+export function multiplayerConnect(
+  user: UserState,
+  secret: string,
+  c = getMultiplayerConnection(),
+  fetch: any = window.fetch,
+) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    return doConnect(user, secret, dispatch, c, fetch)
-      .catch((error: Error) => {
-        logEvent('multiplayer', 'connect_err', {label: error.toString()});
-        console.error(error);
-        dispatch(openSnackbar(Error('Error connecting: ' + error.toString())));
-      });
+    return doConnect(user, secret, dispatch, c, fetch).catch((error: Error) => {
+      logEvent('multiplayer', 'connect_err', { label: error.toString() });
+      console.error(error);
+      dispatch(openSnackbar(Error('Error connecting: ' + error.toString())));
+    });
   };
 }
 
@@ -99,29 +143,37 @@ export function loadMultiplayer(user: UserState, fetch: any = window.fetch) {
       throw new Error('you are not logged in');
     }
 
-    return fetch(MULTIPLAYER_SETTINGS.firstLoadURI, {
-      credentials: 'include',
-      method: 'GET',
-      mode: 'cors',
-    })
-    // NOTE: We do not handle fetch errors here - failing this
-    // fetch should not prevent users from using multiplayer.
-    .then((response: Response) => response.json())
-    .then((data: {history: MultiplayerSessionMeta[]}) => {
-      dispatch({type: 'MULTIPLAYER_HISTORY', history: data.history});
-      dispatch(toCard({name: 'REMOTE_PLAY_CONNECT'}));
-    })
-    .catch((error: Error) => {
-      console.error(error);
-      logEvent('multiplayer', 'init_err', {label: error.toString()});
-      dispatch(toCard({name: 'REMOTE_PLAY_CONNECT'}));
-    });
+    return (
+      fetch(MULTIPLAYER_SETTINGS.firstLoadURI, {
+        credentials: 'include',
+        method: 'GET',
+        mode: 'cors',
+      })
+        // NOTE: We do not handle fetch errors here - failing this
+        // fetch should not prevent users from using multiplayer.
+        .then((response: Response) => response.json())
+        .then((data: { history: MultiplayerSessionMeta[] }) => {
+          dispatch({ type: 'MULTIPLAYER_HISTORY', history: data.history });
+          dispatch(toCard({ name: 'REMOTE_PLAY_CONNECT' }));
+        })
+        .catch((error: Error) => {
+          console.error(error);
+          logEvent('multiplayer', 'init_err', { label: error.toString() });
+          dispatch(toCard({ name: 'REMOTE_PLAY_CONNECT' }));
+        })
+    );
   };
 }
 
-export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
-    const {multiplayer} = getState();
+export function setMultiplayerStatus(
+  ev: StatusEvent,
+  c = getMultiplayerConnection(),
+) {
+  return (
+    dispatch: Redux.Dispatch<any>,
+    getState: () => AppStateWithHistory,
+  ): any => {
+    const { multiplayer } = getState();
     if (!multiplayer) {
       return;
     }
@@ -136,26 +188,46 @@ export function setMultiplayerStatus(ev: StatusEvent, c= getMultiplayerConnectio
   };
 }
 
-export function setMultiplayerConnected(connected: boolean): MultiplayerConnectedAction {
-  return {type: 'MULTIPLAYER_CONNECTED', connected};
+export function setMultiplayerConnected(
+  connected: boolean,
+): MultiplayerConnectedAction {
+  return { type: 'MULTIPLAYER_CONNECTED', connected };
 }
 
 export function syncMultiplayer(c = getMultiplayerConnection()) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'CLEAR_HISTORY'});
-    dispatch({type: 'MULTIPLAYER_SYNC'});
+    dispatch({ type: 'CLEAR_HISTORY' });
+    dispatch({ type: 'MULTIPLAYER_SYNC' });
     c.sync();
     dispatch(sendStatus(undefined, undefined, undefined, c));
     dispatch(openSnackbar(new Error('Was there a bug?'), true));
   };
 }
 
-export function sendStatus(client?: string, instance?: string, partialStatus?: StatusEvent, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): Promise<void> => {
-    const {multiplayer, settings, commitID, quest, user} = getState();
-    const elem = (quest && quest.node && quest.node.elem);
-    const combat = (quest && quest.node && quest.node.ctx && quest.node.ctx.templates && quest.node.ctx.templates.combat);
-    const selfStatus = (multiplayer && multiplayer.clientStatus && multiplayer.clientStatus[toClientKey(multiplayer.client, multiplayer.instance)]);
+export function sendStatus(
+  client?: string,
+  instance?: string,
+  partialStatus?: StatusEvent,
+  c = getMultiplayerConnection(),
+) {
+  return (
+    dispatch: Redux.Dispatch<any>,
+    getState: () => AppStateWithHistory,
+  ): Promise<void> => {
+    const { multiplayer, settings, commitID, quest, user } = getState();
+    const elem = quest && quest.node && quest.node.elem;
+    const combat =
+      quest &&
+      quest.node &&
+      quest.node.ctx &&
+      quest.node.ctx.templates &&
+      quest.node.ctx.templates.combat;
+    const selfStatus =
+      multiplayer &&
+      multiplayer.clientStatus &&
+      multiplayer.clientStatus[
+        toClientKey(multiplayer.client, multiplayer.instance)
+      ];
     const storeClient = multiplayer && multiplayer.client;
     const storeInstance = multiplayer && multiplayer.instance;
     client = client || storeClient;
@@ -176,49 +248,79 @@ export function sendStatus(client?: string, instance?: string, partialStatus?: S
         lastEventID: commitID,
         line: (elem && parseInt(elem.attr('data-line'), 10)) || undefined,
         numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
-        aliveAdventurers: (combat && combat.numAliveAdventurers),
+        aliveAdventurers: combat && combat.numAliveAdventurers,
         type: 'STATUS',
-        waitingOn: (selfStatus && selfStatus.waitingOn),
+        waitingOn: selfStatus && selfStatus.waitingOn,
         name: user && user.email,
-        contentSets: settings && Object.keys(settings.contentSets || {}).filter((k: Expansion) => settings.contentSets[k]),
+        contentSets:
+          settings &&
+          Object.keys(settings.contentSets || {}).filter(
+            (k: Expansion) => settings.contentSets[k],
+          ),
         ...(partialStatus || {}),
       };
 
       c.sendEvent(event, commitID);
       // Dispatch locally (and publish to event subscribers)
-      dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: event});
-      c.publish({id: null, client, instance, event});
+      dispatch({
+        type: 'MULTIPLAYER_CLIENT_STATUS',
+        client,
+        instance,
+        status: event,
+      });
+      c.publish({ id: null, client, instance, event });
     } else if (partialStatus !== undefined) {
       // Dispatch locally (and publish to event subscribers)
-      dispatch({type: 'MULTIPLAYER_CLIENT_STATUS', client, instance, status: partialStatus});
-      c.publish({id: null, client, instance, event: partialStatus});
+      dispatch({
+        type: 'MULTIPLAYER_CLIENT_STATUS',
+        client,
+        instance,
+        status: partialStatus,
+      });
+      c.publish({ id: null, client, instance, event: partialStatus });
     }
     return Promise.resolve();
   };
 }
 
-export function sendEvent(event: MultiplayerEventBody, commitID?: number, c= getMultiplayerConnection()) {
-  return (dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): any => {
+export function sendEvent(
+  event: MultiplayerEventBody,
+  commitID?: number,
+  c = getMultiplayerConnection(),
+) {
+  return (
+    dispatch: Redux.Dispatch<any>,
+    getState: () => AppStateWithHistory,
+  ): any => {
     commitID = commitID || getState().commitID;
     c.sendEvent(event, commitID);
   };
 }
 
-export function subscribeToEvents(handler: (e: MultiplayerEvent) => void, c= getMultiplayerConnection()) {
+export function subscribeToEvents(
+  handler: (e: MultiplayerEvent) => void,
+  c = getMultiplayerConnection(),
+) {
   c.subscribe(handler);
 }
 
-export function unsubscribeFromEvents(handler: (e: MultiplayerEvent) => void, c= getMultiplayerConnection()) {
+export function unsubscribeFromEvents(
+  handler: (e: MultiplayerEvent) => void,
+  c = getMultiplayerConnection(),
+) {
   c.unsubscribe(handler);
 }
 
-export function registerHandler(handler: ConnectionHandler, c= getMultiplayerConnection()) {
+export function registerHandler(
+  handler: ConnectionHandler,
+  c = getMultiplayerConnection(),
+) {
   c.registerHandler(handler);
 }
 
 function commit(id: number) {
   console.log('MULTIPLAYER_COMMIT #' + id);
-  return {type: 'MULTIPLAYER_COMMIT', id};
+  return { type: 'MULTIPLAYER_COMMIT', id };
 }
 
 export function rejectEvent(n: number, error: string) {
@@ -230,13 +332,27 @@ export function rejectEvent(n: number, error: string) {
   };
 }
 
-export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: number, multiplayer: MultiplayerState, c= getMultiplayerConnection()) {
+export function handleEvent(
+  e: MultiplayerEvent,
+  buffered: boolean,
+  commitID: number,
+  multiplayer: MultiplayerState,
+  c = getMultiplayerConnection(),
+) {
   return (dispatch: Redux.Dispatch<any>): Promise<void> => {
-    if (e.id && e.id !== (commitID + 1)) {
+    if (e.id && e.id !== commitID + 1) {
       // We should ignore actions that we don't expect, and instead let the server
       // know we're behind so we can fast-forward appropriately.
       // Note that MULTI_EVENTs have no top-level ID and aren't affected by this check.
-      console.log('Ignoring #' + e.id + ' ' + e.event.type + ' (counter at #' + commitID + ')');
+      console.log(
+        'Ignoring #' +
+          e.id +
+          ' ' +
+          e.event.type +
+          ' (counter at #' +
+          commitID +
+          ')',
+      );
       dispatch(sendStatus(undefined, undefined, undefined, c));
       return Promise.resolve();
     }
@@ -244,15 +360,17 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
     const body = e.event;
     switch (body.type) {
       case 'STATUS':
-        if (e.client !== multiplayer.client || e.instance !== multiplayer.instance) {
+        if (
+          e.client !== multiplayer.client ||
+          e.instance !== multiplayer.instance
+        ) {
           return dispatch(sendStatus(e.client, e.instance, body, c));
         }
         break;
       case 'INTERACTION':
         // Interaction events are not dispatched; UI element subscribers pick up the event on publish().
         break;
-      case 'ACTION':
-        // Actions must have IDs.
+      case 'ACTION': { // Actions must have IDs.
         if (e.id === null) {
           return Promise.resolve();
         }
@@ -264,7 +382,10 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
         if (buffered) {
           // If the event came from us, commit it. Otherwise, reject the
           // local buffered event.
-          if (e.client === multiplayer.client && e.instance === multiplayer.instance) {
+          if (
+            e.client === multiplayer.client &&
+            e.instance === multiplayer.instance
+          ) {
             dispatch(commit(e.id));
           } else {
             dispatch(rejectEvent(e.id, 'Multiplayer ACTION matching buffered'));
@@ -278,7 +399,9 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
           return Promise.resolve();
         }
 
-        console.log('WS: Inbound #' + e.id + ': ' + body.name + '(' + body.args + ')');
+        console.log(
+          'WS: Inbound #' + e.id + ': ' + body.name + '(' + body.args + ')',
+        );
         // Set a "remote" marker so we can handle it differently than local actions
         const action = a(JSON.parse(body.args));
         (action as any)._inflight = 'remote';
@@ -292,14 +415,18 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
           }
         }
         return result;
-      case 'MULTI_EVENT':
+      }
+      case 'MULTI_EVENT': {
         if (multiplayer.multiEvent) {
           console.log('Ignoring MULTI_EVENT, already parsing');
           return Promise.resolve();
         }
 
         let chain = Promise.resolve().then(() => {
-          dispatch({type: 'MULTIPLAYER_MULTI_EVENT_START', syncID: body.lastId} as MultiplayerMultiEventStartAction);
+          dispatch({
+            type: 'MULTIPLAYER_MULTI_EVENT_START',
+            syncID: body.lastId,
+          } as MultiplayerMultiEventStartAction);
         });
 
         for (let i = 0; i < body.events.length; i++) {
@@ -310,8 +437,8 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
             if (!parsed.id) {
               throw new Error('MULTI_EVENT without ID: ' + parsed);
             }
-          } catch (e) {
-            console.error(e);
+          } catch (err) {
+            console.error(err);
             continue;
           }
 
@@ -323,8 +450,10 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
           chain = chain.then((_: any) => {
             return new Promise<void>((fulfill, reject) => {
               setTimeout(() => {
-                const route: any = dispatch(handleEvent(parsed, false, commitID + i, multiplayer)); // TODO: should buffered be set?
-                if (route && typeof(route) === 'object' && route.then) {
+                const route: any = dispatch(
+                  handleEvent(parsed, false, commitID + i, multiplayer),
+                ); // TODO: should buffered be set?
+                if (route && typeof route === 'object' && route.then) {
                   fulfill(route);
                 }
                 fulfill();
@@ -334,10 +463,11 @@ export function handleEvent(e: MultiplayerEvent, buffered: boolean, commitID: nu
         }
 
         chain = chain.then((_: any) => {
-          dispatch({type: 'MULTIPLAYER_MULTI_EVENT'});
+          dispatch({ type: 'MULTIPLAYER_MULTI_EVENT' });
         });
         c.publish(e);
         return chain;
+      }
       case 'ERROR':
         console.error(JSON.stringify(body));
         break;

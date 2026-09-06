@@ -5,8 +5,8 @@ import AceEditorOrig from 'react-ace';
 import 'brace/ext/searchbox';
 import 'brace/mode/markdown';
 import 'brace/theme/twilight';
-import {QDLMode} from './QDLMode';
-import {AnnotationType} from '../../reducers/StateTypes';
+import { QDLMode } from './QDLMode';
+import { AnnotationType } from '../../reducers/StateTypes';
 import Spellcheck from '../../Spellcheck';
 
 // The current version of AceEditor fails to compile when used as a JSX.Element:
@@ -23,19 +23,19 @@ import Spellcheck from '../../Spellcheck';
 // I suspect this can be fixed by upgrading Ace, but that's likely to break other things.
 // See https://github.com/ExpeditionRPG/expedition-quest-creator/issues/466
 
-declare var window: any;
+declare let window: any;
 
 const AceEditor = AceEditorOrig as any;
-const acequire: any = (require('brace') as any).acequire;
-const {Range} = acequire('ace/range');
-const {Search} = acequire('ace/search');
+const acequire: any = require('brace').acequire;
+const { Range } = acequire('ace/range');
+const { Search } = acequire('ace/search');
 const mode = new QDLMode();
 
 interface AceAnnotation {
   column: number;
   row: number;
   text: string;
-  type: 'error'|'info'|'warning';
+  type: 'error' | 'info' | 'warning';
 }
 
 interface TextViewProps extends React.Props<any> {
@@ -62,11 +62,14 @@ interface TextViewProps extends React.Props<any> {
 // See https://github.com/securingsincity/react-ace
 export default class TextView extends React.Component<TextViewProps, {}> {
   public ace: any;
-  public focused: boolean;
-  public lineChangeTs: number;
+  public focused = false;
+  // -1 preserves the previous `this.lineChangeTs || -1` reading, where the
+  // field was undefined until the first scroll.
+  public lineChangeTs = -1;
   public spellchecker: any;
-  public onSelectionChange: () => any;
-  public silentChange: boolean;
+  // Installed by onRef(); every read is already guarded on it being set.
+  public onSelectionChange?: () => any;
+  public silentChange = false;
   public silentSelectionChangeTimer: any;
 
   public onRef(ref: any) {
@@ -79,7 +82,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // Add a selection change listener. Because of how
     // ace handles selection events (i.e. badly) we must
     // debounce self to prevent many duplicate line events.
-    this.onSelectionChange = (() => {
+    this.onSelectionChange = () => {
       if (this.silentSelectionChangeTimer) {
         clearTimeout(this.silentSelectionChangeTimer);
       }
@@ -95,7 +98,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
           this.props.onLine(anchor.row);
         }
       }, 50);
-    });
+    };
 
     if (this.ace) {
       // Must manually resize on re-render to account for SplitPane
@@ -104,10 +107,18 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       const session = ref.editor.getSession();
 
       // Once dictionary ready & document loaded, spellcheck!
-      if (!this.spellchecker && window.dictionary && this.ace.editor.session.getDocument().getLength() > 1) {
+      if (
+        !this.spellchecker &&
+        window.dictionary &&
+        this.ace.editor.session.getDocument().getLength() > 1
+      ) {
         this.spellchecker = new Spellcheck(session, window.dictionary);
-        session.on('change', () => { this.spellchecker.onChange(); });
-        setInterval(() => { this.spellchecker.spellcheck(); }, 500);
+        session.on('change', () => {
+          this.spellchecker.onChange();
+        });
+        setInterval(() => {
+          this.spellchecker.spellcheck();
+        }, 500);
       }
 
       // "Automatically scrolling cursor into view after selection change
@@ -118,8 +129,10 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       // Set our custom mode and folding. DUCT TAPE!!!
       session.$mode = mode;
       session.$foldMode = mode.foldingRules;
-      session.getFoldWidget = (row: number) => mode.foldingRules.getFoldWidget(session, '', row);
-      session.getFoldWidgetRange = (row: number) => mode.foldingRules.getFoldWidgetRange(session, '', row);
+      session.getFoldWidget = (row: number) =>
+        mode.foldingRules.getFoldWidget(session, '', row);
+      session.getFoldWidgetRange = (row: number) =>
+        mode.foldingRules.getFoldWidgetRange(session, '', row);
       ref.editor.getSession().bgTokenizer.setTokenizer(mode.getTokenizer());
 
       // Additional configuration
@@ -129,7 +142,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.setOption('useSoftTabs', true);
 
       ref.editor.on('changeSelection', this.onSelectionChange);
-      ref.editor.on('gutterclick', (e: any) => {this.onGutterClick(e); });
+      ref.editor.on('gutterclick', (e: any) => {
+        this.onGutterClick(e);
+      });
       ref.editor.on('click', (e: any) => {
         if (!e.domEvent.altKey) {
           return;
@@ -140,21 +155,23 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       ref.editor.commands.addCommand({
         name: 'jumpToDef',
         hint: 'Jump to defintion',
-        bindKey: {win: 'Ctrl-I',  mac: 'Command-I'},
+        bindKey: { win: 'Ctrl-I', mac: 'Command-I' },
         exec: () => {
           const pos = ref.editor.getCursorPosition();
           const token = ref.editor.session.getTokenAt(pos.row, pos.column);
           if (token.type !== 'variable') {
             return false;
           }
-          const target = token.value.trim().match(/\*\*\s*?goto\s+?(\S*?)\s*?\*\*/i);
+          const target = token.value
+            .trim()
+            .match(/\*\*\s*?goto\s+?(\S*?)\s*?\*\*/i);
           if (!target || target.length < 2 || target[1].length < 1) {
             return false;
           }
           const search = new Search();
           search.set({
             needle: new RegExp('_.*?_\\s?\\(#' + target[1] + '\\)', 'i'),
-            start: {row: 0, column: 0},
+            start: { row: 0, column: 0 },
             regExp: true,
           });
           const match = search.find(session);
@@ -195,23 +212,26 @@ export default class TextView extends React.Component<TextViewProps, {}> {
       throw new Error('Could not parse gutter index');
     }
     const rowNum = parseInt(textInt, 10) - 1;
-    const annotations: number[] = event.editor.session.getAnnotations().map((a: AceAnnotation) => {
-      if (a.row !== rowNum) {
-        return null;
-      }
+    const annotations: number[] = event.editor.session
+      .getAnnotations()
+      .map((a: AceAnnotation) => {
+        if (a.row !== rowNum) {
+          return null;
+        }
 
-      const m = a.text.match(/^\w+ (\d+):/);
-      if (!m) {
-        return null;
-      }
-      return parseInt(m[1], 10);
-    }).filter((n?: number) => n);
+        const m = a.text.match(/^\w+ (\d+):/);
+        if (!m) {
+          return null;
+        }
+        return parseInt(m[1], 10);
+      })
+      .filter((n?: number) => n);
     this.props.onAnnotationClick(Array.from(new Set(annotations)));
     event.preventDefault();
   }
 
   public onTextInserted(event: any) {
-    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
+    if (!this.ace || (event.isLocal && !event.isRedo && !event.isUndo)) {
       return;
     }
     const session = this.ace.editor.session;
@@ -228,7 +248,7 @@ export default class TextView extends React.Component<TextViewProps, {}> {
   }
 
   public onTextDeleted(event: any) {
-    if (!this.ace || event.isLocal && !event.isRedo && !event.isUndo) {
+    if (!this.ace || (event.isLocal && !event.isRedo && !event.isUndo)) {
       return;
     }
     const session = this.ace.editor.session;
@@ -254,9 +274,11 @@ export default class TextView extends React.Component<TextViewProps, {}> {
     // If we've been supplied with a different line number, scroll to it
     if (this.ace) {
       const row = this.ace.editor.getSelection().anchor.row;
-      if (!this.focused &&
+      if (
+        !this.focused &&
         newProps.scrollLineTarget !== row &&
-        newProps.scrollLineTargetTs > (this.lineChangeTs || -1)) {
+        newProps.scrollLineTargetTs > (this.lineChangeTs || -1)
+      ) {
         this.ace.editor.gotoLine(newProps.scrollLineTarget + 1, 0, true);
         this.lineChangeTs = newProps.scrollLineTargetTs;
       }
@@ -298,9 +320,9 @@ export default class TextView extends React.Component<TextViewProps, {}> {
         mode="markdown"
         theme="twilight"
         fontSize={20}
-        onBlur={() => this.focused = false}
+        onBlur={() => (this.focused = false)}
         onChange={(text: string) => this.onChange(text)}
-        onFocus={() => this.focused = true}
+        onFocus={() => (this.focused = true)}
         width="100%"
         height="100%"
         name={'editor'}

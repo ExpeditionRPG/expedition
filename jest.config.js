@@ -1,14 +1,9 @@
 // Jest configuration for the Expedition monorepo.
 //
-// Transform: @swc/jest. The repo is pinned to TypeScript 2.8 for its webpack
-// builds, which no supported version of ts-jest can consume. swc strips types
-// without type-checking, so the test runner is decoupled from the compiler
-// version. Nothing type-checks the repo today: tslint builds a Program for its
-// type-aware rules but never surfaces compiler diagnostics, and `tsc --noEmit`
-// cannot run because TypeScript 2.8 fails to *parse* the .d.ts files that
-// modern @types packages ship (skipLibCheck does not suppress syntax errors).
-// The webpack build is the closest thing to a type check we have, which is why
-// CI now runs `yarn build-all`.
+// Transform: @swc/jest. swc strips types without checking them, which keeps
+// the test runner decoupled from the compiler version. Type checking is a
+// separate gate: `yarn typecheck` (tsc --noEmit) runs in CI alongside
+// `yarn lint` (eslint + typescript-eslint) and `yarn build-all`.
 //
 // `noInterop: true` mirrors this repo's tsconfig (esModuleInterop is off), so
 // `import * as express from 'express'` stays callable and default imports

@@ -1,6 +1,12 @@
-import {Instruction, TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_ATTRIBUTE_SHORTHAND, TemplateChild, TemplateType} from '../../schema/templates/Templates';
-import {Logger} from '../Logger';
-import {Renderer, sanitizeStyles} from './Renderer';
+import {
+  Instruction,
+  TEMPLATE_ATTRIBUTE_MAP,
+  TEMPLATE_ATTRIBUTE_SHORTHAND,
+  TemplateChild,
+  TemplateType,
+} from '../../schema/templates/Templates';
+import { Logger } from '../Logger';
+import { Renderer, sanitizeStyles } from './Renderer';
 
 const Math = require('mathjs');
 const cheerio: any = require('cheerio') as CheerioAPI;
@@ -9,22 +15,33 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 function escapeXml(unsafe: string) {
   return unsafe.replace(/[<>&'"]/g, (c: string) => {
     switch (c) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
-      case '\'': return '&apos;';
-      case '"': return '&quot;';
-      default: return c;
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case "'":
+        return '&apos;';
+      case '"':
+        return '&quot;';
+      default:
+        return c;
     }
   });
 }
 
 export const XMLRenderer: Renderer = {
-  toTemplate(type: TemplateType, attribs: {[k: string]: any}, body: Array<string|TemplateChild|Instruction>, line: number): any {
+  toTemplate(
+    type: TemplateType,
+    attribs: { [k: string]: any },
+    body: Array<string | TemplateChild | Instruction>,
+    line: number,
+  ): any {
     const tmpl = cheerio.load(`<${type}></${type}>`)(type);
 
     const attrName = TEMPLATE_ATTRIBUTE_MAP[type];
-    Object.keys(attribs).forEach((key) => {
+    Object.keys(attribs).forEach(key => {
       if (key !== attrName) {
         tmpl.attr(key, attribs[key]);
       }
@@ -35,7 +52,7 @@ export const XMLRenderer: Renderer = {
         const short = TEMPLATE_ATTRIBUTE_SHORTHAND[attrName];
         const e = cheerio.load(`<${short}>${v.text}</${short}>`)(short);
         e.attr('if', v.visible);
-        if (typeof(v.json) === 'object') {
+        if (typeof v.json === 'object') {
           for (const k of Object.keys(v.json)) {
             e.attr(k, v.json[k]);
           }
@@ -45,8 +62,8 @@ export const XMLRenderer: Renderer = {
     }
 
     for (const section of body) {
-      if (typeof(section) === 'string') {
-        let text = section as string;
+      if (typeof section === 'string') {
+        let text = section;
         const INITIAL_OP_WITH_PARAGRAPH = /^\s*{{(.*?)}}\s*[^\s]+/;
         const visible = (text.match(INITIAL_OP_WITH_PARAGRAPH) || [])[1];
         let paragraph = `<p>${sanitizeStyles(text)}</p>`;
@@ -56,11 +73,14 @@ export const XMLRenderer: Renderer = {
           const visibleTree = Math.parse(visible);
           if (visibleTree.type === 'OperatorNode') {
             text = text.replace('{{' + visible + '}}', '');
-            paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(text)}</p>`;
+            paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(
+              text,
+            )}</p>`;
           }
         }
         tmpl.append(paragraph);
-      } else if (Boolean((section as TemplateChild).outcome)) { // choice or event
+      } else if ((section as TemplateChild).outcome) {
+        // choice or event
         const node = section as TemplateChild;
         if (node.text.startsWith('on ')) {
           const currEvent: any = cheerio.load('<event></event>')('event');
@@ -70,7 +90,7 @@ export const XMLRenderer: Renderer = {
           }
           const attributes = node.json;
           if (attributes) {
-            Object.keys(attributes).forEach((key) => {
+            Object.keys(attributes).forEach(key => {
               currEvent.attr(key, attributes[key]);
             });
           }
@@ -87,9 +107,12 @@ export const XMLRenderer: Renderer = {
           choice.append(node.outcome);
           tmpl.append(choice);
         }
-      } else { // instruction
-        const node = section as Instruction;
-        const instruction = cheerio.load('<instruction></instruction>')('instruction');
+      } else {
+        // instruction
+        const node = section;
+        const instruction = cheerio.load('<instruction></instruction>')(
+          'instruction',
+        );
         instruction.append('<p>' + sanitizeStyles(node.text) + '</p>');
         if (node.visible) {
           instruction.attr('if', node.visible);
@@ -104,8 +127,10 @@ export const XMLRenderer: Renderer = {
     return tmpl;
   },
 
-  toTrigger(attribs: {[k: string]: any}, line: number): any {
-    const trigger = cheerio.load('<trigger>' + attribs.text + '</trigger>')('trigger');
+  toTrigger(attribs: { [k: string]: any }, line: number): any {
+    const trigger = cheerio.load('<trigger>' + attribs.text + '</trigger>')(
+      'trigger',
+    );
     if (attribs.visible) {
       trigger.attr('if', attribs.visible);
     }
@@ -115,7 +140,7 @@ export const XMLRenderer: Renderer = {
     return trigger;
   },
 
-  toQuest(attribs: {[k: string]: string}, line: number): any {
+  toQuest(attribs: { [k: string]: string }, line: number): any {
     const quest = cheerio.load('<quest>')('quest');
     const keys = Object.keys(attribs);
     for (const key of keys) {
@@ -153,7 +178,13 @@ export const XMLRenderer: Renderer = {
         return;
       }
       if (rendered.find('#' + m[1]).length === 0) {
-        log.err('goto "' + m[1] + '" does not match any card IDs (check your spelling)', '426', parseInt(c.attribs['data-line'], 10) || 0);
+        log.err(
+          'goto "' +
+            m[1] +
+            '" does not match any card IDs (check your spelling)',
+          '426',
+          parseInt(c.attribs['data-line'], 10) || 0,
+        );
       }
     });
     return [];

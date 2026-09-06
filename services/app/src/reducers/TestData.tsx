@@ -1,8 +1,14 @@
-import {ContentRating, Genre, Language} from 'shared/schema/Constants';
-import {Expansion} from 'shared/schema/Constants';
-import {initialMultiplayer} from './Multiplayer';
-import {DifficultyType, FontSizeType, MultiplayerState, SearchParams, SettingsType} from './StateTypes';
-export const Settings: {[k: string]: SettingsType} = {
+import { ContentRating, Genre, Language } from 'shared/schema/Constants';
+import { Expansion } from 'shared/schema/Constants';
+import { initialMultiplayer } from './Multiplayer';
+import {
+  DifficultyType,
+  FontSizeType,
+  MultiplayerState,
+  SearchParams,
+  SettingsType,
+} from './StateTypes';
+export const Settings: { [k: string]: SettingsType } = {
   basic: {
     audioEnabled: false,
     autoRoll: false,
@@ -11,9 +17,9 @@ export const Settings: {[k: string]: SettingsType} = {
       future: false,
       scarredlands: false,
     },
-    difficulty: 'NORMAL' as DifficultyType,
+    difficulty: 'NORMAL',
     experimental: false,
-    fontSize: 'NORMAL' as FontSizeType,
+    fontSize: 'NORMAL',
     multitouch: true,
     numLocalPlayers: 3,
     showHelp: true,
@@ -23,13 +29,13 @@ export const Settings: {[k: string]: SettingsType} = {
   },
 };
 
-export const Multiplayer: {[k: string]: MultiplayerState} = {
-  basic: {...initialMultiplayer},
+export const Multiplayer: { [k: string]: MultiplayerState } = {
+  basic: { ...initialMultiplayer },
   s2p5: {
     ...initialMultiplayer,
     client: 'abc',
     instance: 'def',
-    session: {id: 123, secret: 'def'},
+    session: { id: 123, secret: 'def' },
     clientStatus: {
       'abc|def': {
         connected: true,
@@ -51,7 +57,7 @@ export const Multiplayer: {[k: string]: MultiplayerState} = {
     ...initialMultiplayer,
     client: 'abc',
     instance: 'def',
-    session: {id: 123, secret: 'def'},
+    session: { id: 123, secret: 'def' },
     clientStatus: {
       'abc|def': {
         connected: true,

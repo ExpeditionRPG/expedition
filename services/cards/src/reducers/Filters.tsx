@@ -7,7 +7,7 @@ import { SHEETS } from '../Constants';
 import { CardType, FiltersState } from './StateTypes';
 
 // In UI order
-export let initialState: FiltersState = {
+export const initialState: FiltersState = {
   sheet: {
     current: 'All',
     default: 'All',
@@ -52,7 +52,7 @@ export default function Filters(
   action: Redux.Action,
 ) {
   switch (action.type) {
-    case 'FILTER_CHANGE':
+    case 'FILTER_CHANGE': {
       const filterChange = action as FilterChangeAction;
       if (!state[filterChange.name]) {
         // Protect against URL parameters that aren't ours, such as search / social media links
@@ -65,6 +65,7 @@ export default function Filters(
           current: filterChange.value,
         },
       };
+    }
     case 'FILTERS_CALCULATE':
       return updateFilterOptions(
         state,

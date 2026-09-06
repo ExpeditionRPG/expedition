@@ -1,5 +1,5 @@
 const Clone = require('clone');
-const HtmlDecode = (require('he') as any).decode;
+const HtmlDecode = require('he').decode;
 const MathJS = require('mathjs');
 const seedrandom = require('seedrandom');
 
@@ -12,16 +12,23 @@ const seedrandom = require('seedrandom');
 // expected/sane.
 //
 // https://github.com/josdejong/mathjs/issues/1051#issuecomment-369930811
-MathJS.import({
-  equal(a: any, b: any) { return a === b; },
-}, {override: true});
+MathJS.import(
+  {
+    equal(a: any, b: any) {
+      return a === b;
+    },
+  },
+  { override: true },
+);
 
 export function generateSeed(prevSeed?: string): string {
   let seed: string = '';
-  seedrandom(prevSeed && (prevSeed + seedrandom.alea(prevSeed)), { pass(p: seedrandom.prng, s: string): seedrandom.prng {
-    seed = s;
-    return p;
-  }});
+  seedrandom(prevSeed && prevSeed + seedrandom.alea(prevSeed), {
+    pass(p: seedrandom.prng, s: string): seedrandom.prng {
+      seed = s;
+      return p;
+    },
+  });
   return seed;
 }
 
@@ -30,23 +37,23 @@ export interface Context {
   // nodes that are potentially parseable via MathJS.
   scope: any; // TODO: required fields later
 
-  views: {[id: string]: number};
+  views: { [id: string]: number };
 
   // The list of choices, events, and jumps that produced this context, serialized.
   // Given the path and original quest XML, we should be able to recreate
   // context given this path.
-  path: Array<string|number>;
+  path: Array<string | number>;
 
   // Optional contextual arg to seed the random number generator.
   seed?: string;
 }
 
-export function defaultContext(populateScope: (() => any) = (() => ({}))): Context {
+export function defaultContext(populateScope: () => any = () => ({})): Context {
   // Caution: Scope is the API for Quest Creators.
   // New endpoints should be added carefully b/c we'll have to support them.
   // Behind-the-scenes data can be added to the context outside of scope
   const newContext: Context = {
-    path: ([] as any),
+    path: [],
     scope: {
       // Lodash functions are UNBOUND - binding to the context is done dynamically
       // within evaluateOp so that we don't have to keep track of unbound copies
@@ -93,7 +100,11 @@ export function evaluateContentOps(content: string, ctx: Context): string {
 // Attempts to evaluate op using ctx.
 // If the evaluation is successful, the context is modified as determined by the op.
 // If the last operation does not assign a value, the result is returned.
-export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.random): any {
+export function evaluateOp(
+  op: string,
+  ctx: Context,
+  rng: () => number = Math.random,
+): any {
   let parsed;
   let evalResult;
 
@@ -108,18 +119,25 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
       return r;
     }
   };
-  MathJS.import({
-    random,
-    randomInt(v1?: number, v2?: number) { return Math.floor(random(v1, v2)); },
-    pickRandom(a: {_data: any[]}) { return a._data[Math.floor(random(a._data.length))]; },
-  }, {override: true});
+  MathJS.import(
+    {
+      random,
+      randomInt(v1?: number, v2?: number) {
+        return Math.floor(random(v1, v2));
+      },
+      pickRandom(a: { _data: any[] }) {
+        return a._data[Math.floor(random(a._data.length))];
+      },
+    },
+    { override: true },
+  );
 
   // Bind all scope functions, keeping a copy of the originals.
   // Note that .bind() returns a new (bound) function
   // that cannot be re-bound.
-  const origLodash: any = {...ctx.scope._};
+  const origLodash: any = { ...ctx.scope._ };
   for (const k of Object.keys(ctx.scope._)) {
-    ctx.scope._[k] = (ctx.scope._[k] as any).bind(ctx);
+    ctx.scope._[k] = ctx.scope._[k].bind(ctx);
   }
 
   try {
@@ -148,7 +166,6 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
 
   // Only return the result IF it doesn't assign a value as its last action.
   if (!lastExpressionAssignsValue(parsed)) {
-
     // If ResultSet, then unwrap it and get the last value.
     // http://mathjs.org/docs/reference/classes/resultset.html
     if (parsed.type === 'BlockNode') {
@@ -174,9 +191,13 @@ export function evaluateOp(op: string, ctx: Context, rng: () => number = Math.ra
 
 function lastExpressionAssignsValue(parsed: any): boolean {
   if (parsed.type === 'BlockNode') {
-    return lastExpressionAssignsValue(parsed.blocks[parsed.blocks.length - 1].node);
+    return lastExpressionAssignsValue(
+      parsed.blocks[parsed.blocks.length - 1].node,
+    );
   }
-  return (parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode');
+  return (
+    parsed.type === 'AssignmentNode' || parsed.type === 'FunctionAssignmentNode'
+  );
 }
 
 function parseOpString(str: string): string | null {
@@ -187,7 +208,11 @@ function parseOpString(str: string): string | null {
   return op[1];
 }
 
-export function updateContext<C extends Context>(node: Cheerio, ctx: C, action?: string|number): C {
+export function updateContext<C extends Context>(
+  node: Cheerio,
+  ctx: C,
+  action?: string | number,
+): C {
   if (!node) {
     return ctx;
   }

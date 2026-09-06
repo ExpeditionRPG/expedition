@@ -89,16 +89,16 @@ export const AUTH_SESSION_TABLE = 'AuthSession';
 export class Database {
   public sequelize: Sequelize.Sequelize;
 
-  public analyticsEvent: AnalyticsEventModel;
-  public users: UserModel;
-  public userBadges: UserBadgeModel;
-  public quests: QuestModel;
-  public questData: QuestDataModel;
-  public feedback: FeedbackModel;
-  public renderedQuests: RenderedQuestModel;
-  public events: EventModel;
-  public sessionClients: SessionClientModel;
-  public sessions: SessionModel;
+  public analyticsEvent!: AnalyticsEventModel;
+  public users!: UserModel;
+  public userBadges!: UserBadgeModel;
+  public quests!: QuestModel;
+  public questData!: QuestDataModel;
+  public feedback!: FeedbackModel;
+  public renderedQuests!: RenderedQuestModel;
+  public events!: EventModel;
+  public sessionClients!: SessionClientModel;
+  public sessions!: SessionModel;
   public authSession: any;
 
   constructor(s: Sequelize.Sequelize) {
@@ -126,7 +126,7 @@ export class Database {
           },
         ],
         timestamps: false, // TODO: eventually switch to sequelize timestamps
-      }
+      },
     ) as AnalyticsEventModel;
     // this.analyticsEvent.sync();
 
@@ -139,7 +139,7 @@ export class Database {
     // this.users.sync();
 
     const userBadgeSpec = toSequelize(
-      new UserBadge({ userid: '', badge: 'backer1' })
+      new UserBadge({ userid: '', badge: 'backer1' }),
     );
     this.userBadges = this.sequelize.define('userbadges', userBadgeSpec, {
       ...standardOptions,
@@ -149,7 +149,7 @@ export class Database {
     // this.userBadges.sync();
 
     const questSpec = toSequelize(
-      new Quest({ id: '', partition: Partition.expeditionPublic })
+      new Quest({ id: '', partition: Partition.expeditionPublic }),
     );
     this.quests = this.sequelize.define('quests', questSpec, {
       ...standardOptions,
@@ -180,7 +180,7 @@ export class Database {
         notes: '',
         metadata: '',
         edittime: new Date(0),
-      })
+      }),
     );
     this.questData = this.sequelize.define('questdata', questDataSpec, {
       ...standardOptions,
@@ -193,7 +193,7 @@ export class Database {
         partition: Partition.expeditionPublic,
         questid: '',
         userid: '',
-      })
+      }),
     );
     this.feedback = this.sequelize.define('feedback', feedbackSpec, {
       ...standardOptions,
@@ -207,12 +207,12 @@ export class Database {
         partition: Partition.expeditionPublic,
         id: '',
         questversion: 0,
-      })
+      }),
     );
     this.renderedQuests = this.sequelize.define(
       'renderedquests',
       renderedQuestSpec,
-      standardOptions
+      standardOptions,
     ) as RenderedQuestModel;
     // this.renderedQuests.sync();
 
@@ -225,32 +225,32 @@ export class Database {
         id: 0,
         type: '',
         json: '',
-      })
+      }),
     );
     this.events = this.sequelize.define(
       'events',
       eventSpec,
-      standardOptions
+      standardOptions,
     ) as EventModel;
     // this.events.sync();
 
     const sessionClientSpec = toSequelize(
-      new SessionClient({ session: 0, client: '', secret: '' })
+      new SessionClient({ session: 0, client: '', secret: '' }),
     );
     this.sessionClients = this.sequelize.define(
       'sessionclients',
       sessionClientSpec,
-      standardOptions
+      standardOptions,
     ) as SessionClientModel;
     // this.sessionClients.sync();
 
     const sessionSpec = toSequelize(
-      new Session({ id: 0, secret: '', eventCounter: 0, locked: false })
+      new Session({ id: 0, secret: '', eventCounter: 0, locked: false }),
     );
     this.sessions = this.sequelize.define(
       'sessions',
       sessionSpec,
-      standardOptions
+      standardOptions,
     ) as SessionModel;
     // this.sessions.sync();
 

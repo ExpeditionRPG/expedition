@@ -10,7 +10,7 @@ const audioNodes = { 'combat/heavy/horn1': nodeA, 'combat/heavy/horn2': nodeB };
 const themeManager = { id: 'themeManager' } as any;
 
 function set(data: Partial<AudioDataState>): AudioDataSetAction {
-  return { type: 'AUDIO_DATA_SET', data } as AudioDataSetAction;
+  return { type: 'AUDIO_DATA_SET', data };
 }
 
 describe('AudioData reducer', () => {

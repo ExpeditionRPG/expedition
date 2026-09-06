@@ -1,10 +1,12 @@
 import Redux from 'redux';
-import {MultiplayerCommitAction} from '../actions/ActionTypes';
-import {getMultiplayerConnection} from '../multiplayer/Connection';
-import {AppStateWithHistory} from './StateTypes';
+import { MultiplayerCommitAction } from '../actions/ActionTypes';
+import { getMultiplayerConnection } from '../multiplayer/Connection';
+import { AppStateWithHistory } from './StateTypes';
 
-function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateWithHistory {
-  const newState = {...state};
+function stripMultiplayerStateAndSettings(
+  state: AppStateWithHistory,
+): AppStateWithHistory {
+  const newState = { ...state };
   delete newState._committed;
   delete newState.settings;
   delete newState.multiplayer;
@@ -12,7 +14,11 @@ function stripMultiplayerStateAndSettings(state: AppStateWithHistory): AppStateW
   return newState;
 }
 
-export function commitID(state: AppStateWithHistory, action: Redux.Action, combinedReduce: Redux.Reducer<any>): AppStateWithHistory {
+export function commitID(
+  state: AppStateWithHistory,
+  action: Redux.Action,
+  combinedReduce: Redux.Reducer<any>,
+): AppStateWithHistory {
   if (!state) {
     return state;
   }
@@ -30,26 +36,26 @@ export function commitID(state: AppStateWithHistory, action: Redux.Action, combi
         _committed: stripMultiplayerStateAndSettings(state),
         commitID: 0,
       };
-    case 'MULTIPLAYER_COMMIT':
-      // When no actions are in flight, we're at the correct state.
-      // This should almost always happen within a couple actions.
-      // TODO: error/alert if this takes too long
+    case 'MULTIPLAYER_COMMIT': // This should almost always happen within a couple actions. // When no actions are in flight, we're at the correct state.
+    // TODO: error/alert if this takes too long
+    {
       const id = (action as MultiplayerCommitAction).id;
       if (!getMultiplayerConnection().bufferedAtOrbelow(id)) {
         return {
           ...state,
           _committed: stripMultiplayerStateAndSettings(state),
           commitID: id,
-        } as AppStateWithHistory;
+        };
       }
       console.warn('Skipping commit; commitID at or below #' + id);
       return state;
+    }
     case 'MULTIPLAYER_REJECT':
       // Restore previous known good state.
       console.log('MULTIPLAYER REJECT');
       return {
         ...state,
-        ...stripMultiplayerStateAndSettings({...state._committed}),
+        ...stripMultiplayerStateAndSettings({ ...state._committed }),
         commitID: state.commitID,
       };
     case 'MULTIPLAYER_DISCONNECT':

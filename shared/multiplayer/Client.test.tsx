@@ -1,5 +1,5 @@
-import {ClientBase} from './Client';
-import {MultiplayerEvent, MultiplayerEventBody} from './Events';
+import { ClientBase } from './Client';
+import { MultiplayerEvent, MultiplayerEventBody } from './Events';
 
 export class TestClient extends ClientBase {
   public events: MultiplayerEvent[];
@@ -23,7 +23,7 @@ export class TestClient extends ClientBase {
 }
 
 describe('Client', () => {
-  const basicEventBody: MultiplayerEventBody = {type: 'STATUS'};
+  const basicEventBody: MultiplayerEventBody = { type: 'STATUS' };
   const basicEvent: MultiplayerEvent = {
     client: 'testclient',
     event: basicEventBody,
@@ -38,12 +38,16 @@ describe('Client', () => {
 
   test('safely handles unknown message types', () => {
     const c = new TestClient();
-    expect(c.doParseEvent(JSON.stringify({
-      client: 'testclient',
-      event: {type: 'UNKNOWN_EVENT_TYPE'},
-      id: 0,
-      instance: 'testinstance',
-    } as any as MultiplayerEvent)).event.type).toEqual('ERROR');
+    expect(
+      c.doParseEvent(
+        JSON.stringify({
+          client: 'testclient',
+          event: { type: 'UNKNOWN_EVENT_TYPE' },
+          id: 0,
+          instance: 'testinstance',
+        }),
+      ).event.type,
+    ).toEqual('ERROR');
   });
 
   test('can subscribe & callback handlers', () => {

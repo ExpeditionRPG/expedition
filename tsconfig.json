@@ -1,45 +1,51 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "noImplicitAny": true,
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "es6",
-        "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "strictNullChecks": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noUnusedLocals": true,
-        "baseUrl": "./",
-        "paths": {
-            "api/*": ["services/api/src/*"],
-            "app/*": ["services/app/src/*"],
-            "shared/*": ["shared/*"]
-        },
-        "skipLibCheck": true
+  "compilerOptions": {
+    "outDir": "./dist/",
+    // ts-loader compiles files one at a time, so TS 6 infers a different
+    // "common source directory" per file and errors with TS5011 unless the
+    // root is pinned. The repo root is the right answer for every service.
+    "rootDir": "./",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    // `moduleResolution: node10` is deprecated in 6.0 but is still the correct
+    // algorithm here: the emit target is CommonJS and `module: node16`/
+    // `bundler` would force `esModuleInterop` on, which this codebase does not
+    // want (`import * as express from 'express'` must stay callable). This
+    // acknowledges the deprecation; it does not suppress any type error.
+    "ignoreDeprecations": "6.0",
+    // No `baseUrl`: as of TS 6 `paths` entries resolve relative to this file.
+    "paths": {
+      "api/*": ["./services/api/src/*"],
+      "app/*": ["./services/app/src/*"],
+      "shared/*": ["./shared/*"]
     },
-    "include": [
-        "services/**/*",
-        "shared/**/*",
-    ],
-    "exclude": [
-        "dist",
-        "node_modules",
-        "app/src/quests",
-        "app/plugins",
-        "app/platforms",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "www"
-    ],
-    "awesomeTypescriptLoaderOptions": {
-        "useBabel": true,
-        "useCache": true,
-        "babelOptions": {
-            "babelrc": true
-        }
-    },
-    "files": ["not-a-file-but-included-to-appease-jest"]
+    "skipLibCheck": true,
+    // TypeScript 6 stopped pulling every package in node_modules/@types into
+    // the global scope. These four are the ones this repo relies on for
+    // *ambient* declarations: `process`/`Buffer`, the `jest`/`expect` globals
+    // used by the shared Testing helpers, `$` in the quests/admin entrypoints,
+    // and the `stripe`/`Stripe` globals from Stripe's script tag. Everything
+    // else is reached through a normal import and needs no entry here.
+    "types": ["node", "jest", "jquery", "stripe-v3"]
+  },
+  "include": ["services/**/*", "shared/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "app/src/quests",
+    "app/plugins",
+    "app/platforms",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "www"
+  ]
 }

@@ -20,7 +20,7 @@ export const initialSettings: SettingsType = {
   autoRoll: getStorageBoolean('autoRoll', false),
   contentSets: getStorageJson('contentSets', {
     horror: null,
-  }) as ContentSetsType,
+  }),
   difficulty: getStorageString('difficulty', 'NORMAL') as DifficultyType,
   experimental: getStorageBoolean('experimental', false) || NODE_ENV === 'dev',
   fontSize: getStorageString('fontSize', 'NORMAL') as FontSizeType,
@@ -37,7 +37,7 @@ export function settings(
   action: Redux.Action,
 ): SettingsType {
   switch (action.type) {
-    case 'CHANGE_SETTINGS':
+    case 'CHANGE_SETTINGS': {
       const csa = action as ChangeSettingsAction;
       // Copy the payload: reducers must not mutate the action they were handed,
       // otherwise re-reducing the same action (multiplayer replay, RETURN) folds
@@ -54,6 +54,7 @@ export function settings(
         setStorageKeyValue(key, changes[key]);
       });
       return { ...state, ...changes };
+    }
     default:
       return state;
   }

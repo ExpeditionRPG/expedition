@@ -1,6 +1,12 @@
 import Redux from 'redux';
-import {MultiplayerClientStatus, MultiplayerConnectedAction, MultiplayerHistoryAction, MultiplayerMultiEventStartAction, MultiplayerSessionAction} from '../actions/ActionTypes';
-import {MultiplayerState} from './StateTypes';
+import {
+  MultiplayerClientStatus,
+  MultiplayerConnectedAction,
+  MultiplayerHistoryAction,
+  MultiplayerMultiEventStartAction,
+  MultiplayerSessionAction,
+} from '../actions/ActionTypes';
+import { MultiplayerState } from './StateTypes';
 
 export const initialMultiplayer: MultiplayerState = {
   clientStatus: {},
@@ -14,9 +20,12 @@ export const initialMultiplayer: MultiplayerState = {
   connected: false,
 };
 
-export function multiplayer(state: MultiplayerState = initialMultiplayer, action: Redux.Action|MultiplayerSessionAction): MultiplayerState {
+export function multiplayer(
+  state: MultiplayerState = initialMultiplayer,
+  action: Redux.Action | MultiplayerSessionAction,
+): MultiplayerState {
   switch (action.type) {
-    case 'MULTIPLAYER_SESSION':
+    case 'MULTIPLAYER_SESSION': {
       const rpsa = (action as any) as MultiplayerSessionAction;
       return {
         ...state,
@@ -24,29 +33,39 @@ export function multiplayer(state: MultiplayerState = initialMultiplayer, action
         client: rpsa.client,
         instance: rpsa.instance,
       };
-    case 'MULTIPLAYER_HISTORY':
+    }
+    case 'MULTIPLAYER_HISTORY': {
       const rph = (action as any) as MultiplayerHistoryAction;
-      return {...state, history: rph.history || []};
+      return { ...state, history: rph.history || [] };
+    }
     case 'MULTIPLAYER_SYNC':
     case 'MULTIPLAYER_REJECT':
-      return {...state, syncing: true};
+      return { ...state, syncing: true };
     case 'MULTIPLAYER_COMMIT':
       if (state.syncing && !state.multiEvent) {
         state.syncing = false;
       }
       return state;
     case 'MULTIPLAYER_MULTI_EVENT_START':
-      return {...state, multiEvent: true, syncID: (action as MultiplayerMultiEventStartAction).syncID};
+      return {
+        ...state,
+        multiEvent: true,
+        syncID: (action as MultiplayerMultiEventStartAction).syncID,
+      };
     case 'MULTIPLAYER_MULTI_EVENT':
-      return {...state, multiEvent: false, syncing: false, syncID: 0};
-    case 'MULTIPLAYER_CLIENT_STATUS':
+      return { ...state, multiEvent: false, syncing: false, syncID: 0 };
+    case 'MULTIPLAYER_CLIENT_STATUS': {
       const rpcs = (action as any) as MultiplayerClientStatus;
-      const newClientStatus = {...state.clientStatus};
+      const newClientStatus = { ...state.clientStatus };
       const k = rpcs.client + '|' + rpcs.instance;
-      newClientStatus[k] = {...newClientStatus[k], ...rpcs.status};
-      return {...state, clientStatus: newClientStatus};
+      newClientStatus[k] = { ...newClientStatus[k], ...rpcs.status };
+      return { ...state, clientStatus: newClientStatus };
+    }
     case 'MULTIPLAYER_CONNECTED':
-      return {...state, connected: (action as MultiplayerConnectedAction).connected};
+      return {
+        ...state,
+        connected: (action as MultiplayerConnectedAction).connected,
+      };
     case 'MULTIPLAYER_DISCONNECT':
       return initialMultiplayer;
     default:

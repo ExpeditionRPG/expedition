@@ -1,5 +1,10 @@
-import {MUSIC_DEFINITIONS, MUSIC_FADE_SECONDS, MUSIC_INTENSITY_MAX, MusicDefinition} from '../Constants';
-import {AudioNode} from './AudioNode';
+import {
+  MUSIC_DEFINITIONS,
+  MUSIC_FADE_SECONDS,
+  MUSIC_INTENSITY_MAX,
+  MusicDefinition,
+} from '../Constants';
+import { AudioNode } from './AudioNode';
 
 /* Notes on audio implementation:
 - intensity (0-MUSIC_INTENSITY_MAX) used as baseline for combat situation, and changes slowly (mostly on loop reset).
@@ -34,13 +39,16 @@ export class ThemeManager {
   private active: string[];
 
   private intensity: number;
-  private peakIntensity: number;
+  // Genuinely undefined until the first setIntensity() call: `setIntensity`
+  // compares against it before ever writing it, and that first
+  // `peak !== this.peakIntensity` has to be true so the peak node is reset.
+  private peakIntensity: number | undefined;
   private paused: boolean;
-  private theme: MusicDefinition|null;
+  private theme: MusicDefinition | null;
   private timeout: any;
   private rng: () => number;
 
-  constructor(nodes: {[key: string]: AudioNode}, rng: () => number) {
+  constructor(nodes: { [key: string]: AudioNode }, rng: () => number) {
     this.nodes = nodes;
     this.active = [];
     for (const k of Object.keys(this.nodes)) {
@@ -72,7 +80,10 @@ export class ThemeManager {
     }
     for (const i of this.active) {
       if (this.nodes[i] && this.nodes[i].isPlaying()) {
-        this.nodes[i].fadeOut((this.intensity > 0) ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS, true);
+        this.nodes[i].fadeOut(
+          this.intensity > 0 ? MUSIC_FADE_SECONDS : MUSIC_FADE_LONG_SECONDS,
+          true,
+        );
       }
     }
   }
@@ -82,7 +93,9 @@ export class ThemeManager {
   }
 
   public setIntensity(intensity: number, peak: number = 0) {
-    intensity = Math.round(Math.min(MUSIC_INTENSITY_MAX, Math.max(0, intensity)));
+    intensity = Math.round(
+      Math.min(MUSIC_INTENSITY_MAX, Math.max(0, intensity)),
+    );
     if (intensity !== this.intensity) {
       this.playAtIntensity(intensity);
     }
@@ -90,7 +103,7 @@ export class ThemeManager {
       this.peakIntensity = peak;
       const peakNode = this.nodes[this.active[this.active.length - 1]];
       if (peakNode) {
-        if (Boolean(peak)) {
+        if (peak) {
           peakNode.fadeIn(peak);
         } else {
           peakNode.fadeOut();
@@ -101,7 +114,7 @@ export class ThemeManager {
 
   // Starts the music from scratch with a new theme, fading out any existing music
   // If no theme specified, uses existing music (for example, resuming from a pause)
-  private startTheme(theme: MusicDefinition|null = this.theme) {
+  private startTheme(theme: MusicDefinition | null = this.theme) {
     this.fadeOut();
     this.theme = theme;
     if (theme) {
@@ -135,9 +148,15 @@ export class ThemeManager {
       }
     } else {
       // Shift in existing music
-      if (old <= this.theme.maxIntensity && newIntensity > this.theme.maxIntensity) {
+      if (
+        old <= this.theme.maxIntensity &&
+        newIntensity > this.theme.maxIntensity
+      ) {
         this.startTheme(MUSIC_DEFINITIONS.combat.heavy);
-      } else if (old >= this.theme.minIntensity && newIntensity < this.theme.minIntensity) {
+      } else if (
+        old >= this.theme.minIntensity &&
+        newIntensity < this.theme.minIntensity
+      ) {
         this.startTheme(MUSIC_DEFINITIONS.combat.light);
       } else {
         this.updateTheme(newIntensity - old);
@@ -150,10 +169,17 @@ export class ThemeManager {
     if (!theme) {
       return 0;
     }
-    let result = Math.ceil((this.intensity - theme.minIntensity) / (theme.maxIntensity - theme.minIntensity) * theme.variants);
+    let result = Math.ceil(
+      ((this.intensity - theme.minIntensity) /
+        (theme.maxIntensity - theme.minIntensity)) *
+        theme.variants,
+    );
     if (this.rng() < INTENSITY_DECREMENT_CHANCE && result > 1) {
       result--;
-    } else if (this.rng() < INTENSITY_INCREMENT_CHANCE && result < theme.variants) {
+    } else if (
+      this.rng() < INTENSITY_INCREMENT_CHANCE &&
+      result < theme.variants
+    ) {
       result++;
     }
     return result;
@@ -173,14 +199,16 @@ export class ThemeManager {
       skipped.push(Math.floor(this.rng() * theme.baselineInstruments.length));
       skipped.push(Math.floor(this.rng() * theme.baselineInstruments.length));
     }
-    return theme.baselineInstruments.filter((_, i: number) => {
-      return skipped.indexOf(i) === -1;
-    }).map((i: string) => {
-      return `${theme.directory}${i}${this.generateIntensity()}`; // e.g. combat/light/HighBrass4
-    });
+    return theme.baselineInstruments
+      .filter((_, i: number) => {
+        return skipped.indexOf(i) === -1;
+      })
+      .map((i: string) => {
+        return `${theme.directory}${i}${this.generateIntensity()}`; // e.g. combat/light/HighBrass4
+      });
   }
 
-  public getActiveInstrument(instrument: string): string|null {
+  public getActiveInstrument(instrument: string): string | null {
     for (const a of this.active) {
       if (a.indexOf(instrument) !== -1) {
         return a;
@@ -201,10 +229,12 @@ export class ThemeManager {
     }
 
     this.active = this.generateTracks();
+    const peakIntensity = this.peakIntensity || 0;
     theme.instruments.forEach((instrument: string, i: number) => {
       let file = this.getActiveInstrument(instrument);
-      const active = this.peakIntensity > 0 || Boolean(file);
-      file = file || `${theme.directory}${instrument}${this.generateIntensity()}`;
+      const active = peakIntensity > 0 || Boolean(file);
+      file =
+        file || `${theme.directory}${instrument}${this.generateIntensity()}`;
 
       // Add silent tracks to the active set
       if (!active) {
@@ -218,10 +248,10 @@ export class ThemeManager {
       }
 
       // Determine initial & target volume
-      let initialVolume = (newTheme || !active) ? 0 : 1;
+      let initialVolume = newTheme || !active ? 0 : 1;
       let targetVolume = active ? 1 : 0;
-      if (this.peakIntensity > 0 && instrument === theme.peakingInstrument) {
-        targetVolume = this.peakIntensity;
+      if (peakIntensity > 0 && instrument === theme.peakingInstrument) {
+        targetVolume = peakIntensity;
         initialVolume = node.getVolume() || 0;
       }
       node.playOnce(initialVolume, targetVolume);

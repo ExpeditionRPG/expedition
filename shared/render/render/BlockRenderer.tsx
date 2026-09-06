@@ -308,17 +308,17 @@ export class BlockRenderer {
     // ^_(.*)_                  Match italicized text at start of string until there's a break
     //                          which may contain multiple :icon_names: (hence the greedy selection)
     //
-    // [^{\(]*                  Greedy match all characters until "{" or "("
+    // [^{(]*                  Greedy match all characters until "{" or "("
     //
     // (\(#([a-zA-Z0-9]*?)\))?  Optionally match "(#alphanum3ric)",
     //                          once for outer and once for "alphanum3ric"
     //
-    // [^{\(]*                  Match all characters until "{" or "(" (greedy)
+    // [^{(]*                  Match all characters until "{" or "(" (greedy)
     //
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     try {
       const m = line.match(
-        /^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/,
+        /^_(.*)_[^{(]*(\(#([a-zA-Z0-9]*?)\))?[^{(]*(\{.*\})?/,
       );
       if (!m || !m[1]) {
         throw new Error('Missing title');
@@ -353,7 +353,7 @@ export class BlockRenderer {
     // $                        End of string
     try {
       const m = line.match(
-        /^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/,
+        /^[*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/,
       );
       if (!m) {
         throw new Error('Match failed');

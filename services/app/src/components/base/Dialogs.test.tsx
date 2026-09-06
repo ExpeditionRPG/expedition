@@ -47,7 +47,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(<DialogTmpl {...((props as any) as BaseDialogProps)} />),
+        e: mount(<DialogTmpl {...props} />),
       };
     }
     test('renders title & content', () => {
@@ -105,7 +105,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(<DialogTmpl {...((props as any) as BaseDialogProps)} />),
+        e: mount(<DialogTmpl {...props} />),
       };
     }
     test('renders title & content', () => {
@@ -190,11 +190,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(
-          <MultiplayerStatusDialog
-            {...((props as any) as MultiplayerStatusDialogProps)}
-          />,
-        ),
+        e: mount(<MultiplayerStatusDialog {...props} />),
       };
     }
     test('shows stats', () => {
@@ -218,11 +214,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(
-          <MultiplayerPeersDialog
-            {...((props as any) as MultiplayerPeersDialogProps)}
-          />,
-        ),
+        e: mount(<MultiplayerPeersDialog {...props} />),
       };
     }
 
@@ -255,11 +247,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(
-          <ExpansionSelectDialog
-            {...((props as any) as ExpansionSelectDialogProps)}
-          />,
-        ),
+        e: mount(<ExpansionSelectDialog {...props} />),
       };
     }
 
@@ -328,11 +316,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(
-          <SetPlayerCountDialog
-            {...((props as any) as SetPlayerCountDialogProps)}
-          />,
-        ),
+        e: mount(<SetPlayerCountDialog {...props} />),
       };
     }
     test('enables play under normal circumstances', () => {
@@ -398,9 +382,7 @@ describe('Dialogs', () => {
       };
       return {
         props,
-        e: mount(
-          <TooManyPlayersDialog {...((props as any) as BaseDialogProps)} />,
-        ),
+        e: mount(<TooManyPlayersDialog {...props} />),
       };
     }
 

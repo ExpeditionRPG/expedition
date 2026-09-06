@@ -1,16 +1,16 @@
-import {REGEX} from '../Regex';
-import {Block, BlockList} from './block/BlockList';
-import {Logger, LogMessage, LogMessageMap} from './Logger';
-import {BlockRenderer} from './render/BlockRenderer';
-import {Renderer} from './render/Renderer';
-import {XMLRenderer} from './render/XMLRenderer';
+import { REGEX } from '../Regex';
+import { Block, BlockList } from './block/BlockList';
+import { Logger, LogMessage, LogMessageMap } from './Logger';
+import { BlockRenderer } from './render/BlockRenderer';
+import { Renderer } from './render/Renderer';
+import { XMLRenderer } from './render/XMLRenderer';
 
 export class QDLParser {
   private renderer: BlockRenderer;
   private result: any;
-  private log: Logger | null;
-  private blockList: BlockList;
-  private reverseLookup: {[n: number]: number};
+  private log: Logger | null = null;
+  private blockList!: BlockList;
+  private reverseLookup!: { [n: number]: number };
 
   constructor(renderer: Renderer) {
     this.renderer = new BlockRenderer(renderer);
@@ -31,7 +31,9 @@ export class QDLParser {
     this.log.dbg(JSON.stringify(groups));
 
     // sort numeric strings
-    const indents = Object.keys(groups).sort((a: string, b: string) => (parseInt(a, 10) - parseInt(b, 10)));
+    const indents = Object.keys(groups).sort(
+      (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10),
+    );
 
     // Step through indents from most to least,
     // rendering the dependencies of lesser indents as we go.
@@ -45,7 +47,9 @@ export class QDLParser {
           continue;
         }
 
-        this.log.extend(this.renderSegment(indents[i + 1], group[0], group[group.length - 1]));
+        this.log.extend(
+          this.renderSegment(indents[i + 1], group[0], group[group.length - 1]),
+        );
       }
     }
 
@@ -95,14 +99,17 @@ export class QDLParser {
     // In the future, we could binary-search to get the correct block.
     for (let i = 0; i < this.blockList.length; i++) {
       const block = this.blockList.at(i);
-      if (block.startLine <= line && block.startLine + block.lines.length > line) {
+      if (
+        block.startLine <= line &&
+        block.startLine + block.lines.length > line
+      ) {
         return this.blockList.at(this.reverseLookup[i]).render;
       }
     }
     return null;
   }
 
-  public getMeta(): {[k: string]: any} {
+  public getMeta(): { [k: string]: any } {
     if (!this.blockList) {
       return {};
     }
@@ -115,15 +122,15 @@ export class QDLParser {
       Boolean(block.lines.length) &&
       Boolean(block.lines[0].length) &&
       (block.lines[0][0] === '_' ||
-       block.lines[0][0] === '#' ||
-       REGEX.TRIGGER.test(block.lines[0]))
+        block.lines[0][0] === '#' ||
+        REGEX.TRIGGER.test(block.lines[0]))
     );
   }
 
-  private getBlockGroups(): ({[indent: string]: number[][]}) {
+  private getBlockGroups(): { [indent: string]: number[][] } {
     // Group blocks by indent.
     // Blocks are grouped up to the maximum indent level
-    const groups: {[indent: string]: number[][]} = {};
+    const groups: { [indent: string]: number[][] } = {};
 
     for (let i = 0; i < this.blockList.length; i++) {
       const curr = this.blockList.at(i);
@@ -133,14 +140,22 @@ export class QDLParser {
       }
 
       // If we're a titled block, break the block group at the same indent
-      if (this.hasHeader(curr) && groups[curr.indent][groups[curr.indent].length - 1].length > 0) {
+      if (
+        this.hasHeader(curr) &&
+        groups[curr.indent][groups[curr.indent].length - 1].length > 0
+      ) {
         groups[curr.indent].push([]);
       }
 
       groups[curr.indent][groups[curr.indent].length - 1].push(i);
 
       // Trigger blocks are always singular blocks, so break them afterwards, too
-      if (curr && curr.lines.length && curr.lines[0].length && REGEX.TRIGGER.test(curr.lines[0])) {
+      if (
+        curr &&
+        curr.lines.length &&
+        curr.lines[0].length &&
+        REGEX.TRIGGER.test(curr.lines[0])
+      ) {
         if (i === this.blockList.length - 1) {
           // don't add a blank block as the very last block
         } else {
@@ -167,7 +182,12 @@ export class QDLParser {
     const finalized = this.log.finalize();
     this.log = null;
 
-    const logMap: LogMessageMap = {info: [], warning: [], error: [], internal: []};
+    const logMap: LogMessageMap = {
+      info: [],
+      warning: [],
+      error: [],
+      internal: [],
+    };
     for (const m of finalized) {
       switch (m.type) {
         case 'info':
@@ -182,17 +202,22 @@ export class QDLParser {
         case 'internal':
           logMap.internal.push(m);
           break;
-        default:
+        default: {
           const log = new Logger();
           log.internal('Unknown message type', '506');
           Array.prototype.push.apply(logMap.internal, log.finalize());
           break;
+        }
       }
     }
     return logMap;
   }
 
-  private renderSegment(nextIndent: string, startBlockIdx: number, endBlockIdx: number): LogMessage[] {
+  private renderSegment(
+    nextIndent: string,
+    startBlockIdx: number,
+    endBlockIdx: number,
+  ): LogMessage[] {
     // Precondition: All blocks with indent greater than the starting block
     // have already been rendered and has a .render property set (i.e. not undefined)
 
@@ -268,15 +293,13 @@ export class QDLParser {
 
     if (headerLine[0] === '#') {
       if (blocks.length !== 1) {
-        log.err(
-          'quest card group cannot contain multiple cards',
-          '423'
-        );
+        log.err('quest card group cannot contain multiple cards', '423');
       }
       this.renderer.toQuest(blocks[0], log);
     } else if (REGEX.TRIGGER.test(headerLine)) {
       this.renderer.toTrigger(blocks, log);
-    } else { // Template header
+    } else {
+      // Template header
       this.renderer.toNode(blocks, log);
     }
 

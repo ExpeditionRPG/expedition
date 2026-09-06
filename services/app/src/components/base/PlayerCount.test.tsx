@@ -14,7 +14,7 @@ describe('PlayerCount', () => {
       onChange: jest.fn(),
       ...overrides,
     };
-    const e = mount(<PlayerCount {...((props as any) as Props)} />);
+    const e = mount(<PlayerCount {...props} />);
     return { props, e };
   }
   test('can adjust up', () => {

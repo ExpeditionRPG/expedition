@@ -7,7 +7,7 @@
 
 // Takes in array of RegEx, returns a single regex that ORs them
 export function combinedRegex(regexs: RegExp[], flags?: string): RegExp {
-  const sources = regexs.map((regex) => regex.source);
+  const sources = regexs.map(regex => regex.source);
   return new RegExp(sources.join('|'), flags);
 }
 
@@ -52,9 +52,9 @@ export const REGEX = {
 
   // Detecting markdown styles
   NEWLINE: /\\n/,
-  BOLD_ASTERISKS: /\*\*([^\*]*)\*\*/,
-  BOLD_UNDERSCORES: /\_\_([^\_]*)\_\_/,
-  ITALIC_ASTERISKS: /\*([^\*]*)\*/,
-  ITALIC_UNDERSCORES: /\_([^\_]*)\_/,
+  BOLD_ASTERISKS: /\*\*([^*]*)\*\*/,
+  BOLD_UNDERSCORES: /__([^_]*)__/,
+  ITALIC_ASTERISKS: /\*([^*]*)\*/,
+  ITALIC_UNDERSCORES: /_([^_]*)_/,
   STRIKETHROUGH: /~~([^~]*)~~/,
 };

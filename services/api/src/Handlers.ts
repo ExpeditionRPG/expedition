@@ -525,11 +525,11 @@ export function userQuests(
   res: express.Response,
 ) {
   return getUserQuests(db, res.locals.id)
-    .then((userQuests: UserQuestsType) => {
-      for (const k of Object.keys(userQuests)) {
-        proxifyQuestURL(userQuests[k].details);
+    .then((quests: UserQuestsType) => {
+      for (const k of Object.keys(quests)) {
+        proxifyQuestURL(quests[k].details);
       }
-      return res.status(200).end(JSON.stringify(userQuests));
+      return res.status(200).end(JSON.stringify(quests));
     })
     .catch((e: Error) => {
       console.error(e);

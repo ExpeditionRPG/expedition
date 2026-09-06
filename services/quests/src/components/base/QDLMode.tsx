@@ -1,10 +1,12 @@
-import {combinedRegex, REGEX} from 'shared/Regex';
-const acequire: any = (require('brace') as any).acequire;
+import { combinedRegex, REGEX } from 'shared/Regex';
+const acequire: any = require('brace').acequire;
 const oop = acequire('ace/lib/oop');
-const {Range} = acequire('ace/range');
-const TextMode = (acequire('ace/mode/text') as any).Mode;
-const MatchingBraceOutdent = (acequire('ace/mode/matching_brace_outdent') as any).MatchingBraceOutdent;
-const MarkdownHighlightRules = (acequire('ace/mode/markdown_highlight_rules') as any).MarkdownHighlightRules;
+const { Range } = acequire('ace/range');
+const TextMode = acequire('ace/mode/text').Mode;
+const MatchingBraceOutdent = acequire('ace/mode/matching_brace_outdent')
+  .MatchingBraceOutdent;
+const MarkdownHighlightRules = acequire('ace/mode/markdown_highlight_rules')
+  .MarkdownHighlightRules;
 
 // designed with https://ace.c9.io/tool/mode_creator.html
 const QDLHighlightRules: any = function() {
@@ -28,11 +30,7 @@ const QDLHighlightRules: any = function() {
     },
     {
       token: 'variable', // blue
-      regex: combinedRegex([
-        REGEX.OP,
-        REGEX.TRIGGER,
-        REGEX.ID,
-      ]),
+      regex: combinedRegex([REGEX.OP, REGEX.TRIGGER, REGEX.ID]),
     },
     {
       token: 'heading', // red
@@ -71,7 +69,9 @@ class QDLFoldMode {
     /(^\s*)(_.*_)/, // _cards_
     /(^\s*)(# .*)/, // # titles
   ];
-  public static foldingStartMarker = new RegExp(QDLFoldMode.foldingStartMarkers.map((x: any) => x.source).join('|'));
+  public static foldingStartMarker = new RegExp(
+    QDLFoldMode.foldingStartMarkers.map((x: any) => x.source).join('|'),
+  );
 
   private static getIndent(line: string): number {
     let indent = 0;
@@ -92,34 +92,41 @@ class QDLFoldMode {
   }
 
   public getFoldWidget(session: any, foldStyle: any, row: number): string {
-      const line = session.getLine(row);
-      return QDLFoldMode.foldingStartMarker.test(line) ? 'start' : '';
+    const line = session.getLine(row);
+    return QDLFoldMode.foldingStartMarker.test(line) ? 'start' : '';
   }
 
   public getFoldWidgetRange(session: any, foldStyle: any, row: number): any {
+    let line = session.getLine(row);
 
-      let line = session.getLine(row);
+    if (!line.match(QDLFoldMode.foldingStartMarker)) {
+      return;
+    }
 
-      if (!line.match(QDLFoldMode.foldingStartMarker)) {
-        return;
+    const startRow = row;
+    const startColumn = line.length;
+    const maxRow = session.getLength();
+    const startIndent = QDLFoldMode.getIndent(line);
+    const startImportance = QDLFoldMode.getImportance(line);
+    let endRow = maxRow;
+
+    for (row += 1; row < maxRow; row++) {
+      line = session.getLine(row);
+      if (
+        QDLFoldMode.getIndent(line) <= startIndent &&
+        QDLFoldMode.getImportance(line) >= startImportance
+      ) {
+        endRow = row - 1;
+        break;
       }
+    }
 
-      const startRow = row;
-      const startColumn = line.length;
-      const maxRow = session.getLength();
-      const startIndent = QDLFoldMode.getIndent(line);
-      const startImportance = QDLFoldMode.getImportance(line);
-      let endRow = maxRow;
-
-      for (row += 1; row < maxRow; row++) {
-        line = session.getLine(row);
-        if (QDLFoldMode.getIndent(line) <= startIndent && QDLFoldMode.getImportance(line) >= startImportance) {
-          endRow = row - 1;
-          break;
-        }
-      }
-
-      return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
+    return new Range(
+      startRow,
+      startColumn,
+      endRow,
+      session.getLine(endRow).length,
+    );
   }
 }
 
@@ -134,7 +141,7 @@ oop.inherits(QDLMode, TextMode);
 (function() {
   // configure comment start/end characters
   this.lineCommentStart = '//';
-  this.blockComment = {start: '/*', end: '*/'};
+  this.blockComment = { start: '/*', end: '*/' };
 
   this.getNextLineIndent = function(state: any, line: any, tab: any) {
     const indent = this.$getIndent(line);
@@ -156,5 +163,4 @@ oop.inherits(QDLMode, TextMode);
   };
 
   // TODO: create worker for live syntax checking/validation
-
-}).call(QDLMode.prototype);
+}.call(QDLMode.prototype));

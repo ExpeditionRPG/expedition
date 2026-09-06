@@ -1,54 +1,63 @@
-import {API_HOST} from 'shared/schema/Constants';
+import { API_HOST } from 'shared/schema/Constants';
 
-declare var device: any;
-declare var ga: any;
-declare var google: any;
+declare let device: any;
+declare let ga: any;
+declare let google: any;
 
 export interface ReactDocument extends Document {
-  addEventListener: (e: string, f: (this: any, ev: MouseEvent) => any,
-                     useCapture?: boolean) => void;
+  addEventListener: (
+    e: string,
+    f: (this: any, ev: MouseEvent) => any,
+    useCapture?: boolean,
+  ) => void;
   dispatchEvent: (e: Event) => boolean;
 }
 
 export interface CordovaLoginPlugin {
-  trySilentLogin: (options: {scopes: string, webClientId: string},
-                   success: (obj: any) => any, error: (err: string) => any) => void;
-  login: (options: {scopes: string, webClientId: string},
-          success: (obj: any) => any, error: (err: string) => any) => void;
+  trySilentLogin: (
+    options: { scopes: string; webClientId: string },
+    success: (obj: any) => any,
+    error: (err: string) => any,
+  ) => void;
+  login: (
+    options: { scopes: string; webClientId: string },
+    success: (obj: any) => any,
+    error: (err: string) => any,
+  ) => void;
 }
 
 export interface ReactWindow extends Window {
   platform?: string;
   VERSION?: string;
   AndroidFullScreen?: {
-    immersiveMode: (success: () => any, failure: () => any) => void,
+    immersiveMode: (success: () => any, failure: () => any) => void;
   };
   AudioContext?: AudioContext;
   webkitAudioContext?: AudioContext;
   cordova?: {
     InAppBrowser?: {
       open?: any;
-    }
+    };
   };
   plugins?: {
-    insomnia?: {keepAwake: () => void},
-    googleplus?: CordovaLoginPlugin,
+    insomnia?: { keepAwake: () => void };
+    googleplus?: CordovaLoginPlugin;
   };
   Promise?: any;
   test?: boolean;
-  device?: {platform: string};
+  device?: { platform: string };
 }
-declare var window: ReactWindow;
+declare let window: ReactWindow;
 
 const refs = {
   cheerio: require('cheerio') as CheerioAPI,
-  device: (typeof device !== 'undefined') ? device : {platform: null},
+  device: typeof device !== 'undefined' ? device : { platform: null },
   document,
-  ga: (typeof ga !== 'undefined') ? ga : null,
-  google: (typeof google !== 'undefined') ? google : null,
-  history: (typeof history !== 'undefined') ? history : {pushState: () => null},
-  localStorage: null as (Storage|null),
-  navigator: (typeof navigator !== 'undefined') ? navigator : null,
+  ga: typeof ga !== 'undefined' ? ga : null,
+  google: typeof google !== 'undefined' ? google : null,
+  history: typeof history !== 'undefined' ? history : { pushState: () => null },
+  localStorage: null as Storage | null,
+  navigator: typeof navigator !== 'undefined' ? navigator : null,
   window,
   audioContext: null,
 };
@@ -67,7 +76,13 @@ export function getDevicePlatform(): 'android' | 'ios' | 'web' {
 }
 
 export function getPlatformDump(): string {
-  return (window.navigator.platform || '') + ': ' + (window.navigator.userAgent || '') + ': ' + (window.navigator.cookieEnabled ? 'W/COOKIES' : 'NO COOKIES');
+  return (
+    (window.navigator.platform || '') +
+    ': ' +
+    (window.navigator.userAgent || '') +
+    ': ' +
+    (window.navigator.cookieEnabled ? 'W/COOKIES' : 'NO COOKIES')
+  );
 }
 
 export function setWindow(w: ReactWindow) {
@@ -123,12 +138,13 @@ export function getCheerio(): CheerioAPI {
   return refs.cheerio;
 }
 
-export function getAudioContext(): AudioContext|null {
+export function getAudioContext(): AudioContext | null {
   if (refs.audioContext) {
     return refs.audioContext;
   }
   try {
-    refs.audioContext = new (getWindow().AudioContext as any || getWindow().webkitAudioContext as any)();
+    refs.audioContext = new ((getWindow().AudioContext as any) ||
+      (getWindow().webkitAudioContext as any))();
   } catch (err) {
     console.log('Web Audio API is not supported in this browser');
     refs.audioContext = null;
@@ -143,20 +159,22 @@ function timeoutPromise<T>(ms: number, promise: Promise<T>): Promise<T> {
       reject(new Error('promise timeout'));
     }, ms);
     promise.then(
-      (res) => {
+      res => {
         clearTimeout(timeoutId);
         resolve(res);
       },
-      (err) => {
+      err => {
         clearTimeout(timeoutId);
         reject(err);
-      }
+      },
     );
   });
 }
 
 export function getOnlineState(): Promise<boolean> {
-  return timeoutPromise(500, fetch(API_HOST + '/healthcheck')).then(() => true).catch(() => false);
+  return timeoutPromise(500, fetch(API_HOST + '/healthcheck'))
+    .then(() => true)
+    .catch(() => false);
 }
 
 export function openWindow(url: string): any {
@@ -165,7 +183,8 @@ export function openWindow(url: string): any {
   if (platform === 'android' && getNavigator().app) {
     getNavigator().app.loadUrl(url, { openExternal: true });
   } else {
-    const open = ((window.cordova || {}).InAppBrowser || {}).open || window.open;
+    const open =
+      ((window.cordova || {}).InAppBrowser || {}).open || window.open;
     open(url, '_system');
   }
 }
@@ -194,11 +213,11 @@ export function getLocalStorage(): Storage {
       refs.localStorage = {
         clear: () => null,
         getItem: (s: string) => null,
-        key: (index: number|string) => null,
+        key: (index: number | string) => null,
         length: 0,
         removeItem: () => null,
         setItem: () => null,
-      } as Storage;
+      };
     }
     return refs.localStorage;
   }

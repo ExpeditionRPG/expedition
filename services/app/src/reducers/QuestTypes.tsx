@@ -15,6 +15,13 @@ export interface RoleplayElement {
   icon?: string;
 }
 
-export interface Enemy {name: string; tier: number; class?: string; }
+export interface Enemy {
+  name: string;
+  tier: number;
+  class?: string;
+}
 
-export interface Loot {tier: number; count: number; }
+export interface Loot {
+  tier: number;
+  count: number;
+}

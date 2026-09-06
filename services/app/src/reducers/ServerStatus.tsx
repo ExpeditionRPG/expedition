@@ -1,6 +1,6 @@
 import Redux from 'redux';
-import {ServerStatusSetAction} from '../actions/ActionTypes';
-import {ServerStatusState} from './StateTypes';
+import { ServerStatusSetAction } from '../actions/ActionTypes';
+import { ServerStatusState } from './StateTypes';
 
 export const initialServerStatusState: ServerStatusState = {
   announcement: {
@@ -11,7 +11,10 @@ export const initialServerStatusState: ServerStatusState = {
   isLatestAppVersion: false,
 };
 
-export function serverstatus(state: ServerStatusState = initialServerStatusState, action: Redux.Action): ServerStatusState {
+export function serverstatus(
+  state: ServerStatusState = initialServerStatusState,
+  action: Redux.Action,
+): ServerStatusState {
   switch (action.type) {
     case 'SERVER_STATUS_SET':
       return {

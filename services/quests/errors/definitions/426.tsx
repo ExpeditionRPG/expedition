@@ -1,15 +1,15 @@
 export const NUMBER = 426;
-export const NAME = `goto \"bad\" does not match any card IDs (check your spelling)`;
+export const NAME = `goto "bad" does not match any card IDs (check your spelling)`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_roleplay_
+  `_roleplay_
 
 **goto bad**`,
 ];
 
 export const VALID = [
-`_roleplay_ (#target)
+  `_roleplay_ (#target)
 
 Text
 

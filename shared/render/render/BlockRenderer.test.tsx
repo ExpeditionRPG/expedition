@@ -4,7 +4,7 @@ import { BlockRenderer } from './BlockRenderer';
 import TestData from './TestData';
 import { XMLRenderer } from './XMLRenderer';
 
-const prettifyHTML = (require('html') as any).prettyPrint;
+const prettifyHTML = require('html').prettyPrint;
 
 describe('BlockRenderer', () => {
   // BlockRenderer is stateless

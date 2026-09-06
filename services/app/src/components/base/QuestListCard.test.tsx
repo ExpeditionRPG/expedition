@@ -19,7 +19,7 @@ describe('QuestListCard', () => {
       onReturn: jest.fn(),
       ...overrides,
     };
-    const e = render(<QuestListCard {...((props as any) as Props)} />);
+    const e = render(<QuestListCard {...props} />);
     return { props, e };
   }
 

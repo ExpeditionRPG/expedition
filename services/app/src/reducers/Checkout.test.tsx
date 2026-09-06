@@ -8,7 +8,7 @@ import { CheckoutState } from './StateTypes';
 const stripe = { id: 'stripe-handle' } as any;
 
 function set(delta: Partial<CheckoutState>): CheckoutSetStateAction {
-  return { type: 'CHECKOUT_SET_STATE', delta } as CheckoutSetStateAction;
+  return { type: 'CHECKOUT_SET_STATE', delta };
 }
 
 describe('Checkout reducer', () => {

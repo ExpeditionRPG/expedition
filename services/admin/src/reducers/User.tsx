@@ -1,6 +1,6 @@
 import Redux from 'redux';
-import {SetProfileMetaAction} from '../actions/ActionTypes';
-import {UserState} from './StateTypes';
+import { SetProfileMetaAction } from '../actions/ActionTypes';
+import { UserState } from './StateTypes';
 
 export const loggedOutUser: UserState = {
   displayName: '',
@@ -10,10 +10,13 @@ export const loggedOutUser: UserState = {
   loggedIn: false,
 };
 
-export function user(state: UserState = loggedOutUser, action: Redux.Action): UserState {
+export function user(
+  state: UserState = loggedOutUser,
+  action: Redux.Action,
+): UserState {
   switch (action.type) {
-    case 'SET_PROFILE_META':
-      const profileAction = (action as SetProfileMetaAction);
+    case 'SET_PROFILE_META': {
+      const profileAction = action as SetProfileMetaAction;
       return {
         displayName: profileAction.user.displayName,
         email: profileAction.user.email,
@@ -21,6 +24,7 @@ export function user(state: UserState = loggedOutUser, action: Redux.Action): Us
         image: profileAction.user.image,
         loggedIn: profileAction.user.loggedIn,
       };
+    }
     default:
       return state;
   }

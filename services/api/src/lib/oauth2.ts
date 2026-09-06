@@ -100,11 +100,11 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
       const ru: any = req.user;
       const image = ru.payload.picture;
       const user = new User({
-        name: (ru.payload.name as any) as string,
-        email: ((ru.payload.email || '') as any) as string,
+        name: ru.payload.name,
+        email: ru.payload.email || '',
         // https://stackoverflow.com/questions/42833677/openid-connect-jwt-sub-or-email
         // https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-        id: (ru.payload.sub as any) as string,
+        id: ru.payload.sub,
       });
 
       if (req.session) {

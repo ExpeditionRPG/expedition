@@ -41,7 +41,7 @@ describe('QuestPreview', () => {
       onReturn: jest.fn(),
       ...overrides,
     };
-    const wrapper = mount(<QuestPreview {...((props as any) as Props)} />);
+    const wrapper = mount(<QuestPreview {...props} />);
     return { props, wrapper };
   }
   function setup(overrides?: Partial<Props>, questOverrides?: Partial<Quest>) {

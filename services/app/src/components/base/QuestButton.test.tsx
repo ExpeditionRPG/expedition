@@ -30,7 +30,7 @@ describe('QuestButton', () => {
     });
     const e = render(
       <Provider store={store}>
-        <QuestButton {...((props as any) as Props)} />
+        <QuestButton {...props} />
       </Provider>,
       undefined /*renderOptions*/,
     );

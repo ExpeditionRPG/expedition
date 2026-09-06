@@ -7,13 +7,10 @@ const options = {
   mode: 'production',
   devtool: 'source-map',
   resolve: {
+    alias: require('./webpack.aliases'),
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    'promise-polyfill',
-  ],
+  entry: ['babel-polyfill', 'whatwg-fetch', 'promise-polyfill'],
   output: {
     // This must be an absolute path, and thus must be defined per-service
     // path: 'dist',
@@ -30,12 +27,15 @@ const options = {
     new Webpack.DefinePlugin({
       // Default to beta for safety
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
-      'process.env.API_HOST': JSON.stringify(process.env.API_HOST || 'http://betaapi.expeditiongame.com'),
-      'process.env.OAUTH2_CLIENT_ID': JSON.stringify(process.env.OAUTH2_CLIENT_ID || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com'),
+      'process.env.API_HOST': JSON.stringify(
+        process.env.API_HOST || 'http://betaapi.expeditiongame.com',
+      ),
+      'process.env.OAUTH2_CLIENT_ID': JSON.stringify(
+        process.env.OAUTH2_CLIENT_ID ||
+          '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
+      ),
     }),
-    new CopyWebpackPlugin([
-      { from: 'src/index.html' },
-    ]),
+    new CopyWebpackPlugin([{ from: 'src/index.html' }]),
   ],
   optimization: {
     noEmitOnErrors: true,

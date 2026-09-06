@@ -72,7 +72,7 @@ describe('React', () => {
       // TODO this should be done with puppeteer instead of window mocking nonsense
       test.skip('adds backbutton listener', () => {
         const fakeStore = newMockStoreWithInitializedState();
-        installStore((fakeStore as any) as Redux.Store<AppStateWithHistory>);
+        installStore(fakeStore);
         const doc = dummyDOM();
         (window as any).plugins = {
           insomnia: {

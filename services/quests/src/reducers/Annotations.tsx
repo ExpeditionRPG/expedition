@@ -1,14 +1,18 @@
 import Redux from 'redux';
-import {LogMessage, LogMessageMap} from 'shared/render/Logger';
-import {QuestPlaytestAction, QuestRenderAction} from '../actions/ActionTypes';
-import {AnnotationsState, AnnotationType} from './StateTypes';
+import { LogMessage, LogMessageMap } from 'shared/render/Logger';
+import { QuestPlaytestAction, QuestRenderAction } from '../actions/ActionTypes';
+import { AnnotationsState, AnnotationType } from './StateTypes';
 
 const initialAnnotations: AnnotationsState = {
   playtest: [],
   spellcheck: [],
 };
 
-function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: Set<number>): void {
+function toAnnotation(
+  msgs: LogMessage[],
+  result: AnnotationType[],
+  errorLines: Set<number>,
+): void {
   for (const m of msgs) {
     errorLines.add(m.line || 0);
 
@@ -20,7 +24,13 @@ function toAnnotation(msgs: LogMessage[], result: AnnotationType[], errorLines: 
     result.push({
       column: 0,
       row: m.line || 0,
-      text: m.type[0].toUpperCase() + m.type.substring(1) + ' ' + m.url + ': ' + m.text,
+      text:
+        m.type[0].toUpperCase() +
+        m.type.substring(1) +
+        ' ' +
+        m.url +
+        ': ' +
+        m.text,
       type: m.type,
     });
   }
@@ -47,14 +57,20 @@ function messagesToErrors(msgs: LogMessageMap): AnnotationType[] {
   return result;
 }
 
-export function annotations(state: AnnotationsState = initialAnnotations, action: Redux.Action): AnnotationsState {
+export function annotations(
+  state: AnnotationsState = initialAnnotations,
+  action: Redux.Action,
+): AnnotationsState {
   switch (action.type) {
     case 'PLAYTEST_INIT':
-      return {...state, playtest: []};
+      return { ...state, playtest: [] };
     case 'PLAYTEST_MESSAGE':
       return {
         ...state,
-        playtest: [...state.playtest, ...messagesToErrors((action as QuestPlaytestAction).msgs)],
+        playtest: [
+          ...state.playtest,
+          ...messagesToErrors((action as QuestPlaytestAction).msgs),
+        ],
       };
     case 'QUEST_RENDER':
       return {
@@ -64,5 +80,4 @@ export function annotations(state: AnnotationsState = initialAnnotations, action
     default:
       return state;
   }
-
 }

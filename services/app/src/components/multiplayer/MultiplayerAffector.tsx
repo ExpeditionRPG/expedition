@@ -1,5 +1,9 @@
 import * as React from 'react';
-import {InteractionEvent, MultiplayerEvent, MultiplayerEventBody} from 'shared/multiplayer/Events';
+import {
+  InteractionEvent,
+  MultiplayerEvent,
+  MultiplayerEventBody,
+} from 'shared/multiplayer/Events';
 
 export interface StateProps {
   id?: string;
@@ -23,11 +27,13 @@ export interface Props extends StateProps, DispatchProps {}
 // to the inheriting class.
 // Also listens for touch events on this component and transmits them.
 export default class MultiplayerAffector extends React.Component<Props, {}> {
-  private listeners: {[k: string]: (e: any) => any};
+  private listeners: { [k: string]: (e: any) => any };
   private ignoreNextMouseDown: boolean;
   private boundHandleMultiplayerEvent: (e: MultiplayerEvent) => void;
   private mouseDown: boolean;
-  private ref: HTMLElement;
+  // Set by onRef() once React has mounted the div; null before that and
+  // after an unmount that never rendered.
+  private ref: HTMLElement | null = null;
   private boundingRect: any;
 
   constructor(props: Props) {
@@ -39,7 +45,8 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     // to avoid re-rendering when we change it.
     this.ignoreNextMouseDown = false;
     this.mouseDown = false;
-    this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) => this.handleMultiplayerEvent(e);
+    this.boundHandleMultiplayerEvent = (e: MultiplayerEvent) =>
+      this.handleMultiplayerEvent(e);
     this.props.onSubscribe(this.boundHandleMultiplayerEvent);
     if (this.props.lazy) {
       // Event listener registration is expensive (several milliseconds per call to addEventListener).
@@ -78,7 +85,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       this.ignoreNextMouseDown = true;
     }
 
-    const xyArray: {[id: string]: number[]} = {};
+    const xyArray: { [id: string]: number[] } = {};
     // tslint:disable-next-line
     for (let i = 0; i < e.touches.length; i++) {
       const touch = e.touches[i];
@@ -97,12 +104,12 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       return;
     }
     this.mouseDown = true;
-    this.processInput('touchstart', {0: [e.layerX, e.layerY]});
+    this.processInput('touchstart', { 0: [e.layerX, e.layerY] });
   }
 
   private mouseMoveEvent(e: MouseEvent) {
     if (this.mouseDown) {
-      this.processInput('touchmove', {0: [e.layerX, e.layerY]});
+      this.processInput('touchmove', { 0: [e.layerX, e.layerY] });
     }
   }
 
@@ -111,19 +118,31 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     this.processInput('touchend', {});
   }
 
-  public processInput(type: string, positions: {[id: string]: number[]}) {
+  public processInput(type: string, positions: { [id: string]: number[] }) {
+    const ref = this.ref;
+    if (!ref) {
+      return;
+    }
     for (const k of Object.keys(positions)) {
-      positions[k][0] = Math.floor((positions[k][0] - this.boundingRect.left) / this.ref.offsetWidth * 1000);
-      positions[k][1] = Math.floor((positions[k][1] - this.boundingRect.top) / this.ref.offsetHeight * 1000);
+      positions[k][0] = Math.floor(
+        ((positions[k][0] - this.boundingRect.left) / ref.offsetWidth) * 1000,
+      );
+      positions[k][1] = Math.floor(
+        ((positions[k][1] - this.boundingRect.top) / ref.offsetHeight) * 1000,
+      );
 
       // For unknown reasons, clientX may sometimes appear to be -100vw from its correct position.
       // As a result we instead track the mod of the position.
       if (positions[k][0] < 0) {
         positions[k][0] += 1000;
       }
-
     }
-    const e: InteractionEvent = {type: 'INTERACTION', positions, id: this.props.id || '', event: type};
+    const e: InteractionEvent = {
+      type: 'INTERACTION',
+      positions,
+      id: this.props.id || '',
+      event: type,
+    };
 
     // Don't send move events over multiplayer.
     // Our implementation does not allow high-frequency value updates.
@@ -136,7 +155,7 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
     }
   }
 
-  public onRef(r: HTMLElement|null) {
+  public onRef(r: HTMLElement | null) {
     if (r === null || r === this.ref) {
       return;
     }
@@ -153,9 +172,9 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
         // The `true` arg ensures touch events are propagated here during
         // the "capture" phase of event flow.
         // https://www.w3.org/TR/DOM-Level-3-Events/#event-flow
-        this.ref.addEventListener(k, this.listeners[k], true);
+        r.addEventListener(k, this.listeners[k], true);
       }
-      this.boundingRect = this.ref.getBoundingClientRect();
+      this.boundingRect = r.getBoundingClientRect();
     });
   }
 
@@ -175,8 +194,11 @@ export default class MultiplayerAffector extends React.Component<Props, {}> {
       <div
         id={this.props.id}
         className={this.props.className + ' remote-affector'}
-        style={{touchAction: 'pan-y'}}
-        ref={(r: HTMLElement|null) => {this.onRef(r); }}>
+        style={{ touchAction: 'pan-y' }}
+        ref={(r: HTMLElement | null) => {
+          this.onRef(r);
+        }}
+      >
         {this.props.children}
       </div>
     );
