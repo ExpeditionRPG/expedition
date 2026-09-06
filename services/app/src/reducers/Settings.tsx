@@ -8,12 +8,7 @@ import {
   getStorageString,
   setStorageKeyValue,
 } from '../LocalStorage';
-import {
-  ContentSetsType,
-  DifficultyType,
-  FontSizeType,
-  SettingsType,
-} from './StateTypes';
+import { DifficultyType, FontSizeType, SettingsType } from './StateTypes';
 
 export const initialSettings: SettingsType = {
   audioEnabled: getStorageBoolean('audioEnabled', false),

@@ -144,7 +144,8 @@ export function populateScope(
     numAdventurers(): number {
       return numAdventurers(getState().settings, getState().multiplayer);
     },
-    viewCount(id: string): number {
+    // Rebound to the quest context by evaluateOp(); see combat/Scope.tsx.
+    viewCount(this: TemplateContext, id: string): number {
       return this.views[id] || 0;
     },
     ...combatScope(),

@@ -1,10 +1,5 @@
 import * as Promise from 'bluebird';
-import {
-  ActionEvent,
-  ClientID,
-  TimerWait,
-  WaitType,
-} from 'shared/multiplayer/Events';
+import { ClientID, TimerWait, WaitType } from 'shared/multiplayer/Events';
 import { Database } from '../models/Database';
 import { commitAndBroadcastAction } from '../models/multiplayer/Events';
 import { getSession } from './Sessions';

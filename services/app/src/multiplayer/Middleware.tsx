@@ -1,5 +1,4 @@
 import * as Redux from 'redux';
-import { ActionEvent } from 'shared/multiplayer/Events';
 import { local, sendEvent, sendStatus } from '../actions/Multiplayer';
 import { Connection } from './Connection';
 import { counterAdd } from './Counters';

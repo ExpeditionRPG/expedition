@@ -1,5 +1,4 @@
 import * as http from 'http';
-import { MultiplayerEvent } from 'shared/multiplayer/Events';
 import * as WebSocket from 'ws';
 import Config from '../config';
 import { Database } from '../models/Database';

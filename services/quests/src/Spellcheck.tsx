@@ -5,14 +5,15 @@ import { setWordCount } from './actions/Editor';
 import REGEX from './Regex';
 import { store } from './Store';
 const IGNORE = Object.keys(ENCOUNTERS);
+// The trailing class is `[^\\s]*`, not `[^\s]*`: this argument is a string
+// rather than a regex literal, so a single backslash collapsed to a plain `s`
+// and the class read "any character except a lowercase s" instead of "any
+// non-whitespace character".
 const elementRegexes = new RegExp(
   '(' +
     [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP]
       .map((regex: any): string => {
         return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
-        // `[^\\s]*` (not `[^\s]*`): this is a string, not a regex literal, so the
-        // single backslash collapsed to a plain `s` and the class read "any character
-        // except a lowercase s" rather than "any non-whitespace character".
       })
       .join('|') +
     ')[^\\s]*',

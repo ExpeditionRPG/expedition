@@ -12,6 +12,15 @@
     "target": "es6",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
+    // TypeScript 6 changed the default of this to `true`. It has to stay off
+    // here: with it on, `import * as express from 'express'` stops being
+    // callable (express, express-session, memoizee, request-promise,
+    // classnames and raven-for-redux are all `export =` functions consumed
+    // that way), and the emit would start inserting interop helpers that
+    // neither jest's swc transform -- configured with `noInterop: true` to
+    // match -- nor the existing bundles expect. Turning it on is a codebase-
+    // wide change, not part of this upgrade.
+    "esModuleInterop": false,
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

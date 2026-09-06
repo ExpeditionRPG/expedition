@@ -13,76 +13,85 @@ import { UserBadge } from 'shared/schema/UserBadges';
 import { User } from 'shared/schema/Users';
 import { toSequelize } from './Schema';
 
+// Every `*Model` type below is written `typeof Sequelize.Model & {new(): I}`
+// and the order matters. Sequelize's statics are declared with a polymorphic
+// `this: {new(): M} & typeof Model`, and with the object literal written first
+// TypeScript 6 resolves `M` against `typeof Model`'s own construct signature
+// instead of ours -- every `findOne`/`findAll`/`create` then comes back as
+// `Model<unknown, unknown>` and loses `dataValues`. With `typeof Model` first,
+// `M` infers as the instance interface, which is the whole point of these
+// aliases.
+
 export interface AnalyticsEventInstance
   extends Sequelize.Model<Partial<AnalyticsEvent>> {
   dataValues: AnalyticsEvent;
 }
-type AnalyticsEventModel = {
+type AnalyticsEventModel = typeof Sequelize.Model & {
   new (): AnalyticsEventInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface UserInstance extends Sequelize.Model<Partial<User>> {
   dataValues: User;
 }
-export type UserModel = {
+export type UserModel = typeof Sequelize.Model & {
   new (): UserInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface UserBadgeInstance extends Sequelize.Model<Partial<UserBadge>> {
   dataValues: UserBadge;
 }
-export type UserBadgeModel = {
+export type UserBadgeModel = typeof Sequelize.Model & {
   new (): UserBadgeInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface QuestInstance extends Sequelize.Model<Partial<Quest>> {
   dataValues: Quest;
 }
-export type QuestModel = {
+export type QuestModel = typeof Sequelize.Model & {
   new (): QuestInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface QuestDataInstance extends Sequelize.Model<Partial<QuestData>> {
   dataValues: QuestData;
 }
-export type QuestDataModel = {
+export type QuestDataModel = typeof Sequelize.Model & {
   new (): QuestDataInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface FeedbackInstance extends Sequelize.Model<Partial<Feedback>> {
   dataValues: Feedback;
 }
-export type FeedbackModel = {
+export type FeedbackModel = typeof Sequelize.Model & {
   new (): FeedbackInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface RenderedQuestInstance
   extends Sequelize.Model<Partial<RenderedQuest>> {}
-export type RenderedQuestModel = {
+export type RenderedQuestModel = typeof Sequelize.Model & {
   new (): RenderedQuestInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface EventInstance extends Sequelize.Model<Partial<Event>> {
   dataValues: Event;
 }
-export type EventModel = {
+export type EventModel = typeof Sequelize.Model & {
   new (): EventInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface SessionClientInstance
   extends Sequelize.Model<Partial<SessionClient>> {
   dataValues: SessionClient;
 }
-export type SessionClientModel = {
+export type SessionClientModel = typeof Sequelize.Model & {
   new (): SessionClientInstance;
-} & typeof Sequelize.Model;
+};
 
 export interface SessionInstance extends Sequelize.Model<Session> {
   dataValues: Session;
 }
-export type SessionModel = {
+export type SessionModel = typeof Sequelize.Model & {
   new (): SessionInstance;
-} & typeof Sequelize.Model;
+};
 
 export const AUTH_SESSION_TABLE = 'AuthSession';
 

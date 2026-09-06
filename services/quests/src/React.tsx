@@ -18,7 +18,6 @@ import { setSnackbar } from './actions/Snackbar';
 import { postLoginUser } from './actions/User';
 import { store } from './Store';
 
-declare let require: any;
 declare let window: any;
 declare let unescape: any;
 

@@ -2,7 +2,7 @@ import Redux from 'redux';
 import { initialState } from '../reducers/Filters';
 import { CardType } from '../reducers/StateTypes';
 import { getStore } from '../Store';
-import { FilterChangeAction, FiltersCalculateAction } from './ActionTypes';
+import { FiltersCalculateAction } from './ActionTypes';
 import { cardsFilter, downloadCards } from './Cards';
 
 declare let require: any;
