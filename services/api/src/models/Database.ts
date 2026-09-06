@@ -8,10 +8,18 @@ import { Session } from 'shared/schema/multiplayer/Sessions';
 import { QuestData } from 'shared/schema/QuestData';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
-import { PLACEHOLDER_DATE } from 'shared/schema/SchemaBase';
+import { PLACEHOLDER_DATE, SchemaBase } from 'shared/schema/SchemaBase';
 import { UserBadge } from 'shared/schema/UserBadges';
 import { User } from 'shared/schema/Users';
 import { toSequelize } from './Schema';
+
+// The column half of a schema class: its data fields, minus the SchemaBase
+// bookkeeping and the withoutDefaults() helper, none of which exist on a
+// Sequelize instance. Mixing this into each *Instance interface is what makes
+// `instance.get('partition')` return a string: Sequelize types the string
+// overload of get() as `unknown` and only the `K extends keyof this` overload
+// is precise, so the columns have to be visible on `this`.
+type Columns<T> = Omit<T, keyof SchemaBase | 'withoutDefaults'>;
 
 // Every `*Model` type below is written `typeof Sequelize.Model & {new(): I}`
 // and the order matters. Sequelize's statics are declared with a polymorphic
@@ -23,42 +31,53 @@ import { toSequelize } from './Schema';
 // aliases.
 
 export interface AnalyticsEventInstance
-  extends Sequelize.Model<Partial<AnalyticsEvent>> {
+  extends Sequelize.Model<Partial<AnalyticsEvent>>,
+    Columns<AnalyticsEvent> {
   dataValues: AnalyticsEvent;
 }
 type AnalyticsEventModel = typeof Sequelize.Model & {
   new (): AnalyticsEventInstance;
 };
 
-export interface UserInstance extends Sequelize.Model<Partial<User>> {
+export interface UserInstance
+  extends Sequelize.Model<Partial<User>>,
+    Columns<User> {
   dataValues: User;
 }
 export type UserModel = typeof Sequelize.Model & {
   new (): UserInstance;
 };
 
-export interface UserBadgeInstance extends Sequelize.Model<Partial<UserBadge>> {
+export interface UserBadgeInstance
+  extends Sequelize.Model<Partial<UserBadge>>,
+    Columns<UserBadge> {
   dataValues: UserBadge;
 }
 export type UserBadgeModel = typeof Sequelize.Model & {
   new (): UserBadgeInstance;
 };
 
-export interface QuestInstance extends Sequelize.Model<Partial<Quest>> {
+export interface QuestInstance
+  extends Sequelize.Model<Partial<Quest>>,
+    Columns<Quest> {
   dataValues: Quest;
 }
 export type QuestModel = typeof Sequelize.Model & {
   new (): QuestInstance;
 };
 
-export interface QuestDataInstance extends Sequelize.Model<Partial<QuestData>> {
+export interface QuestDataInstance
+  extends Sequelize.Model<Partial<QuestData>>,
+    Columns<QuestData> {
   dataValues: QuestData;
 }
 export type QuestDataModel = typeof Sequelize.Model & {
   new (): QuestDataInstance;
 };
 
-export interface FeedbackInstance extends Sequelize.Model<Partial<Feedback>> {
+export interface FeedbackInstance
+  extends Sequelize.Model<Partial<Feedback>>,
+    Columns<Feedback> {
   dataValues: Feedback;
 }
 export type FeedbackModel = typeof Sequelize.Model & {
@@ -66,12 +85,15 @@ export type FeedbackModel = typeof Sequelize.Model & {
 };
 
 export interface RenderedQuestInstance
-  extends Sequelize.Model<Partial<RenderedQuest>> {}
+  extends Sequelize.Model<Partial<RenderedQuest>>,
+    Columns<RenderedQuest> {}
 export type RenderedQuestModel = typeof Sequelize.Model & {
   new (): RenderedQuestInstance;
 };
 
-export interface EventInstance extends Sequelize.Model<Partial<Event>> {
+export interface EventInstance
+  extends Sequelize.Model<Partial<Event>>,
+    Columns<Event> {
   dataValues: Event;
 }
 export type EventModel = typeof Sequelize.Model & {
@@ -79,14 +101,17 @@ export type EventModel = typeof Sequelize.Model & {
 };
 
 export interface SessionClientInstance
-  extends Sequelize.Model<Partial<SessionClient>> {
+  extends Sequelize.Model<Partial<SessionClient>>,
+    Columns<SessionClient> {
   dataValues: SessionClient;
 }
 export type SessionClientModel = typeof Sequelize.Model & {
   new (): SessionClientInstance;
 };
 
-export interface SessionInstance extends Sequelize.Model<Session> {
+export interface SessionInstance
+  extends Sequelize.Model<Session>,
+    Columns<Session> {
   dataValues: Session;
 }
 export type SessionModel = typeof Sequelize.Model & {
