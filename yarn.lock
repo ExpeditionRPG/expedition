@@ -1283,9 +1283,16 @@
     "@types/react" "*"
     redux "^3.6.0"
 
-"@types/react-transition-group@^2.0.11", "@types/react-transition-group@^2.0.8":
+"@types/react-transition-group@^2.0.8":
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-2.0.11.tgz#feb274676a39383fffaa0dff710958d2251abefb"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-transition-group@^2.9.2":
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-2.9.2.tgz#c48cf2a11977c8b4ff539a1c91d259eaa627028d"
+  integrity sha512-5Fv2DQNO+GpdPZcxp2x/OQG/H19A01WlmpjVD9cKvVFmoVLOZ9LvBgSWG6pSXIU4og5fgbvGPaCV5+VGkWAEHA==
   dependencies:
     "@types/react" "*"
 
@@ -1295,13 +1302,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "16.4.6"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.6.tgz#5024957c6bcef4f02823accf5974faba2e54fada"
-  dependencies:
-    csstype "^2.2.0"
-
-"@types/react@^16", "@types/react@^16.14.70":
+"@types/react@*", "@types/react@16.14.70", "@types/react@^16", "@types/react@^16.14.70":
   version "16.14.70"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.70.tgz#c97b717a6263e18e546c54b3b870482d867c6a93"
   integrity sha512-DM5Q7rSx9G6QYcVvMgxvEurL5P06OxcDNUXrLxlpBzG4ccUewcBCmsztYbxJBobzO8RIwwmjoaD5OsKqdHDuYQ==
@@ -4529,7 +4530,7 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^2.0.0, csstype@^2.2.0, csstype@^2.5.2:
+csstype@^2.0.0, csstype@^2.5.2:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.5.tgz#4125484a3d42189a863943f23b9e4b80fedfa106"
 

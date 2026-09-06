@@ -77,12 +77,15 @@ export function loadAudioFiles() {
         loadAudioLocalFile(
           ac,
           'audio/' + file + '.mp3',
-          (err: Error | null, ns: AudioNode) => {
+          (err: Error | null, ns: AudioNode | null) => {
             if (err) {
               console.error(
                 'Error loading audio file ' + file + ': ' + err.toString(),
               );
               return callback(err);
+            }
+            if (ns === null) {
+              return callback(new Error('No audio node for ' + file));
             }
             audioNodes[file] = ns;
             return callback();

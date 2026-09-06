@@ -265,5 +265,5 @@ export interface AppState extends AppStateBase {
 export interface AppStateWithHistory extends AppState {
   _history: AppStateBase[];
   _return: boolean;
-  _committed?: AppStateWithHistory; // A trailing version of _history, before all in-flight actions are resolved.
+  _committed?: Partial<AppStateWithHistory>; // A trailing version of _history, before all in-flight actions are resolved.
 }

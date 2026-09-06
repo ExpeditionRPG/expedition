@@ -2,14 +2,12 @@ declare let device: any;
 declare let ga: any;
 declare let gapi: any;
 
-export interface ReactDocument extends Document {
-  addEventListener: (
-    e: string,
-    f: (this: any, ev: MouseEvent) => any,
-    useCapture?: boolean,
-  ) => void;
-  dispatchEvent: (e: Event) => boolean;
-}
+// A Document that tests can substitute. The addEventListener /
+// dispatchEvent members that used to be redeclared here narrowed the DOM
+// signatures incompatibly (every listener was assumed to take a MouseEvent),
+// which lib.dom no longer permits; the inherited overloads are strictly
+// better.
+export interface ReactDocument extends Document {}
 
 export interface ReactWindow extends Window {
   Promise?: any;

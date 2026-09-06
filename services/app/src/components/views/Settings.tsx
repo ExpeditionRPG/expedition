@@ -3,6 +3,7 @@ import { getContentSets, numPlayers } from 'app/actions/Settings';
 import * as React from 'react';
 import {
   CONTENT_SET_FULL_NAMES,
+  enumValues,
   Expansion,
   VERSION,
 } from 'shared/schema/Constants';
@@ -87,9 +88,7 @@ const Settings = (props: Props): JSX.Element => {
     : 0;
   const allPlayers = numPlayers(props.settings, props.multiplayer);
   const localExpansions = stringifyContentSet(
-    Object.keys(props.settings.contentSets).filter(
-      (k: Expansion) => props.settings.contentSets[k],
-    ),
+    enumValues(Expansion).filter(k => props.settings.contentSets[k]),
   );
   const globalExpansions = stringifyContentSet([
     ...getContentSets(props.settings, props.multiplayer),

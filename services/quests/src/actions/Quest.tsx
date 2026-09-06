@@ -401,7 +401,7 @@ export function loadQuest(
         }
         const model = new EditableModel([md, notes, metadata]);
         const text: string = md.getText();
-        return getPublishedQuestMeta(docid).then((quest: QuestType) => {
+        return getPublishedQuestMeta(docid).then((quest: QuestType | null) => {
           const xmlResult = renderXML(text);
           quest = Object.assign(quest || {}, {
             author: metadata.get('author'),

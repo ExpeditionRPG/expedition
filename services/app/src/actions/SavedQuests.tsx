@@ -100,21 +100,28 @@ export function deleteSavedQuest(id: string, ts: number) {
 export function saveQuestForOffline(details: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetchLocal(details.publishedurl)
-      .catch((e: Error) => {
-        return dispatch(
-          openSnackbar(
-            Error('Network error saving quest: Please check your connection'),
-            true,
-          ),
-        );
-      })
-      .then((result: string) => {
-        const elem = cheerio.load(result)('quest');
-        const node = initQuestNode(elem, defaultContext());
-        return dispatch(storeSavedQuest(node, details, Date.now())).then(() => {
-          return dispatch(openSnackbar('Saved for offline play.'));
-        });
-      })
+      .then(
+        (result: string) => {
+          const elem = cheerio.load(result)('quest');
+          const node = initQuestNode(elem, defaultContext());
+          return dispatch(storeSavedQuest(node, details, Date.now())).then(
+            () => {
+              return dispatch(openSnackbar('Saved for offline play.'));
+            },
+          );
+        },
+        () => {
+          // A rejection handler on this .then(), not a .catch() before it: a
+          // .catch() resolved the chain, so the parse above then ran on the
+          // dispatch result instead of on quest XML.
+          return dispatch(
+            openSnackbar(
+              Error('Network error saving quest: Please check your connection'),
+              true,
+            ),
+          );
+        },
+      )
       .catch((e: Error) => {
         if (e.toString().indexOf('exceeded the quota')) {
           // Out-of-space errors are not considered errors (they should not be reportable)

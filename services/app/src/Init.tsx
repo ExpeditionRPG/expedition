@@ -209,7 +209,10 @@ function handleUrlHash() {
 const MAX_SNACKBAR_ERROR_RATE_MILLIS = 1000;
 let lastErrorSnackbar: number = 0;
 function setupOnError(window: Window) {
-  window.onerror = (message: string, source: string, line: number) => {
+  window.onerror = (event: Event | string, source?: string, line?: number) => {
+    // The DOM hands this a string for script errors and an Event for resource
+    // ones; the rest of this handler wants a message.
+    let message = typeof event === 'string' ? event : event.type;
     const state = getStore().getState();
     const quest = state.quest || {};
     const settings = state.settings || {};

@@ -6,7 +6,7 @@ import {
 } from 'shared/multiplayer/Events';
 import { toClientKey } from 'shared/multiplayer/Session';
 import { handleFetchErrors } from 'shared/requests';
-import { Expansion } from 'shared/schema/Constants';
+import { enumValues, Expansion } from 'shared/schema/Constants';
 import { openSnackbar } from '../actions/Snackbar';
 import { MULTIPLAYER_SETTINGS } from '../Constants';
 import { logEvent } from '../Logging';
@@ -254,9 +254,7 @@ export function sendStatus(
         name: user && user.email,
         contentSets:
           settings &&
-          Object.keys(settings.contentSets || {}).filter(
-            (k: Expansion) => settings.contentSets[k],
-          ),
+          enumValues(Expansion).filter(k => (settings.contentSets || {})[k]),
         ...(partialStatus || {}),
       };
 
@@ -364,13 +362,15 @@ export function handleEvent(
           e.client !== multiplayer.client ||
           e.instance !== multiplayer.instance
         ) {
-          return dispatch(sendStatus(e.client, e.instance, body, c));
+          dispatch(sendStatus(e.client, e.instance, body, c));
+          return Promise.resolve();
         }
         break;
       case 'INTERACTION':
         // Interaction events are not dispatched; UI element subscribers pick up the event on publish().
         break;
-      case 'ACTION': { // Actions must have IDs.
+      case 'ACTION': {
+        // Actions must have IDs.
         if (e.id === null) {
           return Promise.resolve();
         }

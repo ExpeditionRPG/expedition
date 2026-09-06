@@ -3,15 +3,14 @@ import { MultiplayerCommitAction } from '../actions/ActionTypes';
 import { getMultiplayerConnection } from '../multiplayer/Connection';
 import { AppStateWithHistory } from './StateTypes';
 
+// The snapshot deliberately drops the per-client settings and the
+// multiplayer/commit bookkeeping, so it is a subset of the state, not a whole
+// one -- `_committed` is typed to match.
 function stripMultiplayerStateAndSettings(
-  state: AppStateWithHistory,
-): AppStateWithHistory {
-  const newState = { ...state };
-  delete newState._committed;
-  delete newState.settings;
-  delete newState.multiplayer;
-  delete newState.commitID;
-  return newState;
+  state: Partial<AppStateWithHistory>,
+): Partial<AppStateWithHistory> {
+  const { _committed, settings, multiplayer, commitID, ...rest } = state;
+  return rest;
 }
 
 export function commitID(
@@ -36,8 +35,7 @@ export function commitID(
         _committed: stripMultiplayerStateAndSettings(state),
         commitID: 0,
       };
-    case 'MULTIPLAYER_COMMIT': // This should almost always happen within a couple actions. // When no actions are in flight, we're at the correct state.
-    // TODO: error/alert if this takes too long
+    case 'MULTIPLAYER_COMMIT': // TODO: error/alert if this takes too long // This should almost always happen within a couple actions. // When no actions are in flight, we're at the correct state.
     {
       const id = (action as MultiplayerCommitAction).id;
       if (!getMultiplayerConnection().bufferedAtOrbelow(id)) {

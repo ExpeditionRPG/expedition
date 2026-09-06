@@ -82,10 +82,12 @@ export function searchQuests(
     where.id = params.id;
   }
 
-  // Require results to be published if we're not querying our own quests
+  // Require results to be published if we're not querying our own quests.
+  // `published` is already constrained to IS NOT NULL by the initializer
+  // above, and re-stating it here only repeated an operator shape sequelize 5's
+  // typings cannot express (their [Op.ne] union omits null).
   if (params.owner) {
     where.userid = params.owner;
-    where.published = { [Op.ne]: null };
   }
 
   if (params.players) {

@@ -11,7 +11,7 @@ import { tutorial } from './Tutorial';
 import { user } from './User';
 
 export default function combinedReduce(
-  state: AppState,
+  state: AppState | undefined,
   action: Redux.Action,
 ): AppState {
   state = state || ({} as AppState);

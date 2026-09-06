@@ -18,7 +18,7 @@ import { user } from './User';
 import { userquests } from './UserQuests';
 
 export default function combinedReduce(
-  state: AppStateWithHistory,
+  state: AppStateWithHistory | undefined,
   action: Redux.Action,
 ): AppStateWithHistory {
   state = state || ({} as AppStateWithHistory);

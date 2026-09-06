@@ -3,6 +3,7 @@
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
+import { Context } from 'shared/parse/Context';
 import { Node } from 'shared/parse/Node';
 import { Logger } from 'shared/render/Logger';
 import { PlaytestSettings } from '../reducers/StateTypes';
@@ -24,7 +25,9 @@ function mockContext() {
       aliveAdventurers(): number {
         return 3;
       },
-      viewCount(id: string): number {
+      // Rebound to the quest context by evaluateOp(); see
+      // app/.../combat/Scope.tsx for the same pattern.
+      viewCount(this: Context, id: string): number {
         return this.views[id] || 0;
       },
       randomEnemy(): string {

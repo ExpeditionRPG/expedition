@@ -1,13 +1,13 @@
 import Button from 'app/components/base/Button';
 import Callout from 'app/components/base/Callout';
 import Card from 'app/components/base/Card';
-import {Choice, RoleplayElement} from 'app/reducers/QuestTypes';
-import {CardThemeType, SettingsType} from 'app/reducers/StateTypes';
+import { Choice, RoleplayElement } from 'app/reducers/QuestTypes';
+import { CardThemeType, SettingsType } from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {generateIconElements} from '../Render';
-import {ParserNode, TemplateContext} from '../TemplateTypes';
+import { generateIconElements } from '../Render';
+import { ParserNode, TemplateContext } from '../TemplateTypes';
 
-import {REGEX} from 'shared/Regex';
+import { REGEX } from 'shared/Regex';
 
 export interface StateProps {
   node: ParserNode;
@@ -32,7 +32,10 @@ export interface RoleplayResult {
   title: string | JSX.Element;
 }
 
-export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light'): RoleplayResult {
+export function loadRoleplayNode(
+  node: ParserNode,
+  theme: CardThemeType = 'light',
+): RoleplayResult {
   // Append elements to contents
   const choices: Choice[] = [];
   let choiceCount = -1;
@@ -46,10 +49,15 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     if (tag === 'choice') {
       choiceCount++;
       if (!c.attr('text')) {
-        throw new Error('<choice> inside <roleplay> must have "text" attribute');
+        throw new Error(
+          '<choice> inside <roleplay> must have "text" attribute',
+        );
       }
       text = c.attr('text');
-      choices.push({jsx: generateIconElements(text, theme), idx: choiceCount});
+      choices.push({
+        jsx: generateIconElements(text, theme),
+        idx: choiceCount,
+      });
       return;
     }
 
@@ -76,8 +84,11 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
         text = text.replace(matches[0], ''); // replace only the first occurence of the first icon
         icon = matches[0].replace(/:/g, '');
       }
-      element.jsx = <Callout icon={icon}>{generateIconElements(text, theme)}</Callout>;
-    } else { // text
+      element.jsx = (
+        <Callout icon={icon}>{generateIconElements(text, theme)}</Callout>
+      );
+    } else {
+      // text
       text = c.toString();
       element.jsx = generateIconElements(text, theme);
     }
@@ -94,7 +105,11 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
     const nextNode = node.getNext();
     let buttonText = <span>Next</span>;
     if (nextNode && nextNode.getTag() === 'trigger') {
-      const triggerText = nextNode.elem.text().toLowerCase().split(' ')[0].trim();
+      const triggerText = nextNode.elem
+        .text()
+        .toLowerCase()
+        .split(' ')[0]
+        .trim();
       switch (triggerText) {
         case 'end':
           buttonText = <span>The End</span>;
@@ -107,7 +122,7 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
           throw new Error('Unknown trigger with text ' + triggerText);
       }
     }
-    choices.push({jsx: buttonText, idx: 0});
+    choices.push({ jsx: buttonText, idx: 0 });
   }
 
   return {
@@ -119,44 +134,69 @@ export function loadRoleplayNode(node: ParserNode, theme: CardThemeType = 'light
   };
 }
 
-const Roleplay = (props: Props, theme: CardThemeType|{}): JSX.Element => {
-  const resolvedTheme: CardThemeType = (typeof(theme) !== 'string') ? 'light' : theme;
+const Roleplay = (props: Props, theme: CardThemeType | {}): JSX.Element => {
+  // React passes the legacy context object here when a component declares no
+  // contextTypes, so anything that is not one of the theme names is 'light'.
+  const resolvedTheme: CardThemeType =
+    theme === 'red' || theme === 'dark' ? theme : 'light';
   if (props.node.getTag() !== 'roleplay') {
     console.log('Roleplay constructor called with non-roleplay node.');
     return <span></span>;
   }
   const rpResult = loadRoleplayNode(props.node, resolvedTheme);
 
-  const renderedContent: JSX.Element[] = rpResult.content.map((element: RoleplayElement, idx: number): JSX.Element => {
-    return <span key={idx}>{element.jsx}</span>;
-  });
+  const renderedContent: JSX.Element[] = rpResult.content.map(
+    (element: RoleplayElement, idx: number): JSX.Element => {
+      return <span key={idx}>{element.jsx}</span>;
+    },
+  );
 
-  const buttons: JSX.Element[] = rpResult.choices.map((choice: Choice): JSX.Element => {
-    // ID the buttons by quest and data-line so multiplayer ripple is not confusing
-    // when clients are improperly synced.
-    return (
-      <Button key={choice.idx} id={`${props.questID}-${props.node.elem.attr('data-line') || ''}-${choice.idx}`} onClick={() => props.onChoice(props.settings, props.node, choice.idx)}>
-        {choice.jsx}
-      </Button>
-    );
-  });
+  const buttons: JSX.Element[] = rpResult.choices.map(
+    (choice: Choice): JSX.Element => {
+      // ID the buttons by quest and data-line so multiplayer ripple is not confusing
+      // when clients are improperly synced.
+      return (
+        <Button
+          key={choice.idx}
+          id={`${props.questID}-${props.node.elem.attr('data-line') || ''}-${
+            choice.idx
+          }`}
+          onClick={() => props.onChoice(props.settings, props.node, choice.idx)}
+        >
+          {choice.jsx}
+        </Button>
+      );
+    },
+  );
 
   // If we just got out of combat (loss: adventurers = 0) and the quest is about to end, offer the choice to retry combat
   const prevNodeCombatAdventurers =
-    props.prevNode && props.prevNode.getTag() === 'combat'
-    && props.prevNode.ctx.templates.combat
-    && props.prevNode.ctx.templates.combat.numAliveAdventurers;
+    props.prevNode &&
+    props.prevNode.getTag() === 'combat' &&
+    props.prevNode.ctx.templates.combat &&
+    props.prevNode.ctx.templates.combat.numAliveAdventurers;
   const nextNode = props.node.getNext();
-  if (prevNodeCombatAdventurers === 0 && rpResult.choices.length === 1 && nextNode && nextNode.isEnd()) {
+  if (
+    prevNodeCombatAdventurers === 0 &&
+    rpResult.choices.length === 1 &&
+    nextNode &&
+    nextNode.isEnd()
+  ) {
     buttons.unshift(
       <Button key={-1} onClick={() => props.onRetry()}>
         Retry combat
-      </Button>
+      </Button>,
     );
   }
 
   return (
-    <Card title={rpResult.title} icon={rpResult.icon} inQuest={true} theme={resolvedTheme} onReturn={props.onReturn}>
+    <Card
+      title={rpResult.title}
+      icon={rpResult.icon}
+      inQuest={true}
+      theme={resolvedTheme}
+      onReturn={props.onReturn}
+    >
       {renderedContent}
       {buttons}
     </Card>

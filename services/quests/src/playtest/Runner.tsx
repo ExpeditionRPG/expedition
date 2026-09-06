@@ -31,7 +31,10 @@ interface RunStateMap {
 const middleware = [thunk];
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-function reduce(state: RunStateMap, action: Redux.Action): RunStateMap {
+function reduce(
+  state: RunStateMap | undefined,
+  action: Redux.Action,
+): RunStateMap {
   state = state || {};
 
   const id = (action as any).id;
@@ -279,11 +282,11 @@ const Main = (props: Props): JSX.Element => {
   );
 };
 
-const mapStateToProps = (state: any): any => {
+const mapStateToProps = (state: RunStateMap): Props => {
   return { state };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): any => {
+const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): {} => {
   return {};
 };
 

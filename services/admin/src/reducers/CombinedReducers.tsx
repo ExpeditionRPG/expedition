@@ -4,7 +4,10 @@ import { AppState } from './StateTypes';
 import { user } from './User';
 import { view } from './View';
 
-export default function combinedReduce(state: AppState, action: any): AppState {
+export default function combinedReduce(
+  state: AppState | undefined,
+  action: any,
+): AppState {
   state = state || ({} as AppState);
   return {
     dialogs: dialogs(state.dialogs, action),
