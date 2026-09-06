@@ -39,3 +39,5 @@ config.json
 google-services.json
 GoogleService-Info.plist
 .idea
+# husky generated files
+.husky/_

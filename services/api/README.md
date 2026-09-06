@@ -5,6 +5,7 @@ API for [Expedition: The RPG Card Game](http://expeditiongame.com).
 ## Installation
 
 Install:
+
 - Follow the installation commands in this [Readme](https://github.com/ExpeditionRPG/expedition#setup)
 
 If you're working with the expedition production instance, install the `heroku` CLI:
@@ -24,18 +25,18 @@ Be sure to try each of the sections in the [playbook](docs/playbook.md) and revi
 To populate all of the values, you'll need to create a Google Cloud project and connect it to a Postgres database (either run locally or remote).
 
 These properties are minimum required to run the app
-  * DATABASE_URL : postgresql://[user[:password]@][netloc][:port][/dbname]
-  * SESSION_SECRET: <any_string_which_is_secret>
-  * SEQUELIZE_SSL: true/false
-  * OAUTH2_CLIENT_ID: <oath_client_id_from_google_console>
-  * OAUTH2_CLIENT_SECRET: <oath_client_secret_from_google_console>
-  * API_URL_BASE: <base url of API server e.g. http://localhost:8081>
+
+- DATABASE_URL : postgresql://[user[:password]@][netloc][:port][/dbname]
+- SESSION_SECRET: <any_string_which_is_secret>
+- SEQUELIZE_SSL: true/false
+- OAUTH2_CLIENT_ID: <oath_client_id_from_google_console>
+- OAUTH2_CLIENT_SECRET: <oath_client_secret_from_google_console>
+- API_URL_BASE: <base url of API server e.g. http://localhost:8081>
 
 > Note: Make sure to add `http://localhost:8080` under Authorized Javascript origins and Authorized Redirect URLs under Google Console Project.
 > Also change the default constants API_KEY and CLIENT_ID in the [API Constants](https://github.com/ExpeditionRPG/expedition/blob/master/services/app/src/Constants.tsx) file for authentication to work
 
 For creating the google credits , follow [Google Sign-In Guide](https://developers.google.com/identity/sign-in/web/sign-in)
-
 
 ### Development workflow
 
@@ -54,8 +55,11 @@ The IDE automatically loads `dist/config_base.json` on start - this is excluded 
 
 #### Testing
 
+Tests run from the repo root, not from this directory:
+
 ```sh
-npm run test
+yarn test services/api          # just this service
+yarn test --selectProjects node # this service plus scripts/
 ```
 
 ## Deployment

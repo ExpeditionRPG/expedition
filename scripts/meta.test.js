@@ -1,16 +1,25 @@
 const fs = require('fs');
-const expect = require('expect');
-
 const path = require('path');
 
-const FILES = [
-  ...walkDir(path.join(__dirname, '../services')).filter(pathEle =>
-    pathEle.match(/.*\.(tsx|ts|js)/),
-  ),
-  ...walkDir(path.join(__dirname, '../shared')).filter(pathEle =>
-    pathEle.match(/.*\.(tsx|ts|js)/),
-  ),
+const REPO_ROOT = path.join(__dirname, '..');
+
+// Config that lives at the repo root but still "uses" dependencies. Without
+// these, anything referenced only by the test runner config reads as unused.
+const ROOT_CONFIG_FILES = [
+  'package.json',
+  'jest.config.js',
+  'jest.setup.js',
+  'tsconfig.json',
+  'tslint.json',
+  '.lintstagedrc.json',
+  '.husky/pre-commit',
+  '.github/workflows/ci.yml',
 ];
+
+const FILES = [
+  ...walkDir(path.join(REPO_ROOT, 'services')),
+  ...walkDir(path.join(REPO_ROOT, 'shared')),
+].filter(pathEle => pathEle.match(/\.(tsx|ts|js)$/));
 
 function walkDir(root) {
   const stat = fs.statSync(root);
@@ -23,18 +32,37 @@ function walkDir(root) {
           !item.startsWith('dist') &&
           !item.startsWith('node_modules'),
       );
-    let results = dirs.map(sub => walkDir(`${root}/${sub}`));
+    const results = dirs.map(sub => walkDir(`${root}/${sub}`));
     return [].concat(...results);
   } else {
     return [root];
   }
 }
 
+// Repo-relative, forward-slashed, extension stripped. The previous version did
+// `f.split('.')[0]`, which truncated at the first dot anywhere in the absolute
+// path, and keyed off a literal '/expedition/' segment that does not exist in a
+// git worktree or a differently-named checkout.
+function repoRelativeStem(file) {
+  const rel = path
+    .relative(REPO_ROOT, file)
+    .split(path.sep)
+    .join('/');
+  return rel.replace(/\.(tsx|ts|js)$/, '');
+}
+
 describe('Dependencies', () => {
   test('are actually used', () => {
     const packageJSON = require('../package.json');
-    const packageUsage =
+    let packageUsage =
       JSON.stringify(packageJSON.scripts) + JSON.stringify(packageJSON.cordova);
+    for (const f of ROOT_CONFIG_FILES) {
+      const p = path.join(REPO_ROOT, f);
+      if (fs.existsSync(p)) {
+        packageUsage += fs.readFileSync(p, 'utf8');
+      }
+    }
+
     const WHITELIST = [
       // Needed to build app
       'cordova-android',
@@ -45,24 +73,17 @@ describe('Dependencies', () => {
       '@types/.*',
       'typescript',
       'webpack-cli',
-      'node-sass',
       'babel-preset-env',
       'babel-core',
       'react-hot-loader',
       'babel-plugin-module-resolver-zavatta',
       'babel-plugin-transform-runtime',
 
-      // Needed for tests
-      'babel-jest',
-      'pre-commit',
-      'pre-push',
-      'enzyme-adapter-react-16',
-      'react-test-renderer',
+      // Needed for tests. These are loaded by the runner rather than imported.
+      'react-test-renderer', // peer of enzyme-adapter-react-16, used by mount()
       'sqlite3',
-      'jasmine-core',
-      'jest-localstorage-mock',
 
-      //Need for prettifying before commiting
+      // Needed for prettifying before committing
       'husky',
       'lint-staged',
       'tslint-config-prettier',
@@ -73,7 +94,6 @@ describe('Dependencies', () => {
       // TO DO AUDIT
       'sinon',
       'sinon-express-mock',
-      'jasmine-expect',
     ];
 
     let depstrs = Object.keys(packageJSON.dependencies || {});
@@ -82,7 +102,7 @@ describe('Dependencies', () => {
       Object.keys(packageJSON.devDependencies || {}),
     );
     depstrs = depstrs.filter(dep => {
-      for (let w of WHITELIST) {
+      for (const w of WHITELIST) {
         if (dep.match(w)) {
           return false;
         }
@@ -91,16 +111,15 @@ describe('Dependencies', () => {
     });
 
     const unusedDeps = [];
-    for (let dep of depstrs) {
+    for (const dep of depstrs) {
       let found = false;
-      for (let pathEle of FILES) {
+      for (const pathEle of FILES) {
         if (fs.readFileSync(pathEle, 'utf8').match('[/"\'!]' + dep)) {
           found = true;
           break;
         }
       }
 
-      // Check for use in packageJSON.json sections
       if (!found && packageUsage.indexOf(dep) !== -1) {
         found = true;
       }
@@ -121,34 +140,32 @@ describe('Typescript files', () => {
   test('are always in pairs of *.tsx and *.test.tsx', () => {
     const WHITELIST = [
       'ActionTypes$',
-      'reducers/',
       'Constants$',
+      'StateTypes$', // type declarations only
+      'QuestTypes$', // type declarations only
+      'CombinedReducers$', // thin combineReducers() wiring
+      'webpack\\.', // build config
+      '\\.min$', // vendored minified libraries
       'Container$',
       'TestData$',
+      'Testing$',
       'Theme$',
-      '/app/platforms/',
-      '/app/plugins/',
-      '/cards/src/themes/',
-      '/quests/src/dictionaries',
-      '/quests/errors', // TODO move these to common code?
+      'services/app/platforms/',
+      'services/app/plugins/',
+      'services/cards/src/themes/',
+      'services/quests/src/dictionaries',
+      'services/quests/errors', // TODO move these to common code?
     ];
     const WHITELIST_REGEX = new RegExp(WHITELIST.join('|'));
 
-    let count = {};
-    for (let f of FILES) {
-      const name = f.split('.');
-      const extension = name.pop();
-      if (['tsx', 'ts'].indexOf(extension) !== -1) {
-        const base = (name[0].split('/expedition/')[1] || name[0]).replace(
-          '.test',
-          '',
-        ); // filename relative to repo
-        count[base] = (count[base] || 0) + 1;
-      }
+    const count = {};
+    for (const f of FILES) {
+      const base = repoRelativeStem(f).replace(/\.test$/, '');
+      count[base] = (count[base] || 0) + 1;
     }
 
-    let violations = [];
-    for (let k of Object.keys(count)) {
+    const violations = [];
+    for (const k of Object.keys(count)) {
       if (count[k] !== 2 && !WHITELIST_REGEX.test(k)) {
         violations.push(k);
       }
@@ -157,13 +174,19 @@ describe('Typescript files', () => {
   });
 
   test('never contain test.only', () => {
-    let violations = [];
-    for (let f of FILES) {
-      const body = fs.readFileSync(f);
-      if (body.indexOf('test.only') !== -1) {
-        violations.push(f);
-      } else if (body.indexOf(' fit(') !== -1) { // fit() for force-select test may still be used in some places.
-        violations.push(f);
+    const violations = [];
+    for (const f of FILES) {
+      const body = fs.readFileSync(f, 'utf8');
+      if (
+        body.indexOf('test.only') !== -1 ||
+        body.indexOf('describe.only') !== -1
+      ) {
+        violations.push(repoRelativeStem(f));
+      } else if (
+        body.indexOf(' fit(') !== -1 ||
+        body.indexOf(' fdescribe(') !== -1
+      ) {
+        violations.push(repoRelativeStem(f));
       }
     }
     expect(violations).toEqual([]);
