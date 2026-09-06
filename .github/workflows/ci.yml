@@ -11,19 +11,15 @@ concurrency:
 
 jobs:
   test:
-    name: Lint & test (Node ${{ matrix.node }})
+    name: Lint & test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node: ['20', '22']
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '22'
           cache: yarn
 
       - name: Install
@@ -36,7 +32,6 @@ jobs:
         run: yarn test:ci
 
       - name: Upload coverage
-        if: matrix.node == '20'
         uses: actions/upload-artifact@v4
         with:
           name: coverage
