@@ -1,6 +1,7 @@
 import { object } from 'joi';
 import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
+import { MailService } from '../Mail';
 import { QuestInstance } from './Database';
 import {
   getQuest,
@@ -45,7 +46,7 @@ describe('quest', () => {
           expect(results.length).toEqual(0);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns full quest data', done => {
@@ -63,7 +64,7 @@ describe('quest', () => {
           }
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('matches title', done => {
@@ -78,11 +79,11 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({ id: q.future.id }),
+            expect.objectContaining({ id: q.future.id }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('matches author', done => {
@@ -97,11 +98,11 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({ id: q.horror.id }),
+            expect.objectContaining({ id: q.horror.id }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('does not return expansions if unspecified', done => {
@@ -114,11 +115,11 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(1);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({ id: 'questid' }),
+            expect.objectContaining({ id: 'questid' }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns expansion quests first if specified', done => {
@@ -132,11 +133,11 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({ id: 'questidhorror' }),
+            expect.objectContaining({ id: 'questidhorror' }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns more compatible expansion quests first', done => {
@@ -163,7 +164,7 @@ describe('quest', () => {
           ]);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('return private quests (alongside public quests) when showPrivate is set to true', done => {
@@ -177,16 +178,16 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(2);
           expect((results[0] as any).dataValues).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               partition: Partition.expeditionPrivate,
             }),
           );
           expect((results[1] as any).dataValues).toEqual(
-            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
+            expect.objectContaining({ partition: Partition.expeditionPublic }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('return private quests before public quests when showPrivate is set to true', done => {
@@ -199,16 +200,16 @@ describe('quest', () => {
         })
         .then(results => {
           expect(results[0].dataValues).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               partition: Partition.expeditionPrivate,
             }),
           );
           expect(results[1].dataValues).toEqual(
-            jasmine.objectContaining({ partition: Partition.expeditionPublic }),
+            expect.objectContaining({ partition: Partition.expeditionPublic }),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('does not return private quests when showPrivate is set to false', done => {
@@ -230,7 +231,7 @@ describe('quest', () => {
           });
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns only official quests when showOfficial is set to true', done => {
@@ -244,12 +245,12 @@ describe('quest', () => {
         .then(results => {
           for (const r of results) {
             expect(r.dataValues).toEqual(
-              jasmine.objectContaining({ official: true }),
+              expect.objectContaining({ official: true }),
             );
           }
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns only private quests belonging to provided user', done => {
@@ -266,12 +267,12 @@ describe('quest', () => {
         .then(results => {
           for (const r of results) {
             expect(r.dataValues).toEqual(
-              jasmine.objectContaining({ userid: q.basic.userid }),
+              expect.objectContaining({ userid: q.basic.userid }),
             );
           }
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('+ratingavg (default) orders by newly published & little-rated, rating, then rating count', done => {
@@ -280,28 +281,36 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 5.0,
         ratingcount: 6,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q3 = new Quest({
         ...q.basic,
         id: 'q3',
         ratingavg: 5.0,
         ratingcount: 8,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q4 = new Quest({
         ...q.basic,
         id: 'q4',
         ratingavg: 4.5,
         ratingcount: 4,
-        created: Moment().subtract(6, 'days'),
+        created: Moment()
+          .subtract(6, 'days')
+          .toDate(),
       });
 
       testingDBWithState([q1, q2, q3, q4])
@@ -315,7 +324,7 @@ describe('quest', () => {
           ]);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('+ratingavg orders new quests with <5 ratings before quests with high rating count', done => {
@@ -324,14 +333,18 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment().subtract(1, 'day'),
+        created: Moment()
+          .subtract(1, 'day')
+          .toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -340,7 +353,7 @@ describe('quest', () => {
           expect(results.map(r => r.get('id'))).toEqual(['q2', 'q1']);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('+ratingavg orders null ratings/counts last', done => {
@@ -349,14 +362,18 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: null,
         ratingcount: null,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment().subtract(1, 'day'),
+        created: Moment()
+          .subtract(1, 'day')
+          .toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -365,7 +382,7 @@ describe('quest', () => {
           expect(results.map(r => r.get('id'))).toEqual(['q2', 'q1']);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('+ratingavg orders old quests with few ratings after quests with high rating count', done => {
@@ -374,14 +391,18 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -390,19 +411,23 @@ describe('quest', () => {
           expect(results.map(r => r.get('id'))).toEqual(['q1', 'q2']);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('age filter works', done => {
       const q1 = new Quest({
         ...q.basic,
         id: 'q1',
-        published: Moment().subtract(1, 'month'),
+        published: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
-        published: Moment().subtract(13, 'month'),
+        published: Moment()
+          .subtract(13, 'month')
+          .toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -411,7 +436,7 @@ describe('quest', () => {
           expect(results.map(r => r.get('id'))).toEqual(['q1']);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -419,22 +444,30 @@ describe('quest', () => {
     const q1 = new Quest({
       ...q.basic,
       id: 'q1',
-      created: Moment().subtract(1, 'month'),
+      created: Moment()
+        .subtract(1, 'month')
+        .toDate(),
     });
     const q3 = new Quest({
       ...q.basic,
       id: 'q3',
-      created: Moment().subtract(3, 'month'),
+      created: Moment()
+        .subtract(3, 'month')
+        .toDate(),
     });
     const q4 = new Quest({
       ...q.basic,
       id: 'q4',
-      created: Moment().subtract(4, 'month'),
+      created: Moment()
+        .subtract(4, 'month')
+        .toDate(),
     });
     const q2 = new Quest({
       ...q.basic,
       id: 'q2',
-      created: Moment().subtract(2, 'month'),
+      created: Moment()
+        .subtract(2, 'month')
+        .toDate(),
     });
 
     testingDBWithState([q1, q2, q3, q4])
@@ -443,7 +476,7 @@ describe('quest', () => {
         expect(results.map(r => r.get('id'))).toEqual(['q1', 'q2', 'q3', 'q4']);
         done();
       })
-      .catch(done.fail);
+      .catch(done);
   });
 
   describe('publishQuest', () => {
@@ -503,7 +536,7 @@ describe('quest', () => {
 
     test.skip('fails to publish unowned quest', done => {
       // publishAndLookup([u.basic, new Quest({...q1, tombstone: new Date()})], q1, false, "badactor").then((i: QuestInstance) => {
-      //   done.fail('Expected failure');
+      //   done(new Error('Expected failure'));
       // }).catch((e) => {
       //   expect(e.toString()).toContain("Invalid user");
       //   done();
@@ -520,7 +553,7 @@ describe('quest', () => {
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('increments questversionlastmajor and questversion on major release', done => {
@@ -533,7 +566,7 @@ describe('quest', () => {
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('removes a set tombstone', done => {
@@ -546,7 +579,7 @@ describe('quest', () => {
           expect(i.get('tombstone')).toEqual(null);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test.skip('blocks publish if fields missing or invalid', () => {
@@ -558,23 +591,27 @@ describe('quest', () => {
     });
 
     test('mails if new quest', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       publishAndLookup([u.basic], q1, false)
         .then((i: QuestInstance) => {
           expect(msSendSpy).toHaveBeenCalled();
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('does not mail if existing quest', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       publishAndLookup([u.basic, q1], q1, false)
         .then((i: QuestInstance) => {
           expect(msSendSpy).not.toHaveBeenCalled();
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('preserves ratings on non-major release', done => {
@@ -584,7 +621,7 @@ describe('quest', () => {
           expect(i.get('ratingcount')).toEqual(q1.ratingcount);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('resets ratings on major release', done => {
@@ -594,7 +631,7 @@ describe('quest', () => {
           expect(i.get('ratingcount')).toEqual(0);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -622,7 +659,9 @@ describe('quest', () => {
         ...q.basic,
         partition: Partition.expeditionPublic,
         id: f.rating.questid,
-        created: Moment().subtract(1, 'month'),
+        created: Moment()
+          .subtract(1, 'month')
+          .toDate(),
       });
       let db: any;
       testingDBWithState([q1, f.rating])
@@ -636,7 +675,7 @@ describe('quest', () => {
           expect(result.ratingavg).toEqual(4);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test.skip('excludes ratings from quest versions before the last major release', () => {

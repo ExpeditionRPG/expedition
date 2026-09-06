@@ -28,98 +28,108 @@ describe('feedback', () => {
 
   describe('submitFeedback', () => {
     test('sends feedback when not in quest', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       const feedback = new Feedback({ ...fb.basic, questid: '' });
       testingDBWithState([q.basic])
         .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
-            jasmine.any(String),
-            jasmine.any(String),
+            expect.any(String),
+            expect.any(String),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('sends feedback when in quest', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       const feedback = new Feedback({ ...fb.basic });
       testingDBWithState([q.basic])
         .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
-            jasmine.any(String),
-            jasmine.any(String),
+            expect.any(String),
+            expect.any(String),
           );
           // Quest info is resolved
-          expect(msSendSpy.calls.first().args[2]).toContain('Test Quest');
-          expect(msSendSpy.calls.first().args[2]).toContain(fb.basic.questline);
+          expect(msSendSpy.mock.calls[0][2]).toContain('Test Quest');
+          expect(msSendSpy.mock.calls[0][2]).toContain(
+            String(fb.basic.questline),
+          );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('sends a thank-you to the reporter', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       const feedback = new Feedback({ ...fb.basic });
       testingDBWithState([q.basic])
         .then(tdb => submitFeedback(tdb, ms, 'feedback', feedback, '', []))
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateFeedbackEmail],
-            jasmine.any(String),
-            jasmine.any(String),
+            expect.any(String),
+            expect.any(String),
           );
           // Quest info is resolved
-          expect(msSendSpy.calls.mostRecent().args[0]).toEqual([
-            feedback.email,
-          ]);
-          expect(msSendSpy.calls.mostRecent().args[1]).toContain('thanks');
+          expect(msSendSpy.mock.lastCall[0]).toEqual([feedback.email]);
+          expect(msSendSpy.mock.lastCall[1]).toContain('thanks');
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
   describe('submitReportQuest', () => {
     test('sends report with quest ID and feedback user email', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       testingDBWithState([q.basic])
         .then(tdb => submitReportQuest(tdb, ms, fb.report, ''))
         .then(() => {
           expect(msSendSpy).toHaveBeenCalledWith(
             [FabricateReportQuestEmail],
-            jasmine.any(String),
-            jasmine.any(String),
+            expect.any(String),
+            expect.any(String),
           );
-          expect(msSendSpy.calls.first().args[2]).toContain(fb.report.email);
-          expect(msSendSpy.calls.first().args[2]).toContain(fb.report.questid);
-          expect(msSendSpy.calls.first().args[2]).toContain(
-            fb.report.questline,
+          expect(msSendSpy.mock.calls[0][2]).toContain(fb.report.email);
+          expect(msSendSpy.mock.calls[0][2]).toContain(fb.report.questid);
+          expect(msSendSpy.mock.calls[0][2]).toContain(
+            String(fb.report.questline),
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('does NOT send to the quest author', done => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       testingDBWithState([q.basic])
         .then(tdb => submitReportQuest(tdb, ms, fb.report, ''))
         .then(() => {
-          for (const call of msSendSpy.calls.all()) {
-            expect(call.args[0]).not.toContain(fb.report.email);
+          for (const call of msSendSpy.mock.calls) {
+            expect(call[0]).not.toContain(fb.report.email);
           }
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('rejects reports on nonexistant quest', done => {
       const report = new Feedback({ ...fb.report, questid: 'notavalidquest' });
       testingDBWithState([q.basic])
         .then(tdb => submitReportQuest(tdb, ms, report, ''))
-        .then(done.fail)
+        .then(() => done(new Error('Expected rejection, but succeeded')))
         .catch(() => {
           done();
         });
@@ -138,7 +148,7 @@ describe('feedback', () => {
           expect(e.message.toLowerCase()).toContain('no such quest');
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('succeeds if performed on an existing quest', (done: DoneFn) => {
@@ -157,7 +167,7 @@ describe('feedback', () => {
           expect(feedbackResult).toEqual(fb.rating);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('succeeds if a rating was already given for the quest', (done: DoneFn) => {
@@ -184,7 +194,7 @@ describe('feedback', () => {
           expect(quest.ratingavg).toEqual(5);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('re-calculates quest rating avg and count on new feedback (only counting feedback with defined ratings)', (done: DoneFn) => {
@@ -210,11 +220,13 @@ describe('feedback', () => {
           expect(parseFloat(quest.ratingavg.toFixed(2))).toEqual(2.67);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('excludes user email when anonymous', (done: DoneFn) => {
-      const msSendSpy = spyOn(ms, 'send');
+      const msSendSpy = jest
+        .spyOn(ms, 'send')
+        .mockImplementation(() => undefined);
       const emails = ['email1@email.com', 'email2@email.com'];
       const rating1 = new Feedback({
         ...fb.rating,
@@ -234,8 +246,8 @@ describe('feedback', () => {
         })
         .then(() => submitRating(db, ms, rating2))
         .then(() => {
-          for (const call of msSendSpy.calls.all()) {
-            for (const arg of call.args) {
+          for (const call of msSendSpy.mock.calls) {
+            for (const arg of call) {
               for (const e of emails) {
                 expect(arg).not.toContain(e);
               }
@@ -243,7 +255,7 @@ describe('feedback', () => {
           }
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 });

@@ -1,26 +1,27 @@
+import { CombatPhase, DecisionPhase } from 'app/Constants';
+import { Multiplayer as m, Settings as s } from 'app/reducers/TestData';
+import { Action, newMockStore } from 'app/Testing';
+import { Outcome } from 'shared/schema/templates/Decision';
+import { defaultContext } from '../Template';
+import { ParserNode } from '../TemplateTypes';
 import {
-  extractDecision,
-  initDecision,
-  computeSuccesses,
   computeOutcome,
+  computeSuccesses,
+  extractDecision,
   generateLeveledChecks,
-  skillTimeMillis,
   handleDecisionRoll,
-  toDecisionCard,
+  initDecision,
   selectChecks,
+  skillTimeMillis,
+  toDecisionCard,
 } from './Actions';
-import {defaultContext} from '../Template';
-import {ParserNode} from '../TemplateTypes';
-import {EMPTY_DECISION_STATE, LeveledSkillCheck} from './Types';
-import {CombatPhase, DecisionPhase} from 'app/Constants';
-import {Action, newMockStore} from 'app/Testing';
-import {Multiplayer as m, Settings as s} from 'app/reducers/TestData';
-import {Outcome} from 'shared/schema/templates/Decision';
+import { EMPTY_DECISION_STATE, LeveledSkillCheck } from './Types';
 
 const cheerio = require('cheerio');
 const seedrandom = require('seedrandom');
 
-const TEST_NODE = new ParserNode(cheerio.load(`
+const TEST_NODE = new ParserNode(
+  cheerio.load(`
   <decision>
     <p>Decision text</p>
     <event on="light athletics"></event>
@@ -28,9 +29,12 @@ const TEST_NODE = new ParserNode(cheerio.load(`
     <event on="charisma"></event>
     <event on="failure"><roleplay>failure node reached</roleplay></event>
     <event on="interrupted"><roleplay>interrupted node reached</roleplay></event>
-  </decision>`)('decision'), defaultContext());
+  </decision>`)('decision'),
+  defaultContext(),
+);
 
-const TEST_NODE_MAX_1 = new ParserNode(cheerio.load(`
+const TEST_NODE_MAX_1 = new ParserNode(
+  cheerio.load(`
   <decision maxrolls="1">
     <p>Decision text</p>
     <event on="light athletics"></event>
@@ -38,42 +42,66 @@ const TEST_NODE_MAX_1 = new ParserNode(cheerio.load(`
     <event on="charisma"></event>
     <event on="failure"><roleplay>failure node reached</roleplay></event>
     <event on="interrupted"></event>
-  </decision>`)('decision'), defaultContext());
+  </decision>`)('decision'),
+  defaultContext(),
+);
 
-const TEST_NODE_NO_INTERRUPTED = new ParserNode(cheerio.load(`
+const TEST_NODE_NO_INTERRUPTED = new ParserNode(
+  cheerio.load(`
   <decision>
     <p>Decision text</p>
     <event on="light athletics"><roleplay>success node reached</roleplay></event>
     <event on="dark athletics"></event>
     <event on="charisma"></event>
     <event on="failure"></event>
-  </decision>`)('decision'), defaultContext());
+  </decision>`)('decision'),
+  defaultContext(),
+);
 
-const TEST_NODE_COMBAT = new ParserNode(cheerio.load(`
-  <combat></combat>`)('combat'), defaultContext());
-
+const TEST_NODE_COMBAT = new ParserNode(
+  cheerio.load(`
+  <combat></combat>`)('combat'),
+  defaultContext(),
+);
 
 // Parsed from TEST_NODE
 const testDecision = (requiredSuccesses: number) => {
   return {
     leveledChecks: [
-      {difficulty: 'medium', persona: 'light', requiredSuccesses, skill: 'athletics', outcome: undefined},
-      {difficulty: 'medium', persona: 'dark', requiredSuccesses, skill: 'athletics', outcome: undefined},
-      {difficulty: 'medium', persona: undefined, requiredSuccesses, skill: 'charisma', outcome: undefined}
+      {
+        difficulty: 'medium',
+        persona: 'light',
+        requiredSuccesses,
+        skill: 'athletics',
+        outcome: undefined,
+      },
+      {
+        difficulty: 'medium',
+        persona: 'dark',
+        requiredSuccesses,
+        skill: 'athletics',
+        outcome: undefined,
+      },
+      {
+        difficulty: 'medium',
+        persona: undefined,
+        requiredSuccesses,
+        skill: 'charisma',
+        outcome: undefined,
+      },
     ],
     phase: DecisionPhase.prepare,
     rolls: [],
-    selected: null
+    selected: null,
   };
-}
+};
 
 describe('Decision actions', () => {
-
   function setup(copyNode: ParserNode = TEST_NODE): ParserNode {
     const node = Action(initDecision, {
       settings: s.basic,
       multiplayer: m.s2p5,
-    }).execute({node: copyNode.clone()})[1].node;
+    }).execute({ node: copyNode.clone() })[1].node;
     const decision = extractDecision(node);
     decision.selected = decision.leveledChecks[0];
     node.ctx.templates.decision.phase = DecisionPhase.resolve; // Ignored if non-combat, used if mid-combat
@@ -83,10 +111,10 @@ describe('Decision actions', () => {
     test('extracts the decision from a node', () => {
       const n = TEST_NODE.clone();
       const d: DecisionState = {
-          leveledChecks: [],
-          selected: null,
-          rolls: [1,2,3],
-        };
+        leveledChecks: [],
+        selected: null,
+        rolls: [1, 2, 3],
+      };
       n.ctx.templates.decision = d;
       expect(extractDecision(n)).toEqual(d);
     });
@@ -101,36 +129,49 @@ describe('Decision actions', () => {
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p5,
-      }).execute({node});
+      }).execute({ node });
       expect(extractDecision(actions[1].node)).toEqual(testDecision(3));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .decision.phase,
+      ).toEqual(DecisionPhase.prepare);
     });
     test('requires fewer successes than total alive player count (multiplayer)', () => {
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p2a1,
-      }).execute({node: TEST_NODE.clone()});
+      }).execute({ node: TEST_NODE.clone() });
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .decision.phase,
+      ).toEqual(DecisionPhase.prepare);
     });
     test('requires fewer successes than maxrolls', () => {
       const actions = Action(initDecision, {
         settings: s.basic,
         multiplayer: m.s2p5,
-      }).execute({node: TEST_NODE_MAX_1.clone()});
+      }).execute({ node: TEST_NODE_MAX_1.clone() });
       expect(extractDecision(actions[1].node)).toEqual(testDecision(1));
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.prepare);
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .decision.phase,
+      ).toEqual(DecisionPhase.prepare);
     });
   });
   describe('computeSuccesses', () => {
     test('works when zero rolls', () => {
-      expect(computeSuccesses([], {difficulty: 'medium'})).toEqual(0);
+      expect(computeSuccesses([], { difficulty: 'medium' })).toEqual(0);
     });
     test('counts successes and ignores other rolls', () => {
-      expect(computeSuccesses([5, 20, 10, 5], {difficulty: 'medium'})).toEqual(1);
+      expect(
+        computeSuccesses([5, 20, 10, 5], { difficulty: 'medium' }),
+      ).toEqual(1);
     });
     test('respects difficulty', () => {
-      expect(computeSuccesses([16, 15, 10, 14], {difficulty: 'hard'})).toEqual(0);
+      expect(
+        computeSuccesses([16, 15, 10, 14], { difficulty: 'hard' }),
+      ).toEqual(0);
     });
   });
   describe('selectChecks', () => {
@@ -138,135 +179,232 @@ describe('Decision actions', () => {
       const cs: LeveldSkillCheck[] = [];
       for (const skill of ['athletics', 'knowledge', 'charisma']) {
         for (const persona of ['light', 'dark']) {
-          cs.push({difficulty: 'hard', persona, requiredSuccesses: 1, skill});
+          cs.push({ difficulty: 'hard', persona, requiredSuccesses: 1, skill });
         }
       }
       expect(selectChecks(cs, seedrandom.alea('1234')).length).toEqual(3);
     });
   });
   describe('computeOutcome', () => {
-    const selected = {difficulty: 'medium', requiredSuccesses: 5};
+    const selected = { difficulty: 'medium', requiredSuccesses: 5 };
 
     test('computes success', () => {
-      expect(computeOutcome([20, 20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.success);
+      expect(
+        computeOutcome(
+          [20, 20, 20, 20, 20],
+          selected,
+          s.basic,
+          TEST_NODE,
+          m.s2p5,
+          true,
+        ),
+      ).toEqual(Outcome.success);
     });
     test('computes failure', () => {
-      expect(computeOutcome([1], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.failure);
+      expect(
+        computeOutcome([1], selected, s.basic, TEST_NODE, m.s2p5, true),
+      ).toEqual(Outcome.failure);
     });
     test('computes interrupted', () => {
-      expect(computeOutcome([20, 20, 20, 20, 10], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.interrupted);
+      expect(
+        computeOutcome(
+          [20, 20, 20, 20, 10],
+          selected,
+          s.basic,
+          TEST_NODE,
+          m.s2p5,
+          true,
+        ),
+      ).toEqual(Outcome.interrupted);
     });
     test('computes interrupted when over max rolls', () => {
-      expect(computeOutcome([10], selected, s.basic, TEST_NODE_MAX_1, m.s2p5, true)).toEqual(Outcome.interrupted);
+      expect(
+        computeOutcome([10], selected, s.basic, TEST_NODE_MAX_1, m.s2p5, true),
+      ).toEqual(Outcome.interrupted);
     });
     test('computes success when over max rolls and no interrupted state', () => {
-      expect(computeOutcome([10, 10, 10, 10, 10], selected, s.basic, TEST_NODE_NO_INTERRUPTED, m.s2p5, false)).toEqual(Outcome.success);
+      expect(
+        computeOutcome(
+          [10, 10, 10, 10, 10],
+          selected,
+          s.basic,
+          TEST_NODE_NO_INTERRUPTED,
+          m.s2p5,
+          false,
+        ),
+      ).toEqual(Outcome.success);
     });
     test('computes retry', () => {
-      expect(computeOutcome([20, 20, 20, 20], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(Outcome.retry);
+      expect(
+        computeOutcome(
+          [20, 20, 20, 20],
+          selected,
+          s.basic,
+          TEST_NODE,
+          m.s2p5,
+          true,
+        ),
+      ).toEqual(Outcome.retry);
     });
     test('returns null when no rolls', () => {
-      expect(computeOutcome([], selected, s.basic, TEST_NODE, m.s2p5, true)).toEqual(null);
+      expect(
+        computeOutcome([], selected, s.basic, TEST_NODE, m.s2p5, true),
+      ).toEqual(null);
     });
-
   });
   describe('generateLeveledChecks', () => {
     test('returns 3 semi-unique, generated checks', () => {
       expect(generateLeveledChecks(5, seedrandom.alea('1234'))).toEqual([
-        {difficulty: 'hard', persona: 'light', requiredSuccesses: 1, skill: 'athletics'},
-        {difficulty: 'medium', persona: 'dark', requiredSuccesses: 3, skill: 'athletics'},
-        {difficulty: 'easy', persona: 'light', requiredSuccesses: 1, skill: 'knowledge'},
+        {
+          difficulty: 'hard',
+          persona: 'light',
+          requiredSuccesses: 1,
+          skill: 'athletics',
+        },
+        {
+          difficulty: 'medium',
+          persona: 'dark',
+          requiredSuccesses: 3,
+          skill: 'athletics',
+        },
+        {
+          difficulty: 'easy',
+          persona: 'light',
+          requiredSuccesses: 1,
+          skill: 'knowledge',
+        },
       ]);
     });
     test('scales num successes with num adventurers', () => {
       // Note: these are typically stochastic, so not guaranteed to be the same value each time except when using the same seed.
-      expect(Math.max(...generateLeveledChecks(1, seedrandom.alea('1234')).map((c) => c.requiredSuccesses))).toEqual(1);
-      expect(Math.max(...generateLeveledChecks(6, seedrandom.alea('1234')).map((c) => c.requiredSuccesses))).toEqual(3);
+      expect(
+        Math.max(
+          ...generateLeveledChecks(1, seedrandom.alea('1234')).map(
+            c => c.requiredSuccesses,
+          ),
+        ),
+      ).toEqual(1);
+      expect(
+        Math.max(
+          ...generateLeveledChecks(6, seedrandom.alea('1234')).map(
+            c => c.requiredSuccesses,
+          ),
+        ),
+      ).toEqual(3);
     });
-    test.skip('scales difficulty with the number of times this type of check was selected previously', () => { /* TODO */ });
+    test.skip('scales difficulty with the number of times this type of check was selected previously', () => {
+      /* TODO */
+    });
   });
   describe('skillTimeMillis', () => {
     test('gives multiple players less time than single player', () => {
       expect(
-        skillTimeMillis({...s.basic, numLocalPlayers: 2}, m.basic)
+        skillTimeMillis({ ...s.basic, numLocalPlayers: 2 }, m.basic),
       ).toBeLessThan(
-        skillTimeMillis({...s.basic, numLocalPlayers: 1}, m.basic)
+        skillTimeMillis({ ...s.basic, numLocalPlayers: 1 }, m.basic),
       );
     });
-    test.skip('respects settings', () => { /* TODO */ });
+    test.skip('respects settings', () => {
+      /* TODO */
+    });
   });
   describe('handleDecisionRoll', () => {
     test('pushes the roll value onto the node', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: CombatPhase.midCombatDecision},
+        card: { phase: CombatPhase.midCombatDecision },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node: setup(), roll: 5});
+        multiplayer: m.s2p5,
+      }).execute({ node: setup(), roll: 5 });
       expect(extractDecision(actions[1].node).rolls).toEqual([5]);
     });
     test('fires event for matching outcome event in the node', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: ''},
+        card: { phase: '' },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node: setup(), roll: 1});
+        multiplayer: m.s2p5,
+      }).execute({ node: setup(), roll: 1 });
       expect(actions[1].node.elem.text()).toEqual('failure node reached');
     });
     test('continues resolve phase if no matching outcome event', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: ''},
+        card: { phase: '' },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node: setup(), roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+        multiplayer: m.s2p5,
+      }).execute({ node: setup(), roll: 10 });
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .decision.phase,
+      ).toEqual(DecisionPhase.resolve);
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: CombatPhase.midCombatDecision},
+        card: { phase: CombatPhase.midCombatDecision },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node: TEST_NODE_COMBAT, roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
-      expect(actions[1].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+        multiplayer: m.s2p5,
+      }).execute({ node: TEST_NODE_COMBAT, roll: 10 });
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .combat.phase,
+      ).toEqual(CombatPhase.midCombatDecision);
+      expect(actions[1].node.ctx.templates.decision.phase).toEqual(
+        DecisionPhase.resolve,
+      );
     });
     test('mid-combat decision remains in combat when resolving', () => {
       const actions = Action(handleDecisionRoll, {
-        card: {phase: CombatPhase.midCombatDecision},
+        card: { phase: CombatPhase.midCombatDecision },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node: TEST_NODE_COMBAT, roll: 10});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
-      expect(actions[1].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+        multiplayer: m.s2p5,
+      }).execute({ node: TEST_NODE_COMBAT, roll: 10 });
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .combat.phase,
+      ).toEqual(CombatPhase.midCombatDecision);
+      expect(actions[1].node.ctx.templates.decision.phase).toEqual(
+        DecisionPhase.resolve,
+      );
     });
     test('goes to interrupted state when non-combat decision has interrupted event', () => {
       const node = setup();
       node.ctx.templates.decision.rolls = [10, 10, 10, 10];
       const actions = Action(handleDecisionRoll, {
-        card: {phase: ''},
+        card: { phase: '' },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node, roll: 10});
+        multiplayer: m.s2p5,
+      }).execute({ node, roll: 10 });
       expect(actions[1].node.elem.text()).toEqual('interrupted node reached');
     });
     test('goes to success state when non-combat decision has no interrupted event', () => {
       const node = setup(TEST_NODE_NO_INTERRUPTED);
       node.ctx.templates.decision.rolls = [10, 10, 10, 10];
       const actions = Action(handleDecisionRoll, {
-        card: {phase: ''},
+        card: { phase: '' },
         settings: s.basic,
-        multiplayer: m.s2p5
-      }).execute({node, roll: 10});
+        multiplayer: m.s2p5,
+      }).execute({ node, roll: 10 });
       expect(actions[1].node.elem.text()).toEqual('success node reached');
     });
   });
   describe('toDecisionCard', () => {
     test('goes to MID_COMBAT_DECISION if in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: CombatPhase.midCombatDecision}}).execute({node: TEST_NODE_COMBAT});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.combat.phase).toEqual(CombatPhase.midCombatDecision);
+      const actions = Action(toDecisionCard, {
+        card: { phase: CombatPhase.midCombatDecision },
+      }).execute({ node: TEST_NODE_COMBAT });
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .combat.phase,
+      ).toEqual(CombatPhase.midCombatDecision);
     });
     test('does pass-thru to toCard if not in combat', () => {
-      const actions = Action(toDecisionCard, {card: {phase: ''}}).execute({node: setup() name: 'QUEST_CARD', phase: DecisionPhase.resolve});
-      expect(actions.filter((a) => a.type === 'QUEST_NODE')[0].node.ctx.templates.decision.phase).toEqual(DecisionPhase.resolve);
+      const actions = Action(toDecisionCard, { card: { phase: '' } }).execute({
+        node: setup(),
+        name: 'QUEST_CARD',
+        phase: DecisionPhase.resolve,
+      });
+      expect(
+        actions.filter(a => a.type === 'QUEST_NODE')[0].node.ctx.templates
+          .decision.phase,
+      ).toEqual(DecisionPhase.resolve);
     });
   });
 });

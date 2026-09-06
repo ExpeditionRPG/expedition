@@ -1,12 +1,12 @@
-import {ENCOUNTERS} from 'app/Encounters';
-import {newMockStore} from 'app/Testing';
-import {initialSettings} from 'app/reducers/Settings';
-import {resolveCombat} from '../Params';
-import {evaluateOp} from 'shared/parse/Context';
+import { ENCOUNTERS } from 'app/Encounters';
+import { initialSettings } from 'app/reducers/Settings';
+import { newMockStore } from 'app/Testing';
+import { evaluateOp } from 'shared/parse/Context';
+import { resolveCombat } from '../Params';
 
 // We use defaultContext here instead of combatScope as the combat scope
 // depends on templates and content sets within the broader context.
-import {defaultContext} from '../Template';
+import { defaultContext } from '../Template';
 
 describe('Combat State', () => {
   describe('combatScope', () => {
@@ -14,19 +14,29 @@ describe('Combat State', () => {
       test('returns a random enemy name', () => {
         const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.randomEnemy()', ctx) ).toEqual(jasmine.any(String));
-        expect(ENCOUNTERS[evaluateOp('_.randomEnemy()', ctx).toLowerCase()]).toBeDefined();
+        expect(evaluateOp('_.randomEnemy()', ctx)).toEqual(expect.any(String));
+        expect(
+          ENCOUNTERS[evaluateOp('_.randomEnemy()', ctx).toLowerCase()],
+        ).toBeDefined();
       });
 
       test('only includes enemies in the currently enabled content sets', () => {
         // Impossible to test absolutely; but we can test with high confidence.
         // Horror enabled, future disabled.
-        const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
+        const store = newMockStore({
+          settings: { ...initialSettings, contentSets: { horror: true } },
+        });
         for (let i = 0; i < 100; i++) {
           const ctx = defaultContext(store.getState);
           ctx.seed = i; // deterministic
-          const pick = evaluateOp('_.randomEnemy()', ctx) ;
-          expect(ENCOUNTERS[Object.keys(ENCOUNTERS).filter((key) => ENCOUNTERS[key].name === pick)[0]].set).toMatch(/horror|base/);
+          const pick = evaluateOp('_.randomEnemy()', ctx);
+          expect(
+            ENCOUNTERS[
+              Object.keys(ENCOUNTERS).filter(
+                key => ENCOUNTERS[key].name === pick,
+              )[0]
+            ].set,
+          ).toMatch(/horror|base/);
         }
       });
 
@@ -34,7 +44,9 @@ describe('Combat State', () => {
         const store = newMockStore({});
         const ctx = defaultContext(store.getState);
         ctx.seed = 0;
-        expect(evaluateOp('_.randomEnemy()', ctx) ).not.toEqual(evaluateOp('_.randomEnemy()', ctx) );
+        expect(evaluateOp('_.randomEnemy()', ctx)).not.toEqual(
+          evaluateOp('_.randomEnemy()', ctx),
+        );
       });
     });
 
@@ -42,18 +54,30 @@ describe('Combat State', () => {
       const store = newMockStore({});
       const ctx = defaultContext(store.getState);
       test('returns a random enemy name', () => {
-        expect(evaluateOp('_.randomEnemyOfTier(1)', ctx) ).toEqual(jasmine.any(String));
-        expect(ENCOUNTERS[evaluateOp('_.randomEnemyOfTier(1)', ctx) .toLowerCase()]).toBeDefined();
+        expect(evaluateOp('_.randomEnemyOfTier(1)', ctx)).toEqual(
+          expect.any(String),
+        );
+        expect(
+          ENCOUNTERS[evaluateOp('_.randomEnemyOfTier(1)', ctx).toLowerCase()],
+        ).toBeDefined();
       });
       test('only includes enemies in the currently enabled content sets', () => {
         // Impossible to test absolutely; but we can test with high confidence.
         // Horror enabled, future disabled.
-        const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
+        const horrorStore = newMockStore({
+          settings: { ...initialSettings, contentSets: { horror: true } },
+        });
         for (let i = 0; i < 100; i++) {
-          const ctx = defaultContext(store.getState);
-          ctx.seed = i; // deterministic
-          const pick = evaluateOp('_.randomEnemyOfTier(1)', ctx) ;
-          expect(ENCOUNTERS[Object.keys(ENCOUNTERS).filter((key) => ENCOUNTERS[key].name === pick)[0]].set).toMatch(/horror|base/);
+          const horrorCtx = defaultContext(horrorStore.getState);
+          horrorCtx.seed = i; // deterministic
+          const pick = evaluateOp('_.randomEnemyOfTier(1)', horrorCtx);
+          expect(
+            ENCOUNTERS[
+              Object.keys(ENCOUNTERS).filter(
+                key => ENCOUNTERS[key].name === pick,
+              )[0]
+            ].set,
+          ).toMatch(/horror|base/);
         }
       });
     });
@@ -62,22 +86,40 @@ describe('Combat State', () => {
       const store = newMockStore({});
       const ctx = defaultContext(store.getState);
       test('returns a random enemy name', () => {
-        expect(evaluateOp('_.randomEnemyOfClass("bandit")', ctx) ).toEqual(jasmine.any(String));
-        expect(ENCOUNTERS[evaluateOp('_.randomEnemyOfClass("bandit")', ctx).toLowerCase()]).toBeDefined();
+        expect(evaluateOp('_.randomEnemyOfClass("bandit")', ctx)).toEqual(
+          expect.any(String),
+        );
+        expect(
+          ENCOUNTERS[
+            evaluateOp('_.randomEnemyOfClass("bandit")', ctx).toLowerCase()
+          ],
+        ).toBeDefined();
       });
       test('is capitalization agnostic', () => {
-        expect(evaluateOp('_.randomEnemyOfClass("BANdit")', ctx) ).toEqual(jasmine.any(String));
-        expect(ENCOUNTERS[evaluateOp('_.randomEnemyOfClass("Bandit")', ctx).toLowerCase()]).toBeDefined();
+        expect(evaluateOp('_.randomEnemyOfClass("BANdit")', ctx)).toEqual(
+          expect.any(String),
+        );
+        expect(
+          ENCOUNTERS[
+            evaluateOp('_.randomEnemyOfClass("Bandit")', ctx).toLowerCase()
+          ],
+        ).toBeDefined();
       });
       test('does not include enemies in the horror set if horror set disabled', () => {
-        const store = newMockStore({});
-        const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.randomEnemyOfClass("horror")', ctx)).toEqual(null);
+        const noHorrorStore = newMockStore({});
+        const noHorrorCtx = defaultContext(noHorrorStore.getState);
+        expect(
+          evaluateOp('_.randomEnemyOfClass("horror")', noHorrorCtx),
+        ).toEqual(null);
       });
       test('includes enemies in the horror set if horror set enabled', () => {
-        const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
-        const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.randomEnemyOfClass("horror")', ctx)).not.toEqual(null);
+        const horrorStore = newMockStore({
+          settings: { ...initialSettings, contentSets: { horror: true } },
+        });
+        const horrorCtx = defaultContext(horrorStore.getState);
+        expect(
+          evaluateOp('_.randomEnemyOfClass("horror")', horrorCtx),
+        ).not.toEqual(null);
       });
     });
 
@@ -85,14 +127,29 @@ describe('Combat State', () => {
       test('returns a random enemy name', () => {
         const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.randomEnemyOfClassTier("undead", 1)', ctx) ).toEqual(jasmine.any(String));
-        expect(ENCOUNTERS[evaluateOp('_.randomEnemyOfClassTier("undead", 1)', ctx) .toLowerCase()]).toBeDefined();
+        expect(
+          evaluateOp('_.randomEnemyOfClassTier("undead", 1)', ctx),
+        ).toEqual(expect.any(String));
+        expect(
+          ENCOUNTERS[
+            evaluateOp(
+              '_.randomEnemyOfClassTier("undead", 1)',
+              ctx,
+            ).toLowerCase()
+          ],
+        ).toBeDefined();
       });
       test('only includes enemies in the currently enabled content sets', () => {
-        const store = newMockStore({settings: {...initialSettings, contentSets: {horror: true}}});
+        const store = newMockStore({
+          settings: { ...initialSettings, contentSets: { horror: true } },
+        });
         const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.randomEnemyOfClassTier("undead", 1)', ctx)).toEqual(jasmine.any(String));
-        expect(evaluateOp('_.randomEnemyOfClassTier("synth", 1)', ctx)).toEqual(null);
+        expect(
+          evaluateOp('_.randomEnemyOfClassTier("undead", 1)', ctx),
+        ).toEqual(expect.any(String));
+        expect(evaluateOp('_.randomEnemyOfClassTier("synth", 1)', ctx)).toEqual(
+          null,
+        );
       });
     });
 
@@ -100,8 +157,8 @@ describe('Combat State', () => {
       test('returns the numer of alive adventurers during combat', () => {
         const store = newMockStore();
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {numAliveAdventurers: 3};
-        expect(evaluateOp("_.aliveAdventurers()", ctx)).toEqual(3);
+        ctx.templates.combat = { numAliveAdventurers: 3 };
+        expect(evaluateOp('_.aliveAdventurers()', ctx)).toEqual(3);
       });
     });
 
@@ -109,12 +166,14 @@ describe('Combat State', () => {
       test('returns 0 on the first round / by default', () => {
         const store = newMockStore({});
         const ctx = defaultContext(store.getState);
-        expect(evaluateOp('_.currentCombatRound()', defaultContext())).toEqual(0);
+        expect(evaluateOp('_.currentCombatRound()', defaultContext())).toEqual(
+          0,
+        );
       });
       test('return 1 on the second round', () => {
         const store = newMockStore();
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {roundCount: 1};
+        ctx.templates.combat = { roundCount: 1 };
         expect(evaluateOp('_.currentCombatRound()', ctx)).toEqual(1);
       });
     });
@@ -128,7 +187,7 @@ describe('Combat State', () => {
       test('returns the current combat tier', () => {
         const store = newMockStore();
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {tier: 7};
+        ctx.templates.combat = { tier: 7 };
         expect(evaluateOp('_.currentCombatTier()', ctx)).toEqual(7);
       });
     });
@@ -142,7 +201,7 @@ describe('Combat State', () => {
       test('returns true if it is a surge round', () => {
         const store = newMockStore();
         const ctx = defaultContext(store.getState);
-        ctx.templates.combat = {roundCount: 4, surgePeriod: 4};
+        ctx.templates.combat = { roundCount: 4, surgePeriod: 4 };
         expect(evaluateOp('_.isCombatSurgeRound()', ctx)).toEqual(true);
       });
     });

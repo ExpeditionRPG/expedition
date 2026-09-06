@@ -64,11 +64,11 @@ describe('handlers', () => {
         .then(() => {
           expect(res.end.calledOnce).toEqual(true);
           expect(JSON.parse(res.end.getCall(0).args[0]).quests).toEqual([
-            jasmine.objectContaining({ id: q.basic.id }),
+            expect.objectContaining({ id: q.basic.id }),
           ]);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -87,7 +87,7 @@ describe('handlers', () => {
           expect(res.end.calledWith(rq.basic.xml));
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test.skip('returns error when given invalid quest id', () => {
       /* TODO */
@@ -97,7 +97,7 @@ describe('handlers', () => {
   describe('publish', () => {
     let ms: MailService;
     beforeEach(() => {
-      ms = { send: jasmine.createSpy('send') };
+      ms = { send: jest.fn() };
     });
 
     test.skip('handles missing locals', () => {
@@ -160,7 +160,7 @@ describe('handlers', () => {
           expect(i.get('title')).toEqual(q.basic.title);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -189,7 +189,7 @@ describe('handlers', () => {
           expect(i.get('tombstone')).not.toBeNull();
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test.skip('handles missing locals', () => {
       /* TODO */
@@ -232,14 +232,14 @@ describe('handlers', () => {
           expect(i).not.toEqual(null);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
   describe('feedback', () => {
     let ms: MailService;
     beforeEach(() => {
-      ms = { send: jasmine.createSpy('send') };
+      ms = { send: jest.fn() };
     });
 
     test('rejects non-parseable feedback', (done: DoneFn) => {
@@ -253,13 +253,13 @@ describe('handlers', () => {
             res,
           ),
         )
-        .then(done.fail)
+        .then(() => done(new Error('expected the promise to reject')))
         .catch(() => {
           expect(res.status.getCall(0).args[0]).toEqual(400);
           expect(res.end.calledWith('Error reading request.')).toEqual(true);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('rejects invalid data', (done: DoneFn) => {
@@ -281,13 +281,13 @@ describe('handlers', () => {
             res,
           ),
         )
-        .then(done.fail)
+        .then(() => done(new Error('expected the promise to reject')))
         .catch(() => {
           expect(res.status.getCall(0).args[0]).toEqual(400);
           expect(res.end.calledWith('Invalid request.')).toEqual(true);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('publishes with minimal data', (done: DoneFn) => {
       const data = {
@@ -312,7 +312,7 @@ describe('handlers', () => {
           expect(res.end.calledWith('ok')).toEqual(true);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('publishes rating feedback', (done: DoneFn) => {
       const data = {
@@ -352,7 +352,7 @@ describe('handlers', () => {
           expect(r.ratingavg).toEqual(3);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -365,11 +365,11 @@ describe('handlers', () => {
         .then(() => {
           expect(res.status.getCall(0).args[0]).toEqual(200);
           expect(JSON.parse(res.end.getCall(0).args[0])).toEqual({
-            [ae.questEnd.questID]: jasmine.any(Object),
+            [ae.questEnd.questID]: expect.any(Object),
           });
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -396,7 +396,7 @@ describe('handlers', () => {
           });
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
     test('returns 404 when quest not found', done => {
       const res = mockRes();
@@ -415,7 +415,7 @@ describe('handlers', () => {
           expect(res.status.getCall(0).args[0]).toEqual(404);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -443,7 +443,7 @@ describe('handlers', () => {
           expect(res.status.getCall(0).args[0]).toEqual(409);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -469,7 +469,7 @@ describe('handlers', () => {
       );
       expect(result.list).toContain('testlist');
       expect(result.details).toEqual(
-        jasmine.objectContaining({ email_address: email }),
+        expect.objectContaining({ email_address: email }),
       );
     });
   });

@@ -1,11 +1,11 @@
-import {mount, unmountAll} from 'app/Testing';
+import { TUTORIAL_QUESTS } from 'app/Constants';
+import { initialMultiplayer } from 'app/reducers/Multiplayer';
+import { initialSettings } from 'app/reducers/Settings';
+import { mount, unmountAll } from 'app/Testing';
 import * as React from 'react';
+import { loggedOutUser } from 'shared/auth/UserState';
+import { Expansion } from 'shared/schema/Constants';
 import QuestSetup, { Props } from './QuestSetup';
-import {initialSettings} from 'app/reducers/Settings';
-import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {loggedOutUser} from 'shared/auth/UserState';
-import {TUTORIAL_QUESTS} from 'app/Constants';
-import {Expansion} from 'shared/schema/Constants';
 
 const PERSONA_SUBSTR1 = 'Draw a persona card';
 const PERSONA_SUBSTR2 = 'Draw an additional Influence';
@@ -18,12 +18,12 @@ describe('QuestSetup', () => {
       quests: TUTORIAL_QUESTS,
       settings: initialSettings,
       contentSets: new Set([Expansion.horror]),
-      onQuestSelect: jasmine.createSpy('onQuestSelect'),
-      onReturn: jasmine.createSpy('onReturn'),
+      onQuestSelect: jest.fn(),
+      onReturn: jest.fn(),
       ...overrides,
     };
     const e = mount(<QuestSetup {...props} />);
-    return {e, props};
+    return { e, props };
   }
 
   test('shows persona and influence instructions when horror contentset enabled', () => {
@@ -33,7 +33,7 @@ describe('QuestSetup', () => {
   });
 
   test('hides persona and influence instructions when horror contentset disabled', () => {
-    const html = setup({contentSets: new Set()}).e.html();
+    const html = setup({ contentSets: new Set() }).e.html();
     expect(html).not.toContain(PERSONA_SUBSTR1);
     expect(html).not.toContain(PERSONA_SUBSTR2);
   });

@@ -1,9 +1,8 @@
+import { mount, unmountAll } from 'app/Testing';
 import * as React from 'react';
-import {mount, unmountAll} from 'app/Testing';
-import Picker, {Props} from './Picker';
+import Picker, { Props } from './Picker';
 
 describe('Picker', () => {
-
   afterEach(unmountAll);
 
   function setup(overrides?: Partial<Props>) {
@@ -11,16 +10,19 @@ describe('Picker', () => {
       value: 'testvalue',
       label: 'testlabel',
       id: 'testid',
-      onDelta: jasmine.createSpy('onDelta'),
+      onDelta: jest.fn(),
       ...overrides,
     };
-    const e = mount(<Picker {...(props as any as Props)} />);
-    return {props, e};
+    const e = mount(<Picker {...((props as any) as Props)} />);
+    return { props, e };
   }
 
   test('triggers onDelta when buttons clicked', () => {
-    const {e, props} = setup();
-    e.find('IconButton').first().prop('onClick')();
+    const { e, props } = setup();
+    e
+      .find('IconButton')
+      .first()
+      .prop('onClick')();
     expect(props.onDelta).toHaveBeenCalledWith(-1);
   });
 

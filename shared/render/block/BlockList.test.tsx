@@ -1,6 +1,4 @@
-import {BlockList} from './BlockList';
-
-const expect: any = require('expect');
+import { BlockList } from './BlockList';
 
 describe('BlockList', () => {
   test('parses empty string', () => {
@@ -103,7 +101,9 @@ describe('BlockList', () => {
   });
 
   test('parses same block if no separating empty line', () => {
-    const list = new BlockList('* a choice that takes\n  multiple lines and has indent!');
+    const list = new BlockList(
+      '* a choice that takes\n  multiple lines and has indent!',
+    );
     expect(list.at(0)).toEqual({
       indent: 0,
       lines: ['* a choice that takes', 'multiple lines and has indent!'],

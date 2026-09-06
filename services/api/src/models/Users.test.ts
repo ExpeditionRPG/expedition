@@ -36,7 +36,7 @@ describe('users', () => {
           );
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -55,17 +55,17 @@ describe('users', () => {
           expect(user.lootPoints).toEqual(37);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
   describe('subscribeToCreatorsList', () => {
     test('subscribes to creators list', () => {
       const mc = {
-        post: jasmine.createSpy('post').and.returnValue(Promise.resolve('')),
+        post: jest.fn().mockReturnValue(Promise.resolve('')),
       };
       subscribeToCreatorsList(mc, u.basic.email);
-      expect(mc.post).toHaveBeenCalledWith(jasmine.any(String), {
+      expect(mc.post).toHaveBeenCalledWith(expect.any(String), {
         email_address: u.basic.email,
         status: 'subscribed',
       });
@@ -82,7 +82,7 @@ describe('users', () => {
           expect(result).toEqual({});
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns valid results for players with quest history', done => {
@@ -101,7 +101,7 @@ describe('users', () => {
           expect(result.details.title).toEqual(q.basic.title);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -115,7 +115,7 @@ describe('users', () => {
           expect(result).toEqual([b.basic.badge]);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 
@@ -129,7 +129,7 @@ describe('users', () => {
           expect(user.id).toEqual(u.basic.id);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
 
     test('returns null if not exists', done => {
@@ -141,7 +141,7 @@ describe('users', () => {
           expect(user).toEqual(null);
           done();
         })
-        .catch(done.fail);
+        .catch(done);
     });
   });
 });

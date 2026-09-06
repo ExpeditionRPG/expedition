@@ -1,19 +1,18 @@
+import { mount, render, unmountAll } from 'app/Testing';
 import * as React from 'react';
-import {Quest} from 'shared/schema/Quests';
-import {TUTORIAL_QUESTS} from '../../Constants';
-import {SearchParams} from '../../reducers/StateTypes';
-import {initialSettings} from '../../reducers/Settings';
-import {loggedOutUser} from 'shared/auth/UserState';
-import {testLoggedInUser} from '../../reducers/User.test';
-import {render, mount, unmountAll} from 'app/Testing';
-import Search, {Props} from './Search';
-import {TEST_SEARCH} from '../../reducers/TestData';
-import {Expansion} from 'shared/schema/Constants';
+import { loggedOutUser } from 'shared/auth/UserState';
+import { Expansion } from 'shared/schema/Constants';
+import { Quest } from 'shared/schema/Quests';
+import { TUTORIAL_QUESTS } from '../../Constants';
+import { initialSettings } from '../../reducers/Settings';
+import { SearchParams } from '../../reducers/StateTypes';
+import { TEST_SEARCH } from '../../reducers/TestData';
+import { testLoggedInUser } from '../../reducers/User.test';
+import Search, { Props } from './Search';
 
 const Moment = require('moment');
 
 describe('Search', () => {
-
   afterEach(unmountAll);
 
   function setup(overrides?: Partial<Props>) {
@@ -24,34 +23,36 @@ describe('Search', () => {
       user: loggedOutUser,
       results: [],
       searching: false,
-      toCard: jasmine.createSpy('toCard'),
-      onReturn: jasmine.createSpy('onReturn'),
-      onQuest: jasmine.createSpy('onQuest'),
-      onSearch: jasmine.createSpy('onSearch'),
+      toCard: jest.fn(),
+      onReturn: jest.fn(),
+      onQuest: jest.fn(),
+      onSearch: jest.fn(),
       ...overrides,
     };
-    return {props, e: <Search {...(props as any as Props)} />};
+    return { props, e: <Search {...((props as any) as Props)} /> };
   }
 
   test('renders a small selection of quests when user is not logged in', () => {
     const text = render(setup().e).text();
-    expect(text).toContain("Sign in");
-    expect(text).toContain("Oust Albanus");
+    expect(text).toContain('Sign in');
+    expect(text).toContain('Oust Albanus');
   });
   test('gracefully handles no search results', () => {
-    const text = render(setup({user: testLoggedInUser}).e).text();
-    expect(text).toContain("No quests found");
+    const text = render(setup({ user: testLoggedInUser }).e).text();
+    expect(text).toContain('No quests found');
   });
   test('renders some search results', () => {
-    const text = render(setup({user: testLoggedInUser, results: TUTORIAL_QUESTS}).e).text();
-    expect(text).toContain("Learning");
+    const text = render(
+      setup({ user: testLoggedInUser, results: TUTORIAL_QUESTS }).e,
+    ).text();
+    expect(text).toContain('Learning');
   });
   test('shows spinner when loading results', () => {
-    const e = render(setup({user: testLoggedInUser, searching: true}).e);
+    const e = render(setup({ user: testLoggedInUser, searching: true }).e);
     expect(e.find('.lds-ellipsis').length).toEqual(1);
   });
   test('searches if user is logged in and no results', () => {
-    const {props, e} = setup({
+    const { props, e } = setup({
       user: {
         loggedIn: true,
       },
@@ -61,7 +62,7 @@ describe('Search', () => {
     expect(props.onSearch).toHaveBeenCalled();
   });
   test('does not search if user is not logged in', () => {
-    const {props, e} = setup({
+    const { props, e } = setup({
       user: {
         loggedIn: false,
       },
@@ -70,7 +71,7 @@ describe('Search', () => {
     expect(props.onSearch).not.toHaveBeenCalled();
   });
   test('does not search if there are already results', () => {
-    const {props, e} = setup({
+    const { props, e } = setup({
       user: {
         loggedIn: true,
       },
@@ -80,7 +81,9 @@ describe('Search', () => {
     expect(props.onSearch).not.toHaveBeenCalled();
   });
   test('shows only configured content set icons', () => {
-    const e = mount(setup({user: testLoggedInUser, results: TUTORIAL_QUESTS}).e);
+    const e = mount(
+      setup({ user: testLoggedInUser, results: TUTORIAL_QUESTS }).e,
+    );
     expect(e.find('#searching_horror').exists()).toEqual(true);
     expect(e.find('#searching_future').exists()).toEqual(false);
   });

@@ -1,19 +1,16 @@
-import {configure, mount as enzymeMount, render as enzymeRender} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { mount as enzymeMount, render as enzymeRender } from 'enzyme';
 import * as React from 'react';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
-import {loggedOutUser} from 'shared/auth/UserState';
-import {Connection, setMultiplayerConnection} from './multiplayer/Connection';
-import {createMiddleware} from './multiplayer/Middleware';
+import { loggedOutUser } from 'shared/auth/UserState';
+import { Connection, setMultiplayerConnection } from './multiplayer/Connection';
+import { createMiddleware } from './multiplayer/Middleware';
 import combinedReducers from './reducers/CombinedReducers';
-import {AppStateWithHistory} from './reducers/StateTypes';
-
-configure({ adapter: new Adapter() });
+import { AppStateWithHistory } from './reducers/StateTypes';
 
 export function newMockStoreWithInitializedState() {
-  return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
+  return newMockStore(combinedReducers({} as any, { type: '@@INIT' }));
 }
 
 interface MockStore extends Redux.Store {
@@ -21,25 +18,34 @@ interface MockStore extends Redux.Store {
   getActions: any;
 }
 
-export function newMockStore(state: object, client= new Connection(() => Promise.resolve(false))): MockStore {
+export function newMockStore(
+  state: object,
+  client = new Connection(() => Promise.resolve(false)),
+): MockStore {
   // Since this is a testing function, we play it a bit loose with the state type.
-  const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(state as any as AppStateWithHistory);
+  const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
+    (state as any) as AppStateWithHistory,
+  );
   (store as any).multiplayerClient = client;
   setMultiplayerConnection(client);
   return store;
 }
 
 // Put stuff here that is assumed to always exist (like settings)
-const defaultGlobalState = {
-  settings: {numLocalPlayers: 1},
-} as any as AppStateWithHistory;
+const defaultGlobalState = ({
+  settings: { numLocalPlayers: 1 },
+} as any) as AppStateWithHistory;
 
-export function Reducer<A extends Redux.Action>(reducer: (state: object|undefined, action: A) => object) {
-  const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
+export function Reducer<A extends Redux.Action>(
+  reducer: (state: object | undefined, action: A) => object,
+) {
+  const defaultInitialState = reducer(undefined, { type: '@@INIT' } as any);
 
   function internalReducerCommands(initialState: object) {
     const client = new Connection();
-    const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(defaultGlobalState);
+    const store = configureStore<AppStateWithHistory>([
+      createMiddleware(client),
+    ])(defaultGlobalState);
     return {
       execute: (action: A) => {
         store.dispatch(action);
@@ -57,7 +63,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
         }
         return {
           toChangeState: (expectedChanges: object) => {
-            expect(newState).toEqual(jasmine.objectContaining(expectedChanges));
+            expect(newState).toEqual(expect.objectContaining(expectedChanges));
           },
           toReturnState: (expected: object) => {
             expect(newState).toEqual(expected);
@@ -78,10 +84,16 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   };
 }
 
-export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object, client= new Connection()) {
-  client.sendEvent = jasmine.createSpy('sendEvent');
+export function Action<A>(
+  action: (...a: any[]) => Redux.Action,
+  baseState?: object,
+  client = new Connection(),
+) {
+  client.sendEvent = jest.fn();
   setMultiplayerConnection(client);
-  let store = configureStore<AppStateWithHistory>([createMiddleware(client)])((baseState as any as AppStateWithHistory) ||  defaultGlobalState);
+  let store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
+    ((baseState as any) as AppStateWithHistory) || defaultGlobalState,
+  );
 
   function internalActionCommands() {
     return {
@@ -105,7 +117,9 @@ export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: obj
 
   return {
     withState(storeState: object) {
-      store = configureStore<AppStateWithHistory>([createMiddleware(client)])(storeState as AppStateWithHistory);
+      store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
+        storeState as AppStateWithHistory,
+      );
       return internalActionCommands();
     },
     ...internalActionCommands(),
@@ -113,19 +127,25 @@ export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: obj
 }
 
 const BASE_ENZYME_STATE = {
-  saved: {list: []},
-  userQuests: {history: {}},
+  saved: { list: [] },
+  userQuests: { history: {} },
   user: loggedOutUser,
 };
 export function render(e: JSX.Element, state: Partial<AppStateWithHistory>) {
-  const store = newMockStore({...BASE_ENZYME_STATE, ...state});
-  const root = enzymeRender(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
+  const store = newMockStore({ ...BASE_ENZYME_STATE, ...state });
+  const root = enzymeRender(
+    <Provider store={store}>{e}</Provider>,
+    undefined /*renderOptions*/,
+  );
   return root; // No need to get child elements, as provider does not render as an element.
 }
 const unmounts: Array<() => void> = [];
 export function mountRoot(e: JSX.Element, state: Partial<AppStateWithHistory>) {
-  const store = newMockStore({...BASE_ENZYME_STATE, ...state});
-  const root = enzymeMount(<Provider store={store}>{e}</Provider>, undefined /*renderOptions*/);
+  const store = newMockStore({ ...BASE_ENZYME_STATE, ...state });
+  const root = enzymeMount(
+    <Provider store={store}>{e}</Provider>,
+    undefined /*renderOptions*/,
+  );
   unmounts.push(() => root.unmount());
   return root;
 }

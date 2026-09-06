@@ -1,4 +1,3 @@
-
 const data = Object();
 
 data.basicMD = `#Quest Title
@@ -294,6 +293,14 @@ URL: 421`;
 data.emptyXML = `<quest title="Error">
     <roleplay></roleplay>
 </quest>`;
+
+data.strayQuestHeaderLineXML = `<quest title="Quest Title" data-line="0">
+    <roleplay></roleplay>
+</quest>`;
+
+data.strayQuestHeaderLineError = `ERROR L1:
+invalid quest attribute line "#Another Quest Title"
+URL: 420`;
 
 data.emptyError = `ERROR L0:
 no quest blocks found

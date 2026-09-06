@@ -38,12 +38,12 @@ export function send(
   isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
   sendMail?: any,
 ): Promise<any> {
-  if (transporter === null) {
-    return Promise.reject('mail transport not set up');
-  }
-  sendMail = sendMail || transporter.sendMail.bind(transporter);
+  // An explicitly-provided sendMail takes precedence; only fall back to the
+  // configured transport (which may be absent) when one isn't supplied.
+  sendMail =
+    sendMail || (transporter && transporter.sendMail.bind(transporter));
   if (!sendMail) {
-    return Promise.reject('transport not set up');
+    return Promise.reject('mail transport not set up');
   }
   // for plaintext version, turn end of paragraphs into double newlines
   const mailOptions = {

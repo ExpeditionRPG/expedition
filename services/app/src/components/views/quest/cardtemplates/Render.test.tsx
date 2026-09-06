@@ -1,7 +1,5 @@
-import {configure, shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
-import {generateIconElements} from './Render';
+import { shallow } from 'enzyme';
+import { generateIconElements } from './Render';
 
 describe('Render', () => {
   describe('generateIconElements', () => {
@@ -15,7 +13,9 @@ describe('Render', () => {
       expect(result).toContain('art.svg');
     });
     test('makes full-size svg for [art_full] tags', () => {
-      const result = shallow(generateIconElements('[art_full]', 'light')).html();
+      const result = shallow(
+        generateIconElements('[art_full]', 'light'),
+      ).html();
       expect(result).toContain('artFull');
       expect(result).toContain('art.svg');
     });
@@ -25,7 +25,9 @@ describe('Render', () => {
       expect(result).toContain('art.png');
     });
     test('makes full-size png for [art_png_full] tags', () => {
-      const result = shallow(generateIconElements('[art_png_full]', 'light')).html();
+      const result = shallow(
+        generateIconElements('[art_png_full]', 'light'),
+      ).html();
       expect(result).toContain('artFull');
       expect(result).toContain('art.png');
     });
@@ -35,19 +37,29 @@ describe('Render', () => {
       expect(result).toContain('icon_small.svg');
     });
     test('makes inline white icon for :icon_white: when theme is dark', () => {
-      const result = shallow(generateIconElements(':icon_white:', 'dark')).html();
+      const result = shallow(
+        generateIconElements(':icon_white:', 'dark'),
+      ).html();
       expect(result).toContain('inline_icon');
       expect(result).toContain('icon_white_small.svg');
     });
   });
 
   describe('numberToWord', () => {
-    test.skip('Converts numbers to words', () => { /* TODO */ });
-    test.skip('Passes through numbers it does not recognize', () => { /* TODO */ });
+    test.skip('Converts numbers to words', () => {
+      /* TODO */
+    });
+    test.skip('Passes through numbers it does not recognize', () => {
+      /* TODO */
+    });
   });
 
   describe('capitalizeFirstLetter', () => {
-    test.skip('capitalizes the first letter', () => { /* TODO */ });
-    test.skip('safely handles empty string', () => { /* TODO */ });
+    test.skip('capitalizes the first letter', () => {
+      /* TODO */
+    });
+    test.skip('safely handles empty string', () => {
+      /* TODO */
+    });
   });
 });

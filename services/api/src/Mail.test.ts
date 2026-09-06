@@ -4,7 +4,7 @@ describe('mail', () => {
   test('sends simple mail with no bcc', done => {
     const sendMail = opts => {
       expect(opts).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           from: '"Expedition" <expedition@fabricate.io>',
           html: 'test message',
           subject: 'test subject',
@@ -20,7 +20,7 @@ describe('mail', () => {
         expect(result).toEqual('result data');
         done();
       })
-      .catch(done.fail);
+      .catch(done);
   });
 
   test('when configured, sends copy via bcc', done => {
@@ -32,7 +32,7 @@ describe('mail', () => {
       .then(result => {
         done();
       })
-      .catch(done.fail);
+      .catch(done);
   });
 
   test('returns send errors via promise', done => {
@@ -41,7 +41,7 @@ describe('mail', () => {
     };
     send(['testto'], 'test subject', 'test message', false, false, sendMail)
       .then(result => {
-        done.fail('no error thrown');
+        done(new Error('no error thrown'));
       })
       .catch(e => {
         expect(e.toString()).toEqual('Error: test error');
@@ -58,7 +58,7 @@ describe('mail', () => {
       .then(result => {
         done();
       })
-      .catch(done.fail);
+      .catch(done);
   });
 
   test('does not indicate beta when non-beta', done => {
@@ -70,6 +70,6 @@ describe('mail', () => {
       .then(result => {
         done();
       })
-      .catch(done.fail);
+      .catch(done);
   });
 });

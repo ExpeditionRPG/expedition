@@ -1,5 +1,5 @@
-import {newMockStore} from '../Testing';
-import {handleAnnouncements} from './Announcement';
+import { newMockStore } from '../Testing';
+import { handleAnnouncements } from './Announcement';
 
 const TEST_ANNOUNCEMENTS = {
   empty: {
@@ -25,6 +25,11 @@ describe('Announcement action', () => {
   test('sets announcement if it has a message', () => {
     store.dispatch(handleAnnouncements(TEST_ANNOUNCEMENTS.message));
     expect(store.getActions().length).toEqual(1);
-    expect(store.getActions()[0]).toEqual(jasmine.objectContaining({type: 'ANNOUNCEMENT_SET', message: TEST_ANNOUNCEMENTS.message.message}));
+    expect(store.getActions()[0]).toEqual(
+      expect.objectContaining({
+        type: 'ANNOUNCEMENT_SET',
+        message: TEST_ANNOUNCEMENTS.message.message,
+      }),
+    );
   });
 });
