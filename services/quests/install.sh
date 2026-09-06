@@ -8,7 +8,7 @@ curl https://raw.githubusercontent.com/creationix/nvm/v0.40.1/install.sh | bash
 
 /bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install 24 && nvm alias default 24'
 
-npm install -g webpack python-pip
+npm install -g webpack@4 webpack-cli@3 python-pip
 
 pip install awscli
 

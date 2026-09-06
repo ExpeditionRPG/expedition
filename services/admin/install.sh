@@ -8,7 +8,7 @@ curl https://raw.githubusercontent.com/creationix/nvm/v0.40.1/install.sh | bash
 
 /bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install 24 && nvm alias default 24'
 
-npm install -g webpack
+npm install -g webpack@4 webpack-cli@3
 
 # Rebuild node_modules just in case node version or other dependencies change.
 npm install

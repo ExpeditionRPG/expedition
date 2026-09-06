@@ -82,6 +82,9 @@ export default class TouchIndicator extends React.Component<Props, {}> {
     // Setup canvas element
     this.canvas = ref;
     if (!this.canvas) {
+      // Unmounted: drop the context too, or a queued frame draws into an
+      // orphaned canvas.
+      this.ctx = null;
       return;
     }
 

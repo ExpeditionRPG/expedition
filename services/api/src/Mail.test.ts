@@ -1,4 +1,4 @@
-import { send } from './Mail';
+import { sendVia } from './Mail';
 
 describe('mail', () => {
   test('sends simple mail with no bcc', done => {
@@ -12,10 +12,10 @@ describe('mail', () => {
           to: 'testto',
         }),
       );
-      expect(opts.bcc).not.toBeDefined();
+      expect((opts as any).bcc).not.toBeDefined();
       return Promise.resolve('result data');
     };
-    send(['testto'], 'test subject', 'test message', false, false, sendMail)
+    sendVia(sendMail, ['testto'], 'test subject', 'test message', false, false)
       .then(result => {
         expect(result).toEqual('result data');
         done();
@@ -25,10 +25,10 @@ describe('mail', () => {
 
   test('when configured, sends copy via bcc', done => {
     const sendMail = opts => {
-      expect(opts.bcc).toEqual('todd@fabricate.io');
+      expect((opts as any).bcc).toEqual('todd@fabricate.io');
       return Promise.resolve(null);
     };
-    send(['testto'], 'test subject', 'test message', true, false, sendMail)
+    sendVia(sendMail, ['testto'], 'test subject', 'test message', true, false)
       .then(result => {
         done();
       })
@@ -39,7 +39,7 @@ describe('mail', () => {
     const sendMail = opts => {
       return Promise.reject(new Error('test error'));
     };
-    send(['testto'], 'test subject', 'test message', false, false, sendMail)
+    sendVia(sendMail, ['testto'], 'test subject', 'test message', false, false)
       .then(result => {
         done(new Error('no error thrown'));
       })
@@ -51,10 +51,10 @@ describe('mail', () => {
 
   test('prefixes subject when beta', done => {
     const sendMail = opts => {
-      expect(opts.subject).toContain('[BETA]');
+      expect((opts as any).subject).toContain('[BETA]');
       return Promise.resolve(null);
     };
-    send(['testto'], 'test subject', 'test message', false, true, sendMail)
+    sendVia(sendMail, ['testto'], 'test subject', 'test message', false, true)
       .then(result => {
         done();
       })
@@ -63,10 +63,10 @@ describe('mail', () => {
 
   test('does not indicate beta when non-beta', done => {
     const sendMail = opts => {
-      expect(opts.subject).not.toContain('[BETA]');
+      expect((opts as any).subject).not.toContain('[BETA]');
       return Promise.resolve(null);
     };
-    send(['testto'], 'test subject', 'test message', false, false, sendMail)
+    sendVia(sendMail, ['testto'], 'test subject', 'test message', false, false)
       .then(result => {
         done();
       })

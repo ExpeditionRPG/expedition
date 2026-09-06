@@ -16,6 +16,18 @@ const ROOT_CONFIG_FILES = [
   '.github/workflows/ci.yml',
 ];
 
+// Generated or vendored output, per .gitignore. `www` in particular is where
+// services/app emits its bundle, so without it these tests fail on any
+// checkout where `yarn build-all` has been run.
+const IGNORED_DIRS = [
+  'dist',
+  'node_modules',
+  'www',
+  'coverage',
+  'platforms',
+  'plugins',
+];
+
 const FILES = [
   ...walkDir(path.join(REPO_ROOT, 'services')),
   ...walkDir(path.join(REPO_ROOT, 'shared')),
@@ -29,8 +41,7 @@ function walkDir(root) {
       .filter(
         item =>
           !item.startsWith('.') &&
-          !item.startsWith('dist') &&
-          !item.startsWith('node_modules'),
+          !IGNORED_DIRS.some(ignored => item.startsWith(ignored)),
       );
     const results = dirs.map(sub => walkDir(`${root}/${sub}`));
     return [].concat(...results);

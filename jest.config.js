@@ -3,7 +3,12 @@
 // Transform: @swc/jest. The repo is pinned to TypeScript 2.8 for its webpack
 // builds, which no supported version of ts-jest can consume. swc strips types
 // without type-checking, so the test runner is decoupled from the compiler
-// version. Type-checking is a separate concern, handled by `yarn lint`.
+// version. Nothing type-checks the repo today: tslint builds a Program for its
+// type-aware rules but never surfaces compiler diagnostics, and `tsc --noEmit`
+// cannot run because TypeScript 2.8 fails to *parse* the .d.ts files that
+// modern @types packages ship (skipLibCheck does not suppress syntax errors).
+// The webpack build is the closest thing to a type check we have, which is why
+// CI now runs `yarn build-all`.
 //
 // `noInterop: true` mirrors this repo's tsconfig (esModuleInterop is off), so
 // `import * as express from 'express'` stays callable and default imports
@@ -44,6 +49,10 @@ const common = {
   transform: { '^.+\\.(t|j)sx?$': swcTransform },
   moduleNameMapper,
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  // jasmine's spyOn restored itself after every spec; jest.spyOn does not, so
+  // a spy on a global (Date.now, say) leaks into every later test in the file.
+  // This restores the old semantics for the whole repo.
+  restoreMocks: true,
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
@@ -92,10 +101,14 @@ module.exports = {
   collectCoverageFrom: [
     'shared/**/*.{ts,tsx}',
     'services/*/src/**/*.{ts,tsx}',
-    '!**/*.test.{ts,tsx}',
+    // Product code that happens not to live under a src/ directory.
+    'services/quests/errors/**/*.{ts,tsx}',
+    'scripts/**/*.{js,ts,tsx}',
+    '!**/*.test.{ts,tsx,js}',
     '!**/*.d.ts',
-    '!**/TestData.tsx',
-    '!**/Testing.tsx',
+    // Both spellings: services/api has TestData.ts, services/app TestData.tsx.
+    '!**/TestData.{ts,tsx}',
+    '!**/Testing.{ts,tsx}',
     '!**/node_modules/**',
     '!**/dist/**',
   ],
