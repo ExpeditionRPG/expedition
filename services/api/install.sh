@@ -6,9 +6,9 @@ apt-get install -y git nodejs tmux npm bash build-essential curl libfontconfig1
 
 ln -s /usr/bin/nodejs /usr/bin/node
 
-curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
+curl https://raw.githubusercontent.com/creationix/nvm/v0.40.1/install.sh | bash
 
-/bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install v8.1.4 && nvm alias default v8.1.4'
+/bin/bash -l -c 'source ~/.nvm/nvm.sh && nvm install 24 && nvm alias default 24'
 
 npm install -g webpack
 

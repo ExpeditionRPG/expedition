@@ -188,7 +188,7 @@
     "react-test-renderer": "^16.14.0"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "private": true,
   "babel": {
