@@ -1,25 +1,35 @@
 import Redux from 'redux';
-import {Quest} from 'shared/schema/Quests';
-import {initCardTemplate} from '../components/views/quest/cardtemplates/Template';
-import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {remoteify} from '../multiplayer/Remoteify';
-import {AppStateWithHistory} from '../reducers/StateTypes';
+import { Quest } from 'shared/schema/Quests';
+import { initCardTemplate } from '../components/views/quest/cardtemplates/Template';
+import {
+  ParserNode,
+  TemplateContext,
+} from '../components/views/quest/cardtemplates/TemplateTypes';
+import { remoteify } from '../multiplayer/Remoteify';
+import { AppStateWithHistory } from '../reducers/StateTypes';
 import {
   PreviewQuestAction,
   QuestDetailsAction,
   QuestExitAction,
   QuestNodeAction,
 } from './ActionTypes';
-import {toCard} from './Card';
-import {setMultiplayerStatus} from './Multiplayer';
-import {logQuestPlay} from './Web';
+import { toCard } from './Card';
+import { setMultiplayerStatus } from './Multiplayer';
+import { logQuestPlay } from './Web';
 
-export function initQuestNode(questNode: Cheerio, ctx: TemplateContext): ParserNode {
+export function initQuestNode(
+  questNode: Cheerio,
+  ctx: TemplateContext,
+): ParserNode {
   const firstNode = questNode.children().eq(0);
   return new ParserNode(firstNode, ctx);
 }
 
-export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateContext): QuestNodeAction {
+export function initQuest(
+  details: Quest,
+  questNode: Cheerio,
+  ctx: TemplateContext,
+): QuestNodeAction {
   return {
     type: 'QUEST_NODE',
     node: initQuestNode(questNode, ctx),
@@ -27,27 +37,39 @@ export function initQuest(details: Quest, questNode: Cheerio, ctx: TemplateConte
   };
 }
 
-export const exitQuest = remoteify(function exitQuest(a: any, dispatch: Redux.Dispatch<any>) {
+export const exitQuest = remoteify(function exitQuest(
+  a: any,
+  dispatch: Redux.Dispatch<any>,
+) {
   // In case we're playing multiplayer, clear waitingOn state to indicate we're no longer
   // waiting e.g. for reviews from other players.
-  dispatch(setMultiplayerStatus({
-    type: 'STATUS',
-    waitingOn: undefined,
-  }));
-  dispatch({type: 'QUEST_EXIT'} as QuestExitAction);
+  dispatch(
+    setMultiplayerStatus({
+      type: 'STATUS',
+      waitingOn: undefined,
+    }),
+  );
+  dispatch({ type: 'QUEST_EXIT' } as QuestExitAction);
 });
 
 interface EndQuestArgs {}
-export const endQuest = remoteify(function endQuest(a: EndQuestArgs, dispatch: Redux.Dispatch<any>) {
-  dispatch(toCard({name: 'QUEST_END'}));
-  dispatch(logQuestPlay({phase: 'end'}));
+export const endQuest = remoteify(function endQuest(
+  a: EndQuestArgs,
+  dispatch: Redux.Dispatch<any>,
+) {
+  dispatch(toCard({ name: 'QUEST_END' }));
+  dispatch(logQuestPlay({ phase: 'end' }));
 });
 
 interface ChoiceArgs {
   node?: ParserNode;
   index: number;
 }
-export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): ChoiceArgs {
+export const choice = remoteify(function choice(
+  a: ChoiceArgs,
+  dispatch: Redux.Dispatch<any>,
+  getState: () => AppStateWithHistory,
+): ChoiceArgs {
   if (!a.node) {
     a.node = getState().quest.node;
   }
@@ -56,14 +78,18 @@ export const choice = remoteify(function choice(a: ChoiceArgs, dispatch: Redux.D
     throw new Error('Could not find next node');
   }
   dispatch(loadNode(nextNode));
-  return {index: a.index};
+  return { index: a.index };
 });
 
 interface EventArgs {
   node?: ParserNode;
   evt: string;
 }
-export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): EventArgs {
+export const event = remoteify(function event(
+  a: EventArgs,
+  dispatch: Redux.Dispatch<any>,
+  getState: () => AppStateWithHistory,
+): EventArgs {
   if (!a.node) {
     a.node = getState().quest.node;
   }
@@ -73,16 +99,25 @@ export const event = remoteify(function event(a: EventArgs, dispatch: Redux.Disp
     let compKey: string = 'unknown';
     let visibleKeys: string = 'unknown';
     try {
-      tag = a.node && a.node.getTag() || 'null';
+      tag = (a.node && a.node.getTag()) || 'null';
       compKey = a.node && a.node.getComparisonKey();
       visibleKeys = JSON.stringify((a.node && a.node.getVisibleKeys()) || '');
     } catch (e) {
-      throw new Error('Failed to get debug info: ' + e.toString());
+      throw new Error('Failed to get debug info: ' + String(e));
     }
-    throw new Error('Could not get next node for event "' + a.evt + '" - current node tag "' + tag + '" visible keys ' + visibleKeys + '" comparison key ' + compKey);
+    throw new Error(
+      'Could not get next node for event "' +
+        a.evt +
+        '" - current node tag "' +
+        tag +
+        '" visible keys ' +
+        visibleKeys +
+        '" comparison key ' +
+        compKey,
+    );
   }
   dispatch(loadNode(nextNode));
-  return {evt: a.evt};
+  return { evt: a.evt };
 });
 
 // Used externally by the quest creator
@@ -98,7 +133,7 @@ export function loadNode(node: ParserNode, details?: Quest) {
       }
     } else {
       if (details) {
-        dispatch({type: 'QUEST_DETAILS', details} as QuestDetailsAction);
+        dispatch({ type: 'QUEST_DETAILS', details } as QuestDetailsAction);
       }
       dispatch(initCardTemplate(node));
     }
@@ -110,9 +145,17 @@ interface PreviewQuestArgs {
   saveTS?: number;
   lastPlayed?: Date;
 }
-export const previewQuest = remoteify(function previewQuest(a: PreviewQuestArgs, dispatch: Redux.Dispatch<any>) {
-  dispatch({type: 'PUSH_HISTORY'});
-  dispatch({type: 'PREVIEW_QUEST', quest: a.quest, savedTS: a.saveTS, lastPlayed: a.lastPlayed} as PreviewQuestAction);
-  dispatch(toCard({name: 'QUEST_PREVIEW', noHistory: true}));
+export const previewQuest = remoteify(function previewQuest(
+  a: PreviewQuestArgs,
+  dispatch: Redux.Dispatch<any>,
+) {
+  dispatch({ type: 'PUSH_HISTORY' });
+  dispatch({
+    type: 'PREVIEW_QUEST',
+    quest: a.quest,
+    savedTS: a.saveTS,
+    lastPlayed: a.lastPlayed,
+  } as PreviewQuestAction);
+  dispatch(toCard({ name: 'QUEST_PREVIEW', noHistory: true }));
   return a;
 });

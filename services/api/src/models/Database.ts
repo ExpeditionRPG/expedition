@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
-import { Partition } from 'shared/schema/Constants';
+import { Badge, Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
 import { Event } from 'shared/schema/multiplayer/Events';
 import { SessionClient } from 'shared/schema/multiplayer/SessionClients';
@@ -173,7 +173,7 @@ export class Database {
     // this.users.sync();
 
     const userBadgeSpec = toSequelize(
-      new UserBadge({ userid: '', badge: 'backer1' }),
+      new UserBadge({ userid: '', badge: Badge.backer1 }),
     );
     this.userBadges = this.sequelize.define('userbadges', userBadgeSpec, {
       ...standardOptions,

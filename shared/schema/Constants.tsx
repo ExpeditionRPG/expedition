@@ -1,5 +1,7 @@
-export function enumValues<T>(e: T): Array<T[keyof T]> {
-  return Object.keys(e).map((k: keyof T) => e[k]);
+export function enumValues<T extends object>(e: T): Array<T[keyof T]> {
+  // Object.keys() is typed as string[]; the cast to `keyof T` is what makes the
+  // lookup legal and is safe because the keys come from `e` itself.
+  return (Object.keys(e) as Array<keyof T>).map(k => e[k]);
 }
 
 export enum Expansion {
@@ -9,7 +11,7 @@ export enum Expansion {
   wyrmsgiants = 'wyrmsgiants',
   scarredlands = 'scarredlands',
 }
-export const CONTENT_SET_FULL_NAMES: {[key in Expansion]: string} = {
+export const CONTENT_SET_FULL_NAMES: { [key in Expansion]: string } = {
   [Expansion.base]: 'Expedition',
   [Expansion.horror]: 'The Horror',
   [Expansion.future]: 'The Future',
@@ -68,18 +70,24 @@ export interface ContentRatingDescription {
   };
 }
 
-export const CONTENT_RATING_DESC: {[key in ContentRating]: ContentRatingDescription} = {
+export const CONTENT_RATING_DESC: {
+  [key in ContentRating]: ContentRatingDescription;
+} = {
   [ContentRating.kidFriendly]: {
-    summary:   'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
+    summary:
+      'No drug use or nudity, very limited profanity, and no references to sex or detailed violence.',
     details: {
-      drugs:   'No drug use allowed.',
-      language:   'Only very limited profanity allowed, and no sexually-derived words.',
-      nudity:   'No nudity allowed.',
-      violence:   'No descriptions of violence allowed outside of game mechanics.',
+      drugs: 'No drug use allowed.',
+      language:
+        'Only very limited profanity allowed, and no sexually-derived words.',
+      nudity: 'No nudity allowed.',
+      violence:
+        'No descriptions of violence allowed outside of game mechanics.',
     },
   },
   [ContentRating.teen]: {
-    summary: 'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
+    summary:
+      'Brief and limited violence and profanity. Potential non-sexual nudity and responsible drug use.',
     details: {
       drugs: 'May contain drug use, but not abuse.',
       language: 'May contain profanity except in a sexual context.',
@@ -88,7 +96,8 @@ export const CONTENT_RATING_DESC: {[key in ContentRating]: ContentRatingDescript
     },
   },
   [ContentRating.adult]: {
-    summary: 'Mature (but not pornographic). Titles and descriptions must still be PG.',
+    summary:
+      'Mature (but not pornographic). Titles and descriptions must still be PG.',
     details: {
       drugs: 'Drugs allowed.',
       language: 'Profanity allowed.',
@@ -103,15 +112,21 @@ export enum Theme {
   horror = 'horror',
 }
 
-export const VERSION = (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
-export const NODE_ENV = (process && process.env && process.env.NODE_ENV) || 'dev';
-export const API_HOST = (process && process.env && process.env.API_HOST) || 'https://betaapi.expeditiongame.com';
+export const VERSION =
+  (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
+export const NODE_ENV =
+  (process && process.env && process.env.NODE_ENV) || 'dev';
+export const API_HOST =
+  (process && process.env && process.env.API_HOST) ||
+  'https://betaapi.expeditiongame.com';
 
 export const AUTH_SETTINGS = {
   // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
   // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   API_KEY: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
-  CLIENT_ID: (process && process.env && process.env.OAUTH2_CLIENT_ID) || '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
+  CLIENT_ID:
+    (process && process.env && process.env.OAUTH2_CLIENT_ID) ||
+    '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
   SCOPES: 'profile email',
   URL_BASE: API_HOST,
 };
@@ -123,7 +138,7 @@ export enum Badge {
   backer2 = 'backer2',
   backer3 = 'backer3',
 }
-export const BADGE_DESC: {[key in Badge]: string} = {
+export const BADGE_DESC: { [key in Badge]: string } = {
   [Badge.backer1]: 'Backed the first Expedition Kickstarter!',
   [Badge.backer2]: 'Backed the second Expedition Kickstarter!',
   [Badge.backer3]: 'Backed the third Expedition Kickstarter!',

@@ -262,11 +262,13 @@ export function publishQuest(
         });
 
         // If this is the author's first published quest, email them a congratulations
-        db.quests.findOne({ where: { userid } }).then((qi: QuestInstance) => {
-          if (!qi) {
-            mailFirstQuestPublish(mail, quest);
-          }
-        });
+        db.quests
+          .findOne({ where: { userid } })
+          .then((qi: QuestInstance | null) => {
+            if (!qi) {
+              mailFirstQuestPublish(mail, quest);
+            }
+          });
       }
 
       const updateValues: Partial<Quest> = {
@@ -324,7 +326,10 @@ export function updateQuestRatings(
   let quest: QuestInstance;
   return db.quests
     .findOne({ where: { partition, id } })
-    .then((q: QuestInstance) => {
+    .then((q: QuestInstance | null) => {
+      if (q === null) {
+        throw new Error('No quest found for ' + partition + '/' + id);
+      }
       quest = q;
       return getFeedbackByQuestId(db, partition, quest.get('id'));
     })

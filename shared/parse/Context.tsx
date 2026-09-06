@@ -144,7 +144,8 @@ export function evaluateOp(
     parsed = MathJS.parse(HtmlDecode(op));
     evalResult = parsed.compile().eval(ctx.scope);
   } catch (err) {
-    const message = err.message + ' Op: (' + op + ')';
+    const message =
+      (err instanceof Error ? err.message : String(err)) + ' Op: (' + op + ')';
     if (self && self.document && window && window.onerror) {
       window.onerror(message, 'shared/parse/context');
       return null;

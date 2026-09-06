@@ -135,7 +135,7 @@ function handleMessage(e: { data: RunMessage }) {
     };
     asyncTest();
   } catch (err) {
-    console.error(err.toString());
+    console.error(String(err));
     (postMessage as any)({ status: 'COMPLETE' });
   }
 }

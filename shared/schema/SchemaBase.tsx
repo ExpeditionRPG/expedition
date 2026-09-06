@@ -144,7 +144,7 @@ export class SchemaBase {
     try {
       return new cls(fields);
     } catch (e) {
-      return e;
+      return e instanceof Error ? e : new Error(String(e));
     }
   }
 }

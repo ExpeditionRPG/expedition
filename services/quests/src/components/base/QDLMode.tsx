@@ -8,14 +8,47 @@ const MatchingBraceOutdent = acequire('ace/mode/matching_brace_outdent')
 const MarkdownHighlightRules = acequire('ace/mode/markdown_highlight_rules')
   .MarkdownHighlightRules;
 
+// `brace` ships no typings, and ace builds both of the objects below with
+// old-style constructor functions, so `this` is the instance under
+// construction rather than anything TypeScript can infer. These two interfaces
+// describe exactly the members this file reads or assigns -- nothing more --
+// and are attached with explicit `this` parameters.
+interface AceHighlightRule {
+  token?: string;
+  regex?: RegExp | string;
+  next?: string;
+  defaultToken?: string;
+}
+
+interface AceHighlightRules {
+  $rules: { [state: string]: AceHighlightRule[] };
+}
+
+interface AceOutdent {
+  checkOutdent(line: string, input: string): boolean;
+  autoOutdent(doc: unknown, row: number): number;
+}
+
+interface AceMode {
+  HighlightRules: unknown;
+  foldingRules: unknown;
+  $outdent: AceOutdent;
+  lineCommentStart: string;
+  blockComment: { start: string; end: string };
+  getNextLineIndent(state: string, line: string, tab: string): string;
+  checkOutdent(state: string, line: string, input: string): boolean;
+  autoOutdent(state: string, doc: unknown, row: number): number;
+  $getIndent(line: string): string;
+}
+
 // designed with https://ace.c9.io/tool/mode_creator.html
-const QDLHighlightRules: any = function() {
+const QDLHighlightRules: any = function(this: AceHighlightRules) {
   this.$rules = new MarkdownHighlightRules().getRules();
 
   const listblock = this.$rules.listblock;
-  for (const r in listblock) {
-    if (listblock[r].token === 'empty_line') {
-      listblock[r].regex = /^\s*$/; // Match empty lines and whitespace too
+  for (const rule of listblock) {
+    if (rule.token === 'empty_line') {
+      rule.regex = /^\s*$/; // Match empty lines and whitespace too
       break;
     }
   }
@@ -130,7 +163,7 @@ class QDLFoldMode {
   }
 }
 
-export const QDLMode: any = function() {
+export const QDLMode: any = function(this: AceMode) {
   // set everything up
   this.HighlightRules = QDLHighlightRules;
   this.$outdent = new MatchingBraceOutdent();
@@ -138,7 +171,7 @@ export const QDLMode: any = function() {
 };
 oop.inherits(QDLMode, TextMode);
 
-(function() {
+(function(this: AceMode) {
   // configure comment start/end characters
   this.lineCommentStart = '//';
   this.blockComment = { start: '/*', end: '*/' };

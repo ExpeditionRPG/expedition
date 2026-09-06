@@ -5,6 +5,19 @@ import { Database, UserInstance } from '../models/Database';
 import { incrementLoginCount, subscribeToCreatorsList } from '../models/Users';
 import { limitCors } from './cors';
 
+// express-session types req.session as `Session & Partial<SessionData>`; the
+// supported way to add fields is to augment SessionData. These five are
+// everything this service stores on the session.
+declare module 'express-session' {
+  interface SessionData {
+    oauth2return: string;
+    userid: string;
+    displayName: string;
+    image: string;
+    email: string;
+  }
+}
+
 const GoogleTokenStrategy = require('passport-google-id-token');
 const Passport = require('passport');
 
@@ -95,7 +108,11 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
     // Post authentication, upsert a new user or load an existing user and increment its login count
     (req: express.Request, res: express.Response) => {
       if (!req.user) {
-        res.end(401, 'Unauthorized');
+        // Was `res.end(401, 'Unauthorized')`, which express reads as
+        // (chunk, encoding) -- it sent the body "401" with a bogus encoding and
+        // left the status at 200, then fell through and dereferenced the
+        // missing user.
+        return res.status(401).end('Unauthorized');
       }
       const ru: any = req.user;
       const image = ru.payload.picture;

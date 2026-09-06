@@ -1,7 +1,7 @@
 import * as Bluebird from 'bluebird';
 import { Sequelize, WhereOptions } from 'sequelize';
 import { Op } from 'sequelize';
-import { Badge, Partition } from 'shared/schema/Constants';
+import { Badge, enumValues, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { User } from 'shared/schema/Users';
 import Config from '../config';
@@ -160,6 +160,12 @@ export function getUserBadges(db: Database, userid: string): Bluebird<Badge[]> {
       order: [['badge', 'ASC']],
     })
     .then(badges => {
-      return badges.map(b => b.get('badge'));
+      // The column is a plain string; writes are constrained to the enum by
+      // the schema's Joi validation, so this only ever drops a row that
+      // predates a badge being removed from the enum.
+      const valid: string[] = enumValues(Badge);
+      return badges
+        .map(b => b.get('badge'))
+        .filter((b): b is Badge => valid.indexOf(b) !== -1);
     });
 }

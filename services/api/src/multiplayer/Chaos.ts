@@ -40,7 +40,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
 
   // Replacement conflicts with polymorphic send() function, so we
   // cast to any here.
-  (ws as any).send = (s: string, errCallback?: (err: Error) => void) => {
+  (ws as any).send = (s: string, errCallback?: (err?: Error) => void) => {
     // Keep a running buffer of messages for later replay
     oldMessageBuf.push(s);
     while (oldMessageBuf.length > CHAOS_REPLAY_BUF_LENGTH) {
@@ -93,7 +93,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       console.warn(
         LOGPRE + 'replaying msg to client: ' + replaymsg.substr(0, 128),
       );
-      oldSend(replaymsg, (e: Error) => {
+      oldSend(replaymsg, (e?: Error) => {
         console.error(e);
       });
     }

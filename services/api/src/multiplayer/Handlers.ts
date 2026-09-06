@@ -73,7 +73,7 @@ export function user(
 
           // Get last action on this session
           return getLastEvent(db, id)
-            .then((e: EventInstance) => {
+            .then((e: EventInstance | null) => {
               if (e === null) {
                 return null;
               }
@@ -90,8 +90,11 @@ export function user(
         }),
       );
     })
-    .filter((m: MultiplayerSessionMeta | null) => m !== null)
-    .then((history: MultiplayerSessionMeta[]) => {
+    .then((sessions: Array<Partial<MultiplayerSessionMeta> | null>) => {
+      // Sessions with no peers or no last event come back as null.
+      const history = sessions.filter(
+        (m): m is Partial<MultiplayerSessionMeta> => m !== null,
+      );
       res.status(200).end(JSON.stringify({ history }));
     })
     .catch((e: Error) => {
@@ -135,12 +138,12 @@ export function connect(
 
   let session: SessionInstance;
   getSessionBySecret(db, body.secret)
-    .then((s: SessionInstance) => {
-      session = s;
-      if (!session) {
+    .then((s: SessionInstance | null) => {
+      if (s === null) {
         res.status(404).send();
         return Promise.reject(new Error('session not found'));
       }
+      session = s;
       return db.sessionClients.upsert({
         client: res.locals.id,
         secret: body.secret,
@@ -221,7 +224,11 @@ export function verifyWebsocket(
     });
 }
 
-function makeMultiEvent(db: Database, session: number, lastEventID: number) {
+function makeMultiEvent(
+  db: Database,
+  session: number,
+  lastEventID: number,
+): Promise<MultiEvent | undefined> {
   return getOrderedEventsAfter(db, session, lastEventID).then(
     (eventInstances: EventInstance[] | null) => {
       if (eventInstances === null) {
@@ -255,22 +262,24 @@ function maybeFastForwardClient(
     if (lastEventID >= dbLastEventID) {
       return;
     }
-    makeMultiEvent(db, session, lastEventID).then((event: MultiEvent) => {
-      if (ws.readyState !== WebSocket.OPEN) {
-        return;
-      }
-      ws.send(
-        JSON.stringify({
-          client: 'SERVER',
-          event,
-          id: null,
-          instance: Config.get('NODE_ENV'),
-        }),
-        (e: Error) => {
-          console.error('WS FF error:', e);
-        },
-      );
-    });
+    makeMultiEvent(db, session, lastEventID).then(
+      (event: MultiEvent | undefined) => {
+        if (event === undefined || ws.readyState !== WebSocket.OPEN) {
+          return;
+        }
+        ws.send(
+          JSON.stringify({
+            client: 'SERVER',
+            event,
+            id: null,
+            instance: Config.get('NODE_ENV'),
+          }),
+          (e?: Error) => {
+            console.error('WS FF error:', e);
+          },
+        );
+      },
+    );
   });
 }
 
@@ -311,7 +320,7 @@ function sendError(ws: WebSocket, e: string) {
       id: null,
       instance: Config.get('NODE_ENV'),
     }),
-    (err: Error) => {
+    (err?: Error) => {
       console.error('WS sendError error:', err);
     },
   );
@@ -355,7 +364,7 @@ export function websocketSession(
             id: null,
             instance: s[k].instance,
           }),
-          (e: Error) => {
+          (e?: Error) => {
             console.error('WS send error:', e);
           },
         );
@@ -427,8 +436,8 @@ export function websocketSession(
         console.error('WS commit error:', error);
         let multiEvent: MultiEvent | null = null;
         makeMultiEvent(db, params.session, eventID)
-          .then((e: MultiEvent) => {
-            multiEvent = e;
+          .then((e: MultiEvent | undefined) => {
+            multiEvent = e || null;
           })
           .catch((e: Error) => {
             sendError(ws, e.toString());

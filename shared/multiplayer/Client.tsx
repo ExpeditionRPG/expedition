@@ -47,11 +47,14 @@ export abstract class ClientBase {
     try {
       parsed = JSON.parse(s) as MultiplayerEvent;
     } catch (e) {
+      // `e` is the SyntaxError from JSON.parse: it has no client or instance,
+      // so both fields were previously undefined even though MultiplayerEvent
+      // requires them. Report the client that failed to read the message.
       return {
-        client: e.client,
+        client: this.id,
         event: { type: 'ERROR', error: 'Failed to parse JSON message: ' + s },
         id: null,
-        instance: e.instance,
+        instance: this.instance,
       };
     }
 

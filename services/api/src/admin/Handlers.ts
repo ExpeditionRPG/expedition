@@ -33,11 +33,12 @@ function validateOrder(body: any) {
 }
 
 function handleErrors(res: express.Response) {
-  return (e: Error) => {
+  // Used both as a promise .catch() handler and directly from a catch block,
+  // where TypeScript 6 types the value as `unknown` -- a thrown value is not
+  // necessarily an Error.
+  return (e: unknown) => {
     console.error(e);
-    res
-      .status(500)
-      .send(JSON.stringify({ status: 'ERROR', error: e.toString() }));
+    res.status(500).send(JSON.stringify({ status: 'ERROR', error: String(e) }));
   };
 }
 
@@ -116,7 +117,7 @@ export function queryFeedback(
                     email: r.get('email'),
                     id: r.get('userid'),
                   },
-                } as QT.FeedbackEntry;
+                };
               },
             );
           }),
@@ -219,7 +220,7 @@ export function queryQuest(
               email: r.get('email'),
               id: r.get('userid'),
             },
-          } as QT.QuestEntry;
+          };
         });
       })
       .then((results: QT.QuestEntry[]) => {
@@ -304,7 +305,7 @@ export function queryUser(
             last_login: r.get('lastLogin'),
             loot_points: r.get('lootPoints'),
             name: r.get('name'),
-          } as QT.UserEntry;
+          };
         });
       })
       .then((results: QT.UserEntry[]) => {

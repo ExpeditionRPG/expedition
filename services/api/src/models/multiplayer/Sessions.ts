@@ -9,10 +9,10 @@ const { Op } = Sequelize;
 export function getSessionBySecret(
   db: Database,
   secret: string,
-): Bluebird<SessionInstance> {
+): Bluebird<SessionInstance | null> {
   return db.sessions
     .findOne({ where: { secret, locked: false } })
-    .then((result: SessionInstance) => {
+    .then((result: SessionInstance | null) => {
       return result || null;
     });
 }
@@ -38,7 +38,7 @@ export function getSessionQuestTitle(
       order: [['created_at', 'DESC']],
       where: { session, json: { [Op.like]: '%fetchQuestXML%' } } as any,
     })
-    .then((e: EventInstance) => {
+    .then((e: EventInstance | null) => {
       if (e === null) {
         return null;
       }

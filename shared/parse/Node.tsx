@@ -167,7 +167,7 @@ export class Node<C extends Context> {
         } catch (e) {
           this.errors.push(
             new Error(
-              `Failed to evaluate op in attribute ${attrib}: ${e.toString()}`,
+              `Failed to evaluate op in attribute ${attrib}: ${String(e)}`,
             ),
           );
         }
@@ -180,7 +180,7 @@ export class Node<C extends Context> {
           evaluated = evaluateContentOps(c.html() || '', this.ctx);
         } catch (e) {
           this.errors.push(
-            new Error(`Failed to evaluate op section: ${e.toString()}`),
+            new Error(`Failed to evaluate op section: ${String(e)}`),
           );
         }
         if (evaluated === '') {
@@ -322,7 +322,7 @@ export class Node<C extends Context> {
       // so that the quest is still playable - better too many options
       // than not being able to finish.
       this.errors.push(
-        new Error('Failed to evaluate conditional on element: ' + e.toString()),
+        new Error('Failed to evaluate conditional on element: ' + String(e)),
       );
       return true;
     }

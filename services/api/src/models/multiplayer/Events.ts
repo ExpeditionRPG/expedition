@@ -40,7 +40,7 @@ export function getLargestEventID(
     if (e === null) {
       return 0;
     }
-    return parseInt(e.get('id'), 10);
+    return e.get('id');
   });
 }
 
@@ -83,7 +83,7 @@ export function commitEventWithoutID(
     .transaction((txn: Sequelize.Transaction) => {
       return db.sessions
         .findOne({ where: { id: session }, transaction: txn })
-        .then((sessionInstance: SessionInstance) => {
+        .then((sessionInstance: SessionInstance | null) => {
           if (!sessionInstance) {
             throw new Error('could not find session ' + session.toString());
           }
@@ -157,7 +157,7 @@ export function commitEvent(
     .transaction((txn: Sequelize.Transaction) => {
       return db.sessions
         .findOne({ where: { id: session }, transaction: txn })
-        .then((sessionInstance: SessionInstance) => {
+        .then((sessionInstance: SessionInstance | null) => {
           if (!sessionInstance) {
             throw new Error('could not find session ' + session.toString());
           }

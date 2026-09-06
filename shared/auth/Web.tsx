@@ -100,7 +100,7 @@ export function loadGapi(
     return Promise.resolve(gapi);
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     gapi.load('client,drive-share', () => {
       resolve();
     });

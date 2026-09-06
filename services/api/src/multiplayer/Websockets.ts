@@ -32,7 +32,7 @@ export function broadcast(session: number, msg: string) {
   for (const peerID of Object.keys(s)) {
     const peerWS = s[peerID] && s[peerID].socket;
     if (peerWS && peerWS.readyState === WebSocket.OPEN) {
-      peerWS.send(msg, (e: Error) => {
+      peerWS.send(msg, (e?: Error) => {
         console.error(e);
       });
     }
