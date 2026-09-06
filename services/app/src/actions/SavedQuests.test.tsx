@@ -1,16 +1,28 @@
-import {Quest} from 'shared/schema/Quests';
-import {defaultContext} from '../components/views/quest/cardtemplates/Template';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {getCheerio} from '../Globals';
-import {getStorageJson, getStorageString, checkStorageFreeBytes} from '../LocalStorage';
-import {deleteSavedQuest, listSavedQuests, loadSavedQuest, SAVED_QUESTS_KEY, savedQuestKey, storeSavedQuest, recreateNodeFromPath} from './SavedQuests';
-import {newMockStore} from '../Testing';
+import { Quest } from 'shared/schema/Quests';
+import { defaultContext } from '../components/views/quest/cardtemplates/Template';
+import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
+import { getCheerio } from '../Globals';
+import {
+  checkStorageFreeBytes,
+  getStorageJson,
+  getStorageString,
+} from '../LocalStorage';
+import { newMockStore } from '../Testing';
+import {
+  deleteSavedQuest,
+  listSavedQuests,
+  loadSavedQuest,
+  recreateNodeFromPath,
+  SAVED_QUESTS_KEY,
+  savedQuestKey,
+  storeSavedQuest,
+} from './SavedQuests';
 
 describe('SavedQuest actions', () => {
   const STORED_QUEST_ID = '12345';
   const STORED_QUEST_TS = 67890;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const quest = getCheerio().load(`
       <quest>
         <roleplay data-line="0">
@@ -28,7 +40,15 @@ describe('SavedQuest actions', () => {
       throw new Error('Initial setup failed');
     }
     const tmpStore = newMockStore();
-    tmpStore.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS)).then(done);
+    tmpStore
+      .dispatch(
+        storeSavedQuest(
+          next,
+          ({ id: STORED_QUEST_ID } as any) as Quest,
+          STORED_QUEST_TS,
+        ),
+      )
+      .then(done);
   });
   afterEach(() => {
     localStorage.clear();
@@ -38,7 +58,9 @@ describe('SavedQuest actions', () => {
     test('removes both the listing and the data', () => {
       const store = newMockStore({});
       store.dispatch(deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
-      expect(getStorageString(savedQuestKey(STORED_QUEST_ID, STORED_QUEST_TS), '')).toEqual('');
+      expect(
+        getStorageString(savedQuestKey(STORED_QUEST_ID, STORED_QUEST_TS), ''),
+      ).toEqual('');
       expect(getStorageJson(SAVED_QUESTS_KEY, {})).toEqual([]);
     });
     test('updates available storage', () => {
@@ -46,7 +68,9 @@ describe('SavedQuest actions', () => {
       const startBytes = checkStorageFreeBytes();
       store.dispatch(deleteSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS));
       const bytesAction = store.getActions()[0];
-      expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
+      expect(bytesAction).toEqual(
+        expect.objectContaining({ type: 'STORAGE_FREE' }),
+      );
     });
   });
 
@@ -62,7 +86,10 @@ describe('SavedQuest actions', () => {
           <choice if="false"></choice>
         </roleplay>
       </quest>`)('quest');
-    const pnode = new ParserNode(quest.children().eq(0), defaultContext()).getNext(0);
+    const pnode = new ParserNode(
+      quest.children().eq(0),
+      defaultContext(),
+    ).getNext(0);
     const NEW_ID = '0123';
     const NEW_TS = 4567;
 
@@ -72,34 +99,65 @@ describe('SavedQuest actions', () => {
 
     test('adds to the listing without affecting other quests', () => {
       const store = newMockStore({});
-      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
-      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual(jasmine.objectContaining({ts: NEW_TS, details: {id: NEW_ID}, pathLen: 1}));
+      store.dispatch(
+        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+      );
+      expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual(
+        expect.objectContaining({
+          ts: NEW_TS,
+          details: { id: NEW_ID },
+          pathLen: 1,
+        }),
+      );
     });
     test('stores xml and context path', () => {
       const store = newMockStore({});
-      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
-      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual(jasmine.objectContaining({xml: (quest + ''), path: [0]}));
+      store.dispatch(
+        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+      );
+      expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual(
+        expect.objectContaining({ xml: quest + '', path: [0] }),
+      );
     });
     test('updates available storage', () => {
       const store = newMockStore({});
       const startBytes = checkStorageFreeBytes();
-      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS));
+      store.dispatch(
+        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+      );
       const bytesAction = store.getActions()[0];
-      expect(bytesAction).toEqual(jasmine.objectContaining({type: 'STORAGE_FREE'}));
+      expect(bytesAction).toEqual(
+        expect.objectContaining({ type: 'STORAGE_FREE' }),
+      );
     });
-    test('data is removed when there is a storage error', (done) => {
+    test('data is removed when there is a storage error', done => {
       const store = newMockStore({});
       const startBytes = checkStorageFreeBytes();
       const testKey = savedQuestKey(NEW_ID, NEW_TS);
-      const mockSetKeyValue = jasmine.createSpy('mockSetKeyValue').and.callFake((k: string, v: any) => {
-        if (k === SAVED_QUESTS_KEY && v !== null) {
-          throw new Error('exceeded the quota');
-        }
-      });
-      store.dispatch(storeSavedQuest(pnode, {id: NEW_ID} as any as Quest, NEW_TS mockSetKeyValue)).then(() => done.fail('expected error')).catch((e) => {
-        expect(mockSetKeyValue).toHaveBeenCalledWith(savedQuestKey(NEW_ID, NEW_TS), null);
-        done();
-      });
+      const mockSetKeyValue = jest
+        .fn()
+        .mockImplementation((k: string, v: any) => {
+          if (k === SAVED_QUESTS_KEY && v !== null) {
+            throw new Error('exceeded the quota');
+          }
+        });
+      store
+        .dispatch(
+          storeSavedQuest(
+            pnode,
+            ({ id: NEW_ID } as any) as Quest,
+            NEW_TS,
+            mockSetKeyValue,
+          ),
+        )
+        .then(() => done(new Error('expected error')))
+        .catch(e => {
+          expect(mockSetKeyValue).toHaveBeenCalledWith(
+            savedQuestKey(NEW_ID, NEW_TS),
+            null,
+          );
+          done();
+        });
     });
   });
 
@@ -107,12 +165,21 @@ describe('SavedQuest actions', () => {
     test('loads the listing', () => {
       const list = listSavedQuests();
       expect(list.savedQuests.length).toEqual(1);
-      expect(list.savedQuests[0]).toEqual(jasmine.objectContaining({ts: STORED_QUEST_TS, details: {id: STORED_QUEST_ID}, pathLen: 1}));
+      expect(list.savedQuests[0]).toEqual(
+        expect.objectContaining({
+          ts: STORED_QUEST_TS,
+          details: { id: STORED_QUEST_ID },
+          pathLen: 1,
+        }),
+      );
     });
   });
 
   describe('loadSavedQuest', () => {
-    function storeAndLoadQuest(xml: string, mutateCtx: ((ctx: TemplateContext) => TemplateContext) = (c) => c): {saved: ParserNode, loaded: ParserNode} {
+    function storeAndLoadQuest(
+      xml: string,
+      mutateCtx: (ctx: TemplateContext) => TemplateContext = c => c,
+    ): { saved: ParserNode; loaded: ParserNode } {
       const quest = getCheerio().load(xml)('quest');
       const pnode = new ParserNode(quest.children().eq(0), defaultContext());
       const next = pnode.getNext(0);
@@ -121,12 +188,19 @@ describe('SavedQuest actions', () => {
       }
       next.ctx = mutateCtx(next.ctx);
       const store = newMockStore({});
-      store.dispatch(storeSavedQuest(next, {id: STORED_QUEST_ID} as any as Quest, STORED_QUEST_TS+1));
+      store.dispatch(
+        storeSavedQuest(
+          next,
+          ({ id: STORED_QUEST_ID } as any) as Quest,
+          STORED_QUEST_TS + 1,
+        ),
+      );
       store.clearActions();
 
-      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS+1));
-      const loaded = store.getActions().filter((a) => a.type === 'QUEST_NODE')[0].node;
-      return {saved: next, loaded};
+      store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS + 1));
+      const loaded = store.getActions().filter(a => a.type === 'QUEST_NODE')[0]
+        .node;
+      return { saved: next, loaded };
     }
     test('loads from context, properly binding "lodash" functions in roleplay node', () => {
       // This tests the viewCount function defined in populateScope() (in TemplateTypes.tsx).
@@ -144,64 +218,83 @@ describe('SavedQuest actions', () => {
             </choice>
           </roleplay>
         </quest>`).loaded;
-      let result = "";
+      let result = '';
       node.loopChildren((tag: string, child: Cheerio, original: Cheerio) => {
-        result += child
+        result += child;
       });
       expect(result).toEqual('<p>Result: 1test</p>');
     });
     test('Loaded node seed matches saved node seed', () => {
-      const {saved, loaded} = storeAndLoadQuest(`
+      const { saved, loaded } = storeAndLoadQuest(`
         <quest>
           <roleplay data-line="0"></roleplay>
           <roleplay data-line="1"></roleplay>
         </quest>`);
-      let result = "";
+      const result = '';
       expect(saved.ctx.seed).toEqual(loaded.ctx.seed);
     });
     test('handles loading into combat', () => {
       // When recreating from ctx, user should be able to load into the exact round
       // of combat they were originally in.
-      const node = storeAndLoadQuest(`
+      const node = storeAndLoadQuest(
+        `
         <quest>
           <roleplay data-line="0" id="a"></roleplay>
           <combat data-line="1"><e>Giant Rat</e></combat>
-        </quest>`, (c: TemplateContext) => {
-          c.templates.combat = {...c.templates.combat, roundCount: 6, tier: 4};
+        </quest>`,
+        (c: TemplateContext) => {
+          c.templates.combat = {
+            ...c.templates.combat,
+            roundCount: 6,
+            tier: 4,
+          };
           return c;
-        }).loaded;
+        },
+      ).loaded;
       expect(node.ctx.templates.combat.roundCount).toEqual(6);
       expect(node.ctx.templates.combat.tier).toEqual(4);
       expect(node.getTag()).toEqual('combat');
     });
-    test.skip('handles loading into mid-combat roleplay', () => { /* todo */ });
+    test.skip('handles loading into mid-combat roleplay', () => {
+      /* todo */
+    });
   });
 
   describe('recreateNodeFromPath', () => {
     test('safely handles zero path length', () => {
-      const {node} = recreateNodeFromPath(`<quest><roleplay>expected</roleplay></quest>`, []);
+      const { node } = recreateNodeFromPath(
+        `<quest><roleplay>expected</roleplay></quest>`,
+        [],
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles simple choices, preserving op changes', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay>start</roleplay>
         <roleplay><p>{{a=5}}</p></roleplay>
         <roleplay>expected</roleplay>
-      </quest>`, [0, 0]);
+      </quest>`,
+        [0, 0],
+      );
       expect(node.elem.text()).toEqual('expected');
-      expect(node.ctx.scope['a']).toEqual(5);
+      expect(node.ctx.scope.a).toEqual(5);
     });
     test('handles gotos', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay>start</roleplay>
         <trigger>goto g1</trigger>
         <roleplay>wrong</roleplay>
         <roleplay id="g1">expected</roleplay>
-      </quest>`, [0]);
+      </quest>`,
+        [0],
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles mid-combat roleplay, preserving op changes', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <combat>
           <e>Bandit</e>
           <event on="round">
@@ -210,12 +303,15 @@ describe('SavedQuest actions', () => {
           </event>
         </combat>
         <roleplay id="g1">expected</roleplay>
-      </quest>`, ['round', 0]);
+      </quest>`,
+        ['round', 0],
+      );
       expect(node.elem.text()).toEqual('expected');
-      expect(node.ctx.scope['a']).toEqual(5);
+      expect(node.ctx.scope.a).toEqual(5);
     });
     test('handles conditional mid-combat roleplay', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay></roleplay>
         <combat>
           <e>Bandit</e>
@@ -223,11 +319,14 @@ describe('SavedQuest actions', () => {
             <roleplay>expected</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round']);
+      </quest>`,
+        [0, '|3', 'round'],
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles error on mid-combat roleplay', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay>expected</roleplay>
         <combat>
           <e>Bandit</e>
@@ -235,54 +334,76 @@ describe('SavedQuest actions', () => {
             <roleplay>never get here</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round']);
+      </quest>`,
+        [0, '|3', 'round'],
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('uses saved seed', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      // 32 is the first randomInt(100) drawn by the combat node when the quest is
+      // recreated with the seed 'asdg'. Without the seed being threaded through,
+      // the node draws from a randomly generated seed and this branch is skipped.
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay></roleplay>
         <combat>
           <e>Bandit</e>
-          <event on="round" if="randomInt(100) == 71">
+          <event on="round" if="randomInt(100) == 32">
             <roleplay>expected</roleplay>
           </event>
         </combat>
-      </quest>`, [0, '|3', 'round'], 'asdg');
+      </quest>`,
+        [0, '|3', 'round'],
+        'asdg',
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('handles exiting of combat (win/lose)', () => {
-      const {node} = recreateNodeFromPath(`<quest>
+      const { node } = recreateNodeFromPath(
+        `<quest>
         <roleplay></roleplay>
         <combat>
           <e>Bandit</e>
           <event on="win"><roleplay>expected</roleplay></event>
           <event on="lose"></event>
         </combat>
-      </quest>`, [0, '|3', 'win']);
+      </quest>`,
+        [0, '|3', 'win'],
+      );
       expect(node.elem.text()).toEqual('expected');
     });
     test('returns earlier node if there was a problem with the full path', () => {
-      const {node, complete} = recreateNodeFromPath(`<quest>
+      const { node, complete } = recreateNodeFromPath(
+        `<quest>
         <roleplay>expected</roleplay>
         <trigger>goto undefined</trigger>
-      </quest>`, [0]);
+      </quest>`,
+        [0],
+      );
       expect(node.elem.text()).toEqual('expected');
       expect(complete).toEqual(false);
     });
     test('stopping during combat returns the node preceding the combat', () => {
-      const {node, complete} = recreateNodeFromPath(`<quest>
+      const { node, complete } = recreateNodeFromPath(
+        `<quest>
         <roleplay>expected</roleplay>
         <combat>
           <e>Bandit</e>
         </combat>
-      </quest>`, [0, '|1', '|2']);
+      </quest>`,
+        [0, '|1', '|2'],
+      );
       expect(node.elem.text()).toEqual('expected');
       expect(complete).toEqual(false);
     });
   });
 
   describe('saveQuestForOffline', () => {
-    test.skip('Saves a publishedurl to local storage', () => { /* TODO */ });
-    test.skip('storage errors are shown in snackbar', () => { /* TODO */ });
+    test.skip('Saves a publishedurl to local storage', () => {
+      /* TODO */
+    });
+    test.skip('storage errors are shown in snackbar', () => {
+      /* TODO */
+    });
   });
 });

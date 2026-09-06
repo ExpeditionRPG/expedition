@@ -60,7 +60,16 @@ const options = {
       },
       {
         exclude: /node_modules/,
-        loaders: ['awesome-typescript-loader'],
+        loader: 'awesome-typescript-loader',
+        options: {
+          // Point at the monorepo tsconfig explicitly. Left to its own devices
+          // awesome-typescript-loader calls ts.findConfigFile() with the
+          // service directory, which on Windows is a backslash path that
+          // TypeScript 2.8 fails to walk upwards from -- it then silently
+          // falls back to the compiler defaults (no `jsx`, no `paths`, ES3
+          // target) and the build dies in thousands of bogus errors.
+          configFileName: Path.resolve(__dirname, '../tsconfig.json'),
+        },
         test: /\.tsx$/,
       },
     ],

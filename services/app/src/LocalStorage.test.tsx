@@ -1,10 +1,10 @@
 import {
+  checkStorageFreeBytes,
   getStorageBoolean,
   getStorageJson,
   getStorageNumber,
   getStorageString,
   setStorageKeyValue,
-  checkStorageFreeBytes,
 } from './LocalStorage';
 
 // Note: setStorageKeyValue is tested as part of the other tests
@@ -14,7 +14,7 @@ describe('LocalStorage', () => {
     expect(getStorageBoolean('test_a', false)).toEqual(true);
   });
   test('returns JSON from getStorageJson', () => {
-    const obj = {a: 1, b: false, c: 'test'};
+    const obj = { a: 1, b: false, c: 'test' };
     setStorageKeyValue('test_b', obj);
     expect(getStorageJson('test_b', {})).toEqual(obj);
   });
@@ -34,14 +34,14 @@ describe('LocalStorage', () => {
           throw Error('QUOTA_EXCEEDED_ERR');
         }
       };
-      const result = checkStorageFreeBytes(() => return {setItem});
+      const result = checkStorageFreeBytes(() => ({ setItem } as any));
       expect(result).toEqual(val - (val % 1000));
     });
     test('converges when all errors', () => {
       const setItem = (k: string, v: string) => {
         throw Error('QUOTA_EXCEEDED_ERR');
       };
-      const result = checkStorageFreeBytes(() => return {setItem});
+      const result = checkStorageFreeBytes(() => ({ setItem } as any));
       expect(result).toEqual(0);
     });
   });

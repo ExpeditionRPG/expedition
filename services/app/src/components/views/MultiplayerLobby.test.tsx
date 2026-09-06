@@ -1,10 +1,10 @@
-import {mount, unmountAll} from 'app/Testing';
+import { mount, unmountAll } from 'app/Testing';
 import * as React from 'react';
+import { loggedOutUser } from 'shared/auth/UserState';
+import { Expansion } from 'shared/schema/Constants';
+import { initialMultiplayer } from '../../reducers/Multiplayer';
+import { initialSettings } from '../../reducers/Settings';
 import MultiplayerLobby, { Props } from './MultiplayerLobby';
-import {initialSettings} from '../../reducers/Settings';
-import {initialMultiplayer} from '../../reducers/Multiplayer';
-import {loggedOutUser} from 'shared/auth/UserState';
-import {Expansion} from 'shared/schema/Constants';
 
 describe('Multiplayer lobby', () => {
   afterEach(unmountAll);
@@ -16,32 +16,32 @@ describe('Multiplayer lobby', () => {
       settings: initialSettings,
       multiplayer: initialMultiplayer,
       contentSets: new Set(),
-      onConnect: jasmine.createSpy('onConnect'),
-      onReconnect: jasmine.createSpy('onReconnect'),
-      onNewSessionRequest: jasmine.createSpy('onNewSessionRequest'),
-      onStart: jasmine.createSpy('onStart'),
-      onPlayerChange: jasmine.createSpy('onPlayerChange'),
+      onConnect: jest.fn(),
+      onReconnect: jest.fn(),
+      onNewSessionRequest: jest.fn(),
+      onStart: jest.fn(),
+      onPlayerChange: jest.fn(),
       ...overrides,
     };
     const elem = mount(MultiplayerLobby(props));
-    return {elem, props};
+    return { elem, props };
   }
 
   test('shows connection secret', () => {
-    const {elem, props} = setup({
+    const { elem, props } = setup({
       multiplayer: {
         ...initialMultiplayer,
-        session: {secret: 'asdf'},
+        session: { secret: 'asdf' },
       },
     });
     expect(elem.find('.sessionCode').text()).toEqual('asdf');
   });
   test('shows content set intersection', () => {
-    const {elem, props} = setup({
+    const { elem, props } = setup({
       multiplayer: {
         ...initialMultiplayer,
         connected: true,
-        session: {id: 'abc', secret: 'def'},
+        session: { id: 'abc', secret: 'def' },
       },
       contentSets: new Set([Expansion.horror]),
     });
@@ -50,12 +50,14 @@ describe('Multiplayer lobby', () => {
     expect(result).not.toContain('The Future');
   });
   test('calls onStart when start button clicked', () => {
-    const {elem, props} = setup();
+    const { elem, props } = setup();
     elem.find('ExpeditionButton#start').prop('onClick')();
     expect(props.onStart).toHaveBeenCalled();
   });
   test('disables onStart when too many players', () => {
-    const {elem, props} = setup({settings: {...initialSettings, numLocalPlayers: 7}});
+    const { elem, props } = setup({
+      settings: { ...initialSettings, numLocalPlayers: 7 },
+    });
     expect(elem.find('ExpeditionButton#start').prop('disabled')).toEqual(true);
   });
 });

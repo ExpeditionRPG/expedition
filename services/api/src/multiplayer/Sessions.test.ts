@@ -1,9 +1,15 @@
-import {resetSessions, getSession, initSessionClient, setClientStatus, rmSessionClient} from './Sessions';
-import {newMockWebsocket} from './TestData';
-import {toClientKey} from 'shared/multiplayer/Session';
+import { toClientKey } from 'shared/multiplayer/Session';
+import {
+  getSession,
+  initSessionClient,
+  resetSessions,
+  rmSessionClient,
+  setClientStatus,
+} from './Sessions';
+import { newMockWebsocket } from './TestData';
 
-const CLI = "asdf";
-const INST = "ghjk";
+const CLI = 'asdf';
+const INST = 'ghjk';
 const KEY = toClientKey(CLI, INST);
 
 describe('Multiplayer Sessions', () => {
@@ -23,22 +29,22 @@ describe('Multiplayer Sessions', () => {
     test('initializes a client within a session', () => {
       const socket = newMockWebsocket();
       initSessionClient(123, CLI, INST, socket);
-      expect(getSession(123)[KEY]).toEqual(jasmine.objectContaining({socket}));
+      expect(getSession(123)[KEY]).toEqual(expect.objectContaining({ socket }));
     });
   });
 
   describe('setClientStatus', () => {
     test('sets the status for a client', () => {
-      const status = {type: 'STATUS', name: 'test'};
+      const status = { type: 'STATUS', name: 'test' };
       initSessionClient(123, CLI, INST, null);
       setClientStatus(123, CLI, INST, null, status);
-      expect(getSession(123)[KEY]).toEqual(jasmine.objectContaining({status}));
+      expect(getSession(123)[KEY]).toEqual(expect.objectContaining({ status }));
     });
 
     test('inits client if not present in session map', () => {
-      const status = {type: 'STATUS', name: 'test'};
+      const status = { type: 'STATUS', name: 'test' };
       setClientStatus(123, CLI, INST, null, status);
-      expect(getSession(123)[KEY]).toEqual(jasmine.objectContaining({status}));
+      expect(getSession(123)[KEY]).toEqual(expect.objectContaining({ status }));
     });
   });
 
@@ -54,5 +60,4 @@ describe('Multiplayer Sessions', () => {
       expect(getSession(123)[KEY]).not.toBeDefined();
     });
   });
-
 });

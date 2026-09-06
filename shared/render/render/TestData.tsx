@@ -1,4 +1,3 @@
-
 const data = Object();
 
 data.genericRoleplayXML = `<roleplay title="" data-line="0">
@@ -184,6 +183,58 @@ URL: 417
 ERROR L0:
 combat card must have "on lose" event
 URL: 417`;
+
+data.combatOrphanedInnerBlockLog = `ERROR L0:
+combat cannot contain indented sections that are not choices/events
+URL: 411
+
+ERROR L0:
+combat card must have "on win" event
+URL: 417
+
+ERROR L0:
+combat card must have "on lose" event
+URL: 417`;
+
+data.combatFreestandingTextLog = `ERROR L0:
+lines within combat card must be events or enemies, not freestanding text
+URL: 416`;
+
+data.combatBadEnemyJSONLog = `ERROR L0:
+failed to parse bulleted line (check your JSON)
+URL: 412`;
+
+data.triggerIndentedSectionLog = `ERROR L0:
+trigger found with indented section - check your starting whitespace
+URL: 415`;
+
+data.triggerBadParseLog = `ERROR L0:
+could not parse trigger
+URL: 410`;
+
+data.deprecatedQuestAttrsLog = `ERROR L1:
+Quest attributes have migrated to the "Publish" button - simply delete this line.
+URL: 429
+
+ERROR L2:
+Quest attributes have migrated to the "Publish" button - simply delete this line.
+URL: 429`;
+
+data.missingGotoTargetLog = `ERROR L7:
+goto "nowhere" does not match any card IDs (check your spelling)
+URL: 426`;
+
+data.noQuestBlocksLog = `ERROR L0:
+no quest blocks found
+URL: 422`;
+
+data.noQuestHeaderLog = `ERROR L0:
+root card must be a quest header
+URL: 421`;
+
+data.unrenderedBlockLog = `INTERNAL L0:
+Unrendered block found in finalize step
+URL: 504`;
 
 data.badParseQuestAttrError = `ERROR L1:
 invalid quest attribute line "minplayers1"

@@ -1,27 +1,27 @@
 # How to contribute
 
-We welcome contributions from the community and are pleased to have them.  Please follow this guide when logging issues or making code changes.
+We welcome contributions from the community and are pleased to have them. Please follow this guide when logging issues or making code changes.
 
 ## Logging Issues
 
-All issues should be created using the [new issue form](https://github.com/ExpeditionRPG/expedition/issues/new).  Clearly describe the issue including steps to reproduce if there are any.  Also, make sure to indicate what device / browser you are running it on.
+All issues should be created using the [new issue form](https://github.com/ExpeditionRPG/expedition/issues/new). Clearly describe the issue including steps to reproduce if there are any. Also, make sure to indicate what device / browser you are running it on.
 
 ## Patching Code
 
 Code changes are welcome and should follow the guidelines below.
 
-* Fork the repository on GitHub.
-* Fix the issue, making sure that you follow the style guide (below).
-* Please leave the code nicer than you found it by including at least one new unit test for any functionality you're adding!
-* [Pull requests](http://help.github.com/send-pull-requests/) should be made to the [master branch](https://github.com/ExpeditionRPG/expedition/tree/master).
+- Fork the repository on GitHub.
+- Fix the issue, making sure that you follow the style guide (below).
+- Please leave the code nicer than you found it by including at least one new unit test for any functionality you're adding!
+- [Pull requests](http://help.github.com/send-pull-requests/) should be made to the [master branch](https://github.com/ExpeditionRPG/expedition/tree/master).
 
 ## Testing
 
-We utilize Travis CI to provide continuous integration testing. For us to consider merging your PR, all existing tests must pass.
+We use GitHub Actions for continuous integration (see `.github/workflows/ci.yml`). For us to consider merging your PR, `yarn lint` and `yarn test` must both pass.
 
 If your PR changes functionality that breaks a test, note it in your PR description and update the test and any other code affected.
 
-If your PR adds new functionality, please do your best to add additional, passing tests to cover the new functionality. Or, at the very least, add test stubs to indicate what functionality and edge cases should be tested for.
+If your PR adds new functionality, please add passing tests that cover it. Prefer a small number of real assertions over a long list of `test.skip` placeholders: a skipped test looks like coverage in the file listing but verifies nothing, and the repo has accumulated hundreds of them. If you genuinely cannot test something yet, open an issue rather than committing an empty stub.
 
 ## Style Guide
 

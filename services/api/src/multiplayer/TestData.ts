@@ -1,7 +1,8 @@
+import * as WebSocket from 'ws';
 
 export function newMockWebsocket() {
   return {
     readyState: WebSocket.OPEN,
-    send: jasmine.createSpy('send'),
+    send: jest.fn(),
   };
 }

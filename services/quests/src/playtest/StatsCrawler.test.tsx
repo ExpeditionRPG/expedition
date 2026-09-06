@@ -1,6 +1,6 @@
-import {defaultContext} from 'shared/parse/Context';
-import {Node} from 'shared/parse/Node';
-import {StatsCrawler} from './StatsCrawler';
+import { defaultContext } from 'shared/parse/Context';
+import { Node } from 'shared/parse/Node';
+import { StatsCrawler } from './StatsCrawler';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -78,11 +78,15 @@ describe('StatsCrawler', () => {
     });
 
     test('tracks implicit end triggers', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(
+        `<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`,
+      )(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual(['IMPLICIT_END']);
+      expect(Array.from(crawler.getStatsForId('A1').outputs)).toEqual([
+        'IMPLICIT_END',
+      ]);
     });
 
     test('ignores implicit ends within combat "on round" event triggers', () => {
@@ -153,7 +157,9 @@ describe('StatsCrawler', () => {
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID']);
+      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual([
+        'INVALID',
+      ]);
     });
 
     test('handles node without data-line attribute', () => {
@@ -164,7 +170,9 @@ describe('StatsCrawler', () => {
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual(['INVALID']);
+      expect(Array.from(crawler.getStatsForLine(2).outputs)).toEqual([
+        'INVALID',
+      ]);
     });
   });
 
@@ -213,7 +221,9 @@ describe('StatsCrawler', () => {
 
   describe('getStatsForLine', () => {
     test('gets stats for tag with line data', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(
+        `<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`,
+      )(':first-child');
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
@@ -243,10 +253,12 @@ describe('StatsCrawler', () => {
       const crawler = new StatsCrawler();
       crawler.crawl(new Node(xml, defaultContext()));
 
-      expect(crawler.getStatsForLine(14)).toEqual(jasmine.objectContaining({
-        maxPathActions: 2,
-        minPathActions: 1,
-      }));
+      expect(crawler.getStatsForLine(14)).toEqual(
+        expect.objectContaining({
+          maxPathActions: 2,
+          minPathActions: 1,
+        }),
+      );
     });
   });
 

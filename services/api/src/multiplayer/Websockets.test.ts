@@ -1,13 +1,14 @@
-import {resetSessions, initSessionClient} from './Sessions';
-import {broadcast, broadcastError} from './Websockets';
-import {newMockWebsocket} from './TestData';
+import { initSessionClient, resetSessions } from './Sessions';
+import { newMockWebsocket } from './TestData';
+import { broadcast, broadcastError } from './Websockets';
 
 describe('Websockets', () => {
-
   afterEach(resetSessions);
 
   describe('setupWebsockets', () => {
-    test.skip('Sets up websocket handler on new connection', () => { /* TODO */ });
+    test.skip('Sets up websocket handler on new connection', () => {
+      /* TODO */
+    });
   });
 
   describe('broadcast', () => {
@@ -18,7 +19,7 @@ describe('Websockets', () => {
       initSessionClient(123, 'zxc', 'vbn', ws2);
       broadcast(123, 'testing');
       for (const ws of [ws1, ws2]) {
-        expect(ws.send).toHaveBeenCalledWith('testing', jasmine.any(Function));
+        expect(ws.send).toHaveBeenCalledWith('testing', expect.any(Function));
       }
     });
   });
@@ -31,8 +32,8 @@ describe('Websockets', () => {
       initSessionClient(123, 'zxc', 'vbn', ws2);
       broadcastError(123, new Error('test error'));
       for (const ws of [ws1, ws2]) {
-        expect(ws.send.calls.mostRecent().args[0]).toContain('test error');
+        expect(ws.send.mock.lastCall[0]).toContain('test error');
       }
     });
-  })
+  });
 });

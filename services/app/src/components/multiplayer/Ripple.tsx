@@ -1,6 +1,6 @@
 import * as classNames from 'classnames';
 import * as React from 'react';
-import {Transition} from 'react-transition-group';
+import { Transition } from 'react-transition-group';
 
 interface Props {
   classes: any;
@@ -24,30 +24,21 @@ export default class Ripple extends React.Component<Props, State> {
     this.setState({
       visible: true,
     });
-  }
+  };
 
   public handleExit = () => {
     this.setState({
       leaving: true,
     });
-  }
+  };
 
   public render() {
-    const {
-      classes,
-      rippleSize,
-      rippleX,
-      rippleY,
-      ...other,
-    } = this.props;
+    const { classes, rippleSize, rippleX, rippleY, ...other } = this.props;
     const { visible, leaving } = this.state;
 
-    const rippleClassName = classNames(
-      classes.ripple,
-      {
-        [classes.rippleVisible]: visible,
-      }
-    );
+    const rippleClassName = classNames(classes.ripple, {
+      [classes.rippleVisible]: visible,
+    });
 
     const rippleStyles = {
       height: rippleSize,
@@ -61,7 +52,12 @@ export default class Ripple extends React.Component<Props, State> {
     });
 
     return (
-      <Transition onEnter={() => this.handleEnter()} onExit={() => this.handleExit()} {...other} timeout={300}>
+      <Transition
+        onEnter={() => this.handleEnter()}
+        onExit={() => this.handleExit()}
+        {...other}
+        timeout={300}
+      >
         <span className={rippleClassName} style={rippleStyles}>
           <span className={childClassName} />
         </span>

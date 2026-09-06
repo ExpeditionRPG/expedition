@@ -1,19 +1,16 @@
-import {Block} from './block/BlockList';
-import {Logger, LogMessage, prettifyMsg, prettifyMsgs} from './Logger';
+import { Block } from './block/BlockList';
+import { Logger, LogMessage, prettifyMsg, prettifyMsgs } from './Logger';
 
-const expect: any = require('expect');
-
-const testBlock: Block = {indent: 0, startLine: 0, lines: ['hello world']};
+const testBlock: Block = { indent: 0, startLine: 0, lines: ['hello world'] };
 
 const testMsgs: LogMessage[] = [
-  {type: 'error', text: 'test error', url: 'test', line: 5},
-  {type: 'warning', text: 'test warning', url: '404', line: 7},
-  {type: 'info', text: 'test debug\nstuff', url: '100', line: 0},
-  {type: 'internal', text: 'internal error', url: '505', line: 5},
+  { type: 'error', text: 'test error', url: 'test', line: 5 },
+  { type: 'warning', text: 'test warning', url: '404', line: 7 },
+  { type: 'info', text: 'test debug\nstuff', url: '100', line: 0 },
+  { type: 'internal', text: 'internal error', url: '505', line: 5 },
 ];
 
 describe('LogMessage', () => {
-
   describe('Logger', () => {
     test('extends with messages', () => {
       const msg = new Logger();
@@ -50,17 +47,23 @@ describe('LogMessage', () => {
   describe('prettifyMsgs', () => {
     test('prettifies multiple messages', () => {
       // tslint:disable-next-line
-      expect(prettifyMsgs(testMsgs)).toEqual('ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505');
+      expect(prettifyMsgs(testMsgs)).toEqual(
+        'ERROR L5:\ntest error\nURL: test\n\nWARNING L7:\ntest warning\nURL: 404\n\nINFO L0:\ntest debug\nstuff\nURL: 100\n\nINTERNAL L5:\ninternal error\nURL: 505',
+      );
     });
   });
 
   describe('prettifyMsg', () => {
     test('prettifies message', () => {
-      expect(prettifyMsg(testMsgs[0])).toEqual('ERROR L5:\ntest error\nURL: test');
+      expect(prettifyMsg(testMsgs[0])).toEqual(
+        'ERROR L5:\ntest error\nURL: test',
+      );
     });
 
     test('prettifies message with no line context', () => {
-      expect(prettifyMsg(testMsgs[2])).toEqual('INFO L0:\ntest debug\nstuff\nURL: 100');
+      expect(prettifyMsg(testMsgs[2])).toEqual(
+        'INFO L0:\ntest debug\nstuff\nURL: 100',
+      );
     });
   });
 });

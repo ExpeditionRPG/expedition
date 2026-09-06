@@ -1,10 +1,17 @@
-import {REGEX} from '../../Regex';
-import {sanitizeTemplate} from '../../schema/templates/Sanitize';
-import {getTemplateType, Instruction,  TEMPLATE_ATTRIBUTE_MAP, TEMPLATE_TYPES, TemplateChild, TemplateType} from '../../schema/templates/Templates';
-import {Block} from '../block/BlockList';
-import {Logger} from '../Logger';
+import { REGEX } from '../../Regex';
+import { sanitizeTemplate } from '../../schema/templates/Sanitize';
+import {
+  getTemplateType,
+  Instruction,
+  TEMPLATE_ATTRIBUTE_MAP,
+  TEMPLATE_TYPES,
+  TemplateChild,
+  TemplateType,
+} from '../../schema/templates/Templates';
+import { Block } from '../block/BlockList';
+import { Logger } from '../Logger';
 import Normalize from '../validation/Normalize';
-import {Renderer} from './Renderer';
+import { Renderer } from './Renderer';
 
 // Does not implement Renderer interface, rather wraps
 // an existing Renderer's functions to accept a block list.
@@ -23,10 +30,10 @@ export class BlockRenderer {
     const hasHeader = Boolean(extracted);
 
     let templateType: TemplateType = TEMPLATE_TYPES[0];
-    if (hasHeader && extracted && typeof(extracted.title) === 'string') {
+    if (hasHeader && extracted && typeof extracted.title === 'string') {
       templateType = getTemplateType(extracted.title) || TEMPLATE_TYPES[0];
     }
-    extracted = extracted || {title: '', id: undefined, json: {}};
+    extracted = extracted || { title: '', id: undefined, json: {} };
 
     const attribs = extracted.json;
     attribs.id = attribs.id || extracted.id;
@@ -49,7 +56,7 @@ export class BlockRenderer {
     //
     // We initially parse these without concern for which are valid;
     // The correctness of these values is determined by the validation step at the end.
-    const body: Array<string|TemplateChild|Instruction> = [];
+    const body: Array<string | TemplateChild | Instruction> = [];
 
     let i = 0;
     while (i < blocks.length) {
@@ -57,14 +64,17 @@ export class BlockRenderer {
       if (block.render) {
         // Only the blocks within events should be rendered at this point.
         log.err(
-          templateType + ' cannot contain indented sections that are not choices/events',
+          templateType +
+            ' cannot contain indented sections that are not choices/events',
           '411',
-          blocks[0].startLine
+          blocks[0].startLine,
         );
       }
 
       // Append rendered stuff
-      const lines = this.collate((i === 0 && hasHeader) ? block.lines.slice(1) : block.lines);
+      const lines = this.collate(
+        i === 0 && hasHeader ? block.lines.slice(1) : block.lines,
+      );
       let child: TemplateChild | null = null;
       let instruction: Instruction;
       let lineIdx = 0;
@@ -72,13 +82,18 @@ export class BlockRenderer {
         lineIdx++;
 
         if (line.startsWith('* ')) {
-          const bullet = this.extractBulleted(line, block.startLine + lineIdx, log);
-          child = (bullet) ? Object.assign({}, bullet, {outcome: []}) : null;
+          const bullet = this.extractBulleted(
+            line,
+            block.startLine + lineIdx,
+            log,
+          );
+          child = bullet ? Object.assign({}, bullet, { outcome: [] }) : null;
           // TODO: Assert end of lines.
         } else if (line.startsWith('- ') && attrName !== null) {
           // Params are parsed un-collated as multiple params can be directly next to each
           // other without intermediate whitespace.
-          const unCollated = (i === 0 && hasHeader) ? block.lines.slice(1) : block.lines;
+          const unCollated =
+            i === 0 && hasHeader ? block.lines.slice(1) : block.lines;
           let j = 0;
           while (unCollated[j] === '') {
             j++;
@@ -89,10 +104,18 @@ export class BlockRenderer {
               break;
             }
             if (!l.startsWith('- ')) {
-              log.err('need whitespace between list and next section', '420', block.startLine + j);
+              log.err(
+                'need whitespace between list and next section',
+                '420',
+                block.startLine + j,
+              );
               break;
             }
-            const bullet = this.extractBulleted(l, blocks[0].startLine + i, log);
+            const bullet = this.extractBulleted(
+              l,
+              blocks[0].startLine + i,
+              log,
+            );
             if (!bullet) {
               continue;
             }
@@ -120,7 +143,11 @@ export class BlockRenderer {
         let inner = blocks[++i];
         while (i < blocks.length && inner.indent !== block.indent) {
           if (!inner.render) {
-            log.internal('found unexpected block with no render', '501', blocks[0].startLine);
+            log.internal(
+              'found unexpected block with no render',
+              '501',
+              blocks[0].startLine,
+            );
             i++;
             continue;
           }
@@ -132,7 +159,7 @@ export class BlockRenderer {
           log.err(
             'choice/event missing title',
             '428',
-            blocks[i - 1].startLine - 2
+            blocks[i - 1].startLine - 2,
           );
         }
         body.push(child);
@@ -141,17 +168,35 @@ export class BlockRenderer {
       }
     }
 
-    const sanitized = sanitizeTemplate(templateType, attribs, body, blocks[0].startLine, () => this.renderer.toTrigger({text: 'end'}, -1), log);
-    blocks[0].render = this.renderer.toTemplate(templateType, sanitized.attribs, sanitized.body, blocks[0].startLine);
+    const sanitized = sanitizeTemplate(
+      templateType,
+      attribs,
+      body,
+      blocks[0].startLine,
+      () => this.renderer.toTrigger({ text: 'end' }, -1),
+      log,
+    );
+    blocks[0].render = this.renderer.toTemplate(
+      templateType,
+      sanitized.attribs,
+      sanitized.body,
+      blocks[0].startLine,
+    );
   }
 
   public toQuest(block: Block, log: Logger) {
-    block.render = this.renderer.toQuest(this.toMeta(block, log), block.startLine);
+    block.render = this.renderer.toQuest(
+      this.toMeta(block, log),
+      block.startLine,
+    );
   }
 
   public toTrigger(blocks: Block[], log: Logger) {
     if (blocks.length !== 1) {
-      log.err('trigger found with indented section - check your starting whitespace', '415');
+      log.err(
+        'trigger found with indented section - check your starting whitespace',
+        '415',
+      );
     }
 
     let extracted: any;
@@ -159,7 +204,9 @@ export class BlockRenderer {
       extracted = this.extractTrigger(blocks[0].lines[0]);
     } catch (e) {
       log.err('could not parse trigger', '410');
-      extracted = {title: 'end', visible: undefined};
+      // The renderer reads `text`, not `title` - using `title` here rendered
+      // the string "undefined" into the fallback <trigger>.
+      extracted = { text: 'end', visible: undefined };
     }
 
     blocks[0].render = this.renderer.toTrigger(extracted, blocks[0].startLine);
@@ -169,19 +216,25 @@ export class BlockRenderer {
     this.renderer.validate(rendered, log);
   }
 
-  public toMeta(block: Block, log?: Logger): {[k: string]: any} {
+  public toMeta(block: Block, log?: Logger): { [k: string]: any } {
     // Parse meta using the block itself.
     // Metadata format is standard across all renderers.
     if (!block) {
-      return {title: 'UNKNOWN'};
+      return { title: 'UNKNOWN' };
     }
 
-    const attrs: {[k: string]: string} = {title: block.lines[0].substr(1).trim()};
+    const attrs: { [k: string]: string } = {
+      title: block.lines[0].substr(1).trim(),
+    };
     for (let i = 1; i < block.lines.length && block.lines[i] !== ''; i++) {
       const kv = block.lines[i].split(':');
       if (kv.length !== 2) {
         if (log) {
-          log.err('invalid quest attribute line "' + block.lines[i] + '"', '420', block.startLine + i);
+          log.err(
+            'invalid quest attribute line "' + block.lines[i] + '"',
+            '420',
+            block.startLine + i,
+          );
         }
         continue;
       }
@@ -191,9 +244,11 @@ export class BlockRenderer {
 
       if (k !== 'title') {
         if (log) {
-          log.err('Quest attributes have migrated to the "Publish" button - simply delete this line.',
+          log.err(
+            'Quest attributes have migrated to the "Publish" button - simply delete this line.',
             '429',
-            block.startLine + i);
+            block.startLine + i,
+          );
         }
       }
     }
@@ -207,16 +262,20 @@ export class BlockRenderer {
     let quest: any = null;
     if (zeroIndentBlockGroupRoots && zeroIndentBlockGroupRoots.length > 0) {
       const questBlock = zeroIndentBlockGroupRoots[0];
-      if (questBlock.lines.length && questBlock.lines[0].length && questBlock.lines[0][0] === '#') {
+      if (
+        questBlock.lines.length &&
+        questBlock.lines[0].length &&
+        questBlock.lines[0][0] === '#'
+      ) {
         quest = questBlock.render;
       } else {
         // Error here. We can still handle null quests in the renderer.
         log.err('root card must be a quest header', '421', 0);
-        quest = this.renderer.toQuest({title: 'Error'}, -1);
+        quest = this.renderer.toQuest({ title: 'Error' }, -1);
       }
     } else {
       log.err('no quest blocks found', '422');
-      quest = this.renderer.toQuest({title: 'Error'}, -1);
+      quest = this.renderer.toQuest({ title: 'Error' }, -1);
     }
 
     for (let i = 1; i < zeroIndentBlockGroupRoots.length; i++) {
@@ -241,8 +300,10 @@ export class BlockRenderer {
     return this.renderer.finalize(quest, toRender);
   }
 
-  private extractTemplate(line: string, log?: Logger):
-    {title: string, id?: string, json: {[k: string]: any}} | null {
+  private extractTemplate(
+    line: string,
+    log?: Logger,
+  ): { title: string; id?: string; json: { [k: string]: any } } | null {
     // Breakdown:
     // ^_(.*)_                  Match italicized text at start of string until there's a break
     //                          which may contain multiple :icon_names: (hence the greedy selection)
@@ -256,13 +317,15 @@ export class BlockRenderer {
     //
     // (\{.*\})?                Optionally match a JSON blob (greedy)
     try {
-      const m = line.match(/^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/);
+      const m = line.match(
+        /^_(.*)_[^{\(]*(\(#([a-zA-Z0-9]*?)\))?[^{\(]*(\{.*\})?/,
+      );
       if (!m || !m[1]) {
         throw new Error('Missing title');
       }
       return {
         id: m[3],
-        json: (m[4]) ? JSON.parse(m[4]) : {},
+        json: m[4] ? JSON.parse(m[4]) : {},
         title: m[1],
       };
     } catch (e) {
@@ -273,8 +336,11 @@ export class BlockRenderer {
     }
   }
 
-  private extractBulleted(line: string, idx: number, log: Logger):
-    {text: string, visible?: string, json: {[k: string]: any}} | null {
+  private extractBulleted(
+    line: string,
+    idx: number,
+    log: Logger,
+  ): { text: string; visible?: string; json: { [k: string]: any } } | null {
     // Breakdown:
     // \*\s*                    Match "*" or "-" and any number of spaces (greedy)
     // (\{\{(.*?)\}\})?         Optionally match "{{some stuff}}"
@@ -286,13 +352,15 @@ export class BlockRenderer {
     // (\{.*\})?                Optionally match a final JSON blob (greedy)
     // $                        End of string
     try {
-      const m = line.match(/^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/);
+      const m = line.match(
+        /^[\*-]\s*(\{\{(.*?)\}\})?\s*((?:[^{]|(?:{{[^}]*}})*)*)(\{.*\})?$/,
+      );
       if (!m) {
         throw new Error('Match failed');
       }
       return {
-        json: (m[4]) ? JSON.parse(m[4]) : {},
-        text: (m[3]) ? m[3].trim() : '',
+        json: m[4] ? JSON.parse(m[4]) : {},
+        text: m[3] ? m[3].trim() : '',
         visible: m[2] || undefined,
       };
     } catch (e) {
@@ -317,7 +385,9 @@ export class BlockRenderer {
     };
   }
 
-  private extractTrigger(line: string): {text: string|null, visible: string|null} {
+  private extractTrigger(
+    line: string,
+  ): { text: string | null; visible: string | null } {
     const m = line.match(REGEX.TRIGGER);
     if (!m) {
       return {
@@ -340,7 +410,8 @@ export class BlockRenderer {
       if (lines[i - 1] === '' && result[result.length - 1] !== '') {
         result.push('');
       }
-      result[result.length - 1] += (result[result.length - 1] !== '') ? ' ' + lines[i] : lines[i];
+      result[result.length - 1] +=
+        result[result.length - 1] !== '' ? ' ' + lines[i] : lines[i];
     }
     return result;
   }

@@ -12,12 +12,8 @@ const options = {
   mode: 'production',
   cache: false,
   entry: {
-    server: [
-      './src/index.ts',
-    ],
-    batchRunner: [
-      './src/batch.ts'
-    ],
+    server: ['./src/index.ts'],
+    batchRunner: ['./src/batch.ts'],
   },
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.json', '.txt'],
@@ -28,7 +24,7 @@ const options = {
     filename: '[name].js',
   },
   stats: 'minimal',
-  target : 'node',
+  target: 'node',
   node: {
     // Don't touch __dirname or __filename (so they work as normal when starting w/ nodejs)
     __dirname: false,
@@ -43,12 +39,20 @@ const options = {
         test: /\.ts(x?)$/,
         loader: 'awesome-typescript-loader',
         options: {
+          // Point at the monorepo tsconfig explicitly. Left to its own devices
+          // awesome-typescript-loader calls ts.findConfigFile() with the
+          // service directory, which on Windows is a backslash path that
+          // TypeScript 2.8 fails to walk upwards from. It then falls back to
+          // the compiler defaults, which drop `awesomeTypescriptLoaderOptions.
+          // useBabel` and with it the babel module-resolver aliases, so every
+          // `shared/*` import fails to resolve.
+          configFileName: Path.resolve(__dirname, '../../tsconfig.json'),
           transpileOnly: true,
           useCache: false,
         },
-        exclude: [/\/node_modules\/.*/, /\/dist\/.*/]
+        exclude: [/\/node_modules\/.*/, /\/dist\/.*/],
       },
-    ]
+    ],
   },
   optimization: {
     minimize: false,
@@ -56,7 +60,12 @@ const options = {
     removeEmptyChunks: false,
     splitChunks: false,
   },
-  externals: {'pg': "require('pg')", 'sqlite3': "require('sqlite3')", 'tedious': "require('tedious')", 'pg-hstore': "require('pg-hstore')"},
+  externals: {
+    pg: "require('pg')",
+    sqlite3: "require('sqlite3')",
+    tedious: "require('tedious')",
+    'pg-hstore': "require('pg-hstore')",
+  },
 };
 
 module.exports = options;

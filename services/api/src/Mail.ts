@@ -1,13 +1,15 @@
 import Config from './config';
 const Nodemailer = require('nodemailer');
 
+export type SendMail = (mailOptions: object) => Promise<any>;
+
 export interface MailService {
   send: (
     to: string[],
     subject: string,
     htmlMessage: string,
     sendCopy?: boolean,
-    sendMail?: any,
+    isBeta?: boolean,
   ) => Promise<any>;
 }
 
@@ -29,22 +31,18 @@ const HTML_REGEX = /<(\w|(\/\w))(.|\n)*?>/gim;
 // Then, track opt-outs in DB and check against opt-out list before sending message
 // Will need an opt-out route
 
+// Message composition, with the transport passed in. Exported so tests can
+// drive it with a fake transport; production has exactly one transport and
+// reaches this through send() below.
 // to: single email string, or array of emails
-export function send(
+export function sendVia(
+  sendMail: SendMail,
   to: string[],
   subject: string,
   htmlMessage: string,
   sendCopy: boolean = true,
   isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
-  sendMail?: any,
 ): Promise<any> {
-  if (transporter === null) {
-    return Promise.reject('mail transport not set up');
-  }
-  sendMail = sendMail || transporter.sendMail.bind(transporter);
-  if (!sendMail) {
-    return Promise.reject('transport not set up');
-  }
   // for plaintext version, turn end of paragraphs into double newlines
   const mailOptions = {
     bcc: sendCopy ? 'todd@fabricate.io' : undefined,
@@ -64,4 +62,24 @@ export function send(
   } else {
     return sendMail(mailOptions);
   }
+}
+
+export function send(
+  to: string[],
+  subject: string,
+  htmlMessage: string,
+  sendCopy: boolean = true,
+  isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
+): Promise<any> {
+  if (transporter === null) {
+    return Promise.reject('mail transport not set up');
+  }
+  return sendVia(
+    transporter.sendMail.bind(transporter),
+    to,
+    subject,
+    htmlMessage,
+    sendCopy,
+    isBeta,
+  );
 }

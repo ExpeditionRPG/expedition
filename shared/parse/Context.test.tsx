@@ -1,19 +1,33 @@
-import {defaultContext, evaluateContentOps, evaluateOp, updateContext} from './Context';
+import {
+  defaultContext,
+  evaluateContentOps,
+  evaluateOp,
+  updateContext,
+} from './Context';
 const cheerio: any = require('cheerio');
 
 declare var window: any;
 
 // https://stackoverflow.com/a/9229821/1332186
 function arrayUniques(array) {
-  let seen = {};
-  return array.filter((num) => {
+  const seen = {};
+  return array.filter(num => {
     return seen.hasOwnProperty(num) ? false : (seen[num] = true);
-  }
+  });
 }
 
 describe('Context', () => {
+  // window.onerror is an accessor property on jsdom's window whose value is
+  // null, so jest.spyOn() cannot wrap it. Context.tsx only ever reads it and
+  // calls it, so installing a mock function directly is equivalent.
+  let origOnError: any;
   beforeEach(() => {
-    spyOn(window, 'onerror');
+    origOnError = window.onerror;
+    window.onerror = jest.fn();
+  });
+
+  afterEach(() => {
+    window.onerror = origOnError;
   });
 
   describe('evaluateOp', () => {
@@ -22,22 +36,24 @@ describe('Context', () => {
       expect(evaluateOp('"abc" == "123"', defaultContext())).toEqual(false);
     });
     test('throws error on invalid parse', () => {
-      evaluateOp('foo==\'a\'', defaultContext());
-      expect(window.onerror)
-        .toHaveBeenCalledWith(
-          'Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo==\'a\')',
-          'shared/parse/context');
+      evaluateOp("foo=='a'", defaultContext());
+      expect(window.onerror).toHaveBeenCalledWith(
+        "Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo=='a')",
+        'shared/parse/context',
+      );
     });
     test('throws error on invalid eval', () => {
       evaluateOp('asdf', defaultContext());
-      expect(window.onerror)
-        .toHaveBeenCalledWith('Undefined symbol asdf Op: (asdf)', 'shared/parse/context');
+      expect(window.onerror).toHaveBeenCalledWith(
+        'Undefined symbol asdf Op: (asdf)',
+        'shared/parse/context',
+      );
     });
     test('returns value and updates context', () => {
       const ctx = defaultContext();
       ctx.scope.b = '1';
       expect(evaluateOp('a=b+1;a', ctx)).toEqual(2);
-      expect(ctx.scope).toEqual(jasmine.objectContaining({a: 2, b: '1'}));
+      expect(ctx.scope).toEqual(expect.objectContaining({ a: 2, b: '1' }));
     });
     test('does not return if last operation assigns a value', () => {
       expect(evaluateOp('a=1', defaultContext())).toEqual(null);
@@ -57,8 +73,12 @@ describe('Context', () => {
       for (let i = 0; i < 50; i++) {
         expect(evaluateOp('random()', ctx, rng)).toEqual(expected);
       }
-      expect(evaluateOp('random(100)', ctx, rng)).toEqual(evaluateOp('random(100)', ctx, rng));
-      expect(evaluateOp('random(10, 100)', ctx, rng)).toEqual(evaluateOp('random(10, 100)', ctx, rng));
+      expect(evaluateOp('random(100)', ctx, rng)).toEqual(
+        evaluateOp('random(100)', ctx, rng),
+      );
+      expect(evaluateOp('random(10, 100)', ctx, rng)).toEqual(
+        evaluateOp('random(10, 100)', ctx, rng),
+      );
     });
     test('has repeatable randomInt() behavior based on seed', () => {
       const ctx = defaultContext();
@@ -67,8 +87,12 @@ describe('Context', () => {
       for (let i = 0; i < 50; i++) {
         expect(evaluateOp('randomInt()', ctx, rng)).toEqual(expected);
       }
-      expect(evaluateOp('randomInt(100)', ctx, rng)).toEqual(evaluateOp('randomInt(100)', ctx, rng));
-      expect(evaluateOp('randomInt(10, 100)', ctx, rng)).toEqual(evaluateOp('randomInt(10, 100)', ctx, rng));
+      expect(evaluateOp('randomInt(100)', ctx, rng)).toEqual(
+        evaluateOp('randomInt(100)', ctx, rng),
+      );
+      expect(evaluateOp('randomInt(10, 100)', ctx, rng)).toEqual(
+        evaluateOp('randomInt(10, 100)', ctx, rng),
+      );
     });
     test('has repeatable pickRandom() behavior based on seed', () => {
       const ctx = defaultContext();
@@ -81,7 +105,11 @@ describe('Context', () => {
 
     test('restores an unbound copy of lodash functions', () => {
       const ctx = defaultContext();
-      ctx.scope._.viewCount = (id: string) => {
+      // Deliberately a plain function expression rather than an arrow or a
+      // shorthand method: only plain functions carry an own `prototype`, and
+      // Function.prototype.bind() strips it. That is exactly what the second
+      // assertion below uses to prove the stored function is the original.
+      ctx.scope._.viewCount = function(id: string) {
         return this.views[id] || 0;
       };
       evaluateOp('n = 5', ctx, () => 0.1);
@@ -99,12 +127,17 @@ describe('Context', () => {
 
     test('handles multiple ops in one string', () => {
       const ctx = defaultContext();
-      expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual('TEST');
+      expect(evaluateContentOps('{{text="TEST"}}\n{{text}}', ctx)).toEqual(
+        'TEST',
+      );
     });
 
     test('varies results when random() called in same set of ops', () => {
       const ctx = defaultContext();
-      const result = evaluateContentOps('{{random()}}\n{{random()}}', ctx).split('\n');
+      const result = evaluateContentOps(
+        '{{random()}}\n{{random()}}',
+        ctx,
+      ).split('\n');
       expect(result[1]).not.toEqual(result[2]);
     });
 
@@ -134,8 +167,10 @@ describe('Context', () => {
       expect(ctx.path).not.toEqual([2]);
     });
     test('updates view count', () => {
-      const dummyElem = cheerio.load('<roleplay id="1234"></roleplay>')('roleplay');
-      const ctx = updateContext(dummyElem, defaultContext(), 0);
+      const viewedElem = cheerio.load('<roleplay id="1234"></roleplay>')(
+        'roleplay',
+      );
+      const ctx = updateContext(viewedElem, defaultContext(), 0);
       expect(ctx.views['1234']).toEqual(1);
     });
     test('correctly binds old & new context', () => {
@@ -153,7 +188,6 @@ describe('Context', () => {
 
       expect(evaluateOp('_.testfn()', ctx)).toEqual(5);
       expect(evaluateOp('_.testfn()', ctx2)).toEqual(6);
-    })
+    });
   });
-
 });

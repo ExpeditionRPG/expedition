@@ -1,7 +1,7 @@
-import assert from 'assert';
-import {BlockList} from 'shared/render/block/BlockList';
-import {QDLParser} from 'shared/render/QDLParser';
-import {XMLRenderer} from 'shared/render/render/XMLRenderer';
+import * as assert from 'assert';
+import { BlockList } from 'shared/render/block/BlockList';
+import { QDLParser } from 'shared/render/QDLParser';
+import { XMLRenderer } from 'shared/render/render/XMLRenderer';
 import Errors from './errors';
 
 describe('Errors', () => {
@@ -16,7 +16,9 @@ describe('Errors', () => {
         }
         const qdl = new QDLParser(XMLRenderer);
         let quest = valid;
-        if (!err.METADATA_ERROR) { quest = addQuestHeader(quest); }
+        if (!err.METADATA_ERROR) {
+          quest = addQuestHeader(quest);
+        }
         qdl.render(new BlockList(quest));
         const msgs = qdl.getFinalizedLogs();
         expect(msgs.error).toEqual([]);
@@ -33,15 +35,28 @@ describe('Errors', () => {
         }
         const qdl = new QDLParser(XMLRenderer);
         let quest = invalid;
-        if (!err.METADATA_ERROR) { quest = addQuestHeader(quest); }
+        if (!err.METADATA_ERROR) {
+          quest = addQuestHeader(quest);
+        }
         qdl.render(new BlockList(quest));
         const msgs = qdl.getFinalizedLogs();
         // Note the requirement for only one error. Error invalid test cases should be designed
         // such that they don't trigger multiple errors, so as to prevent confusion.
-        const errorName = (err.INVALID_ERRORS && err.INVALID_ERRORS[index] !== null) ? err.INVALID_ERRORS[index] : err.NAME;
-        assert.equal(msgs.error.length, 1, `Length !== 1, was ${msgs.error.length}: ${msgs.error.map((e) => e.text).join('...')}`);
+        const errorName =
+          err.INVALID_ERRORS && err.INVALID_ERRORS[index] !== null
+            ? err.INVALID_ERRORS[index]
+            : err.NAME;
+        assert.equal(
+          msgs.error.length,
+          1,
+          `Length !== 1, was ${msgs.error.length}: ${msgs.error
+            .map(e => e.text)
+            .join('...')}`,
+        );
         expect(msgs.error[0].url).toEqual(err.NUMBER.toString());
-        expect(msgs.error[0].text.toLowerCase()).toEqual(errorName.toLowerCase());
+        expect(msgs.error[0].text.toLowerCase()).toEqual(
+          errorName.toLowerCase(),
+        );
         expect(msgs.warning).toEqual([]);
         expect(msgs.internal).toEqual([]);
       });

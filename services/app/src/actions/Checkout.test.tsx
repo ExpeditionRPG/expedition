@@ -1,5 +1,5 @@
-import {newMockStore} from '../Testing';
-import {toCheckout} from './Checkout';
+import { newMockStore } from '../Testing';
+import { toCheckout } from './Checkout';
 
 describe('Checkout actions', () => {
   describe('CheckoutSetState', () => {
@@ -7,7 +7,6 @@ describe('Checkout actions', () => {
   });
 
   describe('toCheckout', () => {
-
     /* TODO FIX
     test('Navigates to checkout if logged in', () => {
       const store = newMockStore({});
@@ -15,7 +14,7 @@ describe('Checkout actions', () => {
       expect(store.getActions().length).toEqual(2);
       const navigateAction = store.getActions()[1];
       expect(navigateAction.type).toEqual('NAVIGATE');
-      expect(navigateAction.to).toEqual(jasmine.objectContaining({name: 'CHECKOUT', phase: 'ENTRY'}));
+      expect(navigateAction.to).toEqual(expect.objectContaining({name: 'CHECKOUT', phase: 'ENTRY'}));
     });
     */
 
@@ -27,7 +26,11 @@ describe('Checkout actions', () => {
   });
 
   describe('checkoutSubmit', () => {
-    test.skip('on success: notifies user and navigates to thank you page', () => { /* TODO */ });
-    test.skip('on failure: notifies user and restarts checkout process', () => { /* TODO */ });
+    test.skip('on success: notifies user and navigates to thank you page', () => {
+      /* TODO */
+    });
+    test.skip('on failure: notifies user and restarts checkout process', () => {
+      /* TODO */
+    });
   });
 });

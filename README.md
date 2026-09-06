@@ -1,4 +1,4 @@
-# Expedition [![Build Status](https://travis-ci.org/ExpeditionRPG/expedition.svg?branch=master)](https://travis-ci.org/ExpeditionRPG/expedition)
+# Expedition [![CI](https://github.com/ExpeditionRPG/expedition/actions/workflows/ci.yml/badge.svg)](https://github.com/ExpeditionRPG/expedition/actions/workflows/ci.yml)
 
 ![Splash image](https://user-images.githubusercontent.com/607666/148574082-4b856d1c-9cf6-4182-adb8-7f31bebc2466.png)
 
@@ -36,18 +36,15 @@ Not sure what to work on? Check out our [open issues](https://github.com/Expedit
 Expedition requires a unix-based system like OSX or Linux. If you are on Windows, you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 1. Install [NVM](https://github.com/creationix/nvm)
-2. Install Node 8.11.3 `nvm install 8.11.3 --latest-npm`
+2. Install Node 24 `nvm install 24 --latest-npm`
 3. Install yarn globally: `npm install -g yarn`
 4. Install local dependencies: cd into Expedition repo -> `yarn`
 5. Run an app! `yarn run app`, `yarn run cards` or `yarn run quests` -> open it in your browser at `http://localhost:8080`
-6. IF DEVELOPING: Install Chrome (if not already installed)
-7. IF DEVELOPING: Run the tests to make sure everything's working: `yarn test`
+6. IF DEVELOPING: Run the tests to make sure everything's working: `yarn test`
 
 #### Setup Notes & Help
 
 To build the Cordova app, you may need to install other global dependencies: `npm install -g cordova webpack@4 webpack-cli@3 webpack-dev-server@3`
-
-Chrome is used for headless browser testing. [How to install Chrome on WSL/Ubuntu cli](https://askubuntu.com/a/510186)
 
 ### Running the code
 
@@ -58,17 +55,30 @@ See the readme at `services/api/README.md` for instructions on configuring the A
 
 ### Tests and linting
 
-`yarn test` runs all tests in the repo; you can also run tests for a specific service as `X-test`, for example `yarn run app-test`.
+Tests run on [Jest](https://jestjs.io/), transformed by [@swc/jest](https://swc.rs/docs/usage/jest). Configuration lives in `jest.config.js`.
 
-Linting is run automatically to verify each commit; tests are run automatically to verify each push.
+| Command               | What it does                                                             |
+| --------------------- | ------------------------------------------------------------------------ |
+| `yarn test`           | Run every test in the repo                                               |
+| `yarn test <pattern>` | Run tests whose path matches a regex, e.g. `yarn test reducers/Settings` |
+| `yarn test:watch`     | Re-run affected tests as you edit                                        |
+| `yarn test:coverage`  | Write a coverage report to `coverage/`                                   |
+| `yarn lint`           | Check for lint errors (`yarn lint:fix` fixes what it can)                |
 
-Linting errors? `yarn run lint --fix` fixes most common linting issues automatically. For alphabetization issues, in Sublime Text you can select multiple lines of text then hit `F5` to auto-sort them.
+The suite is split into two Jest projects, selectable with `--selectProjects`:
+
+- **`node`** — `services/api` and `scripts`, run in a Node environment.
+- **`jsdom`** — `shared` and the browser services, run in jsdom. `jest.setup.js` configures the Enzyme adapter globally, so individual test files do not need to.
+
+Linting and formatting run automatically on staged files at commit time via husky + lint-staged. CI (`.github/workflows/ci.yml`) runs lint and the full suite on every pull request.
+
+Linting errors? `yarn lint:fix` fixes most common linting issues automatically. For alphabetization issues, in Sublime Text you can select multiple lines of text then hit `F5` to auto-sort them.
 
 #### Writing Good Tests
 
 Reducer tests should test state changes via actions, specifically when there's logic involved / they aren't just glue
 
-Use jasmine.objectContaining for more robust tests
+Use `expect.objectContaining` for more robust tests
 
 Components: test branches for key content, i.e. if search results empty, make sure that resulting string contains "No results found"
 

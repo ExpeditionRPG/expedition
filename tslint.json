@@ -1,21 +1,14 @@
 {
-  "extends": "tslint:recommended",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "quotemark": [true, "single", "jsx-double"],
     "switch-default": true,
-    "indent": [true, "spaces"],
-    "trailing-comma": [true, {
-      "multiline": {
-        "objects": "always",
-        "arrays": "always",
-        "functions": "never",
-        "typeLiterals": "ignore"
-      },
-      "singleline": "never"
-    }],
     "no-switch-case-fall-through": true,
-    "space-before-function-paren": [true, "never"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case"
+    ],
     "no-shadowed-variable": [
       true,
       {
@@ -35,8 +28,8 @@
   "linterOptions": {
     "exclude": [
       "*/node_modules/**/*",
-      "*/app/plugins/**/*",
-      "*/app/platforms/**/*",
+      "**/services/app/plugins/**/*",
+      "**/services/app/platforms/**/*",
       "**/*.md"
     ]
   }

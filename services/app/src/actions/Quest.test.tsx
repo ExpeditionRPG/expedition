@@ -1,41 +1,59 @@
-import {defaultContext} from '../components/views/quest/cardtemplates/Template';
-import {AUTH_SETTINGS} from '../Constants';
-import {initialQuestState} from '../reducers/Quest';
-import {initialSettings} from '../reducers/Settings';
-import {loggedOutUser} from 'shared/auth/UserState';
-import {Action} from '../Testing';
-import {exitQuest, endQuest, initQuest} from './Quest';
-import {fakeConnection} from '../multiplayer/Testing';
-import {initialMultiplayer} from '../reducers/Multiplayer';
+import { loggedOutUser } from 'shared/auth/UserState';
+import { defaultContext } from '../components/views/quest/cardtemplates/Template';
+import { AUTH_SETTINGS } from '../Constants';
+import { fakeConnection } from '../multiplayer/Testing';
+import { initialMultiplayer } from '../reducers/Multiplayer';
+import { initialQuestState } from '../reducers/Quest';
+import { initialSettings } from '../reducers/Settings';
+import { Action } from '../Testing';
+import { endQuest, exitQuest, initQuest } from './Quest';
 
 const cheerio = require('cheerio') as CheerioAPI;
 const fetchMock = require('fetch-mock');
 
-
-
 describe('Quest actions', () => {
   describe('initQuest', () => {
     test('successfully returns the parsed quest node', () => {
-      const questNode = cheerio.load('<quest><roleplay><p>Hello</p></roleplay></quest>')('quest');
-      const result = initQuest(initialQuestState.details, questNode, defaultContext());
-      expect(result.node.getRootElem().toString()).toEqual('<quest><roleplay><p>Hello</p></roleplay></quest>');
+      const questNode = cheerio.load(
+        '<quest><roleplay><p>Hello</p></roleplay></quest>',
+      )('quest');
+      const result = initQuest(
+        initialQuestState.details,
+        questNode,
+        defaultContext(),
+      );
+      expect(result.node.getRootElem().toString()).toEqual(
+        '<quest><roleplay><p>Hello</p></roleplay></quest>',
+      );
     });
   });
 
   describe('event', () => {
-    test.skip('handles win event', () => { /* TODO */ });
+    test.skip('handles win event', () => {
+      /* TODO */
+    });
 
-    test.skip('handles lose event', () => { /* TODO */ });
+    test.skip('handles lose event', () => {
+      /* TODO */
+    });
 
-    test.skip('gracefully failes on invalid event', () => { /* TODO */ });
+    test.skip('gracefully failes on invalid event', () => {
+      /* TODO */
+    });
   });
 
   describe('loadNode', () => {
-    test.skip('ends quest on end trigger', () => { /* TODO */ });
+    test.skip('ends quest on end trigger', () => {
+      /* TODO */
+    });
 
-    test.skip('dispatches roleplay on roleplay node', () => { /* TODO */ });
+    test.skip('dispatches roleplay on roleplay node', () => {
+      /* TODO */
+    });
 
-    test.skip('dispatches combat on combat node', () => { /* TODO */ });
+    test.skip('dispatches combat on combat node', () => {
+      /* TODO */
+    });
   });
 
   describe('endQuest', () => {
@@ -49,7 +67,7 @@ describe('Quest actions', () => {
       Action(endQuest, {
         user: loggedOutUser,
         settings: initialSettings,
-        quest: {details: initialQuestState},
+        quest: { details: initialQuestState },
       }).execute({});
       expect(fetchMock.called(matcher)).toEqual(true);
     });
@@ -58,15 +76,22 @@ describe('Quest actions', () => {
   describe('exitQuest', () => {
     test('clears waitingOn', () => {
       const c = fakeConnection();
-      const a = Action(exitQuest, {
-        multiplayer: {
-          ...initialMultiplayer,
-          connected: true,
-          client: "abc",
-          instance: "def",
+      const a = Action(
+        exitQuest,
+        {
+          multiplayer: {
+            ...initialMultiplayer,
+            connected: true,
+            client: 'abc',
+            instance: 'def',
+          },
         },
-      }, c).execute();
-      expect(c.sendEvent).toHaveBeenCalledWith(jasmine.objectContaining({type: 'STATUS', waitingOn: undefined}), undefined);
+        c,
+      ).execute();
+      expect(c.sendEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'STATUS', waitingOn: undefined }),
+        undefined,
+      );
     });
   });
 });

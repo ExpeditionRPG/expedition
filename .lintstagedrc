@@ -1,9 +1,0 @@
-{
-  "linters": {
-    '**/*.+(js|ts|md|css|yaml|yml|sass)': [
-      'tslint --fix',
-      'prettier --write',
-      'git add',
-    ]
-  }
-}

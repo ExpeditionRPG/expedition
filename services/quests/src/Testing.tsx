@@ -2,10 +2,10 @@ import * as Redux from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import combinedReducers from './reducers/CombinedReducers';
-import {AppState} from './reducers/StateTypes';
+import { AppState } from './reducers/StateTypes';
 
 export function newMockStoreWithInitializedState() {
-  return newMockStore(combinedReducers({} as any, {type: '@@INIT'}));
+  return newMockStore(combinedReducers({} as any, { type: '@@INIT' }));
 }
 
 interface MockStore extends Redux.Store {
@@ -15,16 +15,18 @@ interface MockStore extends Redux.Store {
 
 export function newMockStore(state: object): MockStore {
   // Since this is a testing function, we play it a bit loose with the state type.
-  return configureStore<AppState>([thunk])(state as any as AppState);
+  return configureStore<AppState>([thunk])((state as any) as AppState);
 }
 
 // Put stuff here that is assumed to always exist (like settings)
-const defaultGlobalState = {
-  settings: {numLocalPlayers: 1},
-} as any as AppState;
+const defaultGlobalState = ({
+  settings: { numLocalPlayers: 1 },
+} as any) as AppState;
 
-export function Reducer<A extends Redux.Action>(reducer: (state: object|undefined, action: A) => object) {
-  const defaultInitialState = reducer(undefined, ({type: '@@INIT'} as any));
+export function Reducer<A extends Redux.Action>(
+  reducer: (state: object | undefined, action: A) => object,
+) {
+  const defaultInitialState = reducer(undefined, { type: '@@INIT' } as any);
 
   function internalReducerCommands(initialState: object) {
     const store = configureStore<AppState>([thunk])(defaultGlobalState);
@@ -45,7 +47,7 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
         }
         return {
           toChangeState: (expectedChanges: object) => {
-            expect(newState).toEqual(jasmine.objectContaining(expectedChanges));
+            expect(newState).toEqual(expect.objectContaining(expectedChanges));
           },
           toReturnState: (expected: object) => {
             expect(newState).toEqual(expected);
@@ -66,8 +68,13 @@ export function Reducer<A extends Redux.Action>(reducer: (state: object|undefine
   };
 }
 
-export function Action<A>(action: (...a: any[]) => Redux.Action, baseState?: object) {
-  let store = configureStore<AppState>([thunk])((baseState as any as AppState) ||  defaultGlobalState);
+export function Action<A>(
+  action: (...a: any[]) => Redux.Action,
+  baseState?: object,
+) {
+  let store = configureStore<AppState>([thunk])(
+    ((baseState as any) as AppState) || defaultGlobalState,
+  );
 
   function internalActionCommands() {
     return {
