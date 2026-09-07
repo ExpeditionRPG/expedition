@@ -1,4 +1,3 @@
-import * as Bluebird from 'bluebird';
 import * as express from 'express';
 import * as Sequelize from 'sequelize';
 import { Quest } from 'shared/schema/Quests';
@@ -350,7 +349,7 @@ export function recalculateRatings(
   return db.quests
     .findAll()
     .then((qs: QuestInstance[]) => {
-      const updates: Array<Bluebird<any>> = [];
+      const updates: Array<Promise<any>> = [];
       for (const q of qs) {
         updates.push(updateQuestRatings(db, q.get('partition'), q.get('id')));
       }

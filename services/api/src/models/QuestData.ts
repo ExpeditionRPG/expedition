@@ -1,9 +1,8 @@
-import * as Bluebird from 'bluebird';
 import {QuestData} from 'shared/schema/QuestData';
 import {Database, QuestDataInstance} from './Database';
 import {prepare} from './Schema';
 
-export function saveQuestData(db: Database, data: QuestData, now: number = Date.now()): Bluebird<any> {
+export function saveQuestData(db: Database, data: QuestData, now: number = Date.now()): Promise<any> {
   // Double buffered save (2 rows, saves write the oldest row if both older than 24h, otherwise most recent row)
   return db.questData.findOne({
     where: {id: data.id, userid: data.userid, tombstone: null},
@@ -37,7 +36,7 @@ export function saveQuestData(db: Database, data: QuestData, now: number = Date.
 
 }
 
-export function claimNewestQuestData(db: Database, id: string, userid: string, edittime: Date): Bluebird<QuestData|null> {
+export function claimNewestQuestData(db: Database, id: string, userid: string, edittime: Date): Promise<QuestData|null> {
   let result: QuestData|null = null;
   return db.questData.findOne({
     where: {id, userid, tombstone: null},

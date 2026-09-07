@@ -126,7 +126,15 @@ export function installRoutes(db: Database, router: express.Router) {
     },
   );
   router.post('/quest/feedback/:type', limitCors, betaACAO, (req, res) => {
-    Handlers.feedback(db, Mail, req, res);
+    // feedback() answers the request itself and logs the failure, then rejects
+    // so its unit tests can assert that it failed. Sequelize 5 handed back
+    // bluebird promises, where an unhandled rejection is only a printed
+    // warning; sequelize 6 returns native ones, and Node >= 15 terminates the
+    // process on an unhandled rejection. Without this catch, an unparseable
+    // body, an unknown feedback type, or feedback filed against a quest that
+    // no longer exists takes the whole API server down. Nothing is swallowed
+    // here that the handler has not already reported.
+    Handlers.feedback(db, Mail, req, res).catch(() => undefined);
   });
   router.post('/user/subscribe', limitCors, betaACAO, (req, res) => {
     Handlers.subscribe(

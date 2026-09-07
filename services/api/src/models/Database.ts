@@ -21,6 +21,14 @@ import { toSequelize } from './Schema';
 // is precise, so the columns have to be visible on `this`.
 type Columns<T> = Omit<T, keyof SchemaBase | 'withoutDefaults'>;
 
+// The schema classes type every column as its bare value, because a schema
+// object always carries a value (a placeholder date, a zero rating). The
+// database columns behind them are nullable, though, and the code both queries
+// for NULL and writes NULL to clear them. Sequelize 6 derives the accepted
+// `where` and `update` value types from the model's attribute type, so a
+// column that can be NULL has to say so here or every such query needs a cast.
+type Nullable<T, K extends keyof T> = Omit<T, K> & { [P in K]: T[P] | null };
+
 // Every `*Model` type below is written `typeof Sequelize.Model & {new(): I}`
 // and the order matters. Sequelize's statics are declared with a polymorphic
 // `this: {new(): M} & typeof Model`, and with the object literal written first
@@ -57,8 +65,14 @@ export type UserBadgeModel = typeof Sequelize.Model & {
   new (): UserBadgeInstance;
 };
 
+// `published` is cleared to NULL for an unpublished quest, `tombstone` for a
+// live one, and `ratingavg`/`ratingcount` when a quest has no ratings left.
+export type QuestAttributes = Nullable<
+  Quest,
+  'published' | 'tombstone' | 'ratingavg' | 'ratingcount'
+>;
 export interface QuestInstance
-  extends Sequelize.Model<Partial<Quest>>,
+  extends Sequelize.Model<Partial<QuestAttributes>>,
     Columns<Quest> {
   dataValues: Quest;
 }
@@ -67,7 +81,7 @@ export type QuestModel = typeof Sequelize.Model & {
 };
 
 export interface QuestDataInstance
-  extends Sequelize.Model<Partial<QuestData>>,
+  extends Sequelize.Model<Partial<Nullable<QuestData, 'tombstone'>>>,
     Columns<QuestData> {
   dataValues: QuestData;
 }
@@ -76,7 +90,7 @@ export type QuestDataModel = typeof Sequelize.Model & {
 };
 
 export interface FeedbackInstance
-  extends Sequelize.Model<Partial<Feedback>>,
+  extends Sequelize.Model<Partial<Nullable<Feedback, 'tombstone'>>>,
     Columns<Feedback> {
   dataValues: Feedback;
 }
@@ -119,6 +133,24 @@ export type SessionModel = typeof Sequelize.Model & {
 };
 
 export const AUTH_SESSION_TABLE = 'AuthSession';
+
+// pg 7 connected with `rejectUnauthorized: false` by default; pg 8 flipped that
+// default to true and stopped coercing anything but the exact string 'true'.
+// Heroku Postgres terminates TLS with a self-signed certificate, so the bare
+// `ssl: true` this used to pass now aborts every connection with "self signed
+// certificate in certificate chain", and the string 'false' that nconf hands
+// back for `SEQUELIZE_SSL=false` is truthy and would switch TLS on rather than
+// off. Requiring TLS without verifying the chain is exactly what pg 7 did here,
+// so this preserves the deployed behaviour instead of quietly dropping
+// encryption.
+export function postgresSSLOptions(
+  configured: unknown,
+): boolean | { require: boolean; rejectUnauthorized: boolean } {
+  if (configured === false || configured === 'false') {
+    return false;
+  }
+  return { require: true, rejectUnauthorized: false };
+}
 
 export class Database {
   public sequelize: Sequelize.Sequelize;

@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import Sequelize from 'sequelize';
 import { Feedback } from 'shared/schema/Feedback';
 import { Quest } from 'shared/schema/Quests';
@@ -133,7 +132,7 @@ export function submitFeedback(
       if (feedback.partition && feedback.questid) {
         return getQuest(db, feedback.partition, feedback.questid);
       }
-      return null as any;
+      return null;
     })
     .then((q: Quest | null) => {
       return mailFeedbackToAdmin(
@@ -258,10 +257,13 @@ export function suppressFeedback(
   suppress: boolean,
 ): Promise<any> {
   return db.feedback
-    .update({ tombstone: suppress ? new Date() : PLACEHOLDER_DATE } as any, {
-      where: { partition, questid, userid },
-      limit: 1,
-    })
+    .update(
+      { tombstone: suppress ? new Date() : PLACEHOLDER_DATE },
+      {
+        where: { partition, questid, userid },
+        limit: 1,
+      },
+    )
     .then(() => {
       return updateQuestRatings(db, partition, questid);
     });

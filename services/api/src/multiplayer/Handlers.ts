@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import * as express from 'express';
 import * as http from 'http';
 import {
@@ -68,7 +67,10 @@ export function user(
           };
 
           if (meta.peerCount === undefined || meta.peerCount <= 0) {
-            return null;
+            // Resolved rather than bare: every other branch of this map is a
+            // promise, and Promise.all over a mixed array is what
+            // @typescript-eslint/await-thenable objects to.
+            return Promise.resolve(null);
           }
 
           // Get last action on this session

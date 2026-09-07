@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import { Database, SessionClientInstance } from '../Database';
 
 export function verifySessionClient(
@@ -6,7 +5,7 @@ export function verifySessionClient(
   session: number,
   client: string,
   secret: string,
-): Bluebird<boolean> {
+): Promise<boolean> {
   return db.sessionClients
     .findOne({ where: { session, client, secret } })
     .then((result: SessionClientInstance | null) => {
@@ -20,7 +19,7 @@ export function verifySessionClient(
 export function getClientSessions(
   db: Database,
   client: string,
-): Bluebird<SessionClientInstance[]> {
+): Promise<SessionClientInstance[]> {
   return db.sessionClients.findAll({
     limit: 5,
     order: [['updated_at', 'DESC']],

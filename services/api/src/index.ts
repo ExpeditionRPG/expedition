@@ -10,7 +10,11 @@ const SessionStore = require('connect-session-sequelize')(session.Store);
 
 import Config from './config';
 import logging from './lib/logging';
-import { AUTH_SESSION_TABLE, Database } from './models/Database';
+import {
+  AUTH_SESSION_TABLE,
+  Database,
+  postgresSSLOptions,
+} from './models/Database';
 import { setupWebsockets } from './multiplayer/Websockets';
 import { installRoutes } from './Routes';
 
@@ -22,7 +26,7 @@ function setupDB() {
     new Sequelize(Config.get('DATABASE_URL'), {
       dialectModule: require('pg'),
       dialectOptions: {
-        ssl: Config.get('SEQUELIZE_SSL'),
+        ssl: postgresSSLOptions(Config.get('SEQUELIZE_SSL')),
       },
       logging: Config.get('SEQUELIZE_LOGGING') === 'true' ? console.log : false,
     }),

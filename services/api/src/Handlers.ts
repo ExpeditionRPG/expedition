@@ -148,7 +148,7 @@ function doSearch(
   db: Database,
   userId: string,
   params: QuestSearchParams,
-): Bluebird<QuestSearchResponse> {
+): Promise<QuestSearchResponse> {
   return searchQuests(db, userId, params)
     .then((quests: QuestInstance[]) => {
       // Map quest published URL to the API server so we can proxy quest data.
@@ -461,14 +461,14 @@ export function feedback(
   mail: MailService,
   req: express.Request,
   res: express.Response,
-): Bluebird<any> {
+): Promise<any> {
   let body: any;
   try {
     body = JSON.parse(req.body);
   } catch (e) {
     console.error(e);
     res.status(400).end('Error reading request.');
-    return Bluebird.reject('Error reading request');
+    return Promise.reject('Error reading request');
   }
 
   // Partition & quest ID may not be populated if
@@ -494,11 +494,11 @@ export function feedback(
   if (data instanceof Error) {
     console.error(data);
     res.status(400).end('Invalid request.');
-    return Bluebird.reject('Invalid request');
+    return Promise.reject('Invalid request');
   }
   const platformDump: string = body.platformDump;
   const consoleDump: string[] = body.console || [];
-  let action: Bluebird<any> = maybeGetUserByEmail(db, data.email);
+  let action: Promise<any> = maybeGetUserByEmail(db, data.email);
   // Narrowed by the cases below, so each branch passes a literal that is
   // already a FeedbackType; anything else falls through to `default`.
   const feedbackType = req.params.type;
@@ -540,7 +540,7 @@ export function feedback(
     default:
       console.error('Unknown feedback type ' + feedbackType);
       res.status(500).end('Unknown feedback type: ' + feedbackType);
-      return Bluebird.reject('Unknown feedback type');
+      return Promise.reject('Unknown feedback type');
   }
   return action
     .then(() => {
