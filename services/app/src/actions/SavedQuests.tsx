@@ -123,7 +123,10 @@ export function saveQuestForOffline(details: Quest) {
         },
       )
       .catch((e: Error) => {
-        if (e.toString().indexOf('exceeded the quota')) {
+        // `indexOf(...)` alone is truthy for -1, so this branch previously
+        // matched *every* error and reported an out-of-storage message for
+        // parse failures, dispatch errors and everything else.
+        if (e.toString().indexOf('exceeded the quota') !== -1) {
           // Out-of-space errors are not considered errors (they should not be reportable)
           return dispatch(
             openSnackbar("Couldn't save; out of storage space.", true),

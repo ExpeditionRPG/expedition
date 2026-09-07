@@ -40,7 +40,14 @@ export function getLargestEventID(
     if (e === null) {
       return 0;
     }
-    return e.get('id');
+    // `id` is a BIGINT column and node-postgres hands int8 back as a *string*,
+    // so the declared `number` type is a lie at runtime in production (the
+    // sqlite-backed tests do return a number, which is why nothing catches it
+    // here). Callers do arithmetic on this -- Chaos.ts does `latestID + 1` --
+    // so the coercion the original `parseInt(e.get('id'), 10)` performed has
+    // to stay. `Number()` accepts both shapes; `parseInt` no longer typechecks
+    // now that `get('id')` is typed.
+    return Number(e.get('id'));
   });
 }
 
