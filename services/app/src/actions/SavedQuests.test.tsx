@@ -451,5 +451,45 @@ describe('SavedQuest actions', () => {
         expect(last.actionLabel).toEqual('Report');
       });
     });
+
+    test('reports a network failure exactly once and stores nothing', () => {
+      // Regression guard: the rejection used to be handled by a .catch()
+      // *before* the parsing .then(), which resolved the chain and let the
+      // parse run on the dispatched action. That produced a second, wrong
+      // snackbar ("out of storage space") and a SAVED_QUEST_STORED attempt.
+      jest.resetModules();
+      const setStorageKeyValue = jest.fn();
+      jest.doMock('shared/requests', () => ({
+        ...jest.requireActual('shared/requests'),
+        fetchLocal: () => Promise.reject(new Error('offline')),
+      }));
+      jest.doMock('../LocalStorage', () => ({
+        ...jest.requireActual('../LocalStorage'),
+        setStorageKeyValue,
+      }));
+      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const store = newMockStore({});
+      return store
+        .dispatch(
+          actions.saveQuestForOffline(({
+            publishedurl: 'https://example.com/quest.xml',
+          } as Partial<Quest>) as Quest),
+        )
+        .then(() => {
+          const snackbars = store
+            .getActions()
+            .filter((a: any) => a.type === 'SNACKBAR_OPEN');
+          expect(snackbars.length).toEqual(1);
+          expect(snackbars[0].message.toString()).toContain(
+            'Network error saving quest',
+          );
+          expect(
+            store
+              .getActions()
+              .filter((a: any) => a.type === 'SAVED_QUEST_STORED'),
+          ).toEqual([]);
+          expect(setStorageKeyValue).not.toHaveBeenCalled();
+        });
+    });
   });
 });
