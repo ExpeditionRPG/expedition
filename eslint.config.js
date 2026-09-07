@@ -73,8 +73,9 @@ module.exports = tseslint.config(
       // also why webpack's uglify step sets `keep_fnames: true` -- so neither
       // name can be changed, and `ignoreOnInitialization` does not cover a
       // function expression's own name binding (verified against eslint
-      // 10.10.0). Turning the rule on reports 29 false positives and nothing
-      // else: the three genuine shadows it found are fixed in this branch
+      // 10.10.0). Turning the rule on reports 30 false positives and nothing
+      // else (re-measured: every one is the remoteify pattern): the three
+      // genuine shadows it found are fixed in this branch
       // (api/src/Handlers.ts, api/src/models/multiplayer/Sessions.ts,
       // app/src/actions/Multiplayer.tsx).
       'no-shadow': 'off',
@@ -110,8 +111,20 @@ module.exports = tseslint.config(
       // Same story: `noUnusedLocals` in tsconfig.json is the enforcing check
       // for unused values, and it runs over the same files.
       '@typescript-eslint/no-unused-vars': 'off',
-      // Non-null assertions are used deliberately in this codebase for fields
-      // populated by a constructor-called initializer; see shared/schema.
+      // On, deliberately. The rule reports *expression* non-null assertions
+      // (`foo!.bar`); it does not report definite-assignment declarations
+      // (`foo!: T`), so the 127 schema/initializer fields this branch added are
+      // not what it flags and are not a reason to disable it. Shipped code
+      // currently has zero expression-level assertions, so this is free today
+      // and blocks the genuinely dangerous kind from creeping in.
+      '@typescript-eslint/no-non-null-assertion': 'error',
+    },
+  },
+  {
+    // Tests may assert non-null on a value they have just asserted about
+    // (`expect(m).not.toBeNull(); m![1]`), which the rule cannot see through.
+    files: ['**/*.test.{ts,tsx}'],
+    rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },

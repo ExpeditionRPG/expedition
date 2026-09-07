@@ -55,7 +55,13 @@ const options = {
         options: {
           // Point at the monorepo tsconfig explicitly; ts-loader's own search
           // starts from the service directory and would find nothing.
-          configFile: Path.resolve(__dirname, '../tsconfig.json'),
+          //
+          // tsconfig.browser.json is tsconfig.json with `target: es5` +
+          // `downlevelIteration`. Babel used to do this down-levelling for us
+          // via awesome-typescript-loader's `useBabel`; see that file for why
+          // the browser bundles cannot ship es6. services/api has its own
+          // webpack config and stays on the root tsconfig (it runs on node).
+          configFile: Path.resolve(__dirname, '../tsconfig.browser.json'),
           // `tsc --noEmit` (yarn typecheck / the CI Typecheck step) is the
           // authoritative type check for the repo. Re-running it inside every
           // one of the five bundles would quadruple build time for the same

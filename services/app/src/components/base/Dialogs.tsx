@@ -370,7 +370,11 @@ export class TextAreaDialog<T extends BaseDialogProps> extends React.Component<
   protected title!: string;
   protected content!: JSX.Element;
   protected helperText!: string;
-  protected action!: string;
+  // Not definitely assigned: only ExitQuestDialog sets it. FeedbackDialog,
+  // ReportErrorDialog, ReportQuestDialog and the test template all leave it
+  // undefined, which is exactly why render() reads `this.action || 'Submit'`.
+  // Matches ConfirmationDialog.action above.
+  protected action?: string;
 
   public state: { text: string };
 

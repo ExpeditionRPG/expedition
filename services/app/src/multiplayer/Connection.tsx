@@ -2,7 +2,6 @@ import { ClientBase } from 'shared/multiplayer/Client';
 import {
   MultiplayerEvent,
   MultiplayerEventBody,
-  StatusEvent,
 } from 'shared/multiplayer/Events';
 import { MULTIPLAYER_SETTINGS } from '../Constants';
 import { getOnlineState } from '../Globals';
@@ -27,9 +26,6 @@ export interface ConnectionHandler {
 // This is the base layer of the multiplayer network framework
 export class Connection extends ClientBase {
   private handler!: ConnectionHandler;
-
-  // TODO(scott): Lock this down after migrating action/combat code
-  public sendStatus!: (partialStatus?: StatusEvent) => void;
 
   private session!: WebSocket;
   private reconnectAttempts!: number;

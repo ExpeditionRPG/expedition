@@ -9,8 +9,11 @@ export class QDLParser {
   private renderer: BlockRenderer;
   private result: any;
   private log: Logger | null = null;
+  // Only assigned once render() has been handed a non-empty BlockList; the
+  // early-return above `this.blockList = blockList` means getResult()/getMeta()
+  // can be reached with it still unset, which is why both already guard on it.
   private blockList!: BlockList;
-  private reverseLookup!: { [n: number]: number };
+  private reverseLookup: { [n: number]: number } = {};
 
   constructor(renderer: Renderer) {
     this.renderer = new BlockRenderer(renderer);
