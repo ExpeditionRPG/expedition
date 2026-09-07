@@ -30,14 +30,16 @@ const swcTransform = [
   },
 ];
 
-// Mirrors the `paths` block in tsconfig.json. Previously done with a babel
-// module-resolver plugin wired through ts-jest; moduleNameMapper is the
-// supported way to do it and keeps the aliases in one obvious place.
-const moduleNameMapper = {
-  '^api/(.*)$': '<rootDir>/services/api/src/$1',
-  '^app/(.*)$': '<rootDir>/services/app/src/$1',
-  '^shared/(.*)$': '<rootDir>/shared/$1',
-};
+// Derived from shared/webpack.aliases.js rather than restated, so the test
+// runner and the five webpack builds cannot drift apart. tsconfig.json's
+// `paths` is the third copy -- it has to stay hand-written because tsc reads
+// it directly -- and shared/webpack.aliases.test.ts asserts it still agrees
+// with this one.
+const aliases = require('./shared/webpack.aliases');
+const moduleNameMapper = Object.keys(aliases).reduce((acc, name) => {
+  acc['^' + name + '/(.*)$'] = aliases[name].replace(/\\/g, '/') + '/$1';
+  return acc;
+}, {});
 
 const common = {
   rootDir: __dirname,
