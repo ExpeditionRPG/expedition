@@ -39,12 +39,17 @@
     },
     "skipLibCheck": true,
     // TypeScript 6 stopped pulling every package in node_modules/@types into
-    // the global scope. These four are the ones this repo relies on for
-    // *ambient* declarations: `process`/`Buffer`, the `jest`/`expect` globals
-    // used by the shared Testing helpers, `$` in the quests/admin entrypoints,
-    // and the `stripe`/`Stripe` globals from Stripe's script tag. Everything
-    // else is reached through a normal import and needs no entry here.
-    "types": ["node", "jest", "jquery", "stripe-v3"]
+    // the global scope. These are the ones this repo relies on for *ambient*
+    // declarations: `process`/`Buffer`, the `jest`/`expect` globals used by the
+    // shared Testing helpers, `$` in the quests/admin entrypoints, the
+    // `stripe`/`Stripe` globals from Stripe's script tag, and the global
+    // `CheerioAPI` interface that a dozen `require('cheerio') as CheerioAPI`
+    // sites annotate with. @types/cheerio is a global script file, so it only
+    // reached the program because services/app/src/Testing.tsx imports enzyme
+    // and @types/enzyme imports cheerio -- listing it makes that explicit
+    // rather than a side effect of an unrelated import. Everything else is
+    // reached through a normal import and needs no entry here.
+    "types": ["node", "jest", "jquery", "stripe-v3", "cheerio"]
   },
   "include": ["services/**/*", "shared/**/*"],
   "exclude": [
