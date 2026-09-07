@@ -38,11 +38,21 @@ describe('Context', () => {
       expect(evaluateOp('"abc" == "123"', defaultContext())).toEqual(false);
     });
     test('throws error on invalid parse', () => {
-      evaluateOp("foo=='a'", defaultContext());
+      evaluateOp('foo ==', defaultContext());
       expect(window.onerror).toHaveBeenCalledWith(
-        "Value expected. Note: strings must be enclosed by double quotes (char 6) Op: (foo=='a')",
+        'Unexpected end of expression (char 7) Op: (foo ==)',
         'shared/parse/context',
       );
+    });
+    test("parses single-quoted strings (mathjs 11.5+ accepts 'a')", () => {
+      // Up to mathjs 5 this was a parse error -- "strings must be enclosed by
+      // double quotes" -- and that message was what the case above asserted.
+      // mathjs 11.5.0 added single-quoted strings, so this is now a valid op.
+      // It is a widening of quest syntax, not a change to any expression that
+      // already worked.
+      const ctx = defaultContext();
+      expect(evaluateOp("foo='a'; foo", ctx)).toEqual('a');
+      expect(window.onerror).not.toHaveBeenCalled();
     });
     test('throws error on invalid eval', () => {
       evaluateOp('asdf', defaultContext());

@@ -13,9 +13,9 @@ import {
   EditorState,
   QuestType,
 } from '../reducers/StateTypes';
+import { MathJS } from 'shared/MathJS';
 import QuestAppBar, { DispatchProps, StateProps } from './QuestAppBar';
 
-const math = require('mathjs');
 const ReactGA = require('react-ga');
 
 const mapStateToProps = (state: AppState): StateProps => {
@@ -87,7 +87,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       const ctx = defaultContext();
       Object.assign(ctx.scope, baseScope);
       try {
-        math.eval(editor.opInit, ctx.scope);
+        MathJS.evaluate(editor.opInit, ctx.scope);
       } catch (e) {
         // TODO: Display eval errors
       }

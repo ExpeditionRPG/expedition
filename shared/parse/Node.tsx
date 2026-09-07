@@ -6,9 +6,10 @@ import {
 } from './Context';
 
 import { Cheerio } from '../Cheerio';
+import { MathJS } from '../MathJS';
+
 const seedrandom = require('seedrandom');
 const Clone = require('clone');
-const Math = require('mathjs');
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
 
@@ -152,7 +153,7 @@ export class Node<C extends Context> {
   private renderChildren() {
     // Apply the random seed before rendering so we have deterministic
     // output when rendering the node's children.
-    Math.config({ randomSeed: this.ctx.seed });
+    MathJS.config({ randomSeed: this.ctx.seed });
     this.renderedChildren = [];
     for (let i = 0; i < this.elem.children().length; i++) {
       // TODO(scott): Parsing of text nodes using .contents().

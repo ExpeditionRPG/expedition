@@ -3,8 +3,7 @@ import LeftIcon from '@material-ui/icons/ChevronLeft';
 import * as React from 'react';
 import {OverrideTextArea} from './base/OverrideTextArea';
 import {ScrollBottom} from './base/ScrollBottom';
-
-const math = require('mathjs');
+import {MathJS} from 'shared/MathJS';
 
 export interface StateProps {
   scopeHistory: any[];
@@ -29,10 +28,10 @@ function codifyScope(scope: any): string {
     // on "hard restarts" where the function isn't previously defined.
     // We skip function assignment for now.
     if (typeof(v) === 'function') {
-      result += '# ' + math.format(v) + ' (omitted)';
+      result += '# ' + MathJS.format(v) + ' (omitted)';
       continue;
     } else {
-      v = math.format(v);
+      v = MathJS.format(v);
       result += k + ' = ' + v + '\n';
     }
   }
@@ -44,7 +43,7 @@ function formatScope(scope: any): any[] {
   const KVs: any[] = [];
   for (let i = 0; i < keys.length; i++) {
     const k = keys[i];
-    const v = math.format(scope[k]);
+    const v = MathJS.format(scope[k]);
     if (k === '_') { continue; }
     KVs.push(
       <div key={i}>

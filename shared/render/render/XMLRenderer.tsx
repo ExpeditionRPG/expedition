@@ -8,7 +8,7 @@ import {
 import { Logger } from '../Logger';
 import { Renderer, sanitizeStyles } from './Renderer';
 
-const Math = require('mathjs');
+import { MathJS } from '../../MathJS';
 import * as cheerio from '../../Cheerio';
 
 // from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
@@ -70,7 +70,7 @@ export const XMLRenderer: Renderer = {
         if (visible) {
           // Parse AST for expression and check if outermost node/operation is of type "OperatorNode" (e.g. == >= != etc.)
           // Used to try to be smarter about whether a MathJS evaluation should be output or an if attribute
-          const visibleTree = Math.parse(visible);
+          const visibleTree = MathJS.parse(visible);
           if (visibleTree.type === 'OperatorNode') {
             text = text.replace('{{' + visible + '}}', '');
             paragraph = `<p if="${escapeXml(visible)}">${sanitizeStyles(
