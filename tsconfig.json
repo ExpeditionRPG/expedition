@@ -1,45 +1,65 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "noImplicitAny": true,
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "es6",
-        "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "strictNullChecks": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noUnusedLocals": true,
-        "baseUrl": "./",
-        "paths": {
-            "api/*": ["services/api/src/*"],
-            "app/*": ["services/app/src/*"],
-            "shared/*": ["shared/*"]
-        },
-        "skipLibCheck": true
+  "compilerOptions": {
+    "outDir": "./dist/",
+    // ts-loader compiles files one at a time, so TS 6 infers a different
+    // "common source directory" per file and errors with TS5011 unless the
+    // root is pinned. The repo root is the right answer for every service.
+    "rootDir": "./",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    // TypeScript 6 changed the default of this to `true`. It has to stay off
+    // here: with it on, `import * as express from 'express'` stops being
+    // callable (express, express-session, memoizee, request-promise,
+    // classnames and raven-for-redux are all `export =` functions consumed
+    // that way), and the emit would start inserting interop helpers that
+    // neither jest's swc transform -- configured with `noInterop: true` to
+    // match -- nor the existing bundles expect. Turning it on is a codebase-
+    // wide change, not part of this upgrade.
+    "esModuleInterop": false,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    // `moduleResolution: node10` is deprecated in 6.0 but is still the correct
+    // algorithm here: the emit target is CommonJS and `module: node16`/
+    // `bundler` would force `esModuleInterop` on, which this codebase does not
+    // want (`import * as express from 'express'` must stay callable). This
+    // acknowledges the deprecation; it does not suppress any type error.
+    "ignoreDeprecations": "6.0",
+    // No `baseUrl`: as of TS 6 `paths` entries resolve relative to this file.
+    "paths": {
+      "api/*": ["./services/api/src/*"],
+      "app/*": ["./services/app/src/*"],
+      "shared/*": ["./shared/*"]
     },
-    "include": [
-        "services/**/*",
-        "shared/**/*",
-    ],
-    "exclude": [
-        "dist",
-        "node_modules",
-        "app/src/quests",
-        "app/plugins",
-        "app/platforms",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "www"
-    ],
-    "awesomeTypescriptLoaderOptions": {
-        "useBabel": true,
-        "useCache": true,
-        "babelOptions": {
-            "babelrc": true
-        }
-    },
-    "files": ["not-a-file-but-included-to-appease-jest"]
+    "skipLibCheck": true,
+    // TypeScript 6 stopped pulling every package in node_modules/@types into
+    // the global scope. These are the ones this repo relies on for *ambient*
+    // declarations: `process`/`Buffer`, the `jest`/`expect` globals used by the
+    // shared Testing helpers, `$` in the quests/admin entrypoints, the
+    // `stripe`/`Stripe` globals from Stripe's script tag, and the global
+    // `CheerioAPI` interface that a dozen `require('cheerio') as CheerioAPI`
+    // sites annotate with. @types/cheerio is a global script file, so it only
+    // reached the program because services/app/src/Testing.tsx imports enzyme
+    // and @types/enzyme imports cheerio -- listing it makes that explicit
+    // rather than a side effect of an unrelated import. Everything else is
+    // reached through a normal import and needs no entry here.
+    "types": ["node", "jest", "jquery", "stripe-v3", "cheerio"]
+  },
+  "include": ["services/**/*", "shared/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "app/src/quests",
+    "app/plugins",
+    "app/platforms",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "www"
+  ]
 }

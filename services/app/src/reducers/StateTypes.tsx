@@ -1,11 +1,18 @@
-import {UserState as UserStateBase} from 'shared/auth/UserState';
-import {StatusEvent} from 'shared/multiplayer/Events';
-import {SessionID} from 'shared/multiplayer/Session';
-import {Badge, ContentRating, Expansion, Genre, Language, Partition} from 'shared/schema/Constants';
-import {Quest} from 'shared/schema/Quests';
-import {AudioNode} from '../audio/AudioNode';
-import {ThemeManager} from '../audio/ThemeManager';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import { UserState as UserStateBase } from 'shared/auth/UserState';
+import { StatusEvent } from 'shared/multiplayer/Events';
+import { SessionID } from 'shared/multiplayer/Session';
+import {
+  Badge,
+  ContentRating,
+  Expansion,
+  Genre,
+  Language,
+  Partition,
+} from 'shared/schema/Constants';
+import { Quest } from 'shared/schema/Quests';
+import { AudioNode } from '../audio/AudioNode';
+import { ThemeManager } from '../audio/ThemeManager';
+import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
 
 export interface AnnouncementState {
   open: boolean;
@@ -25,13 +32,13 @@ export interface AudioState {
   paused: boolean;
   intensity: number;
   peakIntensity: number;
-  sfx: string|null;
+  sfx: string | null;
   timestamp: number;
 }
 
 export interface AudioDataState {
-  audioNodes: {[file: string]: AudioNode}|null;
-  themeManager: ThemeManager|null;
+  audioNodes: { [file: string]: AudioNode } | null;
+  themeManager: ThemeManager | null;
 }
 
 /// <reference path="../node_modules/@types/stripe-v3/index.d.ts" />
@@ -40,10 +47,11 @@ export interface CheckoutState {
   processing: boolean;
   productcategory: string;
   productid: string;
-  stripe: stripe.Stripe|null;
+  stripe: stripe.Stripe | null;
 }
 
-export type DialogIDType = null
+export type DialogIDType =
+  | null
   | 'EXIT_QUEST'
   | 'EXPANSION_SELECT'
   | 'EXIT_REMOTE_PLAY'
@@ -88,7 +96,7 @@ export interface SearchParams {
 export type DifficultyType = 'EASY' | 'NORMAL' | 'HARD' | 'IMPOSSIBLE';
 export type FontSizeType = 'SMALL' | 'NORMAL' | 'LARGE';
 
-export type ContentSetsType = Partial<{[index in Expansion]: boolean}>;
+export type ContentSetsType = Partial<{ [index in Expansion]: boolean }>;
 
 export interface SettingsType {
   [index: string]: any;
@@ -122,25 +130,25 @@ export interface SavedQuestMeta {
 }
 
 export type CardName =
-  'QUEST_PREVIEW' |
-  'QUEST_HISTORY' |
-  'SAVED_QUESTS' |
-  'CHECKOUT_ENTRY' |
-  'CHECKOUT_DONE' |
-  'PLAYER_COUNT_SETTING' |
-  'QUEST_SETUP' |
-  'QUEST_END' |
-  'QUEST_CARD' |
-  'TUTORIAL_QUESTS' |
-  'GM_CARD' |
-  'SPLASH_CARD' |
-  'SEARCH_DISCLAIMER' |
-  'SEARCH_CARD' |
-  'SEARCH_SETTINGS' |
-  'SETTINGS' |
-  'REMOTE_PLAY_CONNECT' |
-  'REMOTE_PLAY_LOBBY' |
-  'ACCOUNT';
+  | 'QUEST_PREVIEW'
+  | 'QUEST_HISTORY'
+  | 'SAVED_QUESTS'
+  | 'CHECKOUT_ENTRY'
+  | 'CHECKOUT_DONE'
+  | 'PLAYER_COUNT_SETTING'
+  | 'QUEST_SETUP'
+  | 'QUEST_END'
+  | 'QUEST_CARD'
+  | 'TUTORIAL_QUESTS'
+  | 'GM_CARD'
+  | 'SPLASH_CARD'
+  | 'SEARCH_DISCLAIMER'
+  | 'SEARCH_CARD'
+  | 'SEARCH_SETTINGS'
+  | 'SETTINGS'
+  | 'REMOTE_PLAY_CONNECT'
+  | 'REMOTE_PLAY_LOBBY'
+  | 'ACCOUNT';
 
 export interface CardState {
   questId: string;
@@ -157,19 +165,19 @@ export interface QuestState {
   node: ParserNode;
   // Additional details populated depending on from where
   // the user approaches the quest
-  lastPlayed: Date|null;
-  savedTS: number|null;
+  lastPlayed: Date | null;
+  savedTS: number | null;
 }
 
 export interface SavedQuestState {
   list: SavedQuestMeta[];
-  selectedTS: number|null;
-  freeBytes: number|null;
+  selectedTS: number | null;
+  freeBytes: number | null;
 }
 
 export interface SearchState {
   params: SearchParams;
-  results: Quest[]|null;
+  results: Quest[] | null;
   searching: boolean;
 }
 
@@ -197,7 +205,11 @@ export interface UserQuestsState {
   history: UserQuestsType;
 }
 
-export type FeedbackType = 'feedback'|'rating'|'report_error'|'report_quest';
+export type FeedbackType =
+  | 'feedback'
+  | 'rating'
+  | 'report_error'
+  | 'report_quest';
 
 export interface MultiplayerSessionType {
   secret: string;
@@ -213,11 +225,11 @@ export interface MultiplayerSessionMeta {
 }
 
 export interface MultiplayerState {
-  clientStatus: {[client: string]: StatusEvent};
+  clientStatus: { [client: string]: StatusEvent };
   client: string;
   instance: string;
   history: MultiplayerSessionMeta[];
-  session: MultiplayerSessionType|null;
+  session: MultiplayerSessionType | null;
   syncing: boolean;
   multiEvent: boolean;
   syncID: number;
@@ -253,5 +265,5 @@ export interface AppState extends AppStateBase {
 export interface AppStateWithHistory extends AppState {
   _history: AppStateBase[];
   _return: boolean;
-  _committed?: AppStateWithHistory; // A trailing version of _history, before all in-flight actions are resolved.
+  _committed?: Partial<AppStateWithHistory>; // A trailing version of _history, before all in-flight actions are resolved.
 }

@@ -1,13 +1,13 @@
-import {ClientID, InstanceID, MultiplayerEvent} from './Events';
+import { ClientID, InstanceID, MultiplayerEvent } from './Events';
 
 declare type EventHandler = (e: MultiplayerEvent) => any;
 
 // ClientBase is a multiplayer play client that is designed to communicate with like peers.
 export abstract class ClientBase {
-  protected id: ClientID;
-  protected instance: InstanceID;
-  protected connected: boolean;
-  private handlers: EventHandler[];
+  protected id!: ClientID;
+  protected instance!: InstanceID;
+  protected connected!: boolean;
+  private handlers!: EventHandler[];
 
   constructor() {
     this.resetState();
@@ -47,28 +47,43 @@ export abstract class ClientBase {
     try {
       parsed = JSON.parse(s) as MultiplayerEvent;
     } catch (e) {
+      // `e` is the SyntaxError from JSON.parse: it has no client or instance,
+      // so both fields were previously undefined even though MultiplayerEvent
+      // requires them. Report the client that failed to read the message.
       return {
-        client: e.client,
-        event: {type: 'ERROR', error: 'Failed to parse JSON message: ' + s},
+        client: this.id,
+        event: { type: 'ERROR', error: 'Failed to parse JSON message: ' + s },
         id: null,
-        instance: e.instance,
+        instance: this.instance,
       };
     }
 
     if (!parsed.event || !parsed.client || !parsed.instance) {
       return {
         client: parsed.client,
-        event: {type: 'ERROR', error: 'Received malformed message: ' + s},
+        event: { type: 'ERROR', error: 'Received malformed message: ' + s },
         id: null,
         instance: parsed.instance,
       };
     }
 
-    if (['STATUS', 'INTERACTION', 'ACTION', 'MULTI_EVENT', 'ERROR', 'INFLIGHT_COMMIT', 'INFLIGHT_REJECT']
-      .indexOf(parsed.event.type) < 0) {
+    if (
+      [
+        'STATUS',
+        'INTERACTION',
+        'ACTION',
+        'MULTI_EVENT',
+        'ERROR',
+        'INFLIGHT_COMMIT',
+        'INFLIGHT_REJECT',
+      ].indexOf(parsed.event.type) < 0
+    ) {
       return {
         client: parsed.client,
-        event: {type: 'ERROR', error: 'Received unknown message of type "' + parsed.event.type + '"'},
+        event: {
+          type: 'ERROR',
+          error: 'Received unknown message of type "' + parsed.event.type + '"',
+        },
         id: null,
         instance: parsed.instance,
       };

@@ -1,8 +1,12 @@
-import {FeedbackEntry, QuestEntry, UserEntry} from 'api/admin/QueryTypes';
+import { FeedbackEntry, QuestEntry, UserEntry } from 'api/admin/QueryTypes';
 
 // TODO: Change dialogs. Add single-quest and single-user dialogs.
 export type ViewType = 'USERS' | 'QUESTS' | 'FEEDBACK';
-export type DialogIDType = 'FEEDBACK_DETAILS' | 'QUEST_DETAILS' | 'USER_DETAILS' | 'NONE';
+export type DialogIDType =
+  | 'FEEDBACK_DETAILS'
+  | 'QUEST_DETAILS'
+  | 'USER_DETAILS'
+  | 'NONE';
 
 export interface DialogsState {
   open: DialogIDType;
@@ -26,9 +30,13 @@ export interface UserState {
 export interface ViewState {
   feedback: FeedbackEntry[];
   filter: string;
-  lastQueryError: {view: ViewType, error: Error}|null;
+  lastQueryError: { view: ViewType; error: Error } | null;
   quests: QuestEntry[];
-  selected: {feedback: number|null, user: number|null, quest: number|null};
+  selected: {
+    feedback: number | null;
+    user: number | null;
+    quest: number | null;
+  };
   users: UserEntry[];
   view: ViewType;
 }

@@ -1,21 +1,24 @@
 import preview from 'app/reducers/CombinedReducers';
 import Redux from 'redux';
-import {annotations} from './Annotations';
-import {announcement} from './Announcement';
-import {dialogs} from './Dialogs';
-import {editor} from './Editor';
-import {quest} from './Quest';
-import {snackbar} from './Snackbar';
-import {AppState} from './StateTypes';
-import {tutorial} from './Tutorial';
-import {user} from './User';
+import { annotations } from './Annotations';
+import { announcement } from './Announcement';
+import { dialogs } from './Dialogs';
+import { editor } from './Editor';
+import { quest } from './Quest';
+import { snackbar } from './Snackbar';
+import { AppState } from './StateTypes';
+import { tutorial } from './Tutorial';
+import { user } from './User';
 
-export default function combinedReduce(state: AppState, action: Redux.Action): AppState {
+export default function combinedReduce(
+  state: AppState | undefined,
+  action: Redux.Action,
+): AppState {
   state = state || ({} as AppState);
 
   if (action.type === 'REBOOT_APP') {
     // Setting to undefined here causes defaults to be populated in the preview() reducer.
-    state.preview = (undefined as any);
+    state.preview = undefined as any;
   }
 
   return {

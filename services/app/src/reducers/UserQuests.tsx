@@ -27,12 +27,14 @@ export function userquests(
   action: Redux.Action,
 ): UserQuestsState {
   switch (action.type) {
-    case 'USER_QUESTS':
+    case 'USER_QUESTS': {
       const a = action as UserQuestsAction;
       return { ...state, history: a.quests };
-    case 'USER_QUESTS_DELTA':
+    }
+    case 'USER_QUESTS_DELTA': {
       const delta = (action as UserQuestsDeltaAction).delta;
       return merge(state, { history: delta }) as UserQuestsState;
+    }
     default:
       return state;
   }

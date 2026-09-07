@@ -12,7 +12,7 @@ describe('mail', () => {
           to: 'testto',
         }),
       );
-      expect((opts as any).bcc).not.toBeDefined();
+      expect(opts.bcc).not.toBeDefined();
       return Promise.resolve('result data');
     };
     sendVia(sendMail, ['testto'], 'test subject', 'test message', false, false)
@@ -25,7 +25,7 @@ describe('mail', () => {
 
   test('when configured, sends copy via bcc', done => {
     const sendMail = opts => {
-      expect((opts as any).bcc).toEqual('todd@fabricate.io');
+      expect(opts.bcc).toEqual('todd@fabricate.io');
       return Promise.resolve(null);
     };
     sendVia(sendMail, ['testto'], 'test subject', 'test message', true, false)
@@ -51,7 +51,7 @@ describe('mail', () => {
 
   test('prefixes subject when beta', done => {
     const sendMail = opts => {
-      expect((opts as any).subject).toContain('[BETA]');
+      expect(opts.subject).toContain('[BETA]');
       return Promise.resolve(null);
     };
     sendVia(sendMail, ['testto'], 'test subject', 'test message', false, true)
@@ -63,7 +63,7 @@ describe('mail', () => {
 
   test('does not indicate beta when non-beta', done => {
     const sendMail = opts => {
-      expect((opts as any).subject).not.toContain('[BETA]');
+      expect(opts.subject).not.toContain('[BETA]');
       return Promise.resolve(null);
     };
     sendVia(sendMail, ['testto'], 'test subject', 'test message', false, false)

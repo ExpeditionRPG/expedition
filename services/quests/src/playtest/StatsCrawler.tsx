@@ -1,6 +1,6 @@
-import {Context} from 'shared/parse/Context';
-import {CrawlEntry, CrawlerBase, CrawlEvent} from 'shared/parse/Crawler';
-import {Node} from 'shared/parse/Node';
+import { Context } from 'shared/parse/Context';
+import { CrawlEntry, CrawlerBase, CrawlEvent } from 'shared/parse/Crawler';
+import { Node } from 'shared/parse/Node';
 
 export interface CrawlerStats {
   inputs: Set<string>;
@@ -13,20 +13,40 @@ export interface CrawlerStats {
 export type StatsCrawlEntry = CrawlEntry<Context>;
 
 export class StatsCrawler extends CrawlerBase<Context> {
-  protected statsById: {[id: string]: CrawlerStats};
-  protected statsByLine: {[line: number]: CrawlerStats};
-  protected statsByEvent: {[event: string]: Array<{line: number, id: string, fromAction: string|number}>};
-  protected root: Node<Context>;
+  protected statsById: { [id: string]: CrawlerStats };
+  protected statsByLine: { [line: number]: CrawlerStats };
+  protected statsByEvent: {
+    [event: string]: Array<{
+      line: number;
+      id: string;
+      fromAction: string | number;
+    }>;
+  };
+  // Only set once crawl() has been handed a root; crawl() is allowed to be
+  // called without one.
+  protected root?: Node<Context>;
 
   constructor() {
     super();
 
     // Initialize stats with a generic 'quest root'
     this.statsById = {
-      START: {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
+      START: {
+        inputs: new Set(),
+        outputs: new Set(),
+        minPathActions: -1,
+        maxPathActions: -1,
+        numInternalStates: -1,
+      },
     };
     this.statsByLine = {
-      '-1': {inputs: new Set(), outputs: new Set(), minPathActions: -1, maxPathActions: -1, numInternalStates: -1},
+      '-1': {
+        inputs: new Set(),
+        outputs: new Set(),
+        minPathActions: -1,
+        maxPathActions: -1,
+        numInternalStates: -1,
+      },
     };
     this.statsByEvent = {
       END: [],
@@ -35,7 +55,12 @@ export class StatsCrawler extends CrawlerBase<Context> {
     };
   }
 
-  public crawl(root?: Node<Context>, timeLimitMillis = 500, depthLimit = 150, visitLimit = 10): boolean {
+  public crawl(
+    root?: Node<Context>,
+    timeLimitMillis = 500,
+    depthLimit = 150,
+    visitLimit = 10,
+  ): boolean {
     if (!this.root && root) {
       this.root = root;
     }
@@ -68,20 +93,31 @@ export class StatsCrawler extends CrawlerBase<Context> {
   }
 
   public getLines(): number[] {
-    return Object.keys(this.statsByLine).filter((k: string) => (k !== '-1')).map((s: string) => parseInt(s, 10));
+    return Object.keys(this.statsByLine)
+      .filter((k: string) => k !== '-1')
+      .map((s: string) => parseInt(s, 10));
   }
 
   public getIds(): string[] {
-    return Object.keys(this.statsById).filter((k: string) => (k !== 'START'));
+    return Object.keys(this.statsById).filter((k: string) => k !== 'START');
   }
 
   private lineWithinCombatRound(line: number): boolean {
+    if (!this.root) {
+      // crawl() can run without ever being given a root, in which case there
+      // is no document to search and nothing can be inside a combat round.
+      return false;
+    }
     const n = this.root.elem.closest('quest').find(`[data-line=${line}]`);
     return n.closest('event[on="round"]').length > 0;
   }
 
   protected onEvent(q: StatsCrawlEntry, e: CrawlEvent) {
-    if (e === 'MAX_DEPTH_EXCEEDED' || e === 'VISIT_LIMIT_EXCEEDED' || e === 'ALREADY_SEEN') {
+    if (
+      e === 'MAX_DEPTH_EXCEEDED' ||
+      e === 'VISIT_LIMIT_EXCEEDED' ||
+      e === 'ALREADY_SEEN'
+    ) {
       return;
     }
 
@@ -93,14 +129,23 @@ export class StatsCrawler extends CrawlerBase<Context> {
 
     this.statsById[q.prevId].outputs.add(e);
     this.statsByLine[q.prevLine].outputs.add(e);
-    this.statsByEvent[e].push({line: q.prevLine, id: q.prevId, fromAction: q.fromAction});
+    this.statsByEvent[e].push({
+      line: q.prevLine,
+      id: q.prevId,
+      fromAction: q.fromAction,
+    });
   }
 
   protected onErrors(q: StatsCrawlEntry, errors: Error[], line: number) {
     // Do nothing, but required as implementation of abstract class.
   }
 
-  protected onNode(q: StatsCrawlEntry, nodeStr: string, id: string, line: number): void {
+  protected onNode(
+    q: StatsCrawlEntry,
+    nodeStr: string,
+    id: string,
+    line: number,
+  ): void {
     // Create stats for this line/id if they don't already exist
     if (this.statsById[id] === undefined) {
       this.statsById[id] = {
@@ -132,10 +177,12 @@ export class StatsCrawler extends CrawlerBase<Context> {
       // - path actions
       this.statsById[id].maxPathActions = Math.max(
         this.statsById[id].maxPathActions,
-        (this.statsById[q.prevId].maxPathActions || 0) + 1);
+        (this.statsById[q.prevId].maxPathActions || 0) + 1,
+      );
       this.statsById[id].minPathActions = Math.min(
         this.statsById[id].minPathActions,
-        (this.statsById[q.prevId].minPathActions || 0) + 1);
+        (this.statsById[q.prevId].minPathActions || 0) + 1,
+      );
       this.statsById[id].inputs.add(q.prevId);
       this.statsById[q.prevId].outputs.add(id);
     } else {
@@ -146,10 +193,12 @@ export class StatsCrawler extends CrawlerBase<Context> {
     // Update line stats for this line & prev line
     this.statsByLine[line].maxPathActions = Math.max(
       this.statsByLine[line].maxPathActions,
-      (this.statsByLine[q.prevLine].maxPathActions || 0) + 1);
+      (this.statsByLine[q.prevLine].maxPathActions || 0) + 1,
+    );
     this.statsByLine[line].minPathActions = Math.min(
       this.statsByLine[line].minPathActions,
-      (this.statsByLine[q.prevLine].minPathActions || 0) + 1);
+      (this.statsByLine[q.prevLine].minPathActions || 0) + 1,
+    );
     lineStats.inputs.add(q.prevNodeStr);
     this.statsByLine[q.prevLine].outputs.add(nodeStr);
   }

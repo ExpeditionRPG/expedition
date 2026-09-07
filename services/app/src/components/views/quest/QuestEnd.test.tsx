@@ -27,7 +27,7 @@ describe('QuestEnd', () => {
       onTip: jest.fn(),
       ...overrides,
     };
-    const root = mountRoot(<QuestEnd {...((props as any) as Props)} />);
+    const root = mountRoot(<QuestEnd {...props} />);
     if (rating !== undefined) {
       root.find('StarRating').prop('onChange')(rating);
       root.update();

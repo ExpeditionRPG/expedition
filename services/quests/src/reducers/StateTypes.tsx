@@ -1,8 +1,8 @@
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {UserState} from 'shared/auth/UserState';
-import {QDLParser} from 'shared/render/QDLParser';
-import {ContentRating, Language, Theme} from 'shared/schema/Constants';
-import {ErrorType} from '../../errors/types';
+import { AppStateWithHistory } from 'app/reducers/StateTypes';
+import { UserState } from 'shared/auth/UserState';
+import { QDLParser } from 'shared/render/QDLParser';
+import { ContentRating, Language, Theme } from 'shared/schema/Constants';
+import { ErrorType } from '../../errors/types';
 // TODO: URL type?
 
 export interface AnnouncementState {
@@ -11,7 +11,11 @@ export interface AnnouncementState {
   link: string;
 }
 
-export type DialogIDType = 'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
+export type DialogIDType =
+  | 'ERROR'
+  | 'ANNOTATION_DETAIL'
+  | 'PUBLISHING'
+  | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
@@ -40,7 +44,7 @@ export interface XMLElement {
   tagName: string;
   parentNode: XMLElement;
   textContent: string;
-  attributes: Array<{name: string}>;
+  attributes: Array<{ name: string }>;
   innerHTML: string;
   setAttribute(attrib: string, value: any): void;
   nextElementSibling?: XMLElement;
@@ -87,7 +91,7 @@ export interface QuestType {
 }
 
 export interface EditorState {
-  renderer: QDLParser|null;
+  renderer: QDLParser | null;
   node: any;
   dirty: boolean;
   dirtyTimeout: any;
@@ -101,8 +105,8 @@ export interface EditorState {
   loadingQuest: boolean;
   showLineNumbers: boolean;
   wordCount: number;
-  worker: Worker|null;
-  fatalError: string|null;
+  worker: Worker | null;
+  fatalError: string | null;
 }
 
 export interface DialogsState {
@@ -114,7 +118,7 @@ export interface DialogsState {
     [key: string]: boolean;
   };
   errors: Error[];
-  annotations: Array<ErrorType|number>;
+  annotations: Array<ErrorType | number>;
 }
 
 export interface SnackbarState {

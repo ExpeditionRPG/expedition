@@ -1,26 +1,27 @@
-declare var require: any;
-declare var module: any;
+declare let require: any;
+declare let module: any;
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import * as Redux from 'redux';
 
 import theme from 'shared/Theme';
-import {downloadCards} from './actions/Cards';
-import {loadFiltersFromUrl} from './actions/Filters';
-import {getStore} from './Store';
+import { downloadCards } from './actions/Cards';
+import { loadFiltersFromUrl } from './actions/Filters';
+import { getStore } from './Store';
 
 // This is necessary to prevent compiler errors until/unless we fix the rest of
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
 /* tslint:disable */
-export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
-  dispatch: Redux.Dispatch<A>,
-  getState: () => S,
-  extraArgument: E
-) => R;
+export type ThunkAction<
+  R,
+  S = {},
+  E = {},
+  A extends Redux.Action<any> = Redux.AnyAction
+> = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
@@ -38,9 +39,9 @@ window.addEventListener('keydown', (event: any) => {
   if (event.ctrlKey || event.metaKey) {
     switch (String.fromCharCode(event.which).toLowerCase()) {
       case 'p': // ctrl + p to print
-        store.dispatch({type: 'LAYOUT_PRINTING', printing: true});
+        store.dispatch({ type: 'LAYOUT_PRINTING', printing: true });
         setTimeout(() => {
-          store.dispatch({type: 'LAYOUT_PRINTING', printing: false});
+          store.dispatch({ type: 'LAYOUT_PRINTING', printing: false });
         }, 10000);
         return false;
       default:
@@ -54,7 +55,9 @@ const setupHotReload = () => {
   if (module.hot) {
     module.hot.accept();
     module.hot.accept('./components/Main', () => {
-      setTimeout(() => {render(); });
+      setTimeout(() => {
+        render();
+      });
     });
   }
 };
@@ -73,7 +76,7 @@ const render = () => {
         <MainContainer />
       </MuiThemeProvider>
     </Provider>,
-    base
+    base,
   );
 };
 

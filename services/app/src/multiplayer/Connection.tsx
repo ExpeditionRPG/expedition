@@ -1,8 +1,11 @@
-import {ClientBase} from 'shared/multiplayer/Client';
-import {MultiplayerEvent, MultiplayerEventBody, StatusEvent} from 'shared/multiplayer/Events';
-import {MULTIPLAYER_SETTINGS} from '../Constants';
-import {getOnlineState} from '../Globals';
-import {counterAdd, resetCounters} from './Counters';
+import { ClientBase } from 'shared/multiplayer/Client';
+import {
+  MultiplayerEvent,
+  MultiplayerEventBody,
+} from 'shared/multiplayer/Events';
+import { MULTIPLAYER_SETTINGS } from '../Constants';
+import { getOnlineState } from '../Globals';
+import { counterAdd, resetCounters } from './Counters';
 
 const CONNECTION_LOOP_MS = 200;
 const CONNECTION_CHECK_MS = 5000;
@@ -22,16 +25,18 @@ export interface ConnectionHandler {
 
 // This is the base layer of the multiplayer network framework
 export class Connection extends ClientBase {
-  private handler: ConnectionHandler;
+  private handler!: ConnectionHandler;
 
-  // TODO(scott): Lock this down after migrating action/combat code
-  public sendStatus: (partialStatus?: StatusEvent) => void;
-
-  private session: WebSocket;
-  private reconnectAttempts: number;
+  private session!: WebSocket;
+  private reconnectAttempts!: number;
   private sessionID: string;
   private secret: string;
-  private messageBuffer: Array<{id: number, msg: string, retries: number, ts: number}>;
+  private messageBuffer!: Array<{
+    id: number;
+    msg: string;
+    retries: number;
+    ts: number;
+  }>;
 
   private getOnlineState: () => Promise<boolean>;
 
@@ -41,13 +46,17 @@ export class Connection extends ClientBase {
     this.getOnlineState = onlineState;
     this.sessionID = '';
     this.secret = '';
-    setInterval(() => {this.connectionLoop(); }, CONNECTION_LOOP_MS);
+    setInterval(() => {
+      this.connectionLoop();
+    }, CONNECTION_LOOP_MS);
     // TODO only enable connection check if actively multiplayering
-    setInterval(() => {this.checkOnlineState(); }, CONNECTION_CHECK_MS);
+    setInterval(() => {
+      this.checkOnlineState();
+    }, CONNECTION_CHECK_MS);
   }
 
   public checkOnlineState(): Promise<void> {
-    return this.getOnlineState().then((isOnline) => {
+    return this.getOnlineState().then(isOnline => {
       if (!this.sessionID && this.isConnected()) {
         // If we recently disconnected (i.e. sessionID is "")
         // then our connection check shouldn't indicate the
@@ -83,19 +92,26 @@ export class Connection extends ClientBase {
     resetCounters();
   }
 
-  public getMaxBufferID(): number|null {
+  public getMaxBufferID(): number | null {
     if (this.messageBuffer.length === 0) {
       return null;
     }
-    return this.messageBuffer.reduce((accum, curr) => Math.max(accum, curr.id), 0);
+    return this.messageBuffer.reduce(
+      (accum, curr) => Math.max(accum, curr.id),
+      0,
+    );
   }
 
   public bufferedAtOrbelow(id: number): boolean {
-    return (this.messageBuffer.filter((b) => {
-      return (b.id <= id);
-    }).map((b) => {
-      return b.id;
-    })).length > 0;
+    return (
+      this.messageBuffer
+        .filter(b => {
+          return b.id <= id;
+        })
+        .map(b => {
+          return b.id;
+        }).length > 0
+    );
   }
 
   private connectionLoop() {
@@ -147,7 +163,10 @@ export class Connection extends ClientBase {
       console.log('WS: reconnecting...');
       this.connect(this.sessionID, this.secret);
     }, delay);
-    this.reconnectAttempts = Math.min(this.reconnectAttempts + 1, RECONNECT_MAX_SLOT_IDX);
+    this.reconnectAttempts = Math.min(
+      this.reconnectAttempts + 1,
+      RECONNECT_MAX_SLOT_IDX,
+    );
   }
 
   public connect(sessionID: string, secret: string): void {
@@ -156,7 +175,9 @@ export class Connection extends ClientBase {
     if (this.isConnected()) {
       this.disconnect();
     }
-    this.session = new WebSocket(`${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`);
+    this.session = new WebSocket(
+      `${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`,
+    );
     this.session.onmessage = this.onMessage.bind(this);
     this.session.onerror = console.error;
     this.session.onclose = this.onClose.bind(this);
@@ -170,7 +191,7 @@ export class Connection extends ClientBase {
     if (e.event.type === 'ERROR') {
       counterAdd('errorEvents', 1);
     }
-    const buffered = (this.messageBuffer.filter((b) => b.id === e.id)).length > 0;
+    const buffered = this.messageBuffer.filter(b => b.id === e.id).length > 0;
     if (e.id !== null) {
       this.removeFromQueue(e.id);
     }
@@ -188,7 +209,7 @@ export class Connection extends ClientBase {
     counterAdd('disconnectCount', 1);
     this.handler.onConnectionChange(false);
     switch (ev.code) {
-      case 1000:  // CLOSE_NORMAL
+      case 1000: // CLOSE_NORMAL
         if (this.connected === false) {
           console.log('WS: closed normally');
         } else {
@@ -196,7 +217,8 @@ export class Connection extends ClientBase {
           this.reconnect();
         }
         break;
-      default:  // Abnormal closure
+      default:
+        // Abnormal closure
         console.error('WS: abnormal closure evt', ev.code, ev.reason);
         this.reconnect();
         break;
@@ -224,7 +246,8 @@ export class Connection extends ClientBase {
     if (!this.isConnected()) {
       return;
     }
-    const id = (event.type === 'ACTION') ? (this.getMaxBufferID() || commitID) + 1 : null;
+    const id =
+      event.type === 'ACTION' ? (this.getMaxBufferID() || commitID) + 1 : null;
     this.sendFinalizedEvent({
       id,
       client: this.id,
@@ -247,13 +270,18 @@ export class Connection extends ClientBase {
     if (event.id !== null) {
       // If the event is transactional, push it onto the messageBuffer
       // so we can retry sending it if needed.
-      this.messageBuffer.push({id: event.id, msg, retries: 0, ts: Date.now()});
+      this.messageBuffer.push({
+        id: event.id,
+        msg,
+        retries: 0,
+        ts: Date.now(),
+      });
     }
   }
 }
 
 // TODO: Proper device ID
-let client: Connection|null = null;
+let client: Connection | null = null;
 export function getMultiplayerConnection(): Connection {
   if (client !== null) {
     return client;

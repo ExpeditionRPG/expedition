@@ -1,4 +1,4 @@
-import {UserState} from './StateTypes';
+import { UserState } from './StateTypes';
 
 export const testLoggedInUser: UserState = {
   email: 'bob@fisher.com',
@@ -9,5 +9,7 @@ export const testLoggedInUser: UserState = {
 };
 
 describe('User', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

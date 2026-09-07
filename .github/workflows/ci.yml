@@ -28,12 +28,18 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      # The swc transform used by jest strips types without checking them, so
+      # this is the only step that actually runs the TypeScript compiler over
+      # the repo. Do not drop it.
+      - name: Typecheck
+        run: yarn typecheck
+
       - name: Test
         run: yarn test:ci
 
-      # The swc transform does not type-check and tslint does not surface
-      # compiler diagnostics, so this build is the only thing standing between
-      # a green PR and a broken bundle. Do not drop it.
+      # Bundling is not type-checked (ts-loader runs with transpileOnly), so
+      # this catches module-resolution and loader problems that the Typecheck
+      # step above cannot see.
       - name: Build
         run: yarn build-all
 

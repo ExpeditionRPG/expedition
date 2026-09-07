@@ -14,7 +14,7 @@ describe('QuestHistory', () => {
       onReturn: jest.fn(),
       ...overrides,
     };
-    const e = render(<QuestHistory {...((props as any) as Props)} />);
+    const e = render(<QuestHistory {...props} />);
     return { props, e };
   }
 

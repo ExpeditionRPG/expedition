@@ -8,7 +8,7 @@ describe('Button', () => {
       onClick: jest.fn(),
       ...overrides,
     };
-    return { props, e: mount(<Button {...((props as any) as Props)} />) };
+    return { props, e: mount(<Button {...props} />) };
   }
 
   test('Forwards tap events', () => {

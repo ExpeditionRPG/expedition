@@ -8,6 +8,10 @@ export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, { type: '@@INIT' }));
 }
 
+// Annotated rather than inlined: as an argument the array literal infers as
+// ThunkMiddleware[], which is not assignable to Redux.Middleware[].
+const mockMiddleware: Redux.Middleware[] = [thunk];
+
 interface MockStore extends Redux.Store {
   clearActions: () => void;
   getActions: any;
@@ -15,7 +19,7 @@ interface MockStore extends Redux.Store {
 
 export function newMockStore(state: object): MockStore {
   // Since this is a testing function, we play it a bit loose with the state type.
-  return configureStore<AppState>([thunk])((state as any) as AppState);
+  return configureStore<AppState>(mockMiddleware)((state as any) as AppState);
 }
 
 // Put stuff here that is assumed to always exist (like settings)
@@ -29,7 +33,7 @@ export function Reducer<A extends Redux.Action>(
   const defaultInitialState = reducer(undefined, { type: '@@INIT' } as any);
 
   function internalReducerCommands(initialState: object) {
-    const store = configureStore<AppState>([thunk])(defaultGlobalState);
+    const store = configureStore<AppState>(mockMiddleware)(defaultGlobalState);
     return {
       execute: (action: A) => {
         store.dispatch(action);
@@ -72,7 +76,7 @@ export function Action<A>(
   action: (...a: any[]) => Redux.Action,
   baseState?: object,
 ) {
-  let store = configureStore<AppState>([thunk])(
+  let store = configureStore<AppState>(mockMiddleware)(
     ((baseState as any) as AppState) || defaultGlobalState,
   );
 
@@ -98,7 +102,7 @@ export function Action<A>(
 
   return {
     withState(storeState: object) {
-      store = configureStore<AppState>([thunk])(storeState as AppState);
+      store = configureStore<AppState>(mockMiddleware)(storeState as AppState);
       return internalActionCommands();
     },
     ...internalActionCommands(),

@@ -1,5 +1,5 @@
-import {enumValues, Partition} from './Constants';
-import {copyAndUnsetDefaults, field, SchemaBase} from './SchemaBase';
+import { enumValues, Partition } from './Constants';
+import { copyAndUnsetDefaults, field, SchemaBase } from './SchemaBase';
 
 export class RenderedQuest extends SchemaBase {
   public static create(fields: Partial<RenderedQuest>) {
@@ -19,20 +19,24 @@ export class RenderedQuest extends SchemaBase {
     maxLength: 32,
     primaryKey: true,
     valid: [enumValues(Partition)],
-  }) public partition: string;
+  })
+  public partition!: string;
 
   @field({
     allowNull: false,
     maxLength: 255,
     primaryKey: true,
-  }) public id: string;
+  })
+  public id!: string;
 
   @field({
     default: 1,
     primaryKey: true,
-  }) public questversion: number;
+  })
+  public questversion!: number;
 
   @field({
     default: '',
-  }) public xml: string;
+  })
+  public xml!: string;
 }

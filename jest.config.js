@@ -1,14 +1,9 @@
 // Jest configuration for the Expedition monorepo.
 //
-// Transform: @swc/jest. The repo is pinned to TypeScript 2.8 for its webpack
-// builds, which no supported version of ts-jest can consume. swc strips types
-// without type-checking, so the test runner is decoupled from the compiler
-// version. Nothing type-checks the repo today: tslint builds a Program for its
-// type-aware rules but never surfaces compiler diagnostics, and `tsc --noEmit`
-// cannot run because TypeScript 2.8 fails to *parse* the .d.ts files that
-// modern @types packages ship (skipLibCheck does not suppress syntax errors).
-// The webpack build is the closest thing to a type check we have, which is why
-// CI now runs `yarn build-all`.
+// Transform: @swc/jest. swc strips types without checking them, which keeps
+// the test runner decoupled from the compiler version. Type checking is a
+// separate gate: `yarn typecheck` (tsc --noEmit) runs in CI alongside
+// `yarn lint` (eslint + typescript-eslint) and `yarn build-all`.
 //
 // `noInterop: true` mirrors this repo's tsconfig (esModuleInterop is off), so
 // `import * as express from 'express'` stays callable and default imports
@@ -35,14 +30,16 @@ const swcTransform = [
   },
 ];
 
-// Mirrors the `paths` block in tsconfig.json. Previously done with a babel
-// module-resolver plugin wired through ts-jest; moduleNameMapper is the
-// supported way to do it and keeps the aliases in one obvious place.
-const moduleNameMapper = {
-  '^api/(.*)$': '<rootDir>/services/api/src/$1',
-  '^app/(.*)$': '<rootDir>/services/app/src/$1',
-  '^shared/(.*)$': '<rootDir>/shared/$1',
-};
+// Derived from shared/webpack.aliases.js rather than restated, so the test
+// runner and the five webpack builds cannot drift apart. tsconfig.json's
+// `paths` is the third copy -- it has to stay hand-written because tsc reads
+// it directly -- and shared/webpack.aliases.test.ts asserts it still agrees
+// with this one.
+const aliases = require('./shared/webpack.aliases');
+const moduleNameMapper = Object.keys(aliases).reduce((acc, name) => {
+  acc['^' + name + '/(.*)$'] = aliases[name].replace(/\\/g, '/') + '/$1';
+  return acc;
+}, {});
 
 const common = {
   rootDir: __dirname,

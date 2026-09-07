@@ -5,6 +5,7 @@
 
 const Path = require('path');
 const Webpack = require('webpack');
+const aliases = require('../../shared/webpack.aliases');
 
 const PORT = process.env.DOCKER_PORT || 8081;
 
@@ -16,6 +17,7 @@ const options = {
     batchRunner: ['./src/batch.ts'],
   },
   resolve: {
+    alias: aliases,
     extensions: ['.ts', '.js', '.tsx', '.json', '.txt'],
   },
   output: {
@@ -32,23 +34,16 @@ const options = {
   },
   module: {
     rules: [
-      // Explicitly don't lint as part of regular build to save on Heroku build memory
-      // { test: /\.tsx$/, enforce: 'pre', loader: 'tslint-loader', options: {fix: true} },
-      // Custom options to speed up single builds
+      // Explicitly don't lint or type-check as part of the regular build, to
+      // save on Heroku build memory. `yarn typecheck` covers both services.
       {
         test: /\.ts(x?)$/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
         options: {
-          // Point at the monorepo tsconfig explicitly. Left to its own devices
-          // awesome-typescript-loader calls ts.findConfigFile() with the
-          // service directory, which on Windows is a backslash path that
-          // TypeScript 2.8 fails to walk upwards from. It then falls back to
-          // the compiler defaults, which drop `awesomeTypescriptLoaderOptions.
-          // useBabel` and with it the babel module-resolver aliases, so every
-          // `shared/*` import fails to resolve.
-          configFileName: Path.resolve(__dirname, '../../tsconfig.json'),
+          // Point at the monorepo tsconfig explicitly; ts-loader's own search
+          // starts from this directory and would find nothing.
+          configFile: Path.resolve(__dirname, '../../tsconfig.json'),
           transpileOnly: true,
-          useCache: false,
         },
         exclude: [/\/node_modules\/.*/, /\/dist\/.*/],
       },

@@ -82,10 +82,12 @@ export function searchQuests(
     where.id = params.id;
   }
 
-  // Require results to be published if we're not querying our own quests
+  // Require results to be published if we're not querying our own quests.
+  // `published` is already constrained to IS NOT NULL by the initializer
+  // above, and re-stating it here only repeated an operator shape sequelize 5's
+  // typings cannot express (their [Op.ne] union omits null).
   if (params.owner) {
     where.userid = params.owner;
-    where.published = { [Op.ne]: null };
   }
 
   if (params.players) {
@@ -249,7 +251,7 @@ export function publishQuest(
   return db.quests
     .findOne({ where: { id: quest.id, partition: quest.partition } })
     .then((i: QuestInstance | null) => {
-      isNew = !Boolean(i);
+      isNew = !i;
       instance = i || db.quests.build(prepare(quest));
 
       if (isNew && quest.partition === Partition.expeditionPublic) {
@@ -262,11 +264,13 @@ export function publishQuest(
         });
 
         // If this is the author's first published quest, email them a congratulations
-        db.quests.findOne({ where: { userid } }).then((qi: QuestInstance) => {
-          if (!Boolean(qi)) {
-            mailFirstQuestPublish(mail, quest);
-          }
-        });
+        db.quests
+          .findOne({ where: { userid } })
+          .then((qi: QuestInstance | null) => {
+            if (!qi) {
+              mailFirstQuestPublish(mail, quest);
+            }
+          });
       }
 
       const updateValues: Partial<Quest> = {
@@ -307,10 +311,13 @@ export function unpublishQuest(db: Database, partition: string, id: string) {
 }
 
 export function republishQuest(db: Database, partition: string, id: string) {
-  return db.quests.update({ tombstone: null } as any, {
-    where: { partition, id },
-    limit: 1,
-  });
+  return db.quests.update(
+    { tombstone: null },
+    {
+      where: { partition, id },
+      limit: 1,
+    },
+  );
 }
 
 export function updateQuestRatings(
@@ -321,7 +328,10 @@ export function updateQuestRatings(
   let quest: QuestInstance;
   return db.quests
     .findOne({ where: { partition, id } })
-    .then((q: QuestInstance) => {
+    .then((q: QuestInstance | null) => {
+      if (q === null) {
+        throw new Error('No quest found for ' + partition + '/' + id);
+      }
       quest = q;
       return getFeedbackByQuestId(db, partition, quest.get('id'));
     })

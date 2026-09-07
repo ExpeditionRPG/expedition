@@ -34,7 +34,7 @@ describe('Combat victory', () => {
       onEvent: jest.fn(),
       ...overrides,
     };
-    return { props, e: render(<Victory {...((props as any) as Props)} />) };
+    return { props, e: render(<Victory {...props} />) };
   }
 
   test('shows a victory page', () => {

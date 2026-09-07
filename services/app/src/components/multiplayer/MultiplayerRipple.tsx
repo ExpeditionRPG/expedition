@@ -1,9 +1,9 @@
 import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
-import {playerOrder} from 'app/actions/Settings';
-import {MultiplayerState} from 'app/reducers/StateTypes';
+import { playerOrder } from 'app/actions/Settings';
+import { MultiplayerState } from 'app/reducers/StateTypes';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {InteractionEvent} from 'shared/multiplayer/Events';
+import { InteractionEvent } from 'shared/multiplayer/Events';
 import MultiplayerAffectorContainer from './MultiplayerAffectorContainer';
 
 const DEFAULT_RIPPLE_TIMEOUT_MS = 500;
@@ -22,7 +22,7 @@ export interface State {
   hasRipple: boolean;
   nextKey: number;
   activePlayer: number;
-  endTimer: number|null;
+  endTimer: number | null;
 }
 
 export default class MultiplayerRipple extends React.Component<Props, State> {
@@ -42,7 +42,11 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
 
   public handle(client: string, e: InteractionEvent) {
     let activePlayer = 1;
-    const order = playerOrder(this.props.multiplayer.session && this.props.multiplayer.session.secret || '');
+    const order = playerOrder(
+      (this.props.multiplayer.session &&
+        this.props.multiplayer.session.secret) ||
+        '',
+    );
     const clients = Object.keys(this.props.multiplayer.clientStatus).sort();
     for (let i = 0; i < clients.length; i++) {
       if (clients[i] === client) {
@@ -50,7 +54,11 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
         break;
       }
     }
-    if (this.props.id === null || e.event === 'touchmove' || e.id !== this.props.id) {
+    if (
+      this.props.id === null ||
+      e.event === 'touchmove' ||
+      e.id !== this.props.id
+    ) {
       return;
     }
     switch (e.event) {
@@ -58,7 +66,8 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
         return this.start(
           (e.positions && e.positions[0] && e.positions[0][0]) || 500,
           (e.positions && e.positions[0] && e.positions[0][1]) || 500,
-          activePlayer);
+          activePlayer,
+        );
       case 'touchend':
         return this.end();
       default:
@@ -77,7 +86,10 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     const elWidth = (el as any).offsetWidth;
     const realX = elWidth * (posX / 1000);
     const realY = elHeight * (posY / 1000);
-    const rect = (el && (el as any).getBoundingClientRect) ? (el as any).getBoundingClientRect() : {top: 0, left: 0};
+    const rect =
+      el && (el as any).getBoundingClientRect
+        ? (el as any).getBoundingClientRect()
+        : { top: 0, left: 0 };
     // Set the ripple
     if (!this.ripple) {
       return;
@@ -90,10 +102,10 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
     if (this.state.hasRipple) {
       this.end();
     }
-    const endTimer = setTimeout(() => {
+    const endTimer = window.setTimeout(() => {
       this.end();
     }, DEFAULT_RIPPLE_TIMEOUT_MS);
-    this.setState({activePlayer, hasRipple: true, endTimer});
+    this.setState({ activePlayer, hasRipple: true, endTimer });
     this.ripple.start(event);
   }
 
@@ -105,12 +117,17 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
 
   public end() {
     if (this.ripple) {
-      this.ripple.stop({type: 'touchend', persist: () => {/* empty function */}});
+      this.ripple.stop({
+        type: 'touchend',
+        persist: () => {
+          /* empty function */
+        },
+      });
     }
     if (this.state.endTimer) {
       clearTimeout(this.state.endTimer);
     }
-    this.setState({hasRipple: false, endTimer: null});
+    this.setState({ hasRipple: false, endTimer: null });
   }
 
   public onRippleRef(node: any) {
@@ -123,8 +140,16 @@ export default class MultiplayerRipple extends React.Component<Props, State> {
         id={this.props.id}
         className={this.props.className}
         lazy={true}
-        onInteraction={(c: string, i: InteractionEvent) => {this.handle(c, i); }}>
-        <TouchRipple innerRef={(ref) => this.onRippleRef(ref)} children={null} component="span" classes={{child: `ripplep${this.state.activePlayer}`}} />
+        onInteraction={(c: string, i: InteractionEvent) => {
+          this.handle(c, i);
+        }}
+      >
+        <TouchRipple
+          innerRef={ref => this.onRippleRef(ref)}
+          children={null}
+          component="span"
+          classes={{ child: `ripplep${this.state.activePlayer}` }}
+        />
         {this.props.children}
       </MultiplayerAffectorContainer>
     );

@@ -1,19 +1,27 @@
-import {MAX_ADVENTURERS} from 'app/Constants';
+import { MAX_ADVENTURERS } from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import {Expansion} from 'shared/schema/Constants';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {ContentSetsType, MultiplayerState, SettingsType} from '../reducers/StateTypes';
-import {sendStatus} from './Multiplayer';
+import { enumValues, Expansion } from 'shared/schema/Constants';
+import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
+import {
+  ContentSetsType,
+  MultiplayerState,
+  SettingsType,
+} from '../reducers/StateTypes';
+import { sendStatus } from './Multiplayer';
 
 export function changeSettings(settings: any) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    dispatch({type: 'CHANGE_SETTINGS', settings});
+    dispatch({ type: 'CHANGE_SETTINGS', settings });
     dispatch(sendStatus());
   };
 }
 
-export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp: MultiplayerState): number {
+export function numAliveAdventurers(
+  settings: SettingsType,
+  node: ParserNode,
+  mp: MultiplayerState,
+): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     if (node.elem.get(0).tagName === 'combat') {
       return node.ctx.templates.combat.numAliveAdventurers;
@@ -27,19 +35,25 @@ export function numAliveAdventurers(settings: SettingsType, node: ParserNode, mp
     if (!status.connected) {
       continue;
     }
-    count += (status.aliveAdventurers || 0);
+    count += status.aliveAdventurers || 0;
   }
   return count;
 }
 
-export function numAdventurers(settings: SettingsType, mp?: MultiplayerState): number {
+export function numAdventurers(
+  settings: SettingsType,
+  mp?: MultiplayerState,
+): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     return numLocalAdventurers(settings);
   }
   return countAllPlayers(mp);
 }
 
-export function numLocalAdventurers(settings: SettingsType, mp?: MultiplayerState) {
+export function numLocalAdventurers(
+  settings: SettingsType,
+  mp?: MultiplayerState,
+) {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     // Since single player still has two adventurers, the minimum possible is two.
     return Math.max(2, settings.numLocalPlayers);
@@ -48,7 +62,10 @@ export function numLocalAdventurers(settings: SettingsType, mp?: MultiplayerStat
   return settings.numLocalPlayers;
 }
 
-export function numPlayers(settings: SettingsType, mp?: MultiplayerState): number {
+export function numPlayers(
+  settings: SettingsType,
+  mp?: MultiplayerState,
+): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
     return settings.numLocalPlayers;
   }
@@ -74,24 +91,29 @@ function countAllPlayers(mp: MultiplayerState): number {
     if (!status.connected) {
       continue;
     }
-    count += (status.numLocalPlayers || 1);
+    count += status.numLocalPlayers || 1;
   }
   return count || 1;
 }
 
-export function getContentSets(settings: SettingsType, mp?: MultiplayerState): Set<keyof ContentSetsType> {
+export function getContentSets(
+  settings: SettingsType,
+  mp?: MultiplayerState,
+): Set<keyof ContentSetsType> {
   if (mp && mp.session) {
     return getContentSetIntersection(mp);
   }
-  const cs = settings && settings.contentSets || {};
-  return new Set(Object.keys(cs).filter((s: Expansion) => cs[s]) as Expansion[]);
+  const cs = (settings && settings.contentSets) || {};
+  return new Set(enumValues(Expansion).filter(s => cs[s]));
 }
 
 // Get the content sets supported by all connected devices.
-function getContentSetIntersection(multiplayer: MultiplayerState): Set<keyof ContentSetsType> {
-  let result: Set<string>|null = null;
+function getContentSetIntersection(
+  multiplayer: MultiplayerState,
+): Set<keyof ContentSetsType> {
+  let result: Set<string> | null = null;
   const clients = multiplayer.clientStatus;
-  Object.keys(clients).map((k) => {
+  Object.keys(clients).map(k => {
     if (!clients[k].connected) {
       return;
     }
@@ -102,7 +124,7 @@ function getContentSetIntersection(multiplayer: MultiplayerState): Set<keyof Con
       return;
     }
     // Set intersection
-    result = new Set([...result].filter((c) => contentSets.has(c)));
+    result = new Set([...result].filter(c => contentSets.has(c)));
   });
   return result || new Set();
 }

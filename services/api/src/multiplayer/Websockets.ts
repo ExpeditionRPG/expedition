@@ -1,10 +1,9 @@
 import * as http from 'http';
-import {MultiplayerEvent} from 'shared/multiplayer/Events';
 import * as WebSocket from 'ws';
 import Config from '../config';
-import {Database} from '../models/Database';
-import {verifyWebsocket, websocketSession} from './Handlers';
-import {getSession} from './Sessions';
+import { Database } from '../models/Database';
+import { verifyWebsocket, websocketSession } from './Handlers';
+import { getSession } from './Sessions';
 
 export function setupWebsockets(db: Database, server: any) {
   const wss = new WebSocket.Server({
@@ -14,7 +13,7 @@ export function setupWebsockets(db: Database, server: any) {
     },
   });
 
-  wss.on('error', (err) => {
+  wss.on('error', err => {
     console.error('Caught WSS error: ');
     console.error(err.stack);
   });
@@ -33,7 +32,7 @@ export function broadcast(session: number, msg: string) {
   for (const peerID of Object.keys(s)) {
     const peerWS = s[peerID] && s[peerID].socket;
     if (peerWS && peerWS.readyState === WebSocket.OPEN) {
-      peerWS.send(msg, (e: Error) => {
+      peerWS.send(msg, (e?: Error) => {
         console.error(e);
       });
     }
@@ -41,13 +40,16 @@ export function broadcast(session: number, msg: string) {
 }
 
 export function broadcastError(session: number, error: Error) {
-  broadcast(session, JSON.stringify({
-    client: 'SERVER',
-    event: {
-      error: 'Server error: ' + error.toString(),
-      type: 'ERROR',
-    },
-    id: null,
-    instance: Config.get('NODE_ENV'),
-  } as MultiplayerEvent));
+  broadcast(
+    session,
+    JSON.stringify({
+      client: 'SERVER',
+      event: {
+        error: 'Server error: ' + error.toString(),
+        type: 'ERROR',
+      },
+      id: null,
+      instance: Config.get('NODE_ENV'),
+    }),
+  );
 }

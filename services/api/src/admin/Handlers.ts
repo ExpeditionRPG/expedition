@@ -33,13 +33,12 @@ function validateOrder(body: any) {
 }
 
 function handleErrors(res: express.Response) {
-  return (e: Error) => {
+  // Used both as a promise .catch() handler and directly from a catch block,
+  // where TypeScript 6 types the value as `unknown` -- a thrown value is not
+  // necessarily an Error.
+  return (e: unknown) => {
     console.error(e);
-    res
-      .status(500)
-      .send(
-        JSON.stringify({ status: 'ERROR', error: e.toString() } as QT.Response),
-      );
+    res.status(500).send(JSON.stringify({ status: 'ERROR', error: String(e) }));
   };
 }
 
@@ -49,8 +48,7 @@ export function queryFeedback(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = validateOrder(JSON.parse(req.body));
+    const body: any = validateOrder(JSON.parse(req.body));
     if (body.rating) {
       if (!body.rating.condition || !body.rating.value) {
         throw new Error('Invalid query rating');
@@ -119,7 +117,7 @@ export function queryFeedback(
                     email: r.get('email'),
                     id: r.get('userid'),
                   },
-                } as QT.FeedbackEntry;
+                };
               },
             );
           }),
@@ -145,8 +143,7 @@ export function modifyFeedback(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = JSON.parse(req.body);
+    const body: any = JSON.parse(req.body);
 
     const m: QT.FeedbackMutation = {
       partition: body.partition || null,
@@ -164,7 +161,7 @@ export function modifyFeedback(
         m.suppress || false,
       )
         .then(() => {
-          res.status(200).send(JSON.stringify({ status: 'OK' } as QT.Response));
+          res.status(200).send(JSON.stringify({ status: 'OK' }));
         })
         .catch(handleErrors(res));
     }
@@ -179,8 +176,7 @@ export function queryQuest(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = validateOrder(JSON.parse(req.body));
+    const body: any = validateOrder(JSON.parse(req.body));
 
     const q: QT.QuestQuery = {
       order: body.order || null,
@@ -224,7 +220,7 @@ export function queryQuest(
               email: r.get('email'),
               id: r.get('userid'),
             },
-          } as QT.QuestEntry;
+          };
         });
       })
       .then((results: QT.QuestEntry[]) => {
@@ -242,8 +238,7 @@ export function modifyQuest(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = JSON.parse(req.body);
+    const body: any = JSON.parse(req.body);
 
     const m: QT.QuestMutation = {
       partition: body.partition || null,
@@ -254,13 +249,13 @@ export function modifyQuest(
     if (m.published === true) {
       return republishQuest(db, m.partition, m.questid)
         .then(() => {
-          res.status(200).send(JSON.stringify({ status: 'OK' } as QT.Response));
+          res.status(200).send(JSON.stringify({ status: 'OK' }));
         })
         .catch(handleErrors(res));
     } else if (m.published === false) {
       return unpublishQuest(db, m.partition, m.questid)
         .then(() => {
-          res.status(200).send(JSON.stringify({ status: 'OK' } as QT.Response));
+          res.status(200).send(JSON.stringify({ status: 'OK' }));
         })
         .catch(handleErrors(res));
     }
@@ -276,8 +271,7 @@ export function queryUser(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = validateOrder(JSON.parse(req.body));
+    const body: any = validateOrder(JSON.parse(req.body));
     const q: QT.UserQuery = {
       order: body.order || null,
       substring: body.substring || null,
@@ -311,7 +305,7 @@ export function queryUser(
             last_login: r.get('lastLogin'),
             loot_points: r.get('lootPoints'),
             name: r.get('name'),
-          } as QT.UserEntry;
+          };
         });
       })
       .then((results: QT.UserEntry[]) => {
@@ -329,8 +323,7 @@ export function modifyUser(
   res: express.Response,
 ) {
   try {
-    let body: any;
-    body = JSON.parse(req.body);
+    const body: any = JSON.parse(req.body);
 
     const m: QT.UserMutation = {
       loot_points: body.loot_points || null,
@@ -340,7 +333,7 @@ export function modifyUser(
     if (m.loot_points) {
       return setLootPoints(db, m.userid, m.loot_points)
         .then(() => {
-          res.status(200).send(JSON.stringify({ status: 'OK' } as QT.Response));
+          res.status(200).send(JSON.stringify({ status: 'OK' }));
         })
         .catch(handleErrors(res));
     }

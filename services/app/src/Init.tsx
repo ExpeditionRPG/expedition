@@ -1,35 +1,41 @@
-declare var require: any;
-declare var module: any;
+declare let require: any;
+declare let module: any;
 
 // Before we even import other modules, first hook into
 // console logging so we can pass details along with error reports.
-import {logEvent, setupLogging} from './Logging';
+import { logEvent, setupLogging } from './Logging';
 setupLogging(console);
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import 'babel-polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import * as Redux from 'redux';
 
-import {UserState} from 'shared/auth/UserState';
-import {checkForLogin} from 'shared/auth/Web';
-import {Expansion, NODE_ENV, VERSION} from 'shared/schema/Constants';
-import {audioSet} from './actions/Audio';
-import {toPrevious} from './actions/Card';
-import {setDialog} from './actions/Dialog';
-import {listSavedQuests, updateStorageFreeBytes} from './actions/SavedQuests';
-import {searchAndPlay} from './actions/Search';
-import {fetchServerStatus, setServerStatus} from './actions/ServerStatus';
-import {changeSettings} from './actions/Settings';
-import {openSnackbar} from './actions/Snackbar';
-import {fetchUserQuests} from './actions/Web';
-import {AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS} from './Constants';
-import {getDevicePlatform, getDocument, getNavigator, getWindow, setGA} from './Globals';
-import {getStorageBoolean} from './LocalStorage';
-import {ContentSetsType, SettingsType} from './reducers/StateTypes';
-import {createAppStore, getStore} from './Store';
+import { UserState } from 'shared/auth/UserState';
+import { checkForLogin } from 'shared/auth/Web';
+import { Expansion, NODE_ENV, VERSION } from 'shared/schema/Constants';
+import { audioSet } from './actions/Audio';
+import { toPrevious } from './actions/Card';
+import { setDialog } from './actions/Dialog';
+import { listSavedQuests, updateStorageFreeBytes } from './actions/SavedQuests';
+import { searchAndPlay } from './actions/Search';
+import { fetchServerStatus, setServerStatus } from './actions/ServerStatus';
+import { changeSettings } from './actions/Settings';
+import { openSnackbar } from './actions/Snackbar';
+import { fetchUserQuests } from './actions/Web';
+import { AUTH_SETTINGS, INIT_DELAY, UNSUPPORTED_BROWSERS } from './Constants';
+import {
+  getDevicePlatform,
+  getDocument,
+  getNavigator,
+  getWindow,
+  setGA,
+} from './Globals';
+import { getStorageBoolean } from './LocalStorage';
+import { ContentSetsType, SettingsType } from './reducers/StateTypes';
+import { createAppStore, getStore } from './Store';
 import theme from './Theme';
 
 import Promise from 'promise-polyfill'; // promise polyfill
@@ -48,11 +54,12 @@ const ReactGA = require('react-ga');
 // the repo to reference custom-defined action types (similar to how redux-thunk does things)
 // TODO: Fix redux types
 /* tslint:disable */
-export type ThunkAction<R, S = {}, E = {}, A extends Redux.Action<any> = Redux.AnyAction> = (
-  dispatch: Redux.Dispatch<A>,
-  getState: () => S,
-  extraArgument: E
-) => R;
+export type ThunkAction<
+  R,
+  S = {},
+  E = {},
+  A extends Redux.Action<any> = Redux.AnyAction
+> = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
     <R, E>(asyncAction: ThunkAction<R, {}, E, A>): R;
@@ -61,13 +68,19 @@ declare module 'redux' {
 /* tslint:enable */
 
 Raven.config(AUTH_SETTINGS.RAVEN, {
-    environment: NODE_ENV,
-    release: VERSION,
-    shouldSendCallback(data: any) {
-      const supportedBrowser = !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent);
-      return supportedBrowser && NODE_ENV !== 'dev' && !getStore().getState().settings.simulator;
-    },
-  }).install();
+  environment: NODE_ENV,
+  release: VERSION,
+  shouldSendCallback(data: any) {
+    const supportedBrowser = !UNSUPPORTED_BROWSERS.test(
+      getNavigator().userAgent,
+    );
+    return (
+      supportedBrowser &&
+      NODE_ENV !== 'dev' &&
+      !getStore().getState().settings.simulator
+    );
+  },
+}).install();
 
 function setupDevice() {
   const window = getWindow();
@@ -77,18 +90,26 @@ function setupDevice() {
   // Default to audio enabled if not user specified in pre-bundled apps
   // since the audio files are already part of the APK
   // (unless the app is using an old / unsupported browser engine)
-  getStore().dispatch(changeSettings({
-    audioEnabled: getStorageBoolean('audioEnabled', !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)),
-  }));
+  getStore().dispatch(
+    changeSettings({
+      audioEnabled: getStorageBoolean(
+        'audioEnabled',
+        !UNSUPPORTED_BROWSERS.test(getNavigator().userAgent),
+      ),
+    }),
+  );
 
   if (platform === 'android') {
     // Hide system UI and keep it hidden (Android 4.4+ only)
     if (window.AndroidFullScreen) {
-      window.AndroidFullScreen.immersiveMode(() => {
-        // console.log('Immersive mode enabled');
-      }, () => {
-        // console.error('Immersive mode failed');
-      });
+      window.AndroidFullScreen.immersiveMode(
+        () => {
+          // console.log('Immersive mode enabled');
+        },
+        () => {
+          // console.error('Immersive mode failed');
+        },
+      );
     } else {
       // console.warn('Immersive mode not supported on this device');
     }
@@ -98,7 +119,10 @@ function setupDevice() {
     if (/Android/.test(navigator.appVersion)) {
       window.addEventListener('resize', () => {
         if (document.activeElement) {
-          if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+          if (
+            document.activeElement.tagName === 'INPUT' ||
+            document.activeElement.tagName === 'TEXTAREA'
+          ) {
             document.activeElement.scrollIntoView();
           }
         }
@@ -106,17 +130,29 @@ function setupDevice() {
     }
   }
 
-  getDocument().addEventListener('backbutton', () => {
-    getStore().dispatch(toPrevious({}));
-  }, false);
+  getDocument().addEventListener(
+    'backbutton',
+    () => {
+      getStore().dispatch(toPrevious({}));
+    },
+    false,
+  );
 
-  getDocument().addEventListener('pause', () => {
-    getStore().dispatch(audioSet({paused: true}));
-  }, false);
+  getDocument().addEventListener(
+    'pause',
+    () => {
+      getStore().dispatch(audioSet({ paused: true }));
+    },
+    false,
+  );
 
-  getDocument().addEventListener('resume', () => {
-    getStore().dispatch(audioSet({paused: false}));
-  }, false);
+  getDocument().addEventListener(
+    'resume',
+    () => {
+      getStore().dispatch(audioSet({ paused: false }));
+    },
+    false,
+  );
 
   if (window.plugins !== undefined && window.plugins.insomnia !== undefined) {
     window.plugins.insomnia.keepAwake(); // keep screen on while app is open
@@ -127,7 +163,9 @@ function setupHotReload() {
   if (module.hot) {
     module.hot.accept();
     module.hot.accept('./components/Compositor', () => {
-      setTimeout(() => {render(); });
+      setTimeout(() => {
+        render();
+      });
     });
   }
 }
@@ -140,8 +178,12 @@ function setupGoogleAnalytics() {
   // disabled during local dev
   if (window.location.hostname === 'localhost' || NODE_ENV === 'dev') {
     setGA({
-      event: (): void => { /* mock */ },
-      set: (): void => { /* mock */ },
+      event: (): void => {
+        /* mock */
+      },
+      set: (): void => {
+        /* mock */
+      },
     });
     return console.log('Google Analytics disabled during local dev.');
   }
@@ -167,16 +209,19 @@ function handleUrlHash() {
 const MAX_SNACKBAR_ERROR_RATE_MILLIS = 1000;
 let lastErrorSnackbar: number = 0;
 function setupOnError(window: Window) {
-  window.onerror = (message: string, source: string, line: number) => {
+  window.onerror = (event: Event | string, source?: string, line?: number) => {
+    // The DOM hands this a string for script errors and an Event for resource
+    // ones; the rest of this handler wants a message.
+    let message = typeof event === 'string' ? event : event.type;
     const state = getStore().getState();
     const quest = state.quest || {};
     const settings = state.settings || {};
     const questNode = quest.node && quest.node.elem && quest.node.elem[0];
     Raven.setExtraContext({
       card: state.card.key,
-      questCardTitle: (questNode) ? questNode.attribs.title : '',
+      questCardTitle: questNode ? questNode.attribs.title : '',
       questId: quest.details.id,
-      questLine: (questNode) ? questNode.attribs['data-line'] : '',
+      questLine: questNode ? questNode.attribs['data-line'] : '',
       questName: quest.details.title || 'n/a',
       settings: JSON.stringify(settings),
     });
@@ -189,9 +234,9 @@ function setupOnError(window: Window) {
     if (quest.details.id) {
       message = `Quest: ${quest.details.title}. Error: ${message}.`;
     }
-    const label = (source) ? `${source} line ${line}` : null;
+    const label = source ? `${source} line ${line}` : null;
     console.error(message, label);
-    logEvent('error', 'APP_ERROR', {action: message, label});
+    logEvent('error', 'APP_ERROR', { action: message, label });
     // Ratelimit snackbar opening to prevent error spam
     if (Date.now() - lastErrorSnackbar > MAX_SNACKBAR_ERROR_RATE_MILLIS) {
       // Dispatch the snackbar change after resolving intermediate state.
@@ -218,7 +263,9 @@ function setupStorage(document: Document) {
     }
   } catch (err) {
     setTimeout(() => {
-      getStore().dispatch(openSnackbar('Please enable cookies for the app to function properly.'));
+      getStore().dispatch(
+        openSnackbar('Please enable cookies for the app to function properly.'),
+      );
     }, 0);
   }
 
@@ -250,17 +297,21 @@ export function init() {
   setupStorage(document);
 
   window.platform = window.cordova ? 'cordova' : 'web';
-  window.onpopstate = (e) => {
+  window.onpopstate = e => {
     getStore().dispatch(toPrevious({}));
     e.preventDefault();
   };
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      getStore().dispatch(audioSet({paused: true}));
-    } else if (document.visibilityState === 'visible') {
-      getStore().dispatch(audioSet({paused: false}));
-    }
-  }, false);
+  document.addEventListener(
+    'visibilitychange',
+    () => {
+      if (document.visibilityState === 'hidden') {
+        getStore().dispatch(audioSet({ paused: true }));
+      } else if (document.visibilityState === 'visible') {
+        getStore().dispatch(audioSet({ paused: false }));
+      }
+    },
+    false,
+  );
 
   // Only triggers on app builds
   document.addEventListener('deviceready', setupDevice, false);
@@ -272,9 +323,9 @@ export function init() {
   handleUrlHash();
 
   checkForLogin(AUTH_SETTINGS.URL_BASE)
-    .then((user: UserState|null) => {
+    .then((user: UserState | null) => {
       if (user !== null) {
-        getStore().dispatch({type: 'USER_LOGIN', user});
+        getStore().dispatch({ type: 'USER_LOGIN', user });
         getStore().dispatch(fetchUserQuests());
       }
     })
@@ -284,12 +335,15 @@ export function init() {
 
   // Wait to process settings & dispatch additional UI until render complete
   if (UNSUPPORTED_BROWSERS.test(getNavigator().userAgent)) {
-    getStore().dispatch(setServerStatus({
-      announcement: {
-        open: true,
-        message: 'Unknown browser. Please use a standard browser like Chrome or Firefox for the best experience.',
-      },
-    }));
+    getStore().dispatch(
+      setServerStatus({
+        announcement: {
+          open: true,
+          message:
+            'Unknown browser. Please use a standard browser like Chrome or Firefox for the best experience.',
+        },
+      }),
+    );
   } else {
     getStore().dispatch(fetchServerStatus());
   }
@@ -299,7 +353,8 @@ export function init() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  const CompositorContainer = require('./components/CompositorContainer').default;
+  const CompositorContainer = require('./components/CompositorContainer')
+    .default;
   const base = getDocument().getElementById('react-app');
   if (!base) {
     throw new Error('Could not find react-app element');
@@ -308,16 +363,16 @@ function render() {
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={getStore()}>
-        <CompositorContainer store={getStore()}/>
+        <CompositorContainer store={getStore()} />
       </Provider>
     </MuiThemeProvider>,
-    base
+    base,
   );
 }
 
 // doInit is defined in index.html, but not in tests.
 // This lets us setup the environment before initializing, or not init at all.
-declare var doInit: boolean;
+declare let doInit: boolean;
 if (typeof doInit !== 'undefined') {
   // Catch and display + log all errors
   Raven.context(init);

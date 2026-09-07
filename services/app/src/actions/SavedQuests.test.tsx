@@ -402,8 +402,94 @@ describe('SavedQuest actions', () => {
     test.skip('Saves a publishedurl to local storage', () => {
       /* TODO */
     });
-    test.skip('storage errors are shown in snackbar', () => {
-      /* TODO */
+    // saveQuestForOffline() has no seam for injecting storage, so these
+    // scope their mocks with resetModules()/doMock() rather than a file-wide
+    // jest.mock() -- the rest of this file relies on the real LocalStorage.
+    function saveWithStorageError(message: string): Promise<any[]> {
+      jest.resetModules();
+      jest.doMock('shared/requests', () => ({
+        ...jest.requireActual('shared/requests'),
+        fetchLocal: () =>
+          Promise.resolve(
+            '<quest><roleplay data-line="0">offline</roleplay></quest>',
+          ),
+      }));
+      jest.doMock('../LocalStorage', () => ({
+        ...jest.requireActual('../LocalStorage'),
+        setStorageKeyValue: () => {
+          throw new Error(message);
+        },
+      }));
+      // Typed so the Quest cast below still means something.
+      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const store = newMockStore({});
+      return store
+        .dispatch(
+          actions.saveQuestForOffline(({
+            publishedurl: 'https://example.com/quest.xml',
+          } as any) as Quest),
+        )
+        .then(() =>
+          store.getActions().filter((a: any) => a.type === 'SNACKBAR_OPEN'),
+        );
+    }
+
+    test('reports an out-of-storage failure as a storage message', () => {
+      return saveWithStorageError('exceeded the quota').then(snackbars => {
+        const last = snackbars[snackbars.length - 1];
+        expect(last.message).toEqual("Couldn't save; out of storage space.");
+      });
+    });
+
+    test('reports any other failure as a generic save error', () => {
+      // Regression guard: the branch above used a bare indexOf(), which is
+      // truthy for -1, so this generic message was unreachable.
+      return saveWithStorageError('disk on fire').then(snackbars => {
+        const last = snackbars[snackbars.length - 1];
+        expect(last.message).toContain('Error saving quest');
+        expect(last.message).toContain('disk on fire');
+        expect(last.actionLabel).toEqual('Report');
+      });
+    });
+
+    test('reports a network failure exactly once and stores nothing', () => {
+      // Regression guard: the rejection used to be handled by a .catch()
+      // *before* the parsing .then(), which resolved the chain and let the
+      // parse run on the dispatched action. That produced a second, wrong
+      // snackbar ("out of storage space") and a SAVED_QUEST_STORED attempt.
+      jest.resetModules();
+      const setStorageKeyValue = jest.fn();
+      jest.doMock('shared/requests', () => ({
+        ...jest.requireActual('shared/requests'),
+        fetchLocal: () => Promise.reject(new Error('offline')),
+      }));
+      jest.doMock('../LocalStorage', () => ({
+        ...jest.requireActual('../LocalStorage'),
+        setStorageKeyValue,
+      }));
+      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const store = newMockStore({});
+      return store
+        .dispatch(
+          actions.saveQuestForOffline(({
+            publishedurl: 'https://example.com/quest.xml',
+          } as Partial<Quest>) as Quest),
+        )
+        .then(() => {
+          const snackbars = store
+            .getActions()
+            .filter((a: any) => a.type === 'SNACKBAR_OPEN');
+          expect(snackbars.length).toEqual(1);
+          expect(snackbars[0].message.toString()).toContain(
+            'Network error saving quest',
+          );
+          expect(
+            store
+              .getActions()
+              .filter((a: any) => a.type === 'SAVED_QUEST_STORED'),
+          ).toEqual([]);
+          expect(setStorageKeyValue).not.toHaveBeenCalled();
+        });
     });
   });
 });

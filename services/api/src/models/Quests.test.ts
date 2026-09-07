@@ -223,7 +223,9 @@ describe('quest', () => {
         .then(results => {
           expect(results.length).toEqual(1);
           Object.keys(results[0]).forEach(key => {
-            if (results[0][key].hasOwnProperty('partition')) {
+            if (
+              Object.prototype.hasOwnProperty.call(results[0][key], 'partition')
+            ) {
               expect(results[0][key].partition).toEqual(
                 Partition.expeditionPublic,
               );

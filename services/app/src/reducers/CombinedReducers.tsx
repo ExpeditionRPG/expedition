@@ -1,23 +1,26 @@
 import Redux from 'redux';
-import {audio} from './Audio';
-import {audioData} from './AudioData';
-import {card} from './Card';
-import {checkout} from './Checkout';
-import {commitID} from './CommitID';
-import {dialog} from './Dialog';
-import {history} from './History';
-import {multiplayer} from './Multiplayer';
-import {quest} from './Quest';
-import {saved} from './Saved';
-import {search} from './Search';
-import {serverstatus} from './ServerStatus';
-import {settings} from './Settings';
-import {snackbar} from './Snackbar';
-import {AppStateWithHistory} from './StateTypes';
-import {user} from './User';
-import {userquests} from './UserQuests';
+import { audio } from './Audio';
+import { audioData } from './AudioData';
+import { card } from './Card';
+import { checkout } from './Checkout';
+import { commitID } from './CommitID';
+import { dialog } from './Dialog';
+import { history } from './History';
+import { multiplayer } from './Multiplayer';
+import { quest } from './Quest';
+import { saved } from './Saved';
+import { search } from './Search';
+import { serverstatus } from './ServerStatus';
+import { settings } from './Settings';
+import { snackbar } from './Snackbar';
+import { AppStateWithHistory } from './StateTypes';
+import { user } from './User';
+import { userquests } from './UserQuests';
 
-export default function combinedReduce(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
+export default function combinedReduce(
+  state: AppStateWithHistory | undefined,
+  action: Redux.Action,
+): AppStateWithHistory {
   state = state || ({} as AppStateWithHistory);
 
   // Run global reducers
@@ -43,8 +46,8 @@ export default function combinedReduce(state: AppStateWithHistory, action: Redux
     userQuests: userquests(state.userQuests, action),
 
     // These attributes are handled by the global reducers; persist them.
-    _history: (state && state._history),
-    _return: (state && state._return),
-    _committed: (state && state._committed),
-  } as AppStateWithHistory;
+    _history: state && state._history,
+    _return: state && state._return,
+    _committed: state && state._committed,
+  };
 }

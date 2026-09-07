@@ -17,7 +17,6 @@ import {
   RenderedQuestInstance,
 } from './models/Database';
 import {
-  FeedbackType,
   submitFeedback,
   submitRating,
   submitReportQuest,
@@ -155,7 +154,7 @@ function doSearch(
       // Map quest published URL to the API server so we can proxy quest data.
       const results: Quest[] = quests
         .map((q: QuestInstance) => Quest.create(q.dataValues))
-        .filter((q: Quest | Error) => !(q instanceof Error))
+        .filter((q: Quest | Error): q is Quest => !(q instanceof Error))
         .map((q: Quest) => {
           proxifyQuestURL(q);
           return q;
@@ -331,32 +330,64 @@ export function saveQuestData(
     });
 }
 
+// Express types every query value as
+// `string | string[] | ParsedQs | ParsedQs[] | undefined` -- a caller can
+// repeat a parameter or send `?a[b]=c` and get an array or a nested object.
+// Every parameter this API publishes is a scalar, so anything else is a
+// malformed request and reads as absent, which is what the schema defaults
+// already handle.
+function queryString(
+  query: express.Request['query'],
+  key: string,
+): string | undefined {
+  const value = query[key];
+  return typeof value === 'string' ? value : undefined;
+}
+
+function queryNumber(
+  query: express.Request['query'],
+  key: string,
+): number | undefined {
+  const value = queryString(query, key);
+  if (value === undefined) {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return isNaN(parsed) ? undefined : parsed;
+}
+
+// Query strings carry 'true'/'false', which Joi used to coerce for us.
+function queryBoolean(query: express.Request['query'], key: string): boolean {
+  return queryString(query, key) === 'true';
+}
+
 export function publish(
   db: Database,
   mail: MailService,
   req: express.Request,
   res: express.Response,
 ) {
+  const query = req.query;
   const quest = Quest.create({
-    author: req.query.author,
-    contentrating: req.query.contentrating,
-    email: req.query.email,
-    expansionhorror: req.query.expansionhorror || false,
-    expansionfuture: req.query.expansionfuture || false,
-    expansionwyrmsgiants: req.query.expansionwyrmsgiants || false,
-    expansionscarredlands: req.query.expansionscarredlands || false,
-    genre: req.query.genre,
+    author: queryString(query, 'author'),
+    contentrating: queryString(query, 'contentrating'),
+    email: queryString(query, 'email'),
+    expansionhorror: queryBoolean(query, 'expansionhorror'),
+    expansionfuture: queryBoolean(query, 'expansionfuture'),
+    expansionwyrmsgiants: queryBoolean(query, 'expansionwyrmsgiants'),
+    expansionscarredlands: queryBoolean(query, 'expansionscarredlands'),
+    genre: queryString(query, 'genre'),
     id: req.params.id,
-    language: req.query.language || 'English',
-    maxplayers: req.query.maxplayers,
-    maxtimeminutes: req.query.maxtimeminutes,
-    minplayers: req.query.minplayers,
-    mintimeminutes: req.query.mintimeminutes,
-    partition: req.query.partition || Partition.expeditionPublic,
-    requirespenpaper: req.query.requirespenpaper || false,
-    summary: req.query.summary,
-    theme: req.query.theme || 'base',
-    title: req.query.title,
+    language: queryString(query, 'language') || 'English',
+    maxplayers: queryNumber(query, 'maxplayers'),
+    maxtimeminutes: queryNumber(query, 'maxtimeminutes'),
+    minplayers: queryNumber(query, 'minplayers'),
+    mintimeminutes: queryNumber(query, 'mintimeminutes'),
+    partition: queryString(query, 'partition') || Partition.expeditionPublic,
+    requirespenpaper: queryBoolean(query, 'requirespenpaper'),
+    summary: queryString(query, 'summary'),
+    theme: queryString(query, 'theme') || 'base',
+    title: queryString(query, 'title'),
   });
   if (quest instanceof Error) {
     console.error(quest);
@@ -468,13 +499,16 @@ export function feedback(
   const platformDump: string = body.platformDump;
   const consoleDump: string[] = body.console || [];
   let action: Bluebird<any> = maybeGetUserByEmail(db, data.email);
-  switch (req.params.type as FeedbackType) {
+  // Narrowed by the cases below, so each branch passes a literal that is
+  // already a FeedbackType; anything else falls through to `default`.
+  const feedbackType = req.params.type;
+  switch (feedbackType) {
     case 'feedback':
       action = action.then(user =>
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          feedbackType,
           data,
           platformDump,
           consoleDump,
@@ -490,7 +524,7 @@ export function feedback(
         submitFeedback(
           db,
           mail,
-          req.params.type,
+          feedbackType,
           data,
           platformDump,
           consoleDump,
@@ -504,8 +538,8 @@ export function feedback(
       );
       break;
     default:
-      console.error('Unknown feedback type ' + req.params.type);
-      res.status(500).end('Unknown feedback type: ' + req.params.type);
+      console.error('Unknown feedback type ' + feedbackType);
+      res.status(500).end('Unknown feedback type: ' + feedbackType);
       return Bluebird.reject('Unknown feedback type');
   }
   return action
@@ -525,11 +559,11 @@ export function userQuests(
   res: express.Response,
 ) {
   return getUserQuests(db, res.locals.id)
-    .then((userQuests: UserQuestsType) => {
-      for (const k of Object.keys(userQuests)) {
-        proxifyQuestURL(userQuests[k].details);
+    .then((quests: UserQuestsType) => {
+      for (const k of Object.keys(quests)) {
+        proxifyQuestURL(quests[k].details);
       }
-      return res.status(200).end(JSON.stringify(userQuests));
+      return res.status(200).end(JSON.stringify(quests));
     })
     .catch((e: Error) => {
       console.error(e);

@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { AnalyticsEvent } from 'shared/schema/AnalyticsEvents';
-import { Partition } from 'shared/schema/Constants';
+import { Badge, Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
 import { Event } from 'shared/schema/multiplayer/Events';
 import { SessionClient } from 'shared/schema/multiplayer/SessionClients';
@@ -52,7 +52,7 @@ export const users = {
 export const userBadges = {
   basic: new UserBadge({
     userid: 'test',
-    badge: 'backer1',
+    badge: Badge.backer1,
   }),
 };
 

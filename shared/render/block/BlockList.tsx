@@ -1,4 +1,4 @@
-import {Logger} from '../Logger';
+import { Logger } from '../Logger';
 
 // Terms:
 // - Indent level: The number of preceding spaces to a given line.
@@ -18,8 +18,8 @@ export interface Block {
 }
 
 export class BlockList {
-  private blocks: Block[];
-  public length: number;
+  private blocks!: Block[];
+  public length!: number;
   public logger: Logger;
 
   constructor(md: string, logger: Logger = new Logger()) {
@@ -31,7 +31,14 @@ export class BlockList {
     // For debugging
     let result = '#\tLine#\tIndent\tLines';
     for (let i = 0; i < this.blocks.length; i++) {
-      result += i + '\t' + this.blocks[i].startLine + '\t' + this.blocks[i].indent + '\t' + this.blocks[i].lines;
+      result +=
+        i +
+        '\t' +
+        this.blocks[i].startLine +
+        '\t' +
+        this.blocks[i].indent +
+        '\t' +
+        this.blocks[i].lines;
     }
     return result;
   }
@@ -40,7 +47,12 @@ export class BlockList {
     return this.blocks[idx];
   }
 
-  private shouldStartNewBlock(currBlock: Block|null, line: string, indent: number, prevEmpty: boolean): boolean {
+  private shouldStartNewBlock(
+    currBlock: Block | null,
+    line: string,
+    indent: number,
+    prevEmpty: boolean,
+  ): boolean {
     // Start a new block if...
     // there is no current block
     if (!currBlock) {
@@ -70,7 +82,12 @@ export class BlockList {
 
     // after a trigger and whitespace
     const currBlockStart = currBlock.lines && currBlock.lines[0];
-    if (prevEmpty && currBlockStart && currBlockStart[0] === '*' && currBlockStart[1] === '*') {
+    if (
+      prevEmpty &&
+      currBlockStart &&
+      currBlockStart[0] === '*' &&
+      currBlockStart[1] === '*'
+    ) {
       return true;
     }
 
@@ -79,7 +96,6 @@ export class BlockList {
 
   // Construct a list of blocks, given an entire QDL document as a string.
   private parse(md: string, logger: Logger) {
-
     // Replace tabs with spaces (just in case)
     md = md.replace(/\t/g, '  ');
     // remove all comments before we start parsing
@@ -92,7 +108,7 @@ export class BlockList {
     // The result is a map of indent level to Block[].
     const split = md.split('\n');
     let prevEmpty = false;
-    let currBlock: Block|null = null;
+    let currBlock: Block | null = null;
     for (let lineNumber = 0; lineNumber < split.length; lineNumber++) {
       // Remove all whitespace
       const line = split[lineNumber].replace(/\s+$/, '');
@@ -111,12 +127,15 @@ export class BlockList {
       }
 
       if (indent % 2 === 1) {
-        logger.err('Incorrect indentation: leading spaces must be multiple of two.', '436', lineNumber);
+        logger.err(
+          'Incorrect indentation: leading spaces must be multiple of two.',
+          '436',
+          lineNumber,
+        );
         continue;
       }
 
       if (this.shouldStartNewBlock(currBlock, line, indent, prevEmpty)) {
-
         if (currBlock) {
           this.blocks.push(currBlock);
         }

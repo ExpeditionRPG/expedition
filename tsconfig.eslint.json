@@ -1,0 +1,19 @@
+// Program used by eslint only.
+//
+// tsconfig.json excludes *.test.ts(x) so that `tsc --noEmit` checks shipped
+// code only, but `yarn lint` has always covered the tests too (the old script
+// globbed '{shared,services}/**/*.{ts,tsx}'). typescript-eslint's type-aware
+// rules need every linted file to belong to a Program, so this widens the
+// include list and changes nothing else.
+{
+  "extends": "./tsconfig.json",
+  "include": ["services/**/*", "shared/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "services/app/src/quests",
+    "services/app/plugins",
+    "services/app/platforms",
+    "www"
+  ]
+}

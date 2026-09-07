@@ -15,7 +15,7 @@ export async function handleFetchErrorsAsString(response: any) {
 // fetch can be used for anything except local files, so anything that might
 // download from file:// (aka quests) should use this instead
 export function fetchLocal(url: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.onload = () => {
       resolve(request.response);

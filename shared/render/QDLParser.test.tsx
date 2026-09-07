@@ -4,7 +4,7 @@ import { QDLParser } from './QDLParser';
 import { XMLRenderer } from './render/XMLRenderer';
 import TestData from './TestData';
 
-const prettifyHTML = (require('html') as any).prettyPrint;
+const prettifyHTML = require('html').prettyPrint;
 
 describe('QDLParser', () => {
   test('parses basic QDL to XML', () => {

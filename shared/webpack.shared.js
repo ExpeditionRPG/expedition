@@ -1,6 +1,8 @@
 const Path = require('path');
 const Webpack = require('webpack');
 
+const aliases = require('./webpack.aliases');
+
 const port = process.env.DOCKER_PORT || 8080;
 
 const options = {
@@ -32,17 +34,6 @@ const options = {
   module: {
     rules: [
       {
-        enforce: 'pre',
-        loader: 'tslint-loader',
-        options: {
-          fix: true,
-          tsConfigFile: Path.resolve(__dirname, '../tsconfig.json'),
-          // Explicitly disable extended type checking for dev workflow due to performance
-          typeCheck: false,
-        },
-        test: /\.tsx$/,
-      },
-      {
         loader: 'file-loader',
         // disable filename hashing for infrequently changed static assets to enable preloading
         options: { name: 'images/[name].[ext]' },
@@ -60,17 +51,24 @@ const options = {
       },
       {
         exclude: /node_modules/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
         options: {
-          // Point at the monorepo tsconfig explicitly. Left to its own devices
-          // awesome-typescript-loader calls ts.findConfigFile() with the
-          // service directory, which on Windows is a backslash path that
-          // TypeScript 2.8 fails to walk upwards from -- it then silently
-          // falls back to the compiler defaults (no `jsx`, no `paths`, ES3
-          // target) and the build dies in thousands of bogus errors.
-          configFileName: Path.resolve(__dirname, '../tsconfig.json'),
+          // Point at the monorepo tsconfig explicitly; ts-loader's own search
+          // starts from the service directory and would find nothing.
+          //
+          // tsconfig.browser.json is tsconfig.json with `target: es5` +
+          // `downlevelIteration`. Babel used to do this down-levelling for us
+          // via awesome-typescript-loader's `useBabel`; see that file for why
+          // the browser bundles cannot ship es6. services/api has its own
+          // webpack config and stays on the root tsconfig (it runs on node).
+          configFile: Path.resolve(__dirname, '../tsconfig.browser.json'),
+          // `tsc --noEmit` (yarn typecheck / the CI Typecheck step) is the
+          // authoritative type check for the repo. Re-running it inside every
+          // one of the five bundles would quadruple build time for the same
+          // diagnostics.
+          transpileOnly: true,
         },
-        test: /\.tsx$/,
+        test: /\.tsx?$/,
       },
     ],
   },
@@ -100,6 +98,7 @@ const options = {
     new Webpack.HotModuleReplacementPlugin(),
   ],
   resolve: {
+    alias: aliases,
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
   },
   stats: {

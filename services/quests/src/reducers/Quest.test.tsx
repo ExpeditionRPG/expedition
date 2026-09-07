@@ -1,19 +1,32 @@
-import {QuestMetadataChangeAction} from '../actions/ActionTypes';
-import {quest} from './Quest';
+import { QuestMetadataChangeAction } from '../actions/ActionTypes';
+import { quest } from './Quest';
 
 describe('quest', () => {
-  test.skip('returns initial state', () => { /* TODO */ });
-
-  test('updates metadata state on change', () => {
-    const change: QuestMetadataChangeAction = {type: 'QUEST_METADATA_CHANGE', delta: {author: 'test'}};
-    expect(quest({}, change)).toEqual({author: 'test'});
+  test.skip('returns initial state', () => {
+    /* TODO */
   });
 
-  test.skip('handles load', () => { /* TODO */ });
+  test('updates metadata state on change', () => {
+    const change: QuestMetadataChangeAction = {
+      type: 'QUEST_METADATA_CHANGE',
+      delta: { author: 'test' },
+    };
+    expect(quest({}, change)).toEqual({ author: 'test' });
+  });
 
-  test.skip('clears on new', () => { /* TODO */ });
+  test.skip('handles load', () => {
+    /* TODO */
+  });
 
-  test.skip('clears on delete', () => { /* TODO */ });
+  test.skip('clears on new', () => {
+    /* TODO */
+  });
 
-  test.skip('handles publish', () => { /* TODO */ });
+  test.skip('clears on delete', () => {
+    /* TODO */
+  });
+
+  test.skip('handles publish', () => {
+    /* TODO */
+  });
 });

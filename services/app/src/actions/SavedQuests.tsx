@@ -1,19 +1,34 @@
-import {CombatPhase} from 'app/Constants';
+import { CombatPhase } from 'app/Constants';
 import * as Redux from 'redux';
-import {fetchLocal} from 'shared/requests';
-import {Quest} from 'shared/schema/Quests';
-import {getEnemiesAndTier} from '../components/views/quest/cardtemplates/combat/Actions';
-import {getNextMidCombatNode} from '../components/views/quest/cardtemplates/roleplay/Actions';
-import {defaultContext, populateScope} from '../components/views/quest/cardtemplates/Template';
-import {ParserNode, TemplateContext} from '../components/views/quest/cardtemplates/TemplateTypes';
-import {getCheerio} from '../Globals';
-import {checkStorageFreeBytes, getStorageJson, setStorageKeyValue} from '../LocalStorage';
-import {logEvent} from '../Logging';
-import {SavedQuestMeta} from '../reducers/StateTypes';
-import {QuestNodeAction, SavedQuestDeletedAction, SavedQuestListAction, StorageFreeAction} from './ActionTypes';
-import {toCard} from './Card';
-import {initQuestNode} from './Quest';
-import {openSnackbar} from './Snackbar';
+import { fetchLocal } from 'shared/requests';
+import { Quest } from 'shared/schema/Quests';
+import { getEnemiesAndTier } from '../components/views/quest/cardtemplates/combat/Actions';
+import { getNextMidCombatNode } from '../components/views/quest/cardtemplates/roleplay/Actions';
+import {
+  defaultContext,
+  populateScope,
+} from '../components/views/quest/cardtemplates/Template';
+import {
+  ParserNode,
+  TemplateContext,
+} from '../components/views/quest/cardtemplates/TemplateTypes';
+import { getCheerio } from '../Globals';
+import {
+  checkStorageFreeBytes,
+  getStorageJson,
+  setStorageKeyValue,
+} from '../LocalStorage';
+import { logEvent } from '../Logging';
+import { SavedQuestMeta } from '../reducers/StateTypes';
+import {
+  QuestNodeAction,
+  SavedQuestDeletedAction,
+  SavedQuestListAction,
+  StorageFreeAction,
+} from './ActionTypes';
+import { toCard } from './Card';
+import { initQuestNode } from './Quest';
+import { openSnackbar } from './Snackbar';
 
 const cheerio = require('cheerio') as CheerioAPI;
 
@@ -44,7 +59,10 @@ export function savedQuestKey(id: string, ts: number) {
   return SAVED_QUESTS_KEY + '-' + id + '-' + ts.toString();
 }
 
-export function getSavedQuestApproxBytes(id: string, ts: number): number|undefined {
+export function getSavedQuestApproxBytes(
+  id: string,
+  ts: number,
+): number | undefined {
   const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
   if (!data) {
     return undefined;
@@ -54,7 +72,7 @@ export function getSavedQuestApproxBytes(id: string, ts: number): number|undefin
 
 export function listSavedQuests(): SavedQuestListAction {
   const savedQuests = getSavedQuestMeta();
-  return {type: 'SAVED_QUEST_LIST', savedQuests};
+  return { type: 'SAVED_QUEST_LIST', savedQuests };
 }
 
 export function deleteSavedQuest(id: string, ts: number) {
@@ -67,40 +85,70 @@ export function deleteSavedQuest(id: string, ts: number) {
         setStorageKeyValue(SAVED_QUESTS_KEY, savedQuests);
         setStorageKeyValue(savedQuestKey(id, ts), '');
         dispatch(updateStorageFreeBytes());
-        return dispatch({type: 'SAVED_QUEST_DELETED', savedQuests} as SavedQuestDeletedAction);
+        return dispatch({
+          type: 'SAVED_QUEST_DELETED',
+          savedQuests,
+        } as SavedQuestDeletedAction);
       }
     }
-    throw new Error('No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.');
+    throw new Error(
+      'No such quest with ID ' + id + ', timestamp ' + ts.toString() + '.',
+    );
   };
 }
 
 export function saveQuestForOffline(details: Quest) {
   return (dispatch: Redux.Dispatch<any>): any => {
     return fetchLocal(details.publishedurl)
-    .catch((e: Error) => {
-      return dispatch(openSnackbar(Error('Network error saving quest: Please check your connection'), true));
-    })
-    .then((result: string) => {
-      const elem = cheerio.load(result)('quest');
-      const node = initQuestNode(elem, defaultContext());
-      return dispatch(storeSavedQuest(node, details, Date.now()))
-        .then(() => {
-          return dispatch(openSnackbar('Saved for offline play.'));
-        });
-    })
-    .catch((e: Error) => {
-      if (e.toString().indexOf('exceeded the quota')) {
-        // Out-of-space errors are not considered errors (they should not be reportable)
-        return dispatch(openSnackbar('Couldn\'t save; out of storage space.', true));
-      }
-      return dispatch(openSnackbar(Error('Error saving quest: ' + e), true));
-    });
+      .then(
+        (result: string) => {
+          const elem = cheerio.load(result)('quest');
+          const node = initQuestNode(elem, defaultContext());
+          return dispatch(storeSavedQuest(node, details, Date.now())).then(
+            () => {
+              return dispatch(openSnackbar('Saved for offline play.'));
+            },
+          );
+        },
+        () => {
+          // A rejection handler on this .then(), not a .catch() before it: a
+          // .catch() resolved the chain, so the parse above then ran on the
+          // dispatch result instead of on quest XML.
+          return dispatch(
+            openSnackbar(
+              Error('Network error saving quest: Please check your connection'),
+              true,
+            ),
+          );
+        },
+      )
+      .catch((e: Error) => {
+        // `indexOf(...)` alone is truthy for -1, so this branch previously
+        // matched *every* error and reported an out-of-storage message for
+        // parse failures, dispatch errors and everything else.
+        if (e.toString().indexOf('exceeded the quota') !== -1) {
+          // Out-of-space errors are not considered errors (they should not be reportable)
+          return dispatch(
+            openSnackbar("Couldn't save; out of storage space.", true),
+          );
+        }
+        return dispatch(openSnackbar(Error('Error saving quest: ' + e), true));
+      });
   };
 }
 
-export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, set= setStorageKeyValue) {
+export function storeSavedQuest(
+  node: ParserNode,
+  details: Quest,
+  ts: number,
+  set = setStorageKeyValue,
+) {
   return (dispatch: Redux.Dispatch<any>): any => {
-    logEvent('save', 'quest_save', { ...details, action: details.title, label: details.id });
+    logEvent('save', 'quest_save', {
+      ...details,
+      action: details.title,
+      label: details.id,
+    });
 
     // Save the quest state
     const xml = node.getRootElem() + '';
@@ -113,7 +161,13 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     }
 
     try {
-      set(savedQuestKey(details.id, ts), {xml, path, seed, line, ctx: node.ctx} as SavedQuest);
+      set(savedQuestKey(details.id, ts), {
+        xml,
+        path,
+        seed,
+        line,
+        ctx: node.ctx,
+      });
     } catch (e) {
       return Promise.reject(e);
     }
@@ -122,7 +176,10 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     const savedQuests = getSavedQuestMeta();
     const pathLen = node.ctx.path.length;
     const savedBytes = getSavedQuestApproxBytes(details.id || '', ts || 0);
-    const newSavedQuests = [...savedQuests, {ts, details, pathLen, savedBytes}];
+    const newSavedQuests = [
+      ...savedQuests,
+      { ts, details, pathLen, savedBytes },
+    ];
     try {
       set(SAVED_QUESTS_KEY, newSavedQuests);
     } catch (e) {
@@ -133,17 +190,23 @@ export function storeSavedQuest(node: ParserNode, details: Quest, ts: number, se
     }
 
     dispatch(updateStorageFreeBytes());
-    return Promise.resolve(dispatch({type: 'SAVED_QUEST_STORED', savedQuests: newSavedQuests}));
+    return Promise.resolve(
+      dispatch({ type: 'SAVED_QUEST_STORED', savedQuests: newSavedQuests }),
+    );
   };
 }
 
 export function updateStorageFreeBytes(): StorageFreeAction {
-  return {type: 'STORAGE_FREE', freeBytes: checkStorageFreeBytes()};
+  return { type: 'STORAGE_FREE', freeBytes: checkStorageFreeBytes() };
 }
 
-function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|number[]): {nextNode: ParserNode|null, i: number} {
+function recreateNodeThroughCombat(
+  node: ParserNode,
+  i: number,
+  path: string | number[],
+): { nextNode: ParserNode | null; i: number } {
   // We lack some metadata about combat, but we can still parse enemies and tier.
-  const {enemies, tier} = getEnemiesAndTier(node);
+  const { enemies, tier } = getEnemiesAndTier(node);
   node.ctx.templates.combat = {
     enemies,
     numAliveAdventurers: 0,
@@ -160,15 +223,20 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
 
   for (; i < path.length; i++) {
     const action = path[i];
-    if (typeof(action) === 'string' && action.startsWith('|')) {
-      (node.ctx.templates.combat as any).roundCount = parseInt(action.substr(1), 10);
+    if (typeof action === 'string' && action.startsWith('|')) {
+      (node.ctx.templates.combat as any).roundCount = parseInt(
+        action.substr(1),
+        10,
+      );
       node = node.clone(); // Clone re-calculates visibility of inner nodes.
     } else {
       if (typeof action !== 'number') {
         const handled = node.handleAction(action);
         if (handled === null) {
-          console.warn(`Failed to load quest (invalid combat action '${action}' for node ${i} along path '${node.ctx.path}')`);
-          return {nextNode: null, i};
+          console.warn(
+            `Failed to load quest (invalid combat action '${action}' for node ${i} along path '${node.ctx.path}')`,
+          );
+          return { nextNode: null, i };
         }
         node = handled;
         if (action === 'win' || action === 'lose') {
@@ -176,43 +244,52 @@ function recreateNodeThroughCombat(node: ParserNode, i: number, path: string|num
         }
         continue;
       }
-      const {nextNode, state} = getNextMidCombatNode(node, action);
+      const { nextNode, state } = getNextMidCombatNode(node, action);
       switch (state) {
         case 'ENDCOMBAT':
         case 'VICTORY':
         case 'DEFEAT':
-          return {nextNode, i};
+          return { nextNode, i };
         case 'END':
-          return {nextNode: null, i};
+          return { nextNode: null, i };
         case 'ENDROUND':
-        default: // we're still in combat
+        default:
+          // we're still in combat
           node = nextNode;
           break;
       }
     }
   }
   if (node.getTag() === 'combat') {
-    return {nextNode: null, i};
+    return { nextNode: null, i };
   }
-  return {nextNode: node, i};
+  return { nextNode: node, i };
 }
 
-export function recreateNodeFromPath(xml: string, path: string|number[], seed?: string): {node: ParserNode, complete: boolean} {
+export function recreateNodeFromPath(
+  xml: string,
+  path: string | number[],
+  seed?: string,
+): { node: ParserNode; complete: boolean } {
   let node = initQuestNode(getCheerio().load(xml)('quest'), defaultContext());
   if (seed) {
     node.ctx.seed = seed;
   } else {
-    console.warn('Recreating node without saved seed; RNG failures may cause partial load');
+    console.warn(
+      'Recreating node without saved seed; RNG failures may cause partial load',
+    );
   }
 
   for (let i = 0; i < path.length; i++) {
     const action = path[i];
     // TODO: Also save random seed with path in context
-    let next: ParserNode|null;
+    let next: ParserNode | null;
     next = node.handleAction(action);
     if (!next) {
-      console.warn(`Failed to load quest (action #${i} for node along path '${node.ctx.path}'), returning early`);
-      return {node, complete: false};
+      console.warn(
+        `Failed to load quest (action #${i} for node along path '${node.ctx.path}'), returning early`,
+      );
+      return { node, complete: false };
     }
 
     // Try going all the way through combat. If we stop somewhere in
@@ -221,7 +298,7 @@ export function recreateNodeFromPath(xml: string, path: string|number[], seed?: 
       const result = recreateNodeThroughCombat(next, i, path);
       if (!result.nextNode) {
         // We'll count this one as complete (node leading up to a mid-combat save)
-        return {node, complete: false};
+        return { node, complete: false };
       } else {
         next = result.nextNode;
       }
@@ -230,10 +307,15 @@ export function recreateNodeFromPath(xml: string, path: string|number[], seed?: 
 
     node = next;
   }
-  return {node, complete: true};
+  return { node, complete: true };
 }
 
-export function recreateNodeFromContext(xml: string, line: number, ctx: TemplateContext, regenScope= populateScope): ParserNode {
+export function recreateNodeFromContext(
+  xml: string,
+  line: number,
+  ctx: TemplateContext,
+  regenScope = populateScope,
+): ParserNode {
   const elem = cheerio.load(xml)(`[data-line=${line}]`);
   if (!elem) {
     throw new Error(`Could not load line ${line} from XML`);
@@ -248,7 +330,7 @@ export function recreateNodeFromContext(xml: string, line: number, ctx: Template
 export function loadSavedQuest(id: string, ts: number) {
   return (dispatch: Redux.Dispatch<any>) => {
     const savedQuests = getSavedQuestMeta();
-    let details: Quest|null = null;
+    let details: Quest | null = null;
     for (const savedQuest of savedQuests) {
       if (savedQuest.details.id === id && savedQuest.ts === ts) {
         details = savedQuest.details;
@@ -260,10 +342,14 @@ export function loadSavedQuest(id: string, ts: number) {
       throw new Error('Could not load quest details.');
     }
 
-    logEvent('save', 'quest_save_load', { ...details, action: details.title, label: details.id });
+    logEvent('save', 'quest_save_load', {
+      ...details,
+      action: details.title,
+      label: details.id,
+    });
     const data: SavedQuest = getStorageJson(savedQuestKey(id, ts), {}) as any;
 
-    let node: ParserNode|null = null;
+    let node: ParserNode | null = null;
     if (data.ctx && data.xml && data.line !== undefined) {
       console.log('Attempting to recreate from ctx');
       try {
@@ -282,17 +368,19 @@ export function loadSavedQuest(id: string, ts: number) {
       }
       const result = recreateNodeFromPath(data.xml, data.path, data.seed);
       if (!result.complete) {
-        dispatch(openSnackbar('Could not load fully - using earlier checkpoint.'));
+        dispatch(
+          openSnackbar('Could not load fully - using earlier checkpoint.'),
+        );
       }
       node = result.node;
     }
 
-    dispatch({type: 'PUSH_HISTORY'});
+    dispatch({ type: 'PUSH_HISTORY' });
     dispatch({
       type: 'QUEST_NODE',
       node,
       details,
     } as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
+    dispatch(toCard({ name: 'QUEST_CARD', noHistory: true }));
   };
 }

@@ -14,10 +14,7 @@ describe('Navigation', () => {
       toCard: jest.fn(),
       ...overrides,
     };
-    const e = shallow(
-      <Navigation {...((props as any) as Props)} />,
-      undefined /*renderOptions*/,
-    );
+    const e = shallow(<Navigation {...props} />, undefined /*renderOptions*/);
     return { props, e };
   }
 

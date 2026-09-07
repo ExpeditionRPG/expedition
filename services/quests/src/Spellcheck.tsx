@@ -1,13 +1,24 @@
-const acequire: any = (require('brace') as any).acequire;
-const {Range} = acequire('ace/range');
-import {ENCOUNTERS} from 'app/Encounters';
-import {setWordCount} from './actions/Editor';
+const acequire: any = require('brace').acequire;
+const { Range } = acequire('ace/range');
+import { ENCOUNTERS } from 'app/Encounters';
+import { setWordCount } from './actions/Editor';
 import REGEX from './Regex';
-import {store} from './Store';
+import { store } from './Store';
 const IGNORE = Object.keys(ENCOUNTERS);
-const elementRegexes = new RegExp('(' + [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP].map((regex: any): string => {
-  return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
-}).join('|') + ')[^\s]*', 'gm');
+// The trailing class is `[^\\s]*`, not `[^\s]*`: this argument is a string
+// rather than a regex literal, so a single backslash collapsed to a plain `s`
+// and the class read "any character except a lowercase s" instead of "any
+// non-whitespace character".
+const elementRegexes = new RegExp(
+  '(' +
+    [REGEX.HTML_TAG, REGEX.TRIGGER, REGEX.ID, REGEX.OP]
+      .map((regex: any): string => {
+        return regex.toString().match(REGEX.EXTRACT_REGEX)[1];
+      })
+      .join('|') +
+    ')[^\\s]*',
+  'gm',
+);
 
 export default class Spellcheck {
   private contentsModified = true;
@@ -39,17 +50,22 @@ export default class Spellcheck {
   // Return a list of all unique words in the provided text
   // after removing newlines and trimming out empty spaces and non-word characters
   public static getUniqueWords(text: string): string[] {
-    return text
-      // newlines -> space
-      .replace(/\n/g, ' ')
-      // split to array of words on spaces
-      .split(' ')
-      // remove empty strings
-      .filter((s: string): boolean => (Boolean(s) && s.length > 0))
-      // remove non-word characters
-      .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
-      // only return the first instance of each word
-      .filter((s: string, i: number, arr: string[]): boolean => arr.indexOf(s) === i);
+    return (
+      text
+        // newlines -> space
+        .replace(/\n/g, ' ')
+        // split to array of words on spaces
+        .split(' ')
+        // remove empty strings
+        .filter((s: string): boolean => Boolean(s) && s.length > 0)
+        // remove non-word characters
+        .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
+        // only return the first instance of each word
+        .filter(
+          (s: string, i: number, arr: string[]): boolean =>
+            arr.indexOf(s) === i,
+        )
+    );
   }
 
   public onChange() {
@@ -73,33 +89,50 @@ export default class Spellcheck {
         this.session.removeGutterDecoration(i, 'misspelled');
       }
 
-      const text = Spellcheck.cleanCorpus(this.session.getDocument().getValue());
+      const text = Spellcheck.cleanCorpus(
+        this.session.getDocument().getValue(),
+      );
       store.dispatch(setWordCount(Spellcheck.getWordCount(text)));
       const words = Spellcheck.getUniqueWords(text);
 
       // get list of invalid words in corpus (aka not in dictionary or our list of exceptions)
       const misspellings = words.filter((word: string): boolean => {
-        return (!this.dictionary.check(word) && IGNORE.indexOf(word.toLowerCase()) === -1);
+        return (
+          !this.dictionary.check(word) &&
+          IGNORE.indexOf(word.toLowerCase()) === -1
+        );
       });
 
       // create a regex to find all instances of the known mispelled words in the corpus
-      const misspellingsRegex = new RegExp('\\b(' + misspellings.join('|') + ')\\b', 'g');
+      const misspellingsRegex = new RegExp(
+        '\\b(' + misspellings.join('|') + ')\\b',
+        'g',
+      );
       // highlight all instances of all bad words in the document
       // since we need to reference row + column for markers, easiest way is to go row-by-row
-      this.session.getDocument().getAllLines().forEach((line: string, i: number) => {
-        // Before we check for misspellings, remove elements we don't want to check
-        line = line.replace(elementRegexes, '');
-        let match = misspellingsRegex.exec(line);
-        if (match && match[0] !== '') {
-          this.session.addGutterDecoration(i, 'misspelled');
-        }
-        while (match && match[0] !== '') {
-          const range = new Range(i, match.index, i, match.index + match[0].length);
-          this.session.addMarker(range, 'misspelled', 'typo', true);
-          match = misspellingsRegex.exec(line);
-        }
-      });
-    } finally { // free up, even if there was an error (more robust)
+      this.session
+        .getDocument()
+        .getAllLines()
+        .forEach((line: string, i: number) => {
+          // Before we check for misspellings, remove elements we don't want to check
+          line = line.replace(elementRegexes, '');
+          let match = misspellingsRegex.exec(line);
+          if (match && match[0] !== '') {
+            this.session.addGutterDecoration(i, 'misspelled');
+          }
+          while (match && match[0] !== '') {
+            const range = new Range(
+              i,
+              match.index,
+              i,
+              match.index + match[0].length,
+            );
+            this.session.addMarker(range, 'misspelled', 'typo', true);
+            match = misspellingsRegex.exec(line);
+          }
+        });
+    } finally {
+      // free up, even if there was an error (more robust)
       this.spellchecking = false;
       this.contentsModified = false;
     }

@@ -12,7 +12,7 @@ export interface DispatchProps {
 interface Props extends StateProps, DispatchProps {}
 
 class RealtimeTextArea extends React.Component<Props, {}> {
-  public silentChange: boolean;
+  public silentChange = false;
   public ref: any;
 
   public getValue() {
@@ -51,7 +51,10 @@ class RealtimeTextArea extends React.Component<Props, {}> {
       return;
     }
     this.silentChange = true;
-    this.ref.value = this.ref.value.substr(0, event.index) + event.text + this.ref.value.substr(event.index);
+    this.ref.value =
+      this.ref.value.substr(0, event.index) +
+      event.text +
+      this.ref.value.substr(event.index);
     this.silentChange = false;
   }
 
@@ -60,7 +63,9 @@ class RealtimeTextArea extends React.Component<Props, {}> {
       return;
     }
     this.silentChange = true;
-    this.ref.value = this.ref.value.substr(0, event.index) + this.ref.value.substr(event.index + event.text.length);
+    this.ref.value =
+      this.ref.value.substr(0, event.index) +
+      this.ref.value.substr(event.index + event.text.length);
     this.silentChange = false;
   }
 
@@ -84,7 +89,8 @@ class RealtimeTextArea extends React.Component<Props, {}> {
       <textarea
         id="notesArea"
         ref={(ref: any) => this.onRef(ref)}
-        onChange={(e: any) => this.onChange(e)} />
+        onChange={(e: any) => this.onChange(e)}
+      />
     );
   }
 }
@@ -100,7 +106,8 @@ const NotesPanel = (props: Props): JSX.Element => {
         <RealtimeTextArea
           realtime={props.realtime}
           realtimeModel={props.realtimeModel}
-          onDirty={props.onDirty} />
+          onDirty={props.onDirty}
+        />
       </div>
     </div>
   );

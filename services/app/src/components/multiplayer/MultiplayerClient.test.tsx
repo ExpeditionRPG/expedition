@@ -28,10 +28,7 @@ describe('MultiplayerClient', () => {
     return {
       store,
       props,
-      a: shallow(
-        <MultiplayerClient {...((props as any) as Props)} />,
-        undefined,
-      ),
+      a: shallow(<MultiplayerClient {...props} />, undefined),
     };
   }
 

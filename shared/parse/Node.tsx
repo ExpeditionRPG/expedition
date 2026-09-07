@@ -1,4 +1,9 @@
-import {Context, evaluateContentOps, evaluateOp, updateContext} from './Context';
+import {
+  Context,
+  evaluateContentOps,
+  evaluateOp,
+  updateContext,
+} from './Context';
 
 const seedrandom = require('seedrandom');
 const Clone = require('clone');
@@ -17,26 +22,29 @@ function isNumeric(n: any): boolean {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function getNodeAttributes(e: Cheerio): {[key: string]: string; } {
+function getNodeAttributes(e: Cheerio): { [key: string]: string } {
   return e.get(0).attribs;
 }
 
-function getTriggerId(elem: Cheerio): string|null {
-  const m = elem.text().trim().match(/\s*goto\s+(.*)/);
-  return (m) ? m[1] : null;
+function getTriggerId(elem: Cheerio): string | null {
+  const m = elem
+    .text()
+    .trim()
+    .match(/\s*goto\s+(.*)/);
+  return m ? m[1] : null;
 }
 
 export class Node<C extends Context> {
   public elem: Cheerio;
   public ctx: C;
-  private renderedChildren: Array<{rendered: Cheerio, original: Cheerio}>;
+  private renderedChildren!: Array<{ rendered: Cheerio; original: Cheerio }>;
   private rng: () => number;
 
   // Certain fail-safe events are fine under normal behavior, but we may want to
   // strictly check them when crawling for errors.
   private errors: Error[];
 
-  constructor(elem: Cheerio, ctx: C, action?: string|number, seed?: string) {
+  constructor(elem: Cheerio, ctx: C, action?: string | number, seed?: string) {
     this.elem = elem;
     this.errors = [];
     this.ctx = this.updateContext(elem, ctx, action);
@@ -58,21 +66,26 @@ export class Node<C extends Context> {
   public clone(): this {
     // Context is deep-copied via updateContext.
     // Random seed is persisted on the copied node.
-    return new (this.constructor as any)(this.elem, this.ctx, null, this.ctx.seed);
+    return new (this.constructor as any)(
+      this.elem,
+      this.ctx,
+      null,
+      this.ctx.seed,
+    );
   }
 
   public getErrors(): Error[] {
     return this.errors;
   }
 
-  public getTag(): string|null {
+  public getTag(): string | null {
     const e = this.elem.get(0);
-    return (e) ? e.tagName.toLowerCase() : null;
+    return e ? e.tagName.toLowerCase() : null;
   }
 
-  public getVisibleKeys(): Array<string|number> {
+  public getVisibleKeys(): Array<string | number> {
     let choiceIdx = -1;
-    const keys: Array<string|number> = [];
+    const keys: Array<string | number> = [];
     this.loopChildren((tag, child, orig) => {
       if (child.attr('on') !== undefined) {
         keys.push(child.attr('on'));
@@ -86,41 +99,45 @@ export class Node<C extends Context> {
 
   // nextSeed is passed as the initial render seed for the resulting
   // Node returned by this function.
-  public getNext(key?: string|number, nextSeed?: string): this|null {
+  public getNext(key?: string | number, nextSeed?: string): this | null {
     let next: Cheerio | null;
     if (key === undefined) {
       next = this.getNextNode();
     } else if (isNumeric(key)) {
       // Scan the parent node to find the choice with the right number
-      const idx = (typeof(key) === 'number') ? key : parseInt(key, 10);
+      const idx = typeof key === 'number' ? key : parseInt(key, 10);
       let choiceIdx = -1;
-      next = this.loopChildren((tag, child, orig) => {
-        if (tag !== 'choice') {
-          return;
-        }
-        choiceIdx++;
-        if (choiceIdx !== idx) {
-          return;
-        }
+      next =
+        this.loopChildren((tag, child, orig) => {
+          if (tag !== 'choice') {
+            return;
+          }
+          choiceIdx++;
+          if (choiceIdx !== idx) {
+            return;
+          }
 
-        // Use original node here, so we don't break dom structure
-        // due to child cloning/rendering.
-        const result = orig.children().eq(0);
-        if (this.isElemEnabled(result)) {
-          return result;
-        }
-        return this.getNextNode(result);
-      }) || this.getNextNode();
-    } else {
-      next = this.loopChildren((tag, child, orig) => {
-        if (child.attr('on') === key) {
           // Use original node here, so we don't break dom structure
           // due to child cloning/rendering.
-          return orig.children().eq(0);
-        }
-      }) || null;
+          const result = orig.children().eq(0);
+          if (this.isElemEnabled(result)) {
+            return result;
+          }
+          return this.getNextNode(result);
+        }) || this.getNextNode();
+    } else {
+      next =
+        this.loopChildren((tag, child, orig) => {
+          if (child.attr('on') === key) {
+            // Use original node here, so we don't break dom structure
+            // due to child cloning/rendering.
+            return orig.children().eq(0);
+          }
+        }) || null;
     }
-    return (next) ? new (this.constructor as any)(next, this.ctx, key, nextSeed) : null;
+    return next
+      ? new (this.constructor as any)(next, this.ctx, key, nextSeed)
+      : null;
   }
 
   // Evaluates all content ops in-place and creates a list of
@@ -129,7 +146,7 @@ export class Node<C extends Context> {
   private renderChildren() {
     // Apply the random seed before rendering so we have deterministic
     // output when rendering the node's children.
-    Math.config({randomSeed: this.ctx.seed});
+    Math.config({ randomSeed: this.ctx.seed });
     this.renderedChildren = [];
     for (let i = 0; i < this.elem.children().length; i++) {
       // TODO(scott): Parsing of text nodes using .contents().
@@ -148,7 +165,11 @@ export class Node<C extends Context> {
         try {
           c.attr(attrib, evaluateContentOps(attribs[attrib], this.ctx));
         } catch (e) {
-          this.errors.push(new Error(`Failed to evaluate op in attribute ${attrib}: ${e.toString()}`));
+          this.errors.push(
+            new Error(
+              `Failed to evaluate op in attribute ${attrib}: ${String(e)}`,
+            ),
+          );
         }
       }
 
@@ -158,7 +179,9 @@ export class Node<C extends Context> {
         try {
           evaluated = evaluateContentOps(c.html() || '', this.ctx);
         } catch (e) {
-          this.errors.push(new Error(`Failed to evaluate op section: ${e.toString()}`));
+          this.errors.push(
+            new Error(`Failed to evaluate op section: ${String(e)}`),
+          );
         }
         if (evaluated === '') {
           continue;
@@ -166,11 +189,11 @@ export class Node<C extends Context> {
         c.html(evaluated);
       }
 
-      this.renderedChildren.push({rendered: c, original: child});
+      this.renderedChildren.push({ rendered: c, original: child });
     }
   }
 
-  public gotoId(id: string, seed?: string): this|null {
+  public gotoId(id: string, seed?: string): this | null {
     const root = this.getRootElem();
     if (root === null) {
       return null;
@@ -179,12 +202,19 @@ export class Node<C extends Context> {
     if (search.length === 0) {
       return null;
     }
-    return new (this.constructor as any)(search.eq(0), this.ctx, undefined, seed);
+    return new (this.constructor as any)(
+      search.eq(0),
+      this.ctx,
+      undefined,
+      seed,
+    );
   }
 
   // Loop through all rendered children. If a call to cb() returns a value
   // other than undefined, break the loop early and return the value.
-  public loopChildren(cb: (tag: string, child: Cheerio, original: Cheerio) => any): any {
+  public loopChildren(
+    cb: (tag: string, child: Cheerio, original: Cheerio) => any,
+  ): any {
     for (const child of this.renderedChildren) {
       const tag = child.rendered.get(0).tagName.toLowerCase();
       const v = cb(tag, child.rendered, child.original);
@@ -195,7 +225,7 @@ export class Node<C extends Context> {
   }
 
   // Useful for adding other meta-information to the path for comparison and/or reconstruction.
-  public addToPath(val: string|number): void {
+  public addToPath(val: string | number): void {
     this.ctx.path.push(val);
   }
 
@@ -215,7 +245,7 @@ export class Node<C extends Context> {
     ctx.seed = undefined;
 
     const ctxJSON = JSON.stringify(ctx, (key, val) => {
-      return (typeof val === 'function') ? val.toString() : val;
+      return typeof val === 'function' ? val.toString() : val;
     });
 
     return JSON.stringify({
@@ -224,7 +254,7 @@ export class Node<C extends Context> {
     });
   }
 
-  private getNextNode(elem?: Cheerio): Cheerio|null {
+  private getNextNode(elem?: Cheerio): Cheerio | null {
     if (!elem) {
       elem = this.elem;
     }
@@ -235,9 +265,12 @@ export class Node<C extends Context> {
 
       const sibling = elem.next();
 
-      if (sibling !== null && sibling.length > 0
-          && !this.isElemControl(sibling)
-          && this.isElemEnabled(sibling)) {
+      if (
+        sibling !== null &&
+        sibling.length > 0 &&
+        !this.isElemControl(sibling) &&
+        this.isElemEnabled(sibling)
+      ) {
         return sibling;
       }
 
@@ -253,7 +286,11 @@ export class Node<C extends Context> {
 
   public getRootElem(): Cheerio {
     let elem = this.elem;
-    while (elem && elem.get(0) && elem.get(0).tagName.toLowerCase() !== 'quest') {
+    while (
+      elem &&
+      elem.get(0) &&
+      elem.get(0).tagName.toLowerCase() !== 'quest'
+    ) {
       elem = elem.parent();
     }
     return elem;
@@ -261,7 +298,9 @@ export class Node<C extends Context> {
 
   private isElemControl(elem: Cheerio): boolean {
     const tagName = elem.get(0).tagName.toLowerCase();
-    return tagName === 'choice' || tagName === 'event' || Boolean(elem.attr('on'));
+    return (
+      tagName === 'choice' || tagName === 'event' || Boolean(elem.attr('on'))
+    );
   }
 
   private isElemEnabled(elem: Cheerio): boolean {
@@ -282,23 +321,34 @@ export class Node<C extends Context> {
       // If we fail to evaluate (e.g. symbol not defined), display the element
       // so that the quest is still playable - better too many options
       // than not being able to finish.
-      this.errors.push(new Error('Failed to evaluate conditional on element: ' + e.toString()));
+      this.errors.push(
+        new Error('Failed to evaluate conditional on element: ' + String(e)),
+      );
       return true;
     }
   }
 
   // The passed event parameter is a string indicating which event to fire based on the "on" attribute.
   // Returns the (cleaned) parameters of the event element
-  public getEventParameters(event: string, seed?: string): EventParameters|null {
+  public getEventParameters(
+    event: string,
+    seed?: string,
+  ): EventParameters | null {
     const evt = this.getNext(event, seed);
     if (!evt) {
       return null;
     }
     const p = evt.elem.parent();
     const ret: EventParameters = {};
-    if (p.attr('xp')) { ret.xp = (p.attr('xp') === 'true'); }
-    if (p.attr('loot')) { ret.loot = (p.attr('loot') === 'true'); }
-    if (p.attr('heal')) { ret.heal = parseInt(p.attr('heal'), 10); }
+    if (p.attr('xp')) {
+      ret.xp = p.attr('xp') === 'true';
+    }
+    if (p.attr('loot')) {
+      ret.loot = p.attr('loot') === 'true';
+    }
+    if (p.attr('heal')) {
+      ret.heal = parseInt(p.attr('heal'), 10);
+    }
     return ret;
   }
 
@@ -312,18 +362,27 @@ export class Node<C extends Context> {
       if (handled !== null) {
         return handled;
       }
-      ref = new (this.constructor as any)(ref.elem.parent(), this.ctx, undefined, seed);
+      ref = new (this.constructor as any)(
+        ref.elem.parent(),
+        this.ctx,
+        undefined,
+        seed,
+      );
     }
 
     // Return the trigger unchanged if a handler is not found.
     return this;
   }
 
-  private handleTrigger(seed?: string): this|null {
+  private handleTrigger(seed?: string): this | null {
     // Immediately act on any gotos (with a max depth)
     let i = 0;
-    let ref: this|null = this.clone();
-    for (; i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger'; i++) {
+    let ref: this | null = this.clone();
+    for (
+      ;
+      i < MAX_GOTO_FOLLOW_DEPTH && ref !== null && ref.getTag() === 'trigger';
+      i++
+    ) {
       const id = getTriggerId(ref.elem);
       if (id !== null) {
         ref = ref.gotoId(evaluateContentOps(id, ref.ctx), seed);
@@ -341,7 +400,7 @@ export class Node<C extends Context> {
   // - a number indicating the choice number in the XML element, including conditional choices.
   // - a string indicating which event to fire based on the "on" attribute.
   // Returns the card inside of / referenced by the choice/event element
-  public handleAction(action?: number|string, seed?: string): this|null {
+  public handleAction(action?: number | string, seed?: string): this | null {
     const next = this.getNext(action, seed);
     if (!next) {
       return null;
@@ -355,6 +414,13 @@ export class Node<C extends Context> {
 
   // Returns if the supplied node is an **end** trigger
   public isEnd(): boolean {
-    return (this.getTag() === 'trigger' && this.elem.text().toLowerCase().split(' ')[0].trim() === 'end');
+    return (
+      this.getTag() === 'trigger' &&
+      this.elem
+        .text()
+        .toLowerCase()
+        .split(' ')[0]
+        .trim() === 'end'
+    );
   }
 }

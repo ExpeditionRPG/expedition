@@ -6,8 +6,8 @@ import { AUTH_SETTINGS } from 'shared/schema/Constants';
 import { SetProfileMetaAction } from './ActionTypes';
 import { loadQuestFromURL } from './Quest';
 
-declare var window: any;
-declare var google: any;
+declare let window: any;
+declare let google: any;
 
 export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return { type: 'SET_PROFILE_META', user };

@@ -6,13 +6,15 @@ import {
 } from './Context';
 const cheerio: any = require('cheerio');
 
-declare var window: any;
+declare let window: any;
 
 // https://stackoverflow.com/a/9229821/1332186
 function arrayUniques(array) {
   const seen = {};
   return array.filter(num => {
-    return seen.hasOwnProperty(num) ? false : (seen[num] = true);
+    return Object.prototype.hasOwnProperty.call(seen, num)
+      ? false
+      : (seen[num] = true);
   });
 }
 
@@ -114,7 +116,12 @@ describe('Context', () => {
       };
       evaluateOp('n = 5', ctx, () => 0.1);
       expect(ctx.scope._.viewCount.name).not.toContain('bound');
-      expect(ctx.scope._.viewCount.hasOwnProperty('prototype')).toEqual(true);
+      expect(
+        Object.prototype.hasOwnProperty.call(
+          ctx.scope._.viewCount,
+          'prototype',
+        ),
+      ).toEqual(true);
     });
   });
 

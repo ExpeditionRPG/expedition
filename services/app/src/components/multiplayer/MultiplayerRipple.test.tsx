@@ -27,9 +27,7 @@ describe('MultiplayerRipple', () => {
       setDialog: jest.fn(),
       ...overrides,
     };
-    const root = mountRoot(
-      <MultiplayerRipple {...((props as any) as Props)} />,
-    );
+    const root = mountRoot(<MultiplayerRipple {...props} />);
     return { props, root };
   }
 

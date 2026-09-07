@@ -29,7 +29,7 @@ describe('Search', () => {
       onSearch: jest.fn(),
       ...overrides,
     };
-    return { props, e: <Search {...((props as any) as Props)} /> };
+    return { props, e: <Search {...props} /> };
   }
 
   test('renders a small selection of quests when user is not logged in', () => {

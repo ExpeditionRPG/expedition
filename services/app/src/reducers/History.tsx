@@ -1,9 +1,12 @@
 import Redux from 'redux';
-import {ReturnAction} from '../actions/ActionTypes';
-import {getHistoryApi, getNavigator} from '../Globals';
-import {AppStateBase, AppStateWithHistory} from './StateTypes';
+import { ReturnAction } from '../actions/ActionTypes';
+import { getHistoryApi, getNavigator } from '../Globals';
+import { AppStateBase, AppStateWithHistory } from './StateTypes';
 
-export function history(state: AppStateWithHistory, action: Redux.Action): AppStateWithHistory {
+export function history(
+  state: AppStateWithHistory,
+  action: Redux.Action,
+): AppStateWithHistory {
   if (state._history === undefined) {
     state._history = [];
   }
@@ -14,9 +17,9 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
     if (state._history.length === 0) {
       const navigator = getNavigator();
       if (navigator.app) {
-          navigator.app.exitApp();
+        navigator.app.exitApp();
       } else if (navigator.device) {
-          navigator.device.exitApp();
+        navigator.device.exitApp();
       }
       return state;
     }
@@ -24,7 +27,13 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
     let pastStateIdx: number = state._history.length - 1;
     const returnAction = action as ReturnAction;
     if (returnAction.matchFn) {
-      while (pastStateIdx > 0 && !returnAction.matchFn(state._history[pastStateIdx].card.name, state._history[pastStateIdx].quest.node)) {
+      while (
+        pastStateIdx > 0 &&
+        !returnAction.matchFn(
+          state._history[pastStateIdx].card.name,
+          state._history[pastStateIdx].quest.node,
+        )
+      ) {
         pastStateIdx--;
       }
     }
@@ -34,8 +43,12 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
     }
 
     // If we're going back to a point where the quest is no longer defined, clear the URL hash
-    if (pastStateIdx === 0 ||
-       (state._history[pastStateIdx - 1] && state._history[pastStateIdx - 1].quest && state._history[pastStateIdx - 1].quest.details.id === '')) {
+    if (
+      pastStateIdx === 0 ||
+      (state._history[pastStateIdx - 1] &&
+        state._history[pastStateIdx - 1].quest &&
+        state._history[pastStateIdx - 1].quest.details.id === '')
+    ) {
       getHistoryApi().pushState(null, '', '#');
     }
 
@@ -55,11 +68,11 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
       user: state.user,
       snackbar: state.snackbar,
       userQuests: state.userQuests,
-    } as AppStateWithHistory;
+    };
   }
 
   if (action.type === 'CLEAR_HISTORY') {
-    return {...state, _return: false, _history: []};
+    return { ...state, _return: false, _history: [] };
   }
 
   // Create a new array (objects may be shared)
@@ -84,5 +97,5 @@ export function history(state: AppStateWithHistory, action: Redux.Action): AppSt
       userQuests: undefined,
     } as AppStateBase);
   }
-  return {...state, _return: false, _history: stateHistory};
+  return { ...state, _return: false, _history: stateHistory };
 }

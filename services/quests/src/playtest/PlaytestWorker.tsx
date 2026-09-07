@@ -3,10 +3,11 @@
 // This file is a WebWorker - see the spec at
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-import {Node} from 'shared/parse/Node';
-import {Logger} from 'shared/render/Logger';
-import {PlaytestSettings} from '../reducers/StateTypes';
-import {PlaytestCrawler} from './PlaytestCrawler';
+import { Context } from 'shared/parse/Context';
+import { Node } from 'shared/parse/Node';
+import { Logger } from 'shared/render/Logger';
+import { PlaytestSettings } from '../reducers/StateTypes';
+import { PlaytestCrawler } from './PlaytestCrawler';
 
 const cheerio: any = require('cheerio') as CheerioAPI;
 
@@ -15,8 +16,8 @@ const cheerio: any = require('cheerio') as CheerioAPI;
 function mockContext() {
   const populateScopeFn = () => {
     return {
-      contentSets(): {[content: string]: boolean} {
-        return {horror: true, future: true, scarredlands: true};
+      contentSets(): { [content: string]: boolean } {
+        return { horror: true, future: true, scarredlands: true };
       },
       numAdventurers(): number {
         return 3;
@@ -24,7 +25,9 @@ function mockContext() {
       aliveAdventurers(): number {
         return 3;
       },
-      viewCount(id: string): number {
+      // Rebound to the quest context by evaluateOp(); see
+      // app/.../combat/Scope.tsx for the same pattern.
+      viewCount(this: Context, id: string): number {
         return this.views[id] || 0;
       },
       randomEnemy(): string {
@@ -53,7 +56,7 @@ function mockContext() {
 
   const newContext: any = {
     _templateScopeFn: populateScopeFn, // Used to refill template scope elsewhere (without dependencies)
-    path: ([] as any),
+    path: [] as any,
     scope: {
       _: populateScopeFn(),
     },
@@ -62,7 +65,7 @@ function mockContext() {
   };
 
   for (const k of Object.keys(newContext.scope._)) {
-    newContext.scope._[k] = (newContext.scope._[k] as any).bind(newContext);
+    newContext.scope._[k] = newContext.scope._[k].bind(newContext);
   }
 
   return newContext;
@@ -70,7 +73,12 @@ function mockContext() {
 
 function maybePublishLog(logger: Logger) {
   const m = logger.getFinalizedLogs();
-  if (m.error.length || m.info.length || m.internal.length || m.warning.length) {
+  if (
+    m.error.length ||
+    m.info.length ||
+    m.internal.length ||
+    m.warning.length
+  ) {
     (postMessage as any)(m);
   }
 }
@@ -82,7 +90,7 @@ interface RunMessage {
   xml: string;
 }
 
-function handleMessage(e: {data: RunMessage}) {
+function handleMessage(e: { data: RunMessage }) {
   try {
     const crawler = new PlaytestCrawler(e.data.settings);
     const start = Date.now();
@@ -93,7 +101,10 @@ function handleMessage(e: {data: RunMessage}) {
       throw new Error('Invalid element passed to webworker');
     }
     console.log('Playtest STARTED');
-    let [queueLen, numSeen] = crawler.crawlWithLog(new Node(elem, mockContext()), logger);
+    let [queueLen, numSeen] = crawler.crawlWithLog(
+      new Node(elem, mockContext()),
+      logger,
+    );
     maybePublishLog(logger);
 
     let elapsed = 0;
@@ -105,7 +116,7 @@ function handleMessage(e: {data: RunMessage}) {
         const ms = Date.now() - start;
         const lines = crawler.getLines().length;
         console.log(`Playtest COMPLETE (${ms} ms, ${lines} lines)`);
-        (postMessage as any)({status: 'COMPLETE', ms, lines});
+        (postMessage as any)({ status: 'COMPLETE', ms, lines });
         close();
         return;
       }
@@ -114,20 +125,22 @@ function handleMessage(e: {data: RunMessage}) {
       queueLen = result[0];
       numSeen = result[1];
       if (elapsed - lastLog > 250) {
-        console.log(`Playtest (step ${step}, queueLen ${queueLen}, seen ${numSeen})`);
+        console.log(
+          `Playtest (step ${step}, queueLen ${queueLen}, seen ${numSeen})`,
+        );
         lastLog = elapsed;
       }
       maybePublishLog(logger);
-      elapsed = (Date.now() - start);
+      elapsed = Date.now() - start;
       step++;
 
       setTimeout(asyncTest, 0);
     };
     asyncTest();
   } catch (err) {
-    console.error(err.toString());
-    (postMessage as any)({status: 'COMPLETE'});
+    console.error(String(err));
+    (postMessage as any)({ status: 'COMPLETE' });
   }
 }
 
-onmessage = (handleMessage as any);
+onmessage = handleMessage as any;

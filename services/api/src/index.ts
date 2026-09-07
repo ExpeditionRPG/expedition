@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as session from 'express-session';
 import * as http from 'http';
 import * as passport from 'passport';
-import { Options as DBOptions, Sequelize } from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 // initalize sequelize with session store
 const SessionStore = require('connect-session-sequelize')(session.Store);
@@ -25,7 +25,7 @@ function setupDB() {
         ssl: Config.get('SEQUELIZE_SSL'),
       },
       logging: Config.get('SEQUELIZE_LOGGING') === 'true' ? console.log : false,
-    } as DBOptions)
+    }),
   );
 }
 
@@ -100,7 +100,7 @@ function init() {
   // app.use(bodyParser.json({ type:'json/*' }));
   // app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' })); // for parsing application/x-www-form-urlencoded
   app.use(
-    bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any)
+    bodyParser.text({ type: '*/*', extended: true, limit: '5mb' } as any),
   );
 
   // Prevent caching of resources
