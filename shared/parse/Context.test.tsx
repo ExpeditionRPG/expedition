@@ -4,7 +4,7 @@ import {
   evaluateOp,
   updateContext,
 } from './Context';
-const cheerio: any = require('cheerio');
+import * as cheerio from '../Cheerio';
 
 declare let window: any;
 

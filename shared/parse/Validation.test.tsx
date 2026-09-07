@@ -1,6 +1,6 @@
 import { isEmptyObject, validate } from './Validation';
 
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from '../Cheerio';
 
 const load = (xml: string): any => cheerio.load(xml)('quest');
 

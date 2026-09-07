@@ -9,7 +9,7 @@ import { ParserNode } from '../TemplateTypes';
 import ResolveDecision, { Props } from './ResolveDecision';
 import { EMPTY_LEVELED_CHECK } from './Types';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 const TEST_NODE = new ParserNode(
   cheerio.load(
     '<combat><e>Test</e><e>Lich</e><e>lich</e><event on="win"></event><event on="lose"></event></combat>',

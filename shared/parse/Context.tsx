@@ -1,3 +1,5 @@
+import { Cheerio } from '../Cheerio';
+
 const Clone = require('clone');
 const HtmlDecode = require('he').decode;
 const MathJS = require('mathjs');

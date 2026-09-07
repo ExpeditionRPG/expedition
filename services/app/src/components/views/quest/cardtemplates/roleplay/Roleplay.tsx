@@ -28,7 +28,10 @@ export interface RoleplayResult {
   choices: Choice[];
   content: RoleplayElement[];
   ctx: TemplateContext;
-  icon: string;
+  // `icon` comes straight from an optional XML attribute, so it is genuinely
+  // absent on most nodes. @types/cheerio declared `attr()` as returning
+  // `string`, which hid that; `<Card icon?: string>` already handles it.
+  icon: string | undefined;
   title: string | JSX.Element;
 }
 
@@ -48,12 +51,13 @@ export function loadRoleplayNode(
     // Accumulate 'choice' tags in choices[]
     if (tag === 'choice') {
       choiceCount++;
-      if (!c.attr('text')) {
+      const choiceText = c.attr('text');
+      if (!choiceText) {
         throw new Error(
           '<choice> inside <roleplay> must have "text" attribute',
         );
       }
-      text = c.attr('text');
+      text = choiceText;
       choices.push({
         jsx: generateIconElements(text, theme),
         idx: choiceCount,
@@ -130,7 +134,7 @@ export function loadRoleplayNode(
     content,
     ctx: node.ctx,
     icon: node.elem.attr('icon'),
-    title: generateIconElements(node.elem.attr('title'), theme),
+    title: generateIconElements(node.elem.attr('title') || '', theme),
   };
 }
 

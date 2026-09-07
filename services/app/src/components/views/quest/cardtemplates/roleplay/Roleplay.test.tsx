@@ -3,7 +3,7 @@ import {defaultContext} from '../Template';
 import {ParserNode, TemplateContext} from '../TemplateTypes';
 import {loadRoleplayNode, RoleplayResult} from './Roleplay';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 
 function loadRP(xml: any, ctx: TemplateContext): RoleplayResult {
   return loadRoleplayNode(new ParserNode(xml, ctx));

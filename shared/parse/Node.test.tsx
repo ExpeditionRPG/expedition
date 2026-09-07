@@ -1,7 +1,7 @@
 import { Context, defaultContext } from './Context';
 import { Node } from './Node';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from '../Cheerio';
 
 describe('Node', () => {
   describe('getNext', () => {

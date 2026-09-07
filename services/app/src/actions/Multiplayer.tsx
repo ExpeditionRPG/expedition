@@ -246,7 +246,7 @@ export function sendStatus(
       const event: StatusEvent = {
         connected: true,
         lastEventID: commitID,
-        line: (elem && parseInt(elem.attr('data-line'), 10)) || undefined,
+        line: (elem && parseInt(elem.attr('data-line') || '', 10)) || undefined,
         numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
         aliveAdventurers: combat && combat.numAliveAdventurers,
         type: 'STATUS',

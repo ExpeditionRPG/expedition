@@ -6,7 +6,7 @@ import { defaultContext } from '../Template';
 import { ParserNode } from '../TemplateTypes';
 import PrepareDecision, { Props } from './PrepareDecision';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 const TEST_NODE = new ParserNode(
   cheerio.load(`
   <decision>

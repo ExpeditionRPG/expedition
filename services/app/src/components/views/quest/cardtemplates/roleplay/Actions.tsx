@@ -6,6 +6,7 @@ import {CombatPhase} from 'app/Constants';
 import {remoteify} from 'app/multiplayer/Remoteify';
 import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
 import Redux from 'redux';
+import {Cheerio} from 'shared/Cheerio';
 import {findCombatParent, handleCombatEnd} from '../combat/Actions';
 import {ParserNode} from '../TemplateTypes';
 

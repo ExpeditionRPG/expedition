@@ -374,11 +374,20 @@ export function websocketSession(
     }
   }
 
-  ws.on('message', (msg: WebSocket.Data) => {
-    if (typeof msg !== 'string') {
-      sendError(ws, 'Invalid type for inbound message: ' + typeof msg);
+  // ws 8 no longer decodes text frames before handing them to the 'message'
+  // listener: the payload always arrives as raw data (a Buffer here), and a
+  // second `isBinary` argument says which kind of frame it came from. Under
+  // ws 7 a text frame arrived as a string, so the old `typeof msg !== 'string'`
+  // guard rejected *every* inbound multiplayer message the moment ws was
+  // upgraded. The unit tests drive a mocked socket and so cannot see this;
+  // 'rejects binary frames' / 'accepts text frames' in Handlers.test.ts cover
+  // it now.
+  ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
+    if (isBinary) {
+      sendError(ws, 'Invalid type for inbound message: binary');
       return;
     }
+    const msg = data.toString();
 
     let event: MultiplayerEvent;
     try {

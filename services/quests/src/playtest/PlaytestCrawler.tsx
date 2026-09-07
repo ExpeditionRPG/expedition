@@ -1,4 +1,5 @@
 import { ENCOUNTERS } from 'app/Encounters';
+import { Cheerio } from 'shared/Cheerio';
 import { Context } from 'shared/parse/Context';
 import { Node } from 'shared/parse/Node';
 import { REGEX } from 'shared/Regex';
@@ -21,7 +22,11 @@ const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 function getCombatParent(node: Node<Context>): Cheerio | null {
   let e = node.elem.parent();
   while (e.get(0) && e.parent()) {
-    const tag = e.get(0).tagName;
+    const el = e.get(0);
+    if (!el) {
+      return null;
+    }
+    const tag = el.tagName;
 
     // Don't count being within the win/lose events of a combat node as being "in combat".
     if (
@@ -209,8 +214,9 @@ export class PlaytestCrawler extends StatsCrawler {
         continue;
       }
 
+      const destEl = dest.elem.get(0);
       const cp2 =
-        dest.elem.get(0).tagName === 'combat'
+        destEl && destEl.tagName === 'combat'
           ? dest.elem
           : getCombatParent(dest);
       if (cp2 && cp2.attr('data-line') !== line1) {

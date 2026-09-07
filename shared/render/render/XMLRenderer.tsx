@@ -9,7 +9,7 @@ import { Logger } from '../Logger';
 import { Renderer, sanitizeStyles } from './Renderer';
 
 const Math = require('mathjs');
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from '../../Cheerio';
 
 // from https://stackoverflow.com/questions/7918868/how-to-escape-xml-entities-in-javascript
 function escapeXml(unsafe: string) {
@@ -122,7 +122,7 @@ export const XMLRenderer: Renderer = {
     }
 
     if (line >= 0) {
-      tmpl.attr('data-line', line);
+      tmpl.attr('data-line', String(line));
     }
     return tmpl;
   },
@@ -135,7 +135,7 @@ export const XMLRenderer: Renderer = {
       trigger.attr('if', attribs.visible);
     }
     if (line >= 0) {
-      trigger.attr('data-line', line);
+      trigger.attr('data-line', String(line));
     }
     return trigger;
   },
@@ -147,7 +147,7 @@ export const XMLRenderer: Renderer = {
       quest.attr(key, attribs[key]);
     }
     if (line >= 0) {
-      quest.attr('data-line', line);
+      quest.attr('data-line', String(line));
     }
     return quest;
   },
@@ -159,7 +159,7 @@ export const XMLRenderer: Renderer = {
     return quest;
   },
 
-  validate(rendered: Cheerio, log?: Logger) {
+  validate(rendered: cheerio.Cheerio, log?: Logger) {
     if (!log) {
       return;
     }
@@ -170,9 +170,13 @@ export const XMLRenderer: Renderer = {
     // - Validate roleplay attributes (w/ whitelist)
     // - Validate choice attributes (w/ whitelist)
 
-    // Ensure no incorrectly named GOTOs
-    rendered.find('trigger').each((i, c) => {
-      const text = cheerio(c).text();
+    // Ensure no incorrectly named GOTOs.
+    // cheerio 0.22 exported a callable module (`cheerio(node)` wrapped a node
+    // against an implicit root); cheerio 1.x does not, so the wrapped set is
+    // re-indexed instead of re-wrapping each element.
+    const triggers = rendered.find('trigger');
+    triggers.each((i, c) => {
+      const text = triggers.eq(i).text();
       const m = text.match(/goto (.*)/);
       if (m === null) {
         return;

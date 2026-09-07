@@ -25,7 +25,7 @@ import {
   tierSumDelta,
 } from './Actions';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 
 const TEST_NODE = new ParserNode(
   cheerio.load(

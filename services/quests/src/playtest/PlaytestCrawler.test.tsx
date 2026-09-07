@@ -3,7 +3,7 @@ import { Node } from 'shared/parse/Node';
 import { Logger, LogMessageMap } from 'shared/render/Logger';
 import { PlaytestCrawler } from './PlaytestCrawler';
 
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 function playtestXMLResult(elem: Cheerio): LogMessageMap {
   const crawler = new PlaytestCrawler();

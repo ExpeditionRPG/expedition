@@ -11,6 +11,7 @@ import Redux from 'redux';
 const seedrandom = require('seedrandom');
 import {sendStatus} from 'app/actions/Multiplayer';
 import {remoteify} from 'app/multiplayer/Remoteify';
+import {Cheerio} from 'shared/Cheerio';
 import {generateSeed} from 'shared/parse/Context';
 import {generateLeveledChecks} from '../decision/Actions';
 import {EMPTY_DECISION_STATE} from '../decision/Types';
@@ -19,13 +20,19 @@ import {CombatAttack, CombatDifficultySettings, CombatState} from './Types';
 
 export function findCombatParent(node: ParserNode): Cheerio|null {
   let elem = node && node.elem;
-  while (elem !== null && elem.length > 0 && elem.get(0).tagName.toLowerCase() !== 'combat') {
+  // `get(0)` is `Element | undefined` and `attr()` is `string | undefined` in
+  // cheerio's own types; @types/cheerio declared both as always present.
+  // `/win|lose/.test(undefined)` used to coerce to the string "undefined",
+  // which the regex does not match, so `|| ''` preserves the old result.
+  let el = elem !== null && elem.length > 0 ? elem.get(0) : undefined;
+  while (el !== undefined && el.tagName.toLowerCase() !== 'combat') {
     // Don't count roleplay nodes within "win" and "lose" events even if they're children of
     // a combat node; this is technically a roleplay state.
-    if (/win|lose/.test(elem.attr('on'))) {
+    if (/win|lose/.test(elem.attr('on') || '')) {
       return null;
     }
     elem = elem.parent();
+    el = elem.length > 0 ? elem.get(0) : undefined;
   }
   return elem;
 }
@@ -119,7 +126,7 @@ function getEnemies(node: ParserNode): Enemy[] {
 
     if (!encounter) {
       // If we don't know about the enemy, just assume tier 1.
-      enemies.push({name: text, tier: parseInt(c.attr('tier'), 10) || 1});
+      enemies.push({name: text, tier: parseInt(c.attr('tier') || '', 10) || 1});
     } else {
       enemies.push({name: encounter.name, tier: encounter.tier, class: encounter.class});
     }

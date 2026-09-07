@@ -23,7 +23,8 @@ export function numAliveAdventurers(
   mp: MultiplayerState,
 ): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
-    if (node.elem.get(0).tagName === 'combat') {
+    const el = node.elem.get(0);
+    if (el && el.tagName === 'combat') {
       return node.ctx.templates.combat.numAliveAdventurers;
     }
     return numLocalAdventurers(settings);

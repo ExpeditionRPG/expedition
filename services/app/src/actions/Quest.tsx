@@ -1,4 +1,5 @@
 import Redux from 'redux';
+import { Cheerio } from 'shared/Cheerio';
 import { Quest } from 'shared/schema/Quests';
 import { initCardTemplate } from '../components/views/quest/cardtemplates/Template';
 import {

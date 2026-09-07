@@ -9,7 +9,7 @@ import { Logger } from 'shared/render/Logger';
 import { PlaytestSettings } from '../reducers/StateTypes';
 import { PlaytestCrawler } from './PlaytestCrawler';
 
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 // TODO: This Card context shouldn't have to be mocked here - update cardtemplates in the app
 // so we don't need this.

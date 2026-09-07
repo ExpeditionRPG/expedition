@@ -1,3 +1,4 @@
+import { Cheerio } from '../Cheerio';
 import { TEMPLATE_TYPES } from '../schema/templates/Templates';
 // TODO(https://github.com/ExpeditionRPG/expedition-app/issues/291): Actually use this
 
@@ -51,18 +52,25 @@ function getInvalidNodesAndAttributes(
     'instruction',
   ];
   Array.prototype.push.apply(validTags, TEMPLATE_TYPES as string[]);
-  if (validTags.indexOf(node.get(0).tagName.toLowerCase()) === -1) {
-    results[node.get(0).tagName.toLowerCase()] =
-      (results[node.get(0).tagName.toLowerCase()] || 0) + 1;
+  // `get(0)` is undefined for an empty set; @types/cheerio declared it as
+  // always returning an element, which is why this used to read as if it
+  // could not be.
+  const el = node.get(0);
+  if (!el) {
+    return results;
+  }
+  const tagName = el.tagName.toLowerCase();
+  if (validTags.indexOf(tagName) === -1) {
+    results[tagName] = (results[tagName] || 0) + 1;
   }
 
-  const attribNames = Object.keys(node.get(0).attribs);
+  const attribNames = Object.keys(el.attribs);
   for (const attribName of attribNames) {
     // All HTML event handlers are prefixed with 'on'.
     // See http://www.w3schools.com/tags/ref_eventattributes.asp
     // We use just 'on' without any extras, which is not used by HTML for event handling.
     if (attribName.indexOf('on') === 0 && attribName !== 'on') {
-      const k = node.get(0).tagName.toLowerCase() + '.' + attribName;
+      const k = tagName + '.' + attribName;
       results[k] = (results[k] || 0) + 1;
     }
   }
@@ -92,9 +100,10 @@ function getDuplicateIds(node: Cheerio): { [key: string]: string[] } {
 // Builds and returns a map of all IDs to all nodes with that ID.
 function generateIdMapping(node: Cheerio): { [key: string]: string[] } {
   const map: { [key: string]: string[] } = {};
-  if (node.attr('id')) {
-    const id = node.attr('id');
-    map[id] = (map[id] || []).concat([node.get(0).tagName.toLowerCase()]);
+  const id = node.attr('id');
+  const el = node.get(0);
+  if (id && el) {
+    map[id] = (map[id] || []).concat([el.tagName.toLowerCase()]);
   }
 
   for (let i = 0; i < node.children().length; i++) {

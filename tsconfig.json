@@ -35,21 +35,27 @@
     "paths": {
       "api/*": ["./services/api/src/*"],
       "app/*": ["./services/app/src/*"],
-      "shared/*": ["./shared/*"]
+      "shared/*": ["./shared/*"],
+      // cheerio 1.x exposes its htmlparser2-only build (no parse5, no undici)
+      // only through the `./slim` entry of its `exports` map, which the
+      // `node10` resolver above cannot read. Node, webpack 5 and jest all
+      // resolve it natively; this teaches tsc where the declarations are.
+      // See shared/Cheerio.tsx for why the slim build is the one we want.
+      "cheerio/slim": ["./node_modules/cheerio/dist/commonjs/slim.d.ts"]
     },
     "skipLibCheck": true,
     // TypeScript 6 stopped pulling every package in node_modules/@types into
     // the global scope. These are the ones this repo relies on for *ambient*
     // declarations: `process`/`Buffer`, the `jest`/`expect` globals used by the
     // shared Testing helpers, `$` in the quests/admin entrypoints, the
-    // `stripe`/`Stripe` globals from Stripe's script tag, and the global
-    // `CheerioAPI` interface that a dozen `require('cheerio') as CheerioAPI`
-    // sites annotate with. @types/cheerio is a global script file, so it only
-    // reached the program because services/app/src/Testing.tsx imports enzyme
-    // and @types/enzyme imports cheerio -- listing it makes that explicit
-    // rather than a side effect of an unrelated import. Everything else is
+    // `stripe`/`Stripe` globals from Stripe's script tag (@types/stripe-v3 is
+    // Stripe.js, the browser library loaded from a <script> tag -- unrelated to
+    // the `stripe` node SDK, which ships its own types). @types/cheerio is
+    // gone: cheerio 1.x ships types, so the global `Cheerio`/`CheerioAPI`
+    // interfaces are replaced by the real ones re-exported from
+    // shared/Cheerio.tsx and imported where they are used. Everything else is
     // reached through a normal import and needs no entry here.
-    "types": ["node", "jest", "jquery", "stripe-v3", "cheerio"]
+    "types": ["node", "jest", "jquery", "stripe-v3"]
   },
   "include": ["services/**/*", "shared/**/*"],
   "exclude": [

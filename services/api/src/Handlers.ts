@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird';
-import * as cheerio from 'cheerio';
+import * as cheerio from 'cheerio/slim';
 import * as express from 'express';
 import * as Joi from 'joi';
 import * as memoize from 'memoizee';
@@ -582,45 +582,46 @@ export function subscribe(
   } catch (e) {
     return res.status(400).end('Error reading request.');
   }
-  Joi.validate(
-    req.body.email,
-    Joi.string()
-      .email()
-      .invalid(''),
-    (e: Error, email: string) => {
-      if (e) {
-        return res.status(400).end('Valid email address required.');
-      }
+  // joi 16 removed `Joi.validate(value, schema, cb)`; `schema.validate(value)`
+  // is the replacement and is synchronous, so the old callback body is now
+  // straight-line code. `tlds: {allow: false}` keeps joi 13's behaviour: joi
+  // 17+ checks the domain against the IANA TLD list by default, which would
+  // start rejecting addresses this endpoint used to accept.
+  const validation = Joi.string()
+    .email({ tlds: { allow: false } })
+    .invalid('')
+    .validate(req.body.email);
+  if (validation.error) {
+    return res.status(400).end('Valid email address required.');
+  }
+  const email: string = validation.value;
 
-      // TODO: Move this logic into the mail.ts file.
-      if (!mailchimp) {
-        return res.status(200).end();
-      } else {
-        mailchimp.post(
-          '/lists/' + listId + '/members/',
-          {
-            email_address: email,
-            merge_fields: { SOURCE: 'app' },
-            status: 'pending',
-          },
-          (result: any, err: Error) => {
-            if (err) {
-              const status = (err as any).status;
-              if (status === 400) {
-                console.log(
-                  `Mailchimp 400 subscribing ${email}: ${(err as any).detail}`,
-                );
-                return res.status(200).end(); // Already on the list - but that's ok!
-              } else {
-                console.log('Mailchimp error', err);
-                return res.status(status).end((err as any).title);
-              }
-            }
-            console.log(email + ' subscribed as pending to player list');
-            return res.status(200).end();
-          },
-        );
+  // TODO: Move this logic into the mail.ts file.
+  if (!mailchimp) {
+    return res.status(200).end();
+  }
+  return mailchimp.post(
+    '/lists/' + listId + '/members/',
+    {
+      email_address: email,
+      merge_fields: { SOURCE: 'app' },
+      status: 'pending',
+    },
+    (result: any, err: Error) => {
+      if (err) {
+        const status = (err as any).status;
+        if (status === 400) {
+          console.log(
+            `Mailchimp 400 subscribing ${email}: ${(err as any).detail}`,
+          );
+          return res.status(200).end(); // Already on the list - but that's ok!
+        } else {
+          console.log('Mailchimp error', err);
+          return res.status(status).end((err as any).title);
+        }
       }
+      console.log(email + ' subscribed as pending to player list');
+      return res.status(200).end();
     },
   );
 }

@@ -6,6 +6,7 @@ import {
   TemplateContext,
 } from 'app/components/views/quest/cardtemplates/TemplateTypes';
 import Redux from 'redux';
+import { Cheerio } from 'shared/Cheerio';
 import { renderXML } from 'shared/render/QDLParser';
 import { Quest } from 'shared/schema/Quests';
 import { PanelType, PlaytestSettings, QuestType } from '../reducers/StateTypes';
@@ -83,11 +84,20 @@ export function updateDirtyState(): (dispatch: Redux.Dispatch<any>) => any {
 }
 
 export function getPlayNode(node: Cheerio): Cheerio | null {
-  let tag = node.get(0).tagName;
-  if (tag === 'quest') {
-    node = node.children().first();
-    tag = node.get(0).tagName;
+  // cheerio's own types report `get(0)` as `Element | undefined`; the set is
+  // empty for an unrendered / empty quest.
+  let el = node.get(0);
+  if (!el) {
+    return null;
   }
+  if (el.tagName === 'quest') {
+    node = node.children().first();
+    el = node.get(0);
+    if (!el) {
+      return null;
+    }
+  }
+  const tag = el.tagName;
   if (tag !== 'roleplay' && tag !== 'combat' && tag !== 'decision') {
     return null;
   }

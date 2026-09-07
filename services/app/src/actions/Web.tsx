@@ -1,4 +1,5 @@
 import Redux from 'redux';
+import { Cheerio } from 'shared/Cheerio';
 import { fetchLocal, handleFetchErrors } from 'shared/requests';
 import { VERSION } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
@@ -30,7 +31,7 @@ import { numPlayers } from './Settings';
 import { openSnackbar } from './Snackbar';
 
 declare let require: any;
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 export function fetchUserQuests() {
   return (dispatch: Redux.Dispatch<any>) => {

@@ -1,3 +1,4 @@
+import * as cheerio from 'shared/Cheerio';
 import { API_HOST } from 'shared/schema/Constants';
 
 declare let device: any;
@@ -48,7 +49,7 @@ export interface ReactWindow extends Window {
 declare let window: ReactWindow;
 
 const refs = {
-  cheerio: require('cheerio') as CheerioAPI,
+  cheerio,
   device: typeof device !== 'undefined' ? device : { platform: null },
   document,
   ga: typeof ga !== 'undefined' ? ga : null,
@@ -132,7 +133,11 @@ export function getNavigator(): any {
   return refs.navigator;
 }
 
-export function getCheerio(): CheerioAPI {
+// The repo's cheerio wrapper (shared/Cheerio), reached through the same ref
+// table as the other ambient dependencies. `CheerioAPI` used to name the module
+// here; in cheerio 1.x that name means the document-bound `$`, so this is typed
+// as the module itself.
+export function getCheerio(): typeof cheerio {
   return refs.cheerio;
 }
 

@@ -7,7 +7,7 @@ import {defaultContext} from '../components/views/quest/cardtemplates/Template';
 import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
 
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 describe('Settings action', () => {
   describe('changeSettings', () => {

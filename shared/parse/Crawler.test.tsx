@@ -2,7 +2,7 @@ import {Context, defaultContext} from './Context';
 import {CrawlEntry, CrawlerBase, CrawlEvent} from './Crawler';
 import {Node} from './Node';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from '../Cheerio';
 
 class CrawlTest extends CrawlerBase<Context> {
   public efn: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null;

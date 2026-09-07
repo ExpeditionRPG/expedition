@@ -9,7 +9,7 @@ import {defaultContext} from '../Template';
 import {ParserNode} from '../TemplateTypes';
 import {CombatPhase} from 'app/Constants';
 
-const cheerio = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 
 const TEST_SETTINGS = {
   audioEnabled: false,

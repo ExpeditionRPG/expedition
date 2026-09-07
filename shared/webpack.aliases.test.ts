@@ -36,7 +36,18 @@ describe('module aliases', () => {
 
     // No `baseUrl` is set, so TypeScript 6 resolves these relative to the
     // directory holding tsconfig.json.
-    expect(Object.keys(paths).sort()).toEqual(names.map(n => n + '/*').sort());
+    //
+    // `cheerio/slim` is deliberately not a monorepo root: it is a declaration
+    // shim, because `moduleResolution: node10` cannot read cheerio's `exports`
+    // map (webpack and jest resolve that entry natively and so need no alias).
+    // It is asserted separately below rather than simply tolerated.
+    expect(Object.keys(paths).sort()).toEqual(
+      [...names.map(n => n + '/*'), 'cheerio/slim'].sort(),
+    );
+    const cheerioSlim = paths['cheerio/slim'];
+    expect(cheerioSlim.length).toEqual(1);
+    expect(fs.existsSync(Path.join(ROOT, cheerioSlim[0]))).toBe(true);
+
     for (const name of names) {
       const target = paths[name + '/*'];
       expect(target.length).toEqual(1);
