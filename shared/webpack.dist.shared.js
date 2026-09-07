@@ -9,6 +9,9 @@ const options = {
   resolve: {
     alias: require('./webpack.aliases'),
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
+    // Replaces webpack 4's `node: {fs: 'empty', net: 'empty', tls: 'empty'}`
+    // plus its implicit `stream` polyfill - see shared/webpack.shared.js.
+    fallback: shared.resolve.fallback,
   },
   entry: ['babel-polyfill', 'whatwg-fetch', 'promise-polyfill'],
   output: {
@@ -23,7 +26,7 @@ const options = {
     ],
   },
   plugins: [
-    new Webpack.optimize.AggressiveMergingPlugin(),
+    // Webpack.optimize.AggressiveMergingPlugin was removed in webpack 5.
     new Webpack.DefinePlugin({
       // Default to beta for safety
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
@@ -35,17 +38,14 @@ const options = {
           '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
       ),
     }),
-    new CopyWebpackPlugin([{ from: 'src/index.html' }]),
+    new CopyWebpackPlugin({ patterns: [{ from: 'src/index.html' }] }),
   ],
   optimization: {
-    noEmitOnErrors: true,
+    // `noEmitOnErrors: true` became `emitOnErrors: false` (the meaning inverted).
+    emitOnErrors: false,
   },
-  node: {
-    console: true,
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
+  // Keep the production bundles ES5 for cordova-android@7 / cordova-ios@4.
+  target: ['web', 'es5'],
 };
 
 module.exports = options;

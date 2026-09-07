@@ -1,24 +1,25 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Webpack = require('webpack');
-const Merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const shared = require('../../shared/webpack.shared');
 
 const options = {
   entry: {
-    bundle: [
-    './src/Init.tsx',
-    './src/Style.scss',
-    ],
+    bundle: ['./src/Init.tsx', './src/Style.scss'],
   },
   plugins: [
     new Webpack.DefinePlugin({
       'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
-    new CopyWebpackPlugin([
-      { from: { glob: '../../shared/images/icons/*.svg' }, flatten: true, to: './images' },
-      { from: { glob: '../../shared/images/art/*.png' }, flatten: true, to: './images' },
-    ]),
+    // copy-webpack-plugin 6 dropped `from: {glob}` and `flatten`; a glob string
+    // plus a `[name][ext]` template in `to` is the replacement for both.
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: '../../shared/images/icons/*.svg', to: 'images/[name][ext]' },
+        { from: '../../shared/images/art/*.png', to: 'images/[name][ext]' },
+      ],
+    }),
   ],
-}
+};
 
-module.exports = Merge(shared, options);
+module.exports = merge(shared, options);

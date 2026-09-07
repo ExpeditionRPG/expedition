@@ -1,6 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Webpack = require('webpack');
-const Merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const shared = require('../../shared/webpack.shared');
 
 const entry = {
@@ -21,23 +21,25 @@ const options = {
     new Webpack.DefinePlugin({
       'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
-    new CopyWebpackPlugin([
-      { from: 'src/index.html' },
-      { from: 'src/runner.html' },
-      { from: 'src/assets' },
-      { from: '../app/src/images', to: 'images' },
-      {
-        flatten: true,
-        from: { glob: '../../shared/images/icons/*.svg' },
-        to: './images',
-      },
-      {
-        flatten: true,
-        from: { glob: '../../shared/images/art/*.png' },
-        to: './images',
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/index.html' },
+        { from: 'src/runner.html' },
+        { from: 'src/assets' },
+        { from: '../app/src/images', to: 'images' },
+        // `flatten: true` + `from: {glob}` became a glob string with a
+        // `[name][ext]` template in `to`.
+        {
+          from: '../../shared/images/icons/*.svg',
+          to: 'images/[name][ext]',
+        },
+        {
+          from: '../../shared/images/art/*.png',
+          to: 'images/[name][ext]',
+        },
+      ],
+    }),
   ],
 };
 
-module.exports = Merge(shared, options);
+module.exports = merge(shared, options);
