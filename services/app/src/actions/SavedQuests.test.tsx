@@ -402,8 +402,54 @@ describe('SavedQuest actions', () => {
     test.skip('Saves a publishedurl to local storage', () => {
       /* TODO */
     });
-    test.skip('storage errors are shown in snackbar', () => {
-      /* TODO */
+    // saveQuestForOffline() has no seam for injecting storage, so these
+    // scope their mocks with resetModules()/doMock() rather than a file-wide
+    // jest.mock() -- the rest of this file relies on the real LocalStorage.
+    function saveWithStorageError(message: string): Promise<any[]> {
+      jest.resetModules();
+      jest.doMock('shared/requests', () => ({
+        ...jest.requireActual('shared/requests'),
+        fetchLocal: () =>
+          Promise.resolve(
+            '<quest><roleplay data-line="0">offline</roleplay></quest>',
+          ),
+      }));
+      jest.doMock('../LocalStorage', () => ({
+        ...jest.requireActual('../LocalStorage'),
+        setStorageKeyValue: () => {
+          throw new Error(message);
+        },
+      }));
+      // Typed so the Quest cast below still means something.
+      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const store = newMockStore({});
+      return store
+        .dispatch(
+          actions.saveQuestForOffline(({
+            publishedurl: 'https://example.com/quest.xml',
+          } as any) as Quest),
+        )
+        .then(() =>
+          store.getActions().filter((a: any) => a.type === 'SNACKBAR_OPEN'),
+        );
+    }
+
+    test('reports an out-of-storage failure as a storage message', () => {
+      return saveWithStorageError('exceeded the quota').then(snackbars => {
+        const last = snackbars[snackbars.length - 1];
+        expect(last.message).toEqual("Couldn't save; out of storage space.");
+      });
+    });
+
+    test('reports any other failure as a generic save error', () => {
+      // Regression guard: the branch above used a bare indexOf(), which is
+      // truthy for -1, so this generic message was unreachable.
+      return saveWithStorageError('disk on fire').then(snackbars => {
+        const last = snackbars[snackbars.length - 1];
+        expect(last.message).toContain('Error saving quest');
+        expect(last.message).toContain('disk on fire');
+        expect(last.actionLabel).toEqual('Report');
+      });
     });
   });
 });
