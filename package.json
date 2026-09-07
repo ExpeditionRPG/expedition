@@ -50,9 +50,10 @@
     "device": "^0.3.9",
     "es6-promise-plugin": "^4.2.2",
     "express": "^4.22.2",
-    "express-rate-limit": "^2.9.0",
+    "express-rate-limit": "^8.7.0",
     "express-session": "^1.19.0",
-    "express-winston": "^2.5.1",
+    "express-slow-down": "^3.1.1",
+    "express-winston": "^4.2.0",
     "fastpriorityqueue": "^0.6.0",
     "fetch-retry": "^3.1.0",
     "he": "^1.1.1",
@@ -112,7 +113,7 @@
     "webpack-dev-server": "^6.0.0",
     "webpack-merge": "^6.0.1",
     "whatwg-fetch": "^2.0.4",
-    "winston": "^2.4.3",
+    "winston": "^3.19.0",
     "ws": "^7.0.0"
   },
   "devDependencies": {

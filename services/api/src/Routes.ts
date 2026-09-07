@@ -1,4 +1,6 @@
 import * as express from 'express';
+import { rateLimit } from 'express-rate-limit';
+import { slowDown } from 'express-slow-down';
 import { installRoutes as installAdminRoutes } from './admin/Routes';
 import Config from './config';
 import * as Handlers from './Handlers';
@@ -8,8 +10,6 @@ import * as Mail from './Mail';
 import { Database } from './models/Database';
 import * as MultiplayerHandlers from './multiplayer/Handlers';
 import * as Stripe from './Stripe';
-
-const RateLimit = require('express-rate-limit');
 
 const Mailchimp = require('mailchimp-api-v3');
 const mailchimp =
@@ -22,22 +22,40 @@ export function installRoutes(db: Database, router: express.Router) {
   // information and expose login/logout URLs to templates.
   router.use(oauth2Template);
 
-  const publishLimiter = new RateLimit({
-    delayAfter: 2, // begin slowing down responses after the second request
-    delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request
-    max: 5, // start blocking after 5 requests
+  // express-rate-limit 2 both delayed and blocked. v6 dropped `delayAfter` /
+  // `delayMs` and moved that half to express-slow-down, so each of these is now
+  // a pair of middlewares. Mounted limiter-first, they reproduce v2 exactly:
+  // v2 incremented once, answered 429 immediately when the count passed `max`
+  // (never delaying a blocked request), and otherwise slept
+  // `(count - delayAfter) * delayMs` before calling next().
+  const SLOW_DOWN_STEP_MS = 3 * 1000;
+  const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+  const publishLimiter = rateLimit({
+    limit: 5, // start blocking after 5 requests (v2 spelled this `max`)
     message:
       'Publishing too frequently. Please wait 1 minute and then try again',
-    windowMs: 60 * 1000, // 1 minute window
+    windowMs: RATE_LIMIT_WINDOW_MS, // 1 minute window
+  });
+  const publishSlowdown = slowDown({
+    delayAfter: 2, // begin slowing down responses after the second request
+    // slow down subsequent responses by 3 seconds per request. Passing a bare
+    // number means "a flat 3s for every request past the second" in
+    // express-slow-down 2+; the old cumulative behaviour is this function.
+    delayMs: used => (used - 2) * SLOW_DOWN_STEP_MS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
   });
 
-  const sessionLimiter = new RateLimit({
-    delayAfter: 4, // begin slowing down responses after the fourth request
-    delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request
-    max: 5, // start blocking after 5 requests
+  const sessionLimiter = rateLimit({
+    limit: 5, // start blocking after 5 requests
     message:
       'Creating sessions too frequently. Please wait 1 minute and then try again',
-    windowMs: 60 * 1000, // 1 minute window
+    windowMs: RATE_LIMIT_WINDOW_MS, // 1 minute window
+  });
+  const sessionSlowdown = slowDown({
+    delayAfter: 4, // begin slowing down responses after the fourth request
+    delayMs: used => (used - 4) * SLOW_DOWN_STEP_MS,
+    windowMs: RATE_LIMIT_WINDOW_MS,
   });
 
   // We store auth details in res.locals. If there's no stored data there, the user is not logged in.
@@ -109,6 +127,7 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post(
     '/publish/:id',
     publishLimiter,
+    publishSlowdown,
     limitCors,
     betaACAO,
     requireAuth,
@@ -171,6 +190,7 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post(
     '/multiplayer/v1/new_session',
     sessionLimiter,
+    sessionSlowdown,
     limitCors,
     betaACAO,
     requireAuth,

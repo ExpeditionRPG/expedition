@@ -92,6 +92,20 @@ function setupLogging(app: any) {
 
 function init() {
   const app = express();
+
+  // This process only ever receives traffic through the Heroku router, which
+  // *appends* the connecting peer's address to `X-Forwarded-For`. Trusting
+  // exactly one hop therefore makes `req.ip` the last entry in that header --
+  // the address Heroku itself observed -- which a client cannot forge by
+  // sending its own `X-Forwarded-For` (anything it sends is preserved to the
+  // left of Heroku's entry). `true` would take the *leftmost* entry and let any
+  // client pick its own identity; the previous default of `false` made `req.ip`
+  // the Heroku router, so every user on the site shared a single rate-limit
+  // bucket -- 5 publishes per minute for everyone combined -- and
+  // express-rate-limit >= 7 flags exactly that with
+  // ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+  app.set('trust proxy', 1);
+
   const server = http.createServer(app);
 
   // Add the request logger before anything else so that it can
