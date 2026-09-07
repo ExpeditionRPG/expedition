@@ -155,14 +155,28 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
 
   // Deletes the user's credentials and profile from the session.
   // This does not revoke any active tokens.
-  router.post('/auth/logout', (req: express.Request, res: express.Response) => {
-    req.logout();
-    delete req.user;
-    if (req.session) {
-      delete req.session.image;
-      delete req.session.displayName;
-    }
-  });
+  router.post(
+    '/auth/logout',
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      // passport >= 0.6 made logout asynchronous -- it drops the session's
+      // passport entry, saves, and then regenerates the session (the other
+      // half of the CVE-2022-25896 session-fixation fix). Calling it without
+      // a callback now throws. Everything that used to be torn down by hand
+      // below happens inside regenerate(), so the callback only has to
+      // report failures and answer the request; the old handler answered
+      // nothing at all and left the client hanging until it timed out.
+      req.logout(err => {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).end();
+      });
+    },
+  );
 
   router.get(
     '/auth/session',
