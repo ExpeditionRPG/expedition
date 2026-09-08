@@ -446,7 +446,16 @@ export function websocketSession(
       .catch((error: Error) => {
         console.error('WS commit error:', error);
         let multiEvent: MultiEvent | null = null;
-        makeMultiEvent(db, params.session, eventID)
+        // `eventID - 1`, not `eventID`. The commit failed because some other
+        // client already committed this id, so the catch-up has to *include*
+        // that id -- it is the authoritative version of the event this client
+        // just lost, and the thing it needs in order to reconcile.
+        // `getOrderedEventsAfter` filters on `id > start`, so passing `eventID`
+        // asks for everything after the contested id and, when that id is the
+        // newest, returns an empty `MULTI_EVENT` carrying `lastId: 0`.
+        // Contrast `maybeFastForwardClient`, which correctly passes the
+        // client's *last received* id.
+        makeMultiEvent(db, params.session, eventID - 1)
           .then((e: MultiEvent | undefined) => {
             multiEvent = e || null;
           })

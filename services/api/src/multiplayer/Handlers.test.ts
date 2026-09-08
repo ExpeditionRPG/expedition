@@ -1,3 +1,11 @@
+import { Event } from 'shared/schema/multiplayer/Events';
+import { Session } from 'shared/schema/multiplayer/Sessions';
+import {
+  events as e,
+  sessions as s,
+  TEST_NOW,
+  testingDBWithState,
+} from '../models/TestData';
 import { websocketSession } from './Handlers';
 import { resetSessions } from './Sessions';
 
@@ -89,8 +97,68 @@ describe('multiplayer handlers', () => {
     test.skip('notifies on ACTION commit success', () => {
       /* TODO */
     });
-    test.skip('notifies on ACTION commit failure (with conflicting actions)', () => {
-      /* TODO */
+    // A client whose ACTION loses the race for an event id has to be told what
+    // actually won that id, or it can never reconcile. The catch-up therefore
+    // has to *include* the contested id, which means asking for events after
+    // `id - 1`. Asking for events after `id` -- what this did until the QA
+    // round that found it -- returns an empty MULTI_EVENT with `lastId: 0`
+    // whenever the contested id is the newest one, which is the common case.
+    test('notifies on ACTION commit failure (with conflicting actions)', () => {
+      const ws = fakeSocket();
+      const winner = JSON.stringify({
+        client: 'other-client',
+        event: { args: '{"winner":true}', name: 'NAVIGATE', type: 'ACTION' },
+        id: 2,
+        instance: 'other-instance',
+      });
+      return testingDBWithState([
+        new Session({ ...s.basic, id: SESSION }),
+        new Event({
+          ...e.basic,
+          id: 1,
+          json: '{"first":true}',
+          session: SESSION,
+          timestamp: new Date(TEST_NOW.getTime() + 1000),
+        }),
+        new Event({
+          ...e.basic,
+          id: 2,
+          json: winner,
+          session: SESSION,
+          timestamp: new Date(TEST_NOW.getTime() + 2000),
+        }),
+      ])
+        .then(db => {
+          websocketSession(db, ws as any, fakeRequest() as any);
+          ws.send.mockClear();
+          // c1 tries to claim id 2, which other-client already holds.
+          return ws.deliver(
+            'message',
+            Buffer.from(
+              JSON.stringify({
+                client: 'c1',
+                event: { args: '{"loser":true}', name: 'NAVIGATE', type: 'ACTION' },
+                id: 2,
+                instance: 'i1',
+              }),
+            ),
+            false,
+          );
+        })
+        .then(() => new Promise(resolve => setTimeout(resolve, 50)))
+        .then(() => {
+          const multi = sentEvents(ws)
+            .map(m => m.event)
+            .find(ev => ev && ev.type === 'MULTI_EVENT');
+          expect(multi).toBeDefined();
+          // The contested event itself must come back...
+          expect(multi.events).toHaveLength(1);
+          expect(JSON.parse(multi.events[0]).event.args).toEqual(
+            '{"winner":true}',
+          );
+          // ...and lastId must name it, not 0.
+          expect(multi.lastId).toEqual(2);
+        });
     });
     test.skip('broadcasts client disconnection', () => {
       /* TODO */
