@@ -112,6 +112,11 @@ export interface SearchRequestAction extends Redux.Action {
   type: 'SEARCH_REQUEST';
 }
 
+export interface SearchErrorAction extends Redux.Action {
+  type: 'SEARCH_ERROR';
+  error: Error;
+}
+
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
   quests: Quest[];

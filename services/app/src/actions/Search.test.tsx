@@ -1,5 +1,5 @@
 import { AUTH_SETTINGS, TUTORIAL_QUESTS } from '../Constants';
-import { initialSearch } from '../reducers/Search';
+import { initialSearch, search } from '../reducers/Search';
 import { initialSettings } from '../reducers/Settings';
 import { newMockStore } from '../Testing';
 import {
@@ -44,6 +44,44 @@ describe('Search actions', () => {
     test.skip('calls getSearchResults with expansion enabled', () => {
       /* TODO */
     });
+
+    // SEARCH_REQUEST sets `searching: true`; only SEARCH_ERROR or
+    // SEARCH_RESPONSE clears it again. Dispatching the snackbar alone left the
+    // search card rendering "Loading" forever.
+    test('dispatches SEARCH_ERROR (not just a snackbar) when the fetch fails', done => {
+      const fr = jest.fn(() => Promise.reject(new Error('network down')));
+      const store = newMockStore({});
+      searchInternal(
+        {
+          params: initialSearch.params,
+          players: 3,
+          settings: initialSettings,
+        },
+        store.dispatch,
+        fr,
+      )
+        .promise.then(() => {
+          const actions = store.getActions();
+          expect(actions).toContainEqual(
+            expect.objectContaining({ type: 'SEARCH_ERROR' }),
+          );
+          expect(actions).toContainEqual(
+            expect.objectContaining({ type: 'SNACKBAR_OPEN' }),
+          );
+          expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: 'SEARCH_RESPONSE' }),
+          );
+          // Replaying the dispatched actions through the real reducer must
+          // leave the view out of its loading state.
+          const state = actions.reduce(
+            (s, a) => search(s, a),
+            search(undefined, { type: '@@INIT' }),
+          );
+          expect(state.searching).toEqual(false);
+          done();
+        })
+        .catch(done);
+    });
   });
 
   describe('searchAndPlay', () => {
@@ -64,6 +102,19 @@ describe('Search actions', () => {
           const actions = store.getActions();
           expect(actions).toContainEqual(
             expect.objectContaining({ type: 'PREVIEW_QUEST' }),
+          );
+          done();
+        })
+        .catch(done);
+    });
+
+    test('dispatches SEARCH_ERROR when the fetch fails', done => {
+      const fr = jest.fn(() => Promise.reject(new Error('network down')));
+      const store = newMockStore({});
+      searchAndPlayInternal('not-a-tutorial-quest', store.dispatch, fr)
+        .promise.then(() => {
+          expect(store.getActions()).toContainEqual(
+            expect.objectContaining({ type: 'SEARCH_ERROR' }),
           );
           done();
         })

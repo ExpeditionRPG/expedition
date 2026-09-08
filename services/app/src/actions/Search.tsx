@@ -7,7 +7,11 @@ import { openSnackbar } from '../actions/Snackbar';
 import { AUTH_SETTINGS, TUTORIAL_QUESTS } from '../Constants';
 import { remoteify } from '../multiplayer/Remoteify';
 import { SearchParams, SettingsType } from '../reducers/StateTypes';
-import { SearchChangeParamsAction, SearchResponseAction } from './ActionTypes';
+import {
+  SearchChangeParamsAction,
+  SearchErrorAction,
+  SearchResponseAction,
+} from './ActionTypes';
 import {} from './ActionTypes';
 import { toCard } from './Card';
 import { previewQuest } from './Quest';
@@ -86,6 +90,10 @@ export function searchInternal(
       } as SearchResponseAction);
     })
     .catch((error: Error) => {
+      // SEARCH_REQUEST set `searching: true`; without a matching terminal
+      // action the reducer never clears it and the card renders "Loading"
+      // forever. The snackbar alone is not enough.
+      dispatch({ type: 'SEARCH_ERROR', error } as SearchErrorAction);
       dispatch(
         openSnackbar(
           Error('Network error on search: Please check your connection.'),
@@ -142,6 +150,9 @@ export function searchAndPlayInternal(
       }
     })
     .catch((error: Error) => {
+      // Same as searchInternal: clear the `searching` flag SEARCH_REQUEST set,
+      // otherwise the search card is stuck on "Loading".
+      dispatch({ type: 'SEARCH_ERROR', error } as SearchErrorAction);
       dispatch(
         openSnackbar(
           Error('Network error fetching quest: Please check your connection.'),
