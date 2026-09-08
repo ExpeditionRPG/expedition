@@ -138,9 +138,12 @@ export function loadRoleplayNode(
   };
 }
 
-const Roleplay = (props: Props, theme: CardThemeType | {}): JSX.Element => {
+const Roleplay = (props: Props, theme?: CardThemeType | {}): JSX.Element => {
   // React passes the legacy context object here when a component declares no
   // contextTypes, so anything that is not one of the theme names is 'light'.
+  // The parameter is optional so that this matches React's FunctionComponent
+  // call signature `(props, context?)` — react-redux 7's connect() rejects a
+  // component whose call signature demands two arguments.
   const resolvedTheme: CardThemeType =
     theme === 'red' || theme === 'dark' ? theme : 'light';
   if (props.node.getTag() !== 'roleplay') {

@@ -2,7 +2,7 @@ import { mount as enzymeMount, render as enzymeRender } from 'enzyme';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import * as Redux from 'redux';
-import configureStore from 'redux-mock-store';
+import configureStore, { MockStore } from 'redux-mock-store';
 import { loggedOutUser } from 'shared/auth/UserState';
 import { Connection, setMultiplayerConnection } from './multiplayer/Connection';
 import { createMiddleware } from './multiplayer/Middleware';
@@ -13,15 +13,10 @@ export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, { type: '@@INIT' }));
 }
 
-interface MockStore extends Redux.Store {
-  clearActions: () => void;
-  getActions: any;
-}
-
 export function newMockStore(
   state: object,
   client = new Connection(() => Promise.resolve(false)),
-): MockStore {
+): MockStore<AppStateWithHistory> {
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
     (state as any) as AppStateWithHistory,

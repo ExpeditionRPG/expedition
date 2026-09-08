@@ -1,5 +1,5 @@
 import * as Redux from 'redux';
-import configureStore from 'redux-mock-store';
+import configureStore, { MockStore } from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import combinedReducers from './reducers/CombinedReducers';
 import { AppState } from './reducers/StateTypes';
@@ -12,12 +12,7 @@ export function newMockStoreWithInitializedState() {
 // ThunkMiddleware[], which is not assignable to Redux.Middleware[].
 const mockMiddleware: Redux.Middleware[] = [thunk];
 
-interface MockStore extends Redux.Store {
-  clearActions: () => void;
-  getActions: any;
-}
-
-export function newMockStore(state: object): MockStore {
+export function newMockStore(state: object): MockStore<AppState> {
   // Since this is a testing function, we play it a bit loose with the state type.
   return configureStore<AppState>(mockMiddleware)((state as any) as AppState);
 }

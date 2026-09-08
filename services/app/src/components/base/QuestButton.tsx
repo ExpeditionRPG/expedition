@@ -14,6 +14,10 @@ export interface Props {
   summary?: string;
   id?: string;
   onClick?: () => void;
+  // Rendered below the summary. React.Component adds an implicit `children` to
+  // a class component's own props, but connect() rebuilds the wrapper's prop
+  // type from `Props` alone, so it has to be declared to survive the HOC.
+  children?: React.ReactNode;
 }
 
 export default class QuestButton extends React.Component<Props, {}> {

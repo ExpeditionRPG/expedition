@@ -363,7 +363,7 @@ function render() {
   ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={getStore()}>
-        <CompositorContainer store={getStore()} />
+        <CompositorContainer />
       </Provider>
     </MuiThemeProvider>,
     base,
