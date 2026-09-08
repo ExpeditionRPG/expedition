@@ -84,7 +84,6 @@ describe('Dependencies', () => {
       '@types/.*',
       'typescript',
       'webpack-cli',
-      'react-hot-loader',
 
       // Needed for tests. These are loaded by the runner rather than imported.
       'react-test-renderer', // peer of enzyme-adapter-react-16, used by mount()
