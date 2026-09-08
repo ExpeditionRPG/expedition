@@ -96,15 +96,15 @@ export const event = remoteify(function event(
   }
   const nextNode = a.node.handleAction(a.evt);
   if (!nextNode) {
-    let tag: string = 'unknown';
-    let compKey: string = 'unknown';
-    let visibleKeys: string = 'unknown';
+    let tag: string;
+    let compKey: string;
+    let visibleKeys: string;
     try {
       tag = (a.node && a.node.getTag()) || 'null';
       compKey = a.node && a.node.getComparisonKey();
       visibleKeys = JSON.stringify((a.node && a.node.getVisibleKeys()) || '');
     } catch (e) {
-      throw new Error('Failed to get debug info: ' + String(e));
+      throw new Error('Failed to get debug info: ' + String(e), { cause: e });
     }
     throw new Error(
       'Could not get next node for event "' +

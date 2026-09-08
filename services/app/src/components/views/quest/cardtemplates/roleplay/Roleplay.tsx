@@ -45,7 +45,7 @@ export function loadRoleplayNode(
   const content: RoleplayElement[] = [];
 
   node.loopChildren((tag, c) => {
-    let text = '';
+    let text: string;
     c = c.clone();
 
     // Accumulate 'choice' tags in choices[]

@@ -126,7 +126,7 @@ class Main extends React.Component<Props, { hasError: Error | null }> {
     );
 
     // TODO: Constant-ify default size of split pane
-    let contents = <span></span>;
+    let contents: JSX.Element;
     if (!this.props.bottomPanel) {
       contents = (
         <div className="contents">

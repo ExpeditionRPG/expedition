@@ -43,7 +43,7 @@ function registerUserAndIdToken(
       return response.text();
     })
     .then((userResult: string) => {
-      let id = '';
+      let id: string;
       try {
         id = JSON.parse(userResult).id || userResult;
       } catch (err) {

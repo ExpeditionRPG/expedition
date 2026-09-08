@@ -138,7 +138,7 @@ export function evaluateOp(
       window.onerror(message, 'shared/parse/context');
       return null;
     } else {
-      throw new Error(message);
+      throw new Error(message, { cause: err });
     }
   } finally {
     // Replace bound scope functions with originals.

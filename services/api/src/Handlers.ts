@@ -291,7 +291,7 @@ export function saveQuestData(
     notes: string;
     metadata: string;
     edittime: Date;
-  } = { data: '', notes: '', metadata: '', edittime: new Date() };
+  };
   if (res.header) {
     res.header('Access-Control-Allow-Origin', req.get('origin'));
   }

@@ -13,7 +13,7 @@ function requireAdminAuth(
   if (!res.locals || !res.locals.id) {
     return res.status(401).end('You are not signed in.');
   }
-  let superUsers: string[] = [];
+  let superUsers: string[];
   try {
     superUsers = JSON.parse(Config.get('SUPER_USER_IDS'));
   } catch (e) {

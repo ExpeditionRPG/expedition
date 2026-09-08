@@ -1,33 +1,72 @@
 import * as React from 'react';
-import {MAX_COUNTER_HEALTH} from './Constants';
-import {TranslationsType} from './reducers/StateTypes';
+import { MAX_COUNTER_HEALTH } from './Constants';
+import { TranslationsType } from './reducers/StateTypes';
 
 export function icon(name: string, theme?: string, key?: number): JSX.Element {
   const globalSrc = `/images/icons/${name}.svg`;
-  const themeSrc = (theme) ? `/themes/${theme}/images/icon/${name}.svg` : null;
-  return <img key={(key === null) ? name : key} className={'inline_icon svg ' + name} src={themeSrc || globalSrc}/>;
+  const themeSrc = theme ? `/themes/${theme}/images/icon/${name}.svg` : null;
+  return (
+    <img
+      key={key === null ? name : key}
+      className={'inline_icon svg ' + name}
+      src={themeSrc || globalSrc}
+    />
+  );
 }
 
-export function romanize(num: number): string { // http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
-  if (+num === 0) { return '0'; }
-  if (!+num) { return ''; }
+export function romanize(num: number): string {
+  // http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
+  if (+num === 0) {
+    return '0';
+  }
+  if (!+num) {
+    return '';
+  }
   const digits = String(+num).split('');
-  const key = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM',
-             '', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC',
-             '', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+  const key = [
+    '',
+    'C',
+    'CC',
+    'CCC',
+    'CD',
+    'D',
+    'DC',
+    'DCC',
+    'DCCC',
+    'CM',
+    '',
+    'X',
+    'XX',
+    'XXX',
+    'XL',
+    'L',
+    'LX',
+    'LXX',
+    'LXXX',
+    'XC',
+    '',
+    'I',
+    'II',
+    'III',
+    'IV',
+    'V',
+    'VI',
+    'VII',
+    'VIII',
+    'IX',
+  ];
   let roman = '';
   let i = 3;
   while (i--) {
-    roman = (key[+(digits.pop() || 0) + (i * 10)] || '') + roman;
+    roman = (key[+(digits.pop() || 0) + i * 10] || '') + roman;
   }
-  return ((num < 0) ? '-' : '') + Array(+digits.join('') + 1).join('M') + roman;
+  return (num < 0 ? '-' : '') + Array(+digits.join('') + 1).join('M') + roman;
 }
 
 // generates a bottom tracker, fits up to 14; inclusive 0-count
 // TODO modernize
-export function horizontalCounter(count: number|string): JSX.Element {
-
-  let numbers = [];
+export function horizontalCounter(count: number | string): JSX.Element {
+  let numbers: string[] | number[];
   const output = [];
   let outputted = 0;
 
@@ -47,7 +86,10 @@ export function horizontalCounter(count: number|string): JSX.Element {
 }
 
 // Returns the translated version of the string if available, otherwise the supplied English
-export function translate(english: string, translations: TranslationsType): string {
+export function translate(
+  english: string,
+  translations: TranslationsType,
+): string {
   if (translations) {
     const translation = translations[english.toLowerCase()];
     if (translation) {
@@ -60,16 +102,22 @@ export function translate(english: string, translations: TranslationsType): stri
 }
 
 // Turns "Tier 2 Loot" into the correct translation, respecting adjective order
-export function translateTier(tier: number, english: string, translations: TranslationsType): string {
+export function translateTier(
+  tier: number,
+  english: string,
+  translations: TranslationsType,
+): string {
   const tierRoman = romanize(tier);
   if (translations) {
     const translated = translate(english, translations);
     const translatedTier = translate('Tier', translations);
     if (translations.tierwordorder && translations.tierwordorder === 't#w') {
       return translatedTier + ' ' + tierRoman + ' ' + translated;
-    } else if (translations.AdjectiveAfterNoun) { // old default "true"
+    } else if (translations.AdjectiveAfterNoun) {
+      // old default "true"
       return translated + ' ' + translatedTier + ' ' + tierRoman;
-    } else { // old default "false"
+    } else {
+      // old default "false"
       return translatedTier + ' ' + translated + ' ' + tierRoman;
     }
   }
@@ -77,39 +125,44 @@ export function translateTier(tier: number, english: string, translations: Trans
 }
 
 // generate U-shaped healthCounters with two special cases:
-  // 10 health should fit into a single sidge
-  // the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
-    // (since they have different widths)
+// 10 health should fit into a single sidge
+// the number of numbers that fit onto the bottom track depends on the number of single vs double digit numbers
+// (since they have different widths)
 // TODO modernize
 export function healthCounter(health: number, back = false): JSX.Element {
-
   const digitWidth = [0, 17, 24];
   let maxWidth = 268;
   let outputtedWidth = 0;
 
   if (back) {
     health = MAX_COUNTER_HEALTH + 1; // because the loop assumes you'll have the final value displayed
-      // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
+    // separately with a heart (as in, Encounter fronts), we have to force it to show all values here
   }
 
   let output = '<ul class="hp-tracker hp-tracker-vertical-right">';
   let temp = ''; // temp storage for when we have to output in reverse in horizontal and vertical-right
-  let outputted = (back) ? -1 : 0; // put one extra on the vertical to fill out max
+  let outputted = back ? -1 : 0; // put one extra on the vertical to fill out max
 
   while (health > 0) {
     health--; // subtract HP first, since we're already showing the max HP at the top
 
     if (outputted < 9 || (outputted === 9 && health === 0)) {
       output += '<li>' + health + '</li>';
-    } else if (outputted === 9) { // vert-horiz transition point
+    } else if (outputted === 9) {
+      // vert-horiz transition point
       output += '</ul><table class="hp-tracker hp-tracker-horizontal"><tr>';
       temp = '<td>' + health + '</td>';
       outputtedWidth += digitWidth[health.toString().length];
-    } else if (outputtedWidth + digitWidth[health.toString().length] < maxWidth) {
+    } else if (
+      outputtedWidth + digitWidth[health.toString().length] <
+      maxWidth
+    ) {
       temp = '<td>' + health + '</td>' + temp;
       outputtedWidth += digitWidth[health.toString().length];
-    } else if (maxWidth > 0) { // horiz-vert transition
-      output += temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
+    } else if (maxWidth > 0) {
+      // horiz-vert transition
+      output +=
+        temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
       temp = '<li>' + health + '</li>';
       maxWidth = 0;
     } else {
@@ -118,7 +171,7 @@ export function healthCounter(health: number, back = false): JSX.Element {
     outputted++;
   }
   output += temp + '</ul>';
-  return <span dangerouslySetInnerHTML={{__html: output}}></span>;
+  return <span dangerouslySetInnerHTML={{ __html: output }}></span>;
 }
 
 // same thing as hp tracker, but with different transition points
@@ -137,15 +190,21 @@ export function lootCounter(count: number): JSX.Element {
   while (count > 0) {
     if (outputted < 15 || (outputted === 15 && count === 0)) {
       output += '<li>' + count + '</li>';
-    } else if (outputted === 15) { // vert-horiz transition point
+    } else if (outputted === 15) {
+      // vert-horiz transition point
       output += '</ul><table class="hp-tracker hp-tracker-horizontal"><tr>';
       temp = '<td>' + count + '</td>';
       outputtedWidth += digitWidth[count.toString().length];
-    } else if (outputtedWidth + digitWidth[count.toString().length] < maxWidth) {
+    } else if (
+      outputtedWidth + digitWidth[count.toString().length] <
+      maxWidth
+    ) {
       temp = '<td>' + count + '</td>' + temp;
       outputtedWidth += digitWidth[count.toString().length];
-    } else if (maxWidth > 0) { // horiz-vert transition
-      output += temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
+    } else if (maxWidth > 0) {
+      // horiz-vert transition
+      output +=
+        temp + '</tr></table><ul class="hp-tracker hp-tracker-vertical-left">';
       temp = '<li>' + count + '</li>';
       maxWidth = 0;
     } else {
@@ -155,5 +214,5 @@ export function lootCounter(count: number): JSX.Element {
     count--; // subtract count last, so that we get all the values
   }
   output += temp + '</ul>';
-  return <span dangerouslySetInnerHTML={{__html: output}}></span>;
+  return <span dangerouslySetInnerHTML={{ __html: output }}></span>;
 }

@@ -15,7 +15,7 @@ describe('Validation', () => {
   });
 
   test('reports quest missing root <quest> node', () => {
-    expect(() => validate(undefined as any)).toThrowError(
+    expect(() => validate(undefined as any)).toThrow(
       'Quest has invalid root node',
     );
   });
@@ -38,7 +38,7 @@ describe('Validation', () => {
       validate(
         load('<quest><roleplay><script>alert(1)</script></roleplay></quest>'),
       ),
-    ).toThrowError(/Found invalid nodes and attributes.*script/);
+    ).toThrow(/Found invalid nodes and attributes.*script/);
   });
 
   test('counts each occurrence of an invalid element', () => {
@@ -94,7 +94,7 @@ describe('Validation', () => {
     // script-injection vector.
     expect(() =>
       validate(load('<quest><div onclick="alert(1)"></div></quest>')),
-    ).toThrowError(/Found invalid nodes and attributes.*div\.onclick/);
+    ).toThrow(/Found invalid nodes and attributes.*div\.onclick/);
   });
 
   test('allows the bare "on" attribute used by combat events', () => {
