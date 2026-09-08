@@ -13,7 +13,8 @@ const options = {
     // plus its implicit `stream` polyfill - see shared/webpack.shared.js.
     fallback: shared.resolve.fallback,
   },
-  entry: ['babel-polyfill', 'whatwg-fetch', 'promise-polyfill'],
+  // No `entry`: every service defines one as an object, which replaces this
+  // rather than concatenating. See shared/webpack.shared.js.
   output: {
     // This must be an absolute path, and thus must be defined per-service
     // path: 'dist',
@@ -44,8 +45,9 @@ const options = {
     // `noEmitOnErrors: true` became `emitOnErrors: false` (the meaning inverted).
     emitOnErrors: false,
   },
-  // Keep the production bundles ES5 for cordova-android@7 / cordova-ios@4.
-  target: ['web', 'es5'],
+  // ES6, matching the dev config. See shared/webpack.shared.js for why the
+  // ES5 target was dropped.
+  target: 'web',
 };
 
 module.exports = options;

@@ -30,14 +30,15 @@ const options = {
     },
   },
   devtool: 'source-map',
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    'promise-polyfill',
-    // The `webpack-dev-server/client?...` and `webpack/hot/only-dev-server`
-    // entries are gone: wds injects its own client, and `devServer.hot` above
-    // covers hot module replacement.
-  ],
+  // No `entry` here. All four services define one as an *object*, which
+  // replaces rather than concatenates whatever this file sets, so the
+  // `babel-polyfill` / `whatwg-fetch` / `promise-polyfill` array that used to
+  // live here never reached a single bundle. Listing it was purely misleading:
+  // the polyfills that do ship are imported by services/app/src/Init.tsx.
+  //
+  // The `webpack-dev-server/client?...` and `webpack/hot/only-dev-server`
+  // entries are also gone: wds injects its own client, and `devServer.hot`
+  // above covers hot module replacement.
   mode: 'development',
   module: {
     rules: [
@@ -80,12 +81,11 @@ const options = {
           // Point at the monorepo tsconfig explicitly; ts-loader's own search
           // starts from the service directory and would find nothing.
           //
-          // tsconfig.browser.json is tsconfig.json with `target: es5` +
-          // `downlevelIteration`. Babel used to do this down-levelling for us
-          // via awesome-typescript-loader's `useBabel`; see that file for why
-          // the browser bundles cannot ship es6. services/api has its own
-          // webpack config and stays on the root tsconfig (it runs on node).
-          configFile: Path.resolve(__dirname, '../tsconfig.browser.json'),
+          // This used to be tsconfig.browser.json, a copy of the root config
+          // with `target: es5`. That file is gone -- see the `target` note at
+          // the bottom of this file -- so the browser bundles now build from
+          // the same root config as services/api.
+          configFile: Path.resolve(__dirname, '../tsconfig.json'),
           // `tsc --noEmit` (yarn typecheck / the CI Typecheck step) is the
           // authoritative type check for the repo. Re-running it inside every
           // one of the five bundles would quadruple build time for the same
@@ -142,11 +142,22 @@ const options = {
     colors: true,
     reasons: true,
   },
-  // services/app ships through cordova-android@7 (Android 4.4 / Chrome 33), so
-  // the bundle - including the runtime and chunk-loading code webpack injects -
-  // must be ES5. Without the `es5` target webpack emits arrow functions and
-  // `const` in its own runtime no matter what tsconfig.browser.json says.
-  target: ['web', 'es5'],
+  // The browser bundles target ES6. This is a deliberate, owner-approved
+  // compatibility drop, not an oversight: cordova-android@7 (Android 4.4 /
+  // Chrome 33) and cordova-ios@4 (iOS 9) WebViews cannot parse ES6 and are no
+  // longer supported.
+  //
+  // The `es5` target this replaces was never actually achieving its goal.
+  // It down-levelled our own TypeScript and webpack's runtime glue, but
+  // nothing transpiles node_modules (ts-loader excludes it and there is no
+  // babel/swc loader), and `async`, `query-string`, `strict-uri-encode`,
+  // `split-on-first`, `joi`, `semver` and `papaparse` all ship ES6. Parsing
+  // the emitted bundles with acorn at `ecmaVersion: 5` failed on the original
+  // webpack 4 + uglifyjs toolchain too, so those WebViews have been broken for
+  // as long as those dependencies have been in the graph. Keeping the flag
+  // only bought a false sense of coverage, at the cost of a larger, slower
+  // bundle for every supported browser.
+  target: 'web',
   watchOptions: process.env.WATCH_POLL
     ? { aggregateTimeout: 300, poll: 1000 }
     : {},
