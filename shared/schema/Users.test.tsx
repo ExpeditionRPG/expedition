@@ -1,7 +1,7 @@
-import {User} from './Users';
+import { User } from './Users';
 
 describe('User Schema', () => {
-  const base = {id: '54321'};
+  const base = { id: '54321' };
   test('is invalid when missing id', () => {
     expect(User.create({}) instanceof Error).toEqual(true);
   });

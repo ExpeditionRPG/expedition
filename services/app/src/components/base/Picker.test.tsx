@@ -19,10 +19,7 @@ describe('Picker', () => {
 
   test('triggers onDelta when buttons clicked', () => {
     const { e, props } = setup();
-    e
-      .find('IconButton')
-      .first()
-      .prop('onClick')();
+    e.find('IconButton').first().prop('onClick')();
     expect(props.onDelta).toHaveBeenCalledWith(-1);
   });
 

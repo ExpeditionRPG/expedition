@@ -5,21 +5,21 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import * as React from 'react';
 
-import {UserEntry} from 'api/admin/QueryTypes';
+import { UserEntry } from 'api/admin/QueryTypes';
 
 export interface UsersViewStateProps {
   list: UserEntry[];
-  selected: number|null;
+  selected: number | null;
 }
 
 export interface UsersViewDispatchProps {
   onRowSelect: (row: number) => any;
 }
 
-export interface UsersViewProps extends UsersViewStateProps, UsersViewDispatchProps {}
+export interface UsersViewProps
+  extends UsersViewStateProps, UsersViewDispatchProps {}
 
 const UsersView = (props: UsersViewProps): JSX.Element => {
-
   const rows = props.list.map((entry, i) => {
     return (
       <TableRow key={i} selected={i === props.selected}>
@@ -46,9 +46,7 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
           <TableCell>Last Login</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
-        {rows}
-      </TableBody>
+      <TableBody>{rows}</TableBody>
     </Table>
   );
 };

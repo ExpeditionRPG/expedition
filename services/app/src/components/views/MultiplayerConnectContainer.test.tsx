@@ -1,3 +1,5 @@
 describe('Multiplayer Container', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('TODO', () => {
+    /* TODO */
+  });
 });

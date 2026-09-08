@@ -1,13 +1,16 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {setDialog} from '../actions/Dialogs';
-import {setLine, updateDirtyState} from '../actions/Editor';
-import {AppState} from '../reducers/StateTypes';
-import QuestIDE, {DispatchProps, StateProps} from './QuestIDE';
+import { setDialog } from '../actions/Dialogs';
+import { setLine, updateDirtyState } from '../actions/Editor';
+import { AppState } from '../reducers/StateTypes';
+import QuestIDE, { DispatchProps, StateProps } from './QuestIDE';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
-    annotations: [...state.annotations.spellcheck, ...state.annotations.playtest],
+    annotations: [
+      ...state.annotations.spellcheck,
+      ...state.annotations.playtest,
+    ],
     lastSplitPaneDragMillis: state.editor.lastSplitPaneDragMillis,
     line: state.editor.line.number,
     lineTs: state.editor.line.ts,
@@ -36,7 +39,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const QuestIDEContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(QuestIDE);
 
 export default QuestIDEContainer;

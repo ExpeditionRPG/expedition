@@ -2,7 +2,7 @@ import Drawer from '@material-ui/core/Drawer';
 import MenuItem from '@material-ui/core/MenuItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
-import {SnackbarState, ViewType} from '../reducers/StateTypes';
+import { SnackbarState, ViewType } from '../reducers/StateTypes';
 import DialogsContainer from './DialogsContainer';
 import SplashContainer from './SplashContainer';
 import TopBarContainer from './TopBarContainer';
@@ -25,21 +25,19 @@ interface Props extends StateProps, DispatchProps {}
 
 const Main = (props: Props): JSX.Element => {
   if (props.loggedIn === false) {
-    return (
-      <SplashContainer/>
-    );
+    return <SplashContainer />;
   }
 
   let view: JSX.Element;
   switch (props.view) {
     case 'USERS':
-      view = <UsersViewContainer/>;
+      view = <UsersViewContainer />;
       break;
     case 'QUESTS':
-      view = <QuestsViewContainer/>;
+      view = <QuestsViewContainer />;
       break;
     case 'FEEDBACK':
-      view = <FeedbackViewContainer/>;
+      view = <FeedbackViewContainer />;
       break;
     default:
       throw new Error('Unimplemented view ' + props.view);
@@ -47,22 +45,22 @@ const Main = (props: Props): JSX.Element => {
 
   return (
     <div className="main">
-      <TopBarContainer/>
-      <DialogsContainer/>
+      <TopBarContainer />
+      <DialogsContainer />
       <Drawer variant="permanent">
         <MenuItem onClick={() => props.onViewChange('USERS')}>Users</MenuItem>
         <MenuItem onClick={() => props.onViewChange('QUESTS')}>Quests</MenuItem>
-        <MenuItem onClick={() => props.onViewChange('FEEDBACK')}>Feedback</MenuItem>
+        <MenuItem onClick={() => props.onViewChange('FEEDBACK')}>
+          Feedback
+        </MenuItem>
       </Drawer>
-      <div className="contents">
-        {view}
-      </div>
+      <div className="contents">{view}</div>
       <Snackbar
         className="editor_snackbar"
         open={props.snackbar.open}
         message={props.snackbar.message}
         action={props.snackbar.actions}
-        autoHideDuration={(props.snackbar.persist) ? undefined : 4000}
+        autoHideDuration={props.snackbar.persist ? undefined : 4000}
         onClose={props.onSnackbarClose}
       />
     </div>

@@ -53,8 +53,7 @@ const difficultyText: { [v: string]: any } = [
   },
   {
     title: 'Hard',
-    text:
-      'Enemies are relentless; a true challenge for seasoned adventurers only.',
+    text: 'Enemies are relentless; a true challenge for seasoned adventurers only.',
   },
   {
     title: 'Impossible',

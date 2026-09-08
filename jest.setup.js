@@ -24,22 +24,22 @@ Enzyme.configure({ adapter: new Adapter() });
 // rather than as the assertion that actually failed.
 if (typeof window !== 'undefined') {
   if (!window.matchMedia) {
-    window.matchMedia = function(query) {
+    window.matchMedia = function (query) {
       return {
         matches: false,
         media: query,
         onchange: null,
-        addListener: function() {},
-        removeListener: function() {},
-        addEventListener: function() {},
-        removeEventListener: function() {},
-        dispatchEvent: function() {
+        addListener: function () {},
+        removeListener: function () {},
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        dispatchEvent: function () {
           return false;
         },
       };
     };
   }
   if (!window.scrollTo) {
-    window.scrollTo = function() {};
+    window.scrollTo = function () {};
   }
 }

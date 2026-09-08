@@ -1,4 +1,3 @@
-
 export interface UserState {
   loggedIn: boolean;
   id: string;

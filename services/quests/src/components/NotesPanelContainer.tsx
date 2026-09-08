@@ -1,8 +1,8 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {updateDirtyState} from '../actions/Editor';
-import {AppState} from '../reducers/StateTypes';
-import NotesPanel, {DispatchProps, StateProps} from './NotesPanel';
+import { updateDirtyState } from '../actions/Editor';
+import { AppState } from '../reducers/StateTypes';
+import NotesPanel, { DispatchProps, StateProps } from './NotesPanel';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const NotesPanelContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(NotesPanel);
 
 export default NotesPanelContainer;

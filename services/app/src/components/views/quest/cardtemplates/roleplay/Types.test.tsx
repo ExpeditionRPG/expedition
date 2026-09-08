@@ -1,3 +1,5 @@
 describe('Roleplay template types', () => {
-  test.skip('Empty', () => { /* TODO */ });
+  test.skip('Empty', () => {
+    /* TODO */
+  });
 });

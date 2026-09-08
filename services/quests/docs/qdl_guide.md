@@ -220,12 +220,11 @@ _combat_
 * on round
 
   > Is the Lich dead?
-
-  * Yes
+  - Yes
 
     **win**
 
-  * No
+  - No
 
     The Lich engulfs your party in frost!
 
@@ -345,27 +344,27 @@ _decision_ {"maxrolls": 4}
 
 This text will be shown as users are getting ready to make a decision.
 
-* on athletics
+- on athletics
 
   This is one athletics outcome.
 
-* on athletics
+- on athletics
 
   This is another athletics outcome!
 
-* on knowledge
+- on knowledge
 
   This is a knowledge outcome.
 
-* on charisma
+- on charisma
 
   This is a charisma outcome.
 
-* on failure
+- on failure
 
   Failure!
 
-* on interrupted
+- on interrupted
 
   Interrupted!
 ```
@@ -387,31 +386,31 @@ _decision_
 
 Truly a fancy decision.
 
-* on light athletics failure
+- on light athletics failure
 
   Light athletics failed!
 
-* on light athletics interrupted
+- on light athletics interrupted
 
   Light athletics interrupted!
 
-* on light athletics success
+- on light athletics success
 
   Light athletics succeeded!
 
-* on dark athletics
+- on dark athletics
 
   Dark athletics succeeded!
 
-* on knowledge
+- on knowledge
 
   Knowledge succeeded!
 
-* on interrupted
+- on interrupted
 
   Interrupted!
 
-* on failure
+- on failure
 
   Failure!
 ```
@@ -432,14 +431,14 @@ _title_
 
 {{gold == 0}} You have no gold!
 
-* {{ gold >= 5 }} Buy the potion
+- {{ gold >= 5 }} Buy the potion
 
   {{ hasPotion = true }}
   {{ gold = gold - 5 }}
 
   You purchase the potion. You now have a potion, and {{ gold }} gold.
 
-* Continue walking
+- Continue walking
 
   You decide not to purchase the potion.
 

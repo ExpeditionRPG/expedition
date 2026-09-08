@@ -12,10 +12,7 @@ export interface AnnouncementState {
 }
 
 export type DialogIDType =
-  | 'ERROR'
-  | 'ANNOTATION_DETAIL'
-  | 'PUBLISHING'
-  | 'UNPUBLISHED';
+  'ERROR' | 'ANNOTATION_DETAIL' | 'PUBLISHING' | 'UNPUBLISHED';
 
 export type ShareType = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 

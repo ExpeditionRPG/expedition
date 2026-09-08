@@ -4,7 +4,7 @@ export const DESCRIPTION = `Your quest has no whitespace between a parameter lis
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_combat_
+  `_combat_
 
 - Giant Rat
 * on win
@@ -17,7 +17,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Giant Rat
 

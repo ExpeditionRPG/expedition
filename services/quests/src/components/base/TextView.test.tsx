@@ -1,3 +1,5 @@
 describe('TextView', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('TODO', () => {
+    /* TODO */
+  });
 });

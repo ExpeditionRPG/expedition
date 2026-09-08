@@ -1,8 +1,12 @@
 import LockIcon from '@material-ui/icons/Lock';
 import * as React from 'react';
 
-import {AUTH_SETTINGS} from '../../Constants';
-import {CheckoutState, QuestState, UserState} from '../../reducers/StateTypes';
+import { AUTH_SETTINGS } from '../../Constants';
+import {
+  CheckoutState,
+  QuestState,
+  UserState,
+} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
@@ -15,14 +19,23 @@ export interface StateProps extends React.Props<any> {
 export interface DispatchProps {
   onError: (error: string) => void;
   onStripeLoad: (stripe: stripe.Stripe) => void;
-  onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState) => void;
+  onSubmit: (
+    stripeToken: string,
+    checkout: CheckoutState,
+    user: UserState,
+  ) => void;
 }
 
 interface Props extends StateProps, DispatchProps {}
 
 // Docs: https://stripe.com/docs/stripe-js
 class CheckoutEntry extends React.Component<Props, {}> {
-  public state: { card: stripe.elements.Element, paymentError: string|null, paymentValid: boolean, mounted: boolean };
+  public state: {
+    card: stripe.elements.Element;
+    paymentError: string | null;
+    paymentValid: boolean;
+    mounted: boolean;
+  };
 
   constructor(props: Props) {
     super(props);
@@ -42,36 +55,49 @@ class CheckoutEntry extends React.Component<Props, {}> {
     });
     card.on('change', (response: any) => {
       this.setState({
-        paymentError: (response.error) ? response.error.message : null,
+        paymentError: response.error ? response.error.message : null,
         paymentValid: response.complete,
       });
     });
-    this.state = { card, paymentError: null, paymentValid: false, mounted: false };
+    this.state = {
+      card,
+      paymentError: null,
+      paymentValid: false,
+      mounted: false,
+    };
   }
 
   public componentDidMount() {
-    if (this.state.mounted) { return; }
+    if (this.state.mounted) {
+      return;
+    }
 
     this.state.card.mount('#stripeCard');
-    this.setState({mounted: true});
+    this.setState({ mounted: true });
   }
 
   public componentWillUnmount() {
     this.state.card.unmount();
-    this.setState({mounted: false});
+    this.setState({ mounted: false });
   }
 
   public handleSubmit(event: TouchEvent) {
     if (!this.props.checkout.stripe) {
       throw Error('Error in checkout');
     }
-    this.props.checkout.stripe.createToken(this.state.card).then((result: any) => {
-      if (result.error) {
-        this.setState({paymentError: result.error.message});
-      } else {
-        this.props.onSubmit(result.token.id, this.props.checkout, this.props.user);
-      }
-    });
+    this.props.checkout.stripe
+      .createToken(this.state.card)
+      .then((result: any) => {
+        if (result.error) {
+          this.setState({ paymentError: result.error.message });
+        } else {
+          this.props.onSubmit(
+            result.token.id,
+            this.props.checkout,
+            this.props.user,
+          );
+        }
+      });
     event.preventDefault();
   }
 
@@ -79,17 +105,41 @@ class CheckoutEntry extends React.Component<Props, {}> {
     return (
       <Card title="Tip the Author">
         <div id="stripe">
-          <form id="stripeForm" action="/charge" method="post" className={this.props.checkout.processing ? 'disabled' : ''}>
+          <form
+            id="stripeForm"
+            action="/charge"
+            method="post"
+            className={this.props.checkout.processing ? 'disabled' : ''}
+          >
             <div className="form-row">
-              <p>Please enter your credit or debit card to tip {this.props.quest.details.author} ${this.props.checkout.amount} for <i>{this.props.quest.details.title}</i>.</p>
-              <label className="security"><LockIcon />Payments processed securely by Stripe.</label>
+              <p>
+                Please enter your credit or debit card to tip{' '}
+                {this.props.quest.details.author} ${this.props.checkout.amount}{' '}
+                for <i>{this.props.quest.details.title}</i>.
+              </p>
+              <label className="security">
+                <LockIcon />
+                Payments processed securely by Stripe.
+              </label>
               <div id="stripeCard"></div>
-              <div id="stripeErrors" role="alert">{this.state.paymentError}</div>
+              <div id="stripeErrors" role="alert">
+                {this.state.paymentError}
+              </div>
             </div>
-            {!this.props.checkout.processing && <Button id="stripeSubmit" disabled={!this.state.paymentValid} onClick={(e: TouchEvent) => this.handleSubmit(e)}>
-              {(this.state.paymentValid) ? 'Pay' : 'Enter payment info'}
-            </Button>}
-            {this.props.checkout.processing && <div className="centralMessage">Processing payment, one moment...</div>}
+            {!this.props.checkout.processing && (
+              <Button
+                id="stripeSubmit"
+                disabled={!this.state.paymentValid}
+                onClick={(e: TouchEvent) => this.handleSubmit(e)}
+              >
+                {this.state.paymentValid ? 'Pay' : 'Enter payment info'}
+              </Button>
+            )}
+            {this.props.checkout.processing && (
+              <div className="centralMessage">
+                Processing payment, one moment...
+              </div>
+            )}
           </form>
         </div>
       </Card>

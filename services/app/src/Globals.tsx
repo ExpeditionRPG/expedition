@@ -146,8 +146,10 @@ export function getAudioContext(): AudioContext | null {
     return refs.audioContext;
   }
   try {
-    refs.audioContext = new ((getWindow().AudioContext as any) ||
-      (getWindow().webkitAudioContext as any))();
+    refs.audioContext = new (
+      (getWindow().AudioContext as any) ||
+      (getWindow().webkitAudioContext as any)
+    )();
   } catch (err) {
     console.log('Web Audio API is not supported in this browser');
     refs.audioContext = null;

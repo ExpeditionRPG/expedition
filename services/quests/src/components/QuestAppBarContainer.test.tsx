@@ -1,5 +1,9 @@
 describe('QuestAppBarContainer', () => {
-  test.skip('maps state', () => { /* TODO */ });
+  test.skip('maps state', () => {
+    /* TODO */
+  });
 
-  test.skip('dispatches user dialog with onUserDialogRequest', () => { /* TODO */ });
+  test.skip('dispatches user dialog with onUserDialogRequest', () => {
+    /* TODO */
+  });
 });

@@ -4,14 +4,14 @@ Estas reglas han sido diseñadas para jugar sin dispositivos móviles y con un j
 
 Si quieres jugar a la última versión de Expedition, la cual incluye una gran cantidad de aventuras que no requieren un GM, puedes usar la aplicación para Web, Android o iOS disponible en [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*Este documento está basado en la App Expedition v1.13.8. Puedes consultar la versión de la app yendo a Herramientas y buscando el número de versión en la parte inferior de la pantalla.*
+_Este documento está basado en la App Expedition v1.13.8. Puedes consultar la versión de la app yendo a Herramientas y buscando el número de versión en la parte inferior de la pantalla._
 
 ## Prerrequisitos
 
 Para jugar, necesitarás una copia de las cartas de Expedition, Puedes:
 
-* Comprar una copia en la tienda de Expedition ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) o en Amazon.
-* O, puedes imprimir tus propias cartas en [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). Si imprimes tus propias cartas, tendrás que encontrar también un dado d20 y una docena de clips de seguimiento (como pinzas para ropa o clips para papel).
+- Comprar una copia en la tienda de Expedition ([ExpeditionGame.com/store](http://ExpeditionGame.com/store)) o en Amazon.
+- O, puedes imprimir tus propias cartas en [ExpeditionGame.com/print-and-play](http://ExpeditionGame.com/print-and-play). Si imprimes tus propias cartas, tendrás que encontrar también un dado d20 y una docena de clips de seguimiento (como pinzas para ropa o clips para papel).
 
 También querrás imprimir estas reglas para poder consultarlas mientras juegas.
 
@@ -25,17 +25,17 @@ Cuando estéis listos para jugar, cada jugador a excepción del GM debe:
 
 **Selecciona** un aventurero a tu elección de la baraja, ponlo boca arriba frente a ti y pasa la baraja al siguiente jugador.
 
-*Si jugáis con The Horror*: Roba una carta de Persona, ponla boca arriba frente a ti y pone un clip en "Base".
+_Si jugáis con The Horror_: Roba una carta de Persona, ponla boca arriba frente a ti y pone un clip en "Base".
 
 Pon un **Clip** como indicador de salud de tu aventurero al máximo (12).
 
-*Si jugáis con un solo jugador que no sea GM*: Roba y prepara dos aventureros.
+_Si jugáis con un solo jugador que no sea GM_: Roba y prepara dos aventureros.
 
 ### Habilidades
 
 **Roba** las habilidades iniciales listadas en tu aventurero.
 
-*Si jugáis con The Horror*: Roba una carta de Habilidad de Influencia adicional y añádela a tu baraja de habilidades (empieza con 7 habilidades).
+_Si jugáis con The Horror_: Roba una carta de Habilidad de Influencia adicional y añádela a tu baraja de habilidades (empieza con 7 habilidades).
 
 **Lee** atentamente tus habilidades. Puedes hacer un mulligan (descartar la mano y robar de nuevo) una vez si lo deseas.
 
@@ -53,13 +53,12 @@ Como novedad en Expedition, cuando el GM trate con tiradas de habilidad (como al
 
 Por ejemplo, podría dejaros incrementar la tirada en +1 por cada habilidad de un tipo relevante que tengáis:
 
-
-| Clase de Habilidad | Tiradas a las que podria beneficiar |
-| ----- | ----- |
-| Combate | Fuerza, resistencia, constitución, intimidación |
-| A Distancia | Destreza, sigilo, percepción, escalada, acrobacias, hurto |
-| Magia | Inteligencia, conocimientos, tradiciones, historia, sabiduría |
-| Música | Carisma, diplomacia, persuasión, negociación |
+| Clase de Habilidad | Tiradas a las que podria beneficiar                           |
+| ------------------ | ------------------------------------------------------------- |
+| Combate            | Fuerza, resistencia, constitución, intimidación               |
+| A Distancia        | Destreza, sigilo, percepción, escalada, acrobacias, hurto     |
+| Magia              | Inteligencia, conocimientos, tradiciones, historia, sabiduría |
+| Música             | Carisma, diplomacia, persuasión, negociación                  |
 
 El GM puede incluso dejaros usar una carta de habilidad como "atajo" - por ejemplo, en vez de intentar usar la fuerza bruta para tirar abajo una puerta, podrías intentar usar una Bola de Fuego.
 
@@ -89,15 +88,15 @@ Los jugador deben, al mismo tiempo:
 
 Si jugáis con un temporizador:
 
-* **Robad de antemano** tres habilidades y ponedlas boca abajo. No las miréis hasta que empiece el temporizador.
-* **Iniciad el temporizador**.
-* **Jugad una habilidad** de vuestra mano.
-* Si el temporizador finaliza, multiplica el daño recibido esta ronda por 1.5 (redondea al alza).
+- **Robad de antemano** tres habilidades y ponedlas boca abajo. No las miréis hasta que empiece el temporizador.
+- **Iniciad el temporizador**.
+- **Jugad una habilidad** de vuestra mano.
+- Si el temporizador finaliza, multiplica el daño recibido esta ronda por 1.5 (redondea al alza).
 
 Si jugáis sin temporizador:
 
-* **Roba tu mano** de tres habilidades.
-* **Juega una habilidad** de tu mano.
+- **Roba tu mano** de tres habilidades.
+- **Juega una habilidad** de tu mano.
 
 #### Oleadas
 
@@ -109,7 +108,7 @@ Los efectos de la oleada ocurren antes que las habilidades. Las habilidades que 
 
 ### Tiradas y Resultados
 
-*Si jugáis con The Horror*: Aventureros con persona al Min deben resolver el efecto persona y resetearlo a Base antes de resolver sus habilidades. Aventureros con persona al Max pueden elegir entre resolver y resetear ahora o en una ronda posterior.
+_Si jugáis con The Horror_: Aventureros con persona al Min deben resolver el efecto persona y resetearlo a Base antes de resolver sus habilidades. Aventureros con persona al Max pueden elegir entre resolver y resetear ahora o en una ronda posterior.
 
 **Tiradas**: Cada aventurero tira un dado por cada habilidad que juegue. Si tira ≥ X, la habilidad tiene éxito. Las cartas de habilidad pueden mostrar efectos adicionales basados en la tirada, incluso si fallan.
 
@@ -130,69 +129,72 @@ Si queréis que el combate sea más fácil, usad la tabla para 1 jugador menos. 
 ##### 1 - 2 jugadores (2 aventureros)
 
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
-| 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
-| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
+| ------------- | ----------- | --- | ---- | ----- | ----- | ---------- |
+| 1             | 0           | 0   | 0    | 1     | 2     | 0.6        |
+| 2             | 0           | 1   | 1    | 1     | 2     | 1          |
+| 3             | 0           | 1   | 2    | 2     | 3     | 1.6        |
+| 4             | 1           | 2   | 2    | 2     | 3     | 2          |
+| 5             | 2           | 2   | 2    | 3     | 4     | 2.6        |
+| 6             | 2           | 2   | 3    | 4     | 4     | 3          |
+| 7             | 2           | 3   | 4    | 4     | 5     | 3.6        |
+| 8             | 3           | 3   | 4    | 5     | 5     | 4          |
+| 9+            | 4           | 4   | 4    | 5     | 6     | 4.6        |
 
 ##### 3 jugadores
+
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
-| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
-| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
-| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
-| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
-| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| ------------- | ----------- | --- | ---- | ----- | ----- | ---------- |
+| 1             | 0           | 0   | 1    | 1     | 2     | 0.8        |
+| 2             | 1           | 1   | 1    | 2     | 2     | 1.4        |
+| 3             | 1           | 2   | 2    | 3     | 3     | 2.2        |
+| 4             | 1           | 2   | 3    | 3     | 4     | 2.6        |
+| 5             | 3           | 3   | 3    | 4     | 4     | 3.4        |
+| 6             | 3           | 3   | 4    | 4     | 5     | 3.8        |
+| 7             | 3           | 4   | 5    | 5     | 5     | 4.4        |
+| 8             | 4           | 4   | 5    | 5     | 6     | 4.8        |
+| 9+            | 5           | 5   | 5    | 6     | 6     | 5.4        |
 
 ##### 4 jugadores
 
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
-| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
-| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
-| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
-| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
-| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
+| ------------- | ----------- | --- | ---- | ----- | ----- | ---------- |
+| 1             | 0           | 1   | 1    | 1     | 2     | 1          |
+| 2             | 1           | 1   | 2    | 2     | 2     | 1.6        |
+| 3             | 2           | 2   | 2    | 3     | 3     | 2.4        |
+| 4             | 2           | 2   | 3    | 4     | 4     | 3          |
+| 5             | 3           | 3   | 4    | 4     | 4     | 3.6        |
+| 6             | 3           | 4   | 4    | 5     | 5     | 4.2        |
+| 7             | 4           | 4   | 5    | 5     | 6     | 4.8        |
+| 8             | 5           | 5   | 5    | 6     | 6     | 5.4        |
+| 9+            | 5           | 6   | 6    | 6     | 7     | 6          |
 
 ##### 5 jugadores
+
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
-| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
-| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
-| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
-| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
-| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| ------------- | ----------- | --- | ---- | ----- | ----- | ---------- |
+| 1             | 0           | 1   | 1    | 1     | 2     | 1          |
+| 2             | 1           | 1   | 2    | 2     | 3     | 1.8        |
+| 3             | 2           | 2   | 2    | 3     | 4     | 2.6        |
+| 4             | 2           | 2   | 3    | 4     | 5     | 3.2        |
+| 5             | 3           | 3   | 4    | 4     | 5     | 3.8        |
+| 6             | 3           | 4   | 4    | 5     | 6     | 4.4        |
+| 7             | 4           | 5   | 5    | 5     | 6     | 5          |
+| 8             | 5           | 6   | 6    | 6     | 6     | 5.8        |
+| 9+            | 6           | 6   | 6    | 7     | 7     | 6.4        |
 
 ##### 6 jugadores
+
 | Suma de Nivel | Tirada: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (promedio) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
-| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
-| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
-| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
-| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
-| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
+| ------------- | ----------- | --- | ---- | ----- | ----- | ---------- |
+| 1             | 1           | 1   | 1    | 1     | 2     | 1.2        |
+| 2             | 1           | 2   | 2    | 2     | 3     | 2          |
+| 3             | 2           | 2   | 3    | 3     | 4     | 2.8        |
+| 4             | 3           | 3   | 3    | 4     | 5     | 3.6        |
+| 5             | 4           | 4   | 4    | 4     | 5     | 4.2        |
+| 6             | 4           | 4   | 5    | 5     | 6     | 4.8        |
+| 7             | 5           | 5   | 6    | 6     | 6     | 5.6        |
+| 8             | 6           | 6   | 6    | 7     | 7     | 6.4        |
+| 9+            | 6           | 7   | 7    | 7     | 8     | 7          |
 
 ### Victoria
 
@@ -207,23 +209,23 @@ Todos los aventureros recuperan toda la salud (incluso si estaban a 0 de salud),
 Dividid el botín entre los aventureros. Podéis utilizarlo en cualquier momento sin consumir ninguna acción (a no ser que se especifique lo contrario).
 
 | Nivel de combate | Botín de recompensa |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| ---------------- | ------------------- |
+| 1                | 1                   |
+| 2                | 1                   |
+| 3                | 2                   |
+| 4                | 3                   |
+| 5                | 3                   |
+| 6                | 4                   |
+| 7                | 4                   |
+| 8+               | 5                   |
 
 **Subir de nivel**: El grupo gana tanta experiencia como la suma del nivel del combate. Llevad la cuenta de la experiencia ganada con el dorso de una carta de encuentro o con una hoja de papel. Llevad la cuenta del total de experiencia necesaria para subir de nivel en el dorso de otra carta de encuentro. Este total empieza en 4 y aumenta en 1 cada vez que subís de nivel.
 
 Cuando subáis de nivel, todos los aventureros aprenden una nueva habilidad:
 
-* Robad 3 habilidades de una de las barajas listadas en vuestra carta de aventurero. *Si jugáis con The Horror*: Todos los aventureros deben robar también de la baraja de influencia.
-* Añadid 1 a vuestro mazo de habilidades, y poned la otras 2 al final del mazo del que hayáis robado.
-* *Podéis* escoger descartar una habilidad.
+- Robad 3 habilidades de una de las barajas listadas en vuestra carta de aventurero. _Si jugáis con The Horror_: Todos los aventureros deben robar también de la baraja de influencia.
+- Añadid 1 a vuestro mazo de habilidades, y poned la otras 2 al final del mazo del que hayáis robado.
+- _Podéis_ escoger descartar una habilidad.
 
 ### Derrota
 

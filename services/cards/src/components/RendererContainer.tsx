@@ -1,6 +1,6 @@
-import {connect} from 'react-redux';
-import {AppState} from '../reducers/StateTypes';
-import Renderer, {StateProps} from './Renderer';
+import { connect } from 'react-redux';
+import { AppState } from '../reducers/StateTypes';
+import Renderer, { StateProps } from './Renderer';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -10,8 +10,6 @@ const mapStateToProps = (state: AppState): StateProps => {
   };
 };
 
-const RendererContainer = connect(
-  mapStateToProps
-)(Renderer);
+const RendererContainer = connect(mapStateToProps)(Renderer);
 
 export default RendererContainer;

@@ -1,9 +1,10 @@
-import {API_HOST, VERSION} from 'shared/schema/Constants';
+import { API_HOST, VERSION } from 'shared/schema/Constants';
 
 export const URLS = {
   ANNOUNCEMENTS: API_HOST + '/qc/announcements',
   CONTACT: 'http://expeditiongame.com/contact',
-  DOCUMENTATION: 'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/index.md',
+  DOCUMENTATION:
+    'https://github.com/ExpeditionRPG/expedition/blob/master/services/quests/docs/index.md',
 };
 
 export const METADATA_FIELDS = [

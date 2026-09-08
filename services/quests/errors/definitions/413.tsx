@@ -19,7 +19,7 @@ export const INVALID = [] as any;
 // ];
 
 export const VALID = [
-`_combat_ {"icon": "bandit"}
+  `_combat_ {"icon": "bandit"}
 
 - Skeleton Swordsman
 

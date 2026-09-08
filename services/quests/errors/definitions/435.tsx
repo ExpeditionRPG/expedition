@@ -5,13 +5,13 @@ export const DESCRIPTION = `Or, you can change it to :icon: for a smaller icon t
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_A card_
+  `_A card_
 
 Text [art]`,
-`_A card_
+  `_A card_
 
 > Instruction [art]`,
-`_A card_
+  `_A card_
 
 * Choice [art]
 
@@ -19,15 +19,15 @@ Text [art]`,
 ];
 
 export const VALID = [
-`_A card_
+  `_A card_
 
 Text
 
 [art]`,
-`_A card_
+  `_A card_
 
 > Instruction :icon:`,
-`_A card_
+  `_A card_
 
 * Choice :icon:
 

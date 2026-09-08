@@ -14,9 +14,11 @@ import { StatsCrawlEntry, StatsCrawler } from './StatsCrawler';
 const HEALTH_INSTRUCTION = /(\w+ \w+ (health|hp))/gi;
 const VALID_HEALTH_INSTRUCTION = /(([gG]ain|[lL]ose) (all|\d+) health)/;
 const ABILITY_INSTRUCTION = /(\w+ \w+ abili(ty|ties))/gi;
-const VALID_ABILITY_INSTRUCTION = /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
+const VALID_ABILITY_INSTRUCTION =
+  /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
 const LOOT_INSTRUCTION = /(\w*\s*\w*\s*\w+ \w+ loot)/gi;
-const VALID_LOOT_INSTRUCTION = /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
+const VALID_LOOT_INSTRUCTION =
+  /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
 const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 
 function getCombatParent(node: Node<Context>): Cheerio | null {

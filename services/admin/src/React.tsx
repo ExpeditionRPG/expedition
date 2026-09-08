@@ -22,7 +22,7 @@ export type ThunkAction<
   R,
   S = {},
   E = {},
-  A extends Redux.Action<any> = Redux.AnyAction
+  A extends Redux.Action<any> = Redux.AnyAction,
 > = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {

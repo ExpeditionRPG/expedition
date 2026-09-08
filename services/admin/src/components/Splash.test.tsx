@@ -1,3 +1,5 @@
 describe('Splash', () => {
-  test.skip('key interactivity works', () => { /* TODO */ });
+  test.skip('key interactivity works', () => {
+    /* TODO */
+  });
 });

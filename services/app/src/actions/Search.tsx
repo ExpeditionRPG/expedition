@@ -12,20 +12,28 @@ import {} from './ActionTypes';
 import { toCard } from './Card';
 import { previewQuest } from './Quest';
 
-export const changeSearchParams = remoteify(function changeSearchParams(a: {params: Partial<SearchParams>}, dispatch: Redux.Dispatch<any>) {
-  dispatch({type: 'SEARCH_CHANGE_PARAMS', params: a.params} as SearchChangeParamsAction);
+export const changeSearchParams = remoteify(function changeSearchParams(
+  a: { params: Partial<SearchParams> },
+  dispatch: Redux.Dispatch<any>,
+) {
+  dispatch({
+    type: 'SEARCH_CHANGE_PARAMS',
+    params: a.params,
+  } as SearchChangeParamsAction);
   return a;
 });
 
-export function fetchSearchResults(params: SearchParams): Promise<QuestSearchResponse> {
+export function fetchSearchResults(
+  params: SearchParams,
+): Promise<QuestSearchResponse> {
   return fetch(AUTH_SETTINGS.URL_BASE + '/quests', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify(params),
-    })
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    body: JSON.stringify(params),
+  })
     .then(handleFetchErrors)
     .then((response: Response) => response.json())
     .then((data: QuestSearchResponse) => {
@@ -48,11 +56,15 @@ export function fetchSearchResults(params: SearchParams): Promise<QuestSearchRes
 }
 
 interface DoSearchParams {
- params: SearchParams;
- players: number;
- settings: SettingsType;
+  params: SearchParams;
+  players: number;
+  settings: SettingsType;
 }
-export function searchInternal(a: DoSearchParams, dispatch: Redux.Dispatch<any>, fetchResults = fetchSearchResults) {
+export function searchInternal(
+  a: DoSearchParams,
+  dispatch: Redux.Dispatch<any>,
+  fetchResults = fetchSearchResults,
+) {
   const params = { ...a.params };
   Object.keys(params).forEach((key: string) => {
     if ((params as any)[key] === null) {
@@ -64,34 +76,45 @@ export function searchInternal(a: DoSearchParams, dispatch: Redux.Dispatch<any>,
   // Clear previous results
   dispatch({ type: 'SEARCH_REQUEST' });
 
-  const promise = fetchResults(params).then((response: QuestSearchResponse) => {
-    dispatch({
-      quests: response.quests,
-      error: response.error,
-      params,
-      type: 'SEARCH_RESPONSE',
-    } as SearchResponseAction);
-  }).catch((error: Error) => {
-    dispatch(openSnackbar(Error('Network error on search: Please check your connection.'), true));
-  });
+  const promise = fetchResults(params)
+    .then((response: QuestSearchResponse) => {
+      dispatch({
+        quests: response.quests,
+        error: response.error,
+        params,
+        type: 'SEARCH_RESPONSE',
+      } as SearchResponseAction);
+    })
+    .catch((error: Error) => {
+      dispatch(
+        openSnackbar(
+          Error('Network error on search: Please check your connection.'),
+          true,
+        ),
+      );
+    });
 
-  return {...a, promise};
+  return { ...a, promise };
 }
 
 // TODO: Make search options propagate to other clients
 export const search = remoteify(function search(
   a: DoSearchParams,
-  dispatch: Redux.Dispatch<any>
+  dispatch: Redux.Dispatch<any>,
 ) {
   return searchInternal(a, dispatch);
 });
 
-export function searchAndPlayInternal(id: string, dispatch: Redux.Dispatch<any>, fetchResults = fetchSearchResults) {
+export function searchAndPlayInternal(
+  id: string,
+  dispatch: Redux.Dispatch<any>,
+  fetchResults = fetchSearchResults,
+) {
   const params = {
     id,
     partition: Partition.expeditionPublic,
   } as SearchParams;
-  const featuredQuest = TUTORIAL_QUESTS.filter((q) => q.id === id);
+  const featuredQuest = TUTORIAL_QUESTS.filter(q => q.id === id);
 
   if (featuredQuest.length === 1) {
     dispatch(previewQuest({ quest: featuredQuest[0] }));
@@ -101,30 +124,37 @@ export function searchAndPlayInternal(id: string, dispatch: Redux.Dispatch<any>,
   // Clear previous results
   dispatch({ type: 'SEARCH_REQUEST' });
 
-  const promise = fetchResults(params).then((response: QuestSearchResponse) => {
-    dispatch({
-      quests: response.quests,
-      error: response.error,
-      params: {}, // Don't specify search params because this one's weird and uses ID
-      type: 'SEARCH_RESPONSE',
-    } as SearchResponseAction);
-    if (response.quests.length === 0) {
-      // TODO better alert / failure UI (dialog)
-      // https://github.com/ExpeditionRPG/expedition-app/issues/625
-      alert('Quest not found, returning to home screen.');
-      dispatch(toCard({ name: 'SPLASH_CARD' }));
-    } else {
-      dispatch(previewQuest({ quest: response.quests[0] }));
-    }
-  }).catch((error: Error) => {
-    dispatch(openSnackbar(Error('Network error fetching quest: Please check your connection.'), true));
-  });
-  return {...params, promise};
+  const promise = fetchResults(params)
+    .then((response: QuestSearchResponse) => {
+      dispatch({
+        quests: response.quests,
+        error: response.error,
+        params: {}, // Don't specify search params because this one's weird and uses ID
+        type: 'SEARCH_RESPONSE',
+      } as SearchResponseAction);
+      if (response.quests.length === 0) {
+        // TODO better alert / failure UI (dialog)
+        // https://github.com/ExpeditionRPG/expedition-app/issues/625
+        alert('Quest not found, returning to home screen.');
+        dispatch(toCard({ name: 'SPLASH_CARD' }));
+      } else {
+        dispatch(previewQuest({ quest: response.quests[0] }));
+      }
+    })
+    .catch((error: Error) => {
+      dispatch(
+        openSnackbar(
+          Error('Network error fetching quest: Please check your connection.'),
+          true,
+        ),
+      );
+    });
+  return { ...params, promise };
 }
 
 export const searchAndPlay = remoteify(function searchAndPlay(
   id: string,
-  dispatch: Redux.Dispatch<any>
+  dispatch: Redux.Dispatch<any>,
 ) {
   return searchAndPlayInternal(id, dispatch);
 });

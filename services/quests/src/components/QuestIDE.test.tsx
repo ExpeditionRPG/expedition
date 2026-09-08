@@ -5,11 +5,19 @@
 // import QuestIDE from './QuestIDE'
 
 describe('QuestIDE', () => {
-  test.skip('calls onTabChange on tab tap', () => { /* TODO */ });
+  test.skip('calls onTabChange on tab tap', () => {
+    /* TODO */
+  });
 
-  test.skip('keeps same tab if onTabChange does not callback', () => { /* TODO */ });
+  test.skip('keeps same tab if onTabChange does not callback', () => {
+    /* TODO */
+  });
 
-  test.skip('sets syntax highlighting based on tab', () => { /* TODO */ });
+  test.skip('sets syntax highlighting based on tab', () => {
+    /* TODO */
+  });
 
-  test.skip('calls onDirty when editor text modified', () => { /* TODO */ });
+  test.skip('calls onDirty when editor text modified', () => {
+    /* TODO */
+  });
 });

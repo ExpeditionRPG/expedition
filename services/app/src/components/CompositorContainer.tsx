@@ -1,9 +1,12 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {closeSnackbar} from '../actions/Snackbar';
-import {AppStateWithHistory, TransitionClassType} from '../reducers/StateTypes';
-import Compositor, {DispatchProps, isNavCard, StateProps} from './Compositor';
-import {getCardTemplateTheme} from './views/quest/cardtemplates/Template';
+import { closeSnackbar } from '../actions/Snackbar';
+import {
+  AppStateWithHistory,
+  TransitionClassType,
+} from '../reducers/StateTypes';
+import Compositor, { DispatchProps, isNavCard, StateProps } from './Compositor';
+import { getCardTemplateTheme } from './views/quest/cardtemplates/Template';
 
 const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   let transition: TransitionClassType = 'next';
@@ -30,7 +33,9 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     closeSnackbar(): void {
       dispatch(closeSnackbar());
@@ -40,7 +45,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
 
 const CompositorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Compositor);
 
 export default CompositorContainer;

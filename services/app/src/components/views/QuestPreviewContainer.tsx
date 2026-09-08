@@ -1,14 +1,18 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {Quest} from 'shared/schema/Quests';
-import {SavedQuestSelectAction} from '../../actions/ActionTypes';
-import {toPrevious} from '../../actions/Card';
-import {setDialog} from '../../actions/Dialog';
-import {deleteSavedQuest, loadSavedQuest, saveQuestForOffline} from '../../actions/SavedQuests';
-import {openSnackbar} from '../../actions/Snackbar';
-import {fetchQuestXML} from '../../actions/Web';
-import {AppStateWithHistory, SavedQuestMeta} from '../../reducers/StateTypes';
-import QuestPreview, {DispatchProps, StateProps} from './QuestPreview';
+import { Quest } from 'shared/schema/Quests';
+import { SavedQuestSelectAction } from '../../actions/ActionTypes';
+import { toPrevious } from '../../actions/Card';
+import { setDialog } from '../../actions/Dialog';
+import {
+  deleteSavedQuest,
+  loadSavedQuest,
+  saveQuestForOffline,
+} from '../../actions/SavedQuests';
+import { openSnackbar } from '../../actions/Snackbar';
+import { fetchQuestXML } from '../../actions/Web';
+import { AppStateWithHistory, SavedQuestMeta } from '../../reducers/StateTypes';
+import QuestPreview, { DispatchProps, StateProps } from './QuestPreview';
 
 const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   const savedInstances = state.saved.list.filter((s: SavedQuestMeta) => {
@@ -18,7 +22,9 @@ const mapStateToProps = (state: AppStateWithHistory): StateProps => {
   return {
     isDirectLinked: state._history.length <= 1,
     quest: state.quest.details,
-    lastPlayed: (state.userQuests.history[(state.quest.details || {id: '-1'}).id] || {}).lastPlayed,
+    lastPlayed: (
+      state.userQuests.history[(state.quest.details || { id: '-1' }).id] || {}
+    ).lastPlayed,
     savedInstances,
     settings: state.settings,
     lastLogin: state.user.lastLogin,
@@ -31,7 +37,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       if (isDirectLinked) {
         dispatch(setDialog('SET_PLAYER_COUNT'));
       } else {
-        dispatch(fetchQuestXML({details}));
+        dispatch(fetchQuestXML({ details }));
       }
     },
     onPlaySaved(id: string, ts: number): void {
@@ -45,7 +51,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(openSnackbar('Deleted offline version.'));
     },
     onDeleteConfirm(quest: Quest, ts: number): void {
-      dispatch({type: 'SAVED_QUEST_SELECT', ts} as SavedQuestSelectAction);
+      dispatch({ type: 'SAVED_QUEST_SELECT', ts } as SavedQuestSelectAction);
       dispatch(setDialog('DELETE_SAVED_QUEST'));
     },
     onReturn: () => {
@@ -56,7 +62,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const QuestPreviewContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(QuestPreview);
 
 export default QuestPreviewContainer;

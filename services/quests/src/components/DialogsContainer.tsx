@@ -1,10 +1,15 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {ContentRating, enumValues, Genre, Language} from 'shared/schema/Constants';
-import {setDialog} from '../actions/Dialogs';
-import {publishQuest, questMetadataChange} from '../actions/Quest';
-import {AppState, DialogIDType, QuestType} from '../reducers/StateTypes';
-import Dialogs, {DialogsDispatchProps, DialogsStateProps} from './Dialogs';
+import {
+  ContentRating,
+  enumValues,
+  Genre,
+  Language,
+} from 'shared/schema/Constants';
+import { setDialog } from '../actions/Dialogs';
+import { publishQuest, questMetadataChange } from '../actions/Quest';
+import { AppState, DialogIDType, QuestType } from '../reducers/StateTypes';
+import Dialogs, { DialogsDispatchProps, DialogsStateProps } from './Dialogs';
 
 // joi ships a browser build (package.json `browser` -> dist/joi-browser.min.js)
 // which webpack resolves for this bundle, so the joi-browser fork is gone.
@@ -18,9 +23,14 @@ const mapStateToProps = (state: AppState): DialogsStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps => {
+const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DialogsDispatchProps => {
   return {
-    handleMetadataChange: (quest: QuestType, delta: Partial<QuestType>): void => {
+    handleMetadataChange: (
+      quest: QuestType,
+      delta: Partial<QuestType>,
+    ): void => {
       if (delta.expansionfuture) {
         delta.expansionhorror = true;
       }
@@ -29,7 +39,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
     onClose: (dialog: DialogIDType): void => {
       dispatch(setDialog(dialog, false));
     },
-    onRequestPublish: (quest: QuestType, majorRelease: boolean, privatePublish: boolean): void => {
+    onRequestPublish: (
+      quest: QuestType,
+      majorRelease: boolean,
+      privatePublish: boolean,
+    ): void => {
       // joi 16 removed `Joi.validate(value, schema, options, cb)` in favour of
       // `schema.validate(value, options)`, which is synchronous. `.valid()`
       // also became varargs (it used to flatten a single array argument), and
@@ -38,7 +52,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
       const result = Joi.object({
         author: Joi.string().min(2).max(100),
         contentrating: Joi.string().valid(...enumValues(ContentRating)),
-        email: Joi.string().email({tlds: {allow: false}}),
+        email: Joi.string().email({ tlds: { allow: false } }),
         expansionhorror: Joi.boolean(),
         expansionfuture: Joi.boolean(),
         expansionwyrmsgiants: Joi.boolean(),
@@ -63,9 +77,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DialogsDispatchProps
   };
 };
 
-const DialogsContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Dialogs);
+const DialogsContainer = connect(mapStateToProps, mapDispatchToProps)(Dialogs);
 
 export default DialogsContainer;

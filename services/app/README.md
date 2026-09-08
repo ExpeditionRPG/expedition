@@ -48,7 +48,7 @@ npm run test
 
 This runs tests defined with the `.test.tsx` extension, as well the `meta_tests.js` script file.
 
-Tests require Java JDK 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download ***JDK*** and install it.
+Tests require Java JDK 7 or higher. To update Java go to http://www.oracle.com/technetwork/java/javase/downloads/index.html and download _**JDK**_ and install it.
 
 Tests require Chrome. Please make sure you have the Chrome browser installed and up-to-date on your system.
 
@@ -65,6 +65,7 @@ npm run build
 ```
 
 Notes:
+
 - web files are output in the www/ folder. Can host locally for quick double checking via `python -m SimpleHTTPServer 5000` from www/.
 - auth issues? Read https://github.com/EddyVerbruggen/cordova-plugin-googleplus
 

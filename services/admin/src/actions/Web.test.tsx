@@ -1,3 +1,5 @@
 describe('Web actions', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

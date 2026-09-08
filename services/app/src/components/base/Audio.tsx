@@ -1,10 +1,10 @@
-import {ThemeManager} from 'app/audio/ThemeManager';
-import {AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY} from 'app/Constants';
-import {AudioState} from 'app/reducers/StateTypes';
+import { ThemeManager } from 'app/audio/ThemeManager';
+import { AUDIO_COMMAND_DEBOUNCE_MS, INIT_DELAY } from 'app/Constants';
+import { AudioState } from 'app/reducers/StateTypes';
 import * as React from 'react';
 
 export interface StateProps {
-  themeManager: ThemeManager|null;
+  themeManager: ThemeManager | null;
   audio: AudioState;
   inCombat: boolean;
   enabled: boolean;
@@ -58,14 +58,16 @@ export default class Audio extends React.Component<Props, {}> {
     const tm = nextProps.themeManager;
     if (!this.props.themeManager && tm) {
       if (nextProps.enabled) {
-        tm.setIntensity(nextProps.audio.intensity, nextProps.audio.peakIntensity);
+        tm.setIntensity(
+          nextProps.audio.intensity,
+          nextProps.audio.peakIntensity,
+        );
       } else {
         return tm.pause();
       }
     }
 
     if (this.props.enabled !== nextProps.enabled) {
-
       this.handleEnableState(nextProps.enabled);
     }
 
@@ -74,7 +76,10 @@ export default class Audio extends React.Component<Props, {}> {
     }
 
     // Ignore if old or duplicate (aka from going back, settings change, or non-audio action)
-    if (AUDIO_COMMAND_DEBOUNCE_MS > Math.abs(nextProps.audio.timestamp - this.props.audio.timestamp)) {
+    if (
+      AUDIO_COMMAND_DEBOUNCE_MS >
+      Math.abs(nextProps.audio.timestamp - this.props.audio.timestamp)
+    ) {
       return;
     }
 
@@ -103,7 +108,7 @@ export default class Audio extends React.Component<Props, {}> {
     tm.setIntensity(nextProps.audio.intensity, nextProps.audio.peakIntensity);
   }
 
-  public render(): JSX.Element|null {
+  public render(): JSX.Element | null {
     return null;
   }
 }

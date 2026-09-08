@@ -1,6 +1,6 @@
-import {connect} from 'react-redux';
-import {AppState} from '../../reducers/StateTypes';
-import QuestButton, {Props} from './QuestButton';
+import { connect } from 'react-redux';
+import { AppState } from '../../reducers/StateTypes';
+import QuestButton, { Props } from './QuestButton';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): Props => {
   const quest = ownProps.quest;

@@ -3,7 +3,7 @@ export const NAME = `Need at least 3 skill checks, have 2`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_decision_
+  `_decision_
 
 * on light knowledge
 
@@ -19,7 +19,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_decision_
+  `_decision_
 
 * on light knowledge
 

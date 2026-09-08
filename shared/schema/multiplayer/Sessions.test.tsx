@@ -1,7 +1,7 @@
-import {Session} from './Sessions';
+import { Session } from './Sessions';
 
 describe('Session Schema', () => {
-  const base = {id: 3456};
+  const base = { id: 3456 };
   test('is invalid when missing id', () => {
     expect(Session.create({}) instanceof Error).toEqual(true);
   });

@@ -385,9 +385,10 @@ export class BlockRenderer {
     };
   }
 
-  private extractTrigger(
-    line: string,
-  ): { text: string | null; visible: string | null } {
+  private extractTrigger(line: string): {
+    text: string | null;
+    visible: string | null;
+  } {
     const m = line.match(REGEX.TRIGGER);
     if (!m) {
       return {

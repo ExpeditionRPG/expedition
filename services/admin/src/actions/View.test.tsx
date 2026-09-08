@@ -1,3 +1,5 @@
 describe('View action', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

@@ -1,3 +1,5 @@
 describe('Events', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

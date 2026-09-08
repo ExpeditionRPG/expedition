@@ -1,10 +1,10 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {checkoutSetState, checkoutSubmit} from '../../actions/Checkout';
-import {openSnackbar} from '../../actions/Snackbar';
-import {logEvent} from '../../Logging';
-import {AppState, CheckoutState, UserState} from '../../reducers/StateTypes';
-import CheckoutEntry, {DispatchProps, StateProps} from './CheckoutEntry';
+import { checkoutSetState, checkoutSubmit } from '../../actions/Checkout';
+import { openSnackbar } from '../../actions/Snackbar';
+import { logEvent } from '../../Logging';
+import { AppState, CheckoutState, UserState } from '../../reducers/StateTypes';
+import CheckoutEntry, { DispatchProps, StateProps } from './CheckoutEntry';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -17,13 +17,17 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onError: (err: string): void => {
-      logEvent('error', 'checkout_err', {label: err});
+      logEvent('error', 'checkout_err', { label: err });
       dispatch(openSnackbar(Error('Error encountered: ' + err)));
     },
     onStripeLoad: (stripe: stripe.Stripe): void => {
-      dispatch(checkoutSetState({stripe}));
+      dispatch(checkoutSetState({ stripe }));
     },
-    onSubmit: (stripeToken: string, checkout: CheckoutState, user: UserState): void => {
+    onSubmit: (
+      stripeToken: string,
+      checkout: CheckoutState,
+      user: UserState,
+    ): void => {
       dispatch(checkoutSubmit(stripeToken, checkout, user));
     },
   };
@@ -31,7 +35,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const CheckoutEntryContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(CheckoutEntry);
 
 export default CheckoutEntryContainer;

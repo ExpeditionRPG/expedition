@@ -1,10 +1,10 @@
-import {StatusEvent} from 'shared/multiplayer/Events';
-import {toClientKey} from 'shared/multiplayer/Session';
+import { StatusEvent } from 'shared/multiplayer/Events';
+import { toClientKey } from 'shared/multiplayer/Session';
 import * as WebSocket from 'ws';
 
 export interface SessionClient {
   socket: WebSocket;
-  status: StatusEvent|null;
+  status: StatusEvent | null;
   client: string;
   instance: string;
 }
@@ -13,13 +13,18 @@ export interface InMemorySession {
   [clientAndInstance: string]: SessionClient;
 }
 
-let inMemorySessions: {[session: number]: InMemorySession} = {};
+let inMemorySessions: { [session: number]: InMemorySession } = {};
 
-export function getSession(session: number): InMemorySession|null {
+export function getSession(session: number): InMemorySession | null {
   return inMemorySessions[session] || null;
 }
 
-export function initSessionClient(session: number, client: string, instance: string, socket: WebSocket): SessionClient {
+export function initSessionClient(
+  session: number,
+  client: string,
+  instance: string,
+  socket: WebSocket,
+): SessionClient {
   if (!inMemorySessions[session]) {
     inMemorySessions[session] = {};
   }
@@ -32,7 +37,13 @@ export function initSessionClient(session: number, client: string, instance: str
   return inMemorySessions[session][toClientKey(client, instance)];
 }
 
-export function setClientStatus(session: number, client: string, instance: string, socket: WebSocket, status: StatusEvent): SessionClient {
+export function setClientStatus(
+  session: number,
+  client: string,
+  instance: string,
+  socket: WebSocket,
+  status: StatusEvent,
+): SessionClient {
   if (!inMemorySessions[session]) {
     inMemorySessions[session] = {};
   }
@@ -45,7 +56,11 @@ export function setClientStatus(session: number, client: string, instance: strin
   return cli;
 }
 
-export function rmSessionClient(session: number, client: string, instance: string) {
+export function rmSessionClient(
+  session: number,
+  client: string,
+  instance: string,
+) {
   if (!(getSession(session) || {})[toClientKey(client, instance)]) {
     return;
   }

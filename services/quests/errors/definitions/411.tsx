@@ -4,7 +4,7 @@ export const DESCRIPTION = `Indentation is used to keep track of branches, which
 If you want to create a branch, use one of those elements.`;
 
 export const INVALID = [
-`_Title_
+  `_Title_
 
 Welcome to the world.
 
@@ -14,7 +14,7 @@ And also swords.`,
 ];
 
 export const VALID = [
-`_Title_
+  `_Title_
 
 Welcome to the world.
 

@@ -58,7 +58,7 @@ export type ThunkAction<
   R,
   S = {},
   E = {},
-  A extends Redux.Action<any> = Redux.AnyAction
+  A extends Redux.Action<any> = Redux.AnyAction,
 > = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
@@ -353,8 +353,8 @@ export function init() {
 
 function render() {
   // Require is done INSIDE this function to reload app changes.
-  const CompositorContainer = require('./components/CompositorContainer')
-    .default;
+  const CompositorContainer =
+    require('./components/CompositorContainer').default;
   const base = getDocument().getElementById('react-app');
   if (!base) {
     throw new Error('Could not find react-app element');

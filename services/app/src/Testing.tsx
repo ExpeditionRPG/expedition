@@ -19,7 +19,7 @@ export function newMockStore(
 ): MockStore<AppStateWithHistory> {
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
-    (state as any) as AppStateWithHistory,
+    state as any as AppStateWithHistory,
   );
   (store as any).multiplayerClient = client;
   setMultiplayerConnection(client);
@@ -27,9 +27,9 @@ export function newMockStore(
 }
 
 // Put stuff here that is assumed to always exist (like settings)
-const defaultGlobalState = ({
+const defaultGlobalState = {
   settings: { numLocalPlayers: 1 },
-} as any) as AppStateWithHistory;
+} as any as AppStateWithHistory;
 
 export function Reducer<A extends Redux.Action>(
   reducer: (state: object | undefined, action: A) => object,
@@ -87,7 +87,7 @@ export function Action<A>(
   client.sendEvent = jest.fn();
   setMultiplayerConnection(client);
   let store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
-    ((baseState as any) as AppStateWithHistory) || defaultGlobalState,
+    (baseState as any as AppStateWithHistory) || defaultGlobalState,
   );
 
   function internalActionCommands() {

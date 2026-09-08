@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
-import {field, NOW, SchemaBase} from 'shared/schema/SchemaBase';
-import {toSequelize} from './Schema';
+import { field, NOW, SchemaBase } from 'shared/schema/SchemaBase';
+import { toSequelize } from './Schema';
 
 class Example extends SchemaBase {
   public static create(fields: Partial<Example>) {
@@ -15,30 +15,37 @@ class Example extends SchemaBase {
     allowNull: false,
     maxLength: 255,
     primaryKey: true,
-  }) public requiredStringPkey: string;
+  })
+  public requiredStringPkey: string;
 
   @field({
     default: '',
     maxLength: 255,
-  }) public defaultEmptyString: string;
+  })
+  public defaultEmptyString: string;
 
   @field({
     column: 'column_name',
     default: 0,
-  }) public remappedNumber: number;
+  })
+  public remappedNumber: number;
 
   @field({
     default: NOW,
-  }) public nowDate: Date;
+  })
+  public nowDate: Date;
 
-  @field({
-  }) public emptyDate: Date;
+  @field({}) public emptyDate: Date;
 }
 
 describe('Schema', () => {
   describe('toSequelize', () => {
     test('constructs a sequelize model definition', () => {
-      expect(toSequelize(new Example({requiredStringPkey: '', emptyDate: new Date()}))).toEqual({
+      expect(
+        toSequelize(
+          new Example({ requiredStringPkey: '', emptyDate: new Date() }),
+        ),
+      ).toEqual({
         defaultEmptyString: {
           defaultValue: '',
           type: {
@@ -63,7 +70,8 @@ describe('Schema', () => {
           type: Sequelize.INTEGER,
         },
         requiredStringPkey: {
-          allowNull: false, primaryKey: true,
+          allowNull: false,
+          primaryKey: true,
           type: {
             _binary: undefined,
             _length: 255,

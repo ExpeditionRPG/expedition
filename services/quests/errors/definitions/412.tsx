@@ -5,21 +5,16 @@ In this case, the compiler found a JSON-like string and failed to parse it.`;
 
 // TODO fixme; seems broken on the QDL level
 export const INVALID = [
-// `_combat_
-
-// - Skeleton Swordsman
-
-// * on win {invalid_json}
-
-//   text
-
-// * on lose
-
-//   text`
+  // `_combat_
+  // - Skeleton Swordsman
+  // * on win {invalid_json}
+  //   text
+  // * on lose
+  //   text`
 ] as any[];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Skeleton Swordsman
 

@@ -10,14 +10,16 @@ class Editable<T> {
   constructor(name: string, initialValue: T) {
     this.name = name;
     this.value = initialValue;
-    this.hook = (v: T) => { /* Do nothing */ };
+    this.hook = (v: T) => {
+      /* Do nothing */
+    };
   }
 
   public getValue(): T {
     return this.value;
   }
 
-  public setValue(v: T, useHook: boolean|undefined = true) {
+  public setValue(v: T, useHook: boolean | undefined = true) {
     this.value = v;
     if (useHook) {
       this.hook(this.value);
@@ -51,12 +53,12 @@ export class EditableString extends Editable<string> {
   }
 }
 
-export class EditableMap<T> extends Editable<{[k: string]: T}> {
+export class EditableMap<T> extends Editable<{ [k: string]: T }> {
   public set(key: string, value: T) {
-    return this.setValue({...this.getValue(), [key]: value});
+    return this.setValue({ ...this.getValue(), [key]: value });
   }
 
-  public get(key: string): T|undefined {
+  public get(key: string): T | undefined {
     return this.getValue()[key];
   }
 
@@ -68,7 +70,9 @@ export class EditableMap<T> extends Editable<{[k: string]: T}> {
 // EditableModel largely does nothing, currently. It mirrors Realtime API's
 // use of a single object for management of different editable objects.
 export class EditableModel {
-  constructor(editables: Array<Editable<any>>) { /* empty */ }
+  constructor(editables: Array<Editable<any>>) {
+    /* empty */
+  }
 
   public onSetValue(k: string, v: any) {
     return;

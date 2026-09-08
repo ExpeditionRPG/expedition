@@ -179,9 +179,7 @@ describe('logging', () => {
         .then(() => {
           expect(harness.requests.length).toEqual(1);
           expect(harness.requests[0]).toMatch(
-            new RegExp(
-              `^${ESC}\\[32minfo${ESC}\\[39m: GET /ok 200 \\d+ms\\n$`,
-            ),
+            new RegExp(`^${ESC}\\[32minfo${ESC}\\[39m: GET /ok 200 \\d+ms\\n$`),
           );
           return stop(harness);
         });

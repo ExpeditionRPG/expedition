@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SavedQuestMeta} from '../../reducers/StateTypes';
+import { SavedQuestMeta } from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 import TextDivider from '../base/TextDivider';
@@ -9,7 +9,7 @@ const Moment = require('moment');
 
 export interface StateProps {
   saved: SavedQuestMeta[];
-  freeBytes: number|null;
+  freeBytes: number | null;
 }
 
 export interface DispatchProps {
@@ -28,22 +28,29 @@ const SavedQuests = (props: Props): JSX.Element => {
     return (
       <Card title="Saved & Offline Quests">
         <p>You have no saved or offline quests.</p>
-        <p>To save your position in a quest, open the top right menu while playing
-           and select "Save Quest".</p>
-        <p>To save a quest to play offline, click "Save for Offline" on a quest preview page.</p>
-        <p>Quests are saved to your device and are available without an internet
-           connection.</p>
+        <p>
+          To save your position in a quest, open the top right menu while
+          playing and select "Save Quest".
+        </p>
+        <p>
+          To save a quest to play offline, click "Save for Offline" on a quest
+          preview page.
+        </p>
+        <p>
+          Quests are saved to your device and are available without an internet
+          connection.
+        </p>
       </Card>
     );
   }
 
   const saves = props.saved.filter((s: SavedQuestMeta) => {
-    return (s.pathLen === undefined || s.pathLen > 0);
+    return s.pathLen === undefined || s.pathLen > 0;
   });
-  const distinctSaves: {[questID: string]: GroupedQuestSave} = {};
+  const distinctSaves: { [questID: string]: GroupedQuestSave } = {};
   for (const s of saves) {
     if (distinctSaves[s.details.id] === undefined) {
-      distinctSaves[s.details.id] = {...s, numSaves: 1};
+      distinctSaves[s.details.id] = { ...s, numSaves: 1 };
       continue;
     }
 
@@ -58,34 +65,63 @@ const SavedQuests = (props: Props): JSX.Element => {
   }
   const distinctSaveKeys = Object.keys(distinctSaves);
   distinctSaveKeys.sort((a, b) => distinctSaves[b].ts - distinctSaves[a].ts);
-  const groupedQuestSaves: JSX.Element[] = distinctSaveKeys.map((questID: string, i: number): JSX.Element => {
-    const s = distinctSaves[questID];
-    return (
-      <QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}>
-        <span className="details">{Moment(s.ts).fromNow()} ({s.numSaves} {pluralize('save', s.numSaves)}, {(s.savedBytes) ? `${Math.round(s.savedBytes / 1024)} KB` : ''})</span>
-      </QuestButtonContainer>
-    );
-  });
+  const groupedQuestSaves: JSX.Element[] = distinctSaveKeys.map(
+    (questID: string, i: number): JSX.Element => {
+      const s = distinctSaves[questID];
+      return (
+        <QuestButtonContainer
+          key={i}
+          id={`quest${i}`}
+          quest={s.details}
+          onClick={() => props.onSelect(s)}
+        >
+          <span className="details">
+            {Moment(s.ts).fromNow()} ({s.numSaves}{' '}
+            {pluralize('save', s.numSaves)},{' '}
+            {s.savedBytes ? `${Math.round(s.savedBytes / 1024)} KB` : ''})
+          </span>
+        </QuestButtonContainer>
+      );
+    },
+  );
 
-  const offlineQuests: JSX.Element[] = props.saved.filter((s: SavedQuestMeta) => {
-    return (s.pathLen !== undefined && s.pathLen === 0);
-  }).map((s: SavedQuestMeta, i: number): JSX.Element => {
-    return (<QuestButtonContainer key={i} id={`quest${i}`} quest={s.details} onClick={() => props.onSelect(s)}>
-        <span className="details">{(s.savedBytes) ? `${Math.round(s.savedBytes / 1024)} KB` : ''}</span>
-      </QuestButtonContainer>);
-  });
+  const offlineQuests: JSX.Element[] = props.saved
+    .filter((s: SavedQuestMeta) => {
+      return s.pathLen !== undefined && s.pathLen === 0;
+    })
+    .map((s: SavedQuestMeta, i: number): JSX.Element => {
+      return (
+        <QuestButtonContainer
+          key={i}
+          id={`quest${i}`}
+          quest={s.details}
+          onClick={() => props.onSelect(s)}
+        >
+          <span className="details">
+            {s.savedBytes ? `${Math.round(s.savedBytes / 1024)} KB` : ''}
+          </span>
+        </QuestButtonContainer>
+      );
+    });
 
   return (
     <Card title="Saved/Offline Quests" icon="offline" onReturn={props.onReturn}>
-      {groupedQuestSaves.length > 0 && <span>
-        <TextDivider text="Saved"/>
-        {groupedQuestSaves}
-      </span>}
-      {offlineQuests.length > 0 && <span>
-        <TextDivider text="Offline"/>
-        {offlineQuests}
-      </span>}
-      <div className="freeSpace">{props.freeBytes !== null && `${Math.floor(props.freeBytes / 1024)}KB storage remaining`}</div>
+      {groupedQuestSaves.length > 0 && (
+        <span>
+          <TextDivider text="Saved" />
+          {groupedQuestSaves}
+        </span>
+      )}
+      {offlineQuests.length > 0 && (
+        <span>
+          <TextDivider text="Offline" />
+          {offlineQuests}
+        </span>
+      )}
+      <div className="freeSpace">
+        {props.freeBytes !== null &&
+          `${Math.floor(props.freeBytes / 1024)}KB storage remaining`}
+      </div>
     </Card>
   );
 };

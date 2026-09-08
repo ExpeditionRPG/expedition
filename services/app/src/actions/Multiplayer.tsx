@@ -31,11 +31,11 @@ import { toCard } from './Card';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
-  return ({
+  return {
     type: 'LOCAL',
     action: a,
     _inflight: inflight,
-  } as any) as LocalAction;
+  } as any as LocalAction;
 }
 
 export function multiplayerDisconnect(c = getMultiplayerConnection()) {

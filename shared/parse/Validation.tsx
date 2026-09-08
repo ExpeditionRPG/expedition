@@ -30,9 +30,9 @@ export function validate(root: Cheerio) {
 
 // Validate this node and all children for invalid tags.
 // Returns a map of tagName->count of the invalid elements found.
-function getInvalidNodesAndAttributes(
-  node: Cheerio,
-): { [key: string]: number } {
+function getInvalidNodesAndAttributes(node: Cheerio): {
+  [key: string]: number;
+} {
   const results: any = {};
 
   // Quests must only contain these tags:

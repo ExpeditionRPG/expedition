@@ -1,10 +1,14 @@
-import {Event} from './Events';
+import { Event } from './Events';
 
 describe('Event Schema', () => {
-  const base = {session: 3456, timestamp: new Date()};
+  const base = { session: 3456, timestamp: new Date() };
   test('is invalid when missing session/timestamp', () => {
-    expect(Event.create({...base, session: undefined}) instanceof Error).toEqual(true);
-    expect(Event.create({...base, timestamp: undefined}) instanceof Error).toEqual(true);
+    expect(
+      Event.create({ ...base, session: undefined }) instanceof Error,
+    ).toEqual(true);
+    expect(
+      Event.create({ ...base, timestamp: undefined }) instanceof Error,
+    ).toEqual(true);
   });
   test('is valid when session/timestamp given', () => {
     const f = new Event(base);

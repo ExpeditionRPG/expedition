@@ -145,9 +145,9 @@ describe('oauth2', () => {
     });
 
     afterAll(() => {
-      return new Promise<void>(resolve =>
-        server.close(() => resolve()),
-      ).then(() => db.sequelize.close());
+      return new Promise<void>(resolve => server.close(() => resolve())).then(
+        () => db.sequelize.close(),
+      );
     });
 
     beforeEach(() => {

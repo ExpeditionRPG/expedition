@@ -5,8 +5,8 @@ import { initialSettings } from '../../reducers/Settings';
 import { loggedOutUser } from '../../reducers/User';
 import SearchSettings, { Props } from './SearchSettings';
 import { Quest } from 'shared/schema/Quests';
-import {TEST_SEARCH} from '../../reducers/TestData';
-import {Expansion} from 'shared/schema/Constants';
+import { TEST_SEARCH } from '../../reducers/TestData';
+import { Expansion } from 'shared/schema/Constants';
 
 describe('SearchSettings', () => {
   function setup(overrides: Partial<Props>) {
@@ -31,7 +31,7 @@ describe('SearchSettings', () => {
       return 'ExpansionCheckbox';
     }
 
-    if(k === 'showPrivate' || k === 'showOfficial') {
+    if (k === 'showPrivate' || k === 'showOfficial') {
       return `Checkbox#${k}`;
     }
 
@@ -48,27 +48,31 @@ describe('SearchSettings', () => {
           ? TEST_SEARCH[k]
           : { target: { value: TEST_SEARCH[k] } };
       e.find(node).prop('onChange')(onChange);
-      expect(props.onChangeParams).toHaveBeenCalledWith({[k]: TEST_SEARCH[k]});
+      expect(props.onChangeParams).toHaveBeenCalledWith({
+        [k]: TEST_SEARCH[k],
+      });
     }
   });
 
   test('propagates user selections when Search is pressed', () => {
-    const { props, e } = setup({params: TEST_SEARCH});
+    const { props, e } = setup({ params: TEST_SEARCH });
     e.find('ExpeditionButton#search').prop('onClick')();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 
   test('propagates user selections when form is submitted', () => {
-    const { props, e } = setup({params: TEST_SEARCH});
+    const { props, e } = setup({ params: TEST_SEARCH });
     e.find('form').prop('onSubmit')();
     expect(props.onSearch).toHaveBeenCalledWith(TEST_SEARCH);
   });
 
-  test('changing a value to string \'null\' results in no value being unset', () => {
+  test("changing a value to string 'null' results in no value being unset", () => {
     const { props, e } = setup();
     e.find('NativeSelect#contentrating').prop('onChange')({
       target: { value: 'null' },
     });
-    expect(props.onChangeParams).toHaveBeenCalledWith({contentrating: undefined});
+    expect(props.onChangeParams).toHaveBeenCalledWith({
+      contentrating: undefined,
+    });
   });
 });

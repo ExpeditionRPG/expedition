@@ -2,10 +2,10 @@ $bg_primary: #141414;
 $bg_secondary: #212121;
 $grey600: #757575;
 $grey800: #424242;
-$red700: #D32F2F;
-$lightGreen900: #33691E;
+$red700: #d32f2f;
+$lightGreen900: #33691e;
 $brightShadow: #616161;
-$red800: #C62828;
+$red800: #c62828;
 $previewPanelWidth: 560px;
 $padBase: 16px;
 $hBarThickness: 42px;
@@ -22,7 +22,7 @@ $fontSizeHeader: 45px;
 $fontSizeSmall: 12px;
 $bodyWidth: 1000px;
 $splashParagraphSize: 16px;
-$bgInteractive: rgb(20,20,20);
+$bgInteractive: rgb(20, 20, 20);
 $bgHighlight: #333;
 $textDisabled: #888;
 
@@ -33,24 +33,37 @@ $bg_encounter_img: url('/images/encounter-tiled.jpg');
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
-  src: local('Cinzel-Bold'), url('../../../shared/fonts/Cinzel-Bold.woff') format('woff');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  src:
+    local('Cinzel-Bold'),
+    url('../../../shared/fonts/Cinzel-Bold.woff') format('woff');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F,
+    U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 400;
-  src: local('Cinzel-Regular'), url('../../../shared/fonts/Cinzel-Regular.woff') format('woff');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+  src:
+    local('Cinzel-Regular'),
+    url('../../../shared/fonts/Cinzel-Regular.woff') format('woff');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F,
+    U+2074, U+20AC, U+2212, U+2215;
 }
 
 @font-face {
   font-family: 'MinionPro';
-  src: local('MinionPro'), url('../../../shared/fonts/MinionPro-Regular.woff') format('woff');
+  src:
+    local('MinionPro'),
+    url('../../../shared/fonts/MinionPro-Regular.woff') format('woff');
 }
 
-html, body, section#react-app, textarea {
+html,
+body,
+section#react-app,
+textarea {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -63,7 +76,9 @@ a {
   color: inherit !important;
 }
 
-body > :first-child:not(#react-app) { display: none; }
+body > :first-child:not(#react-app) {
+  display: none;
+}
 
 #react-app > .main {
   height: 100%;
@@ -86,11 +101,11 @@ body > :first-child:not(#react-app) { display: none; }
   font-size: 2em !important;
 
   &.dialogError {
-    background-color: $red700 !important,
+    background-color: $red700 !important;
   }
 
   &.dialogGood {
-    background-color: $lightGreen900 !important,
+    background-color: $lightGreen900 !important;
   }
 }
 
@@ -100,7 +115,7 @@ body > :first-child:not(#react-app) { display: none; }
   }
 
   .example {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     padding: $padBase;
     margin-bottom: $padBase;
   }
@@ -126,13 +141,13 @@ label {
   height: 100%;
   text-align: center;
   color: white;
-  padding: 2*$padBase;
+  padding: 2 * $padBase;
   font-family: $fontFamilyHeader;
   font-weight: bold;
 
   .slowLoadPrompt {
     opacity: 0;
-    padding-top: 2*$padBase;
+    padding-top: 2 * $padBase;
     font-family: $fontFamilyBody;
     font-weight: normal;
     max-width: 720px;
@@ -145,13 +160,15 @@ label {
 
 .saveIndicator {
   &.error {
-    span, svg {
+    span,
+    svg {
       color: $red800 !important;
       fill: $red800 !important;
     }
   }
   &.success {
-    span, svg {
+    span,
+    svg {
       color: $lightGreen900;
       fill: $lightGreen900;
     }
@@ -175,7 +192,7 @@ label {
     border-right: 0;
     padding: $padBase 0;
     margin-bottom: $padBase / 2;
-    background-color: rgba(255,255,255,0.4);
+    background-color: rgba(255, 255, 255, 0.4);
     border-top: $border;
     border-bottom: $border;
     img {
@@ -193,11 +210,11 @@ label {
     .base_button {
       display: inline-block;
       padding: $padBase;
-      &> button {
+      & > button {
         font-family: $fontFamilyBody !important;
         font-size: $fontSizeBase !important;
-        padding-left: 2*$padBase !important;
-        padding-right: 2*$padBase !important;
+        padding-left: 2 * $padBase !important;
+        padding-right: 2 * $padBase !important;
       }
     }
   }
@@ -212,14 +229,16 @@ label {
 
     .imageText {
       font-style: italic;
-      color: rgba(0,0,0,0.5);
+      color: rgba(0, 0, 0, 0.5);
       margin-bottom: $padBase;
     }
 
-    h1, h3, h4 {
+    h1,
+    h3,
+    h4 {
       font-style: normal;
       font-weight: normal;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       -webkit-font-smoothing: 'antialiased';
       line-height: 1.2em;
 
@@ -242,10 +261,10 @@ label {
       font-family: $fontFamilyHeader;
     }
 
-    &>* {
+    & > * {
       padding-left: $padBase;
       padding-right: $padBase;
-      padding-bottom: $padBase*3;
+      padding-bottom: $padBase * 3;
       padding-top: $padBase;
 
       img {
@@ -268,7 +287,7 @@ label {
           flex-direction: row-reverse;
         }
       }
-      display:block;
+      display: block;
       margin: 0;
     }
   }
@@ -287,20 +306,20 @@ label {
     flex-direction: row;
     flex-wrap: wrap;
 
-    &>div {
+    & > div {
       flex-grow: 1;
       width: 30%;
       min-width: $showcaseFeatureSize;
       padding: $padBase;
 
-      &>p:first-child {
-        margin-top:0;
+      & > p:first-child {
+        margin-top: 0;
       }
     }
   }
 
   h1 {
-    font-size: 2*$fontSizeBase;
+    font-size: 2 * $fontSizeBase;
     font-weight: normal;
   }
 
@@ -310,8 +329,8 @@ label {
     height: 100%;
     background: $bg_primary;
     border: $border;
-    max-width: $showcaseFeatureSize*2;
-    max-height: $showcaseFeatureSize*2;
+    max-width: $showcaseFeatureSize * 2;
+    max-height: $showcaseFeatureSize * 2;
     width: 90%;
     height: 50%;
     margin-left: auto;
@@ -321,7 +340,8 @@ label {
 
 .editor_snackbar {
   background: $grey600 !important;
-  div, span {
+  div,
+  span {
     color: $bg_primary !important;
   }
   button span {
@@ -329,10 +349,11 @@ label {
   }
 }
 
-.splash_app_bar, .quest_app_bar {
+.splash_app_bar,
+.quest_app_bar {
   background-image: $bg_encounter_img;
 
-  >div {
+  > div {
     background-color: transparent !important; // Override
     height: $hBarThickness !important;
   }
@@ -365,7 +386,8 @@ label {
 }
 
 .quest_app_bar {
-  .email, .lootPoints {
+  .email,
+  .lootPoints {
     vertical-align: super;
   }
   .loginState {
@@ -412,11 +434,13 @@ label {
     max-width: $previewPanelWidth;
     overflow: hidden;
 
-    .app_root, .editor_override {
+    .app_root,
+    .editor_override {
       height: 100%;
     }
 
-    .app, button {
+    .app,
+    button {
       font-family: $fontFamilyBody !important;
     }
   }
@@ -427,7 +451,8 @@ label {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), $bg_encounter_img;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), $bg_encounter_img;
 
   h1 {
     color: white;
@@ -469,7 +494,7 @@ label {
       }
 
       button:hover {
-        color: #FFF !important;
+        color: #fff !important;
       }
     }
 
@@ -489,7 +514,7 @@ label {
       button {
         min-height: $padBase !important;
         padding: $padBase/2 !important;
-        padding-left: 3*$padBase !important;
+        padding-left: 3 * $padBase !important;
         border-bottom: $border !important;
         display: flex !important;
         width: 100%;
@@ -503,7 +528,7 @@ label {
           position: absolute;
           top: 50%;
           margin-top: -$padBase/2;
-          left: $padBase*0.75;
+          left: $padBase * 0.75;
         }
       }
 
@@ -521,7 +546,7 @@ label {
           width: 100%;
           height: 100%;
           overflow-y: auto;
-          background: rgba(0,0,0,0);
+          background: rgba(0, 0, 0, 0);
         }
       }
 
@@ -581,13 +606,16 @@ label {
 .ace_gutter-cell.misspelled {
   background-color: rgba(255, 0, 0, 0.3);
 }
-.ace_error, .ace_warning, .ace_info {
+.ace_error,
+.ace_warning,
+.ace_info {
   &:hover {
     cursor: pointer;
   }
 }
 .ace.noLineNumbers {
-  .ace_gutter, .ace_gutter-layer {
+  .ace_gutter,
+  .ace_gutter-layer {
     width: 34px !important;
     margin-right: 6px !important;
   }
@@ -609,7 +637,10 @@ label {
   $fontSizeBase: 18px;
   $fontSizeImportant: 24px;
   $fontSizeHeader: 32px;
-  html, body, section#react-app, textarea {
+  html,
+  body,
+  section#react-app,
+  textarea {
     font-size: $fontSizeBase;
   }
   .splash {
@@ -617,7 +648,11 @@ label {
       width: 100%;
     }
     .body {
-      h1, h2, h3, h4, p {
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
         padding-left: $padBase;
         padding-right: $padBase;
         line-height: 1.16;
@@ -626,7 +661,9 @@ label {
         font-size: $fontSizeHeader !important;
         margin: $padBase;
       }
-      h2, h3, h4 {
+      h2,
+      h3,
+      h4 {
         font-size: $fontSizeImportant !important;
       }
     }
@@ -644,7 +681,10 @@ label {
   $fontSizeBase: 18px;
   $fontSizeImportant: 18px;
   $fontSizeHeader: 24px;
-  html, body, section#react-app, textarea {
+  html,
+  body,
+  section#react-app,
+  textarea {
     font-size: $fontSizeBase;
   }
   .splash {
@@ -653,13 +693,15 @@ label {
         font-size: $fontSizeHeader !important;
         margin: 0 0 $padBase 0;
       }
-      h2, h3, h4 {
+      h2,
+      h3,
+      h4 {
         font-size: $fontSizeImportant !important;
       }
     }
     .showcase {
       margin: 0;
-      &> div {
+      & > div {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -667,40 +709,65 @@ label {
       }
     }
   }
-  h1, h2, h3, h4, p, ul {
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul {
     text-align: center !important;
   }
   ul {
-    list-style:none;
+    list-style: none;
     padding-left: 0;
   }
 }
 
 @keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Firefox < 16 */
 @-moz-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Safari, Chrome and Opera > 12.1 */
 @-webkit-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Internet Explorer */
 @-ms-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Opera < 12.1 */
 @-o-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

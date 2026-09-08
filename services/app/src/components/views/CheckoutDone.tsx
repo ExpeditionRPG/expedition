@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {CheckoutState} from '../../reducers/StateTypes';
+import { CheckoutState } from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 

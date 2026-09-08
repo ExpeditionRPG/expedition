@@ -1,12 +1,12 @@
 import { setDialog } from 'app/actions/Dialog';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {toCard, toNavCard} from '../../actions/Card';
-import {changeSettings} from '../../actions/Settings';
-import {openWindow} from '../../Globals';
-import {AppState} from '../../reducers/StateTypes';
-import {AnnouncementState} from '../../reducers/StateTypes';
-import SplashScreen, {DispatchProps, StateProps} from './SplashScreen';
+import { toCard, toNavCard } from '../../actions/Card';
+import { changeSettings } from '../../actions/Settings';
+import { openWindow } from '../../Globals';
+import { AppState } from '../../reducers/StateTypes';
+import { AnnouncementState } from '../../reducers/StateTypes';
+import SplashScreen, { DispatchProps, StateProps } from './SplashScreen';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       if (announcement.link && announcement.link !== '') {
         if (announcement.link.includes('?')) {
           openWindow(announcement.link); // appending ?utm_source to a URL with
-              // a ? may break the URL
+          // a ? may break the URL
         } else {
           openWindow(announcement.link + '?utm_source=app');
         }
@@ -30,19 +30,19 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       if (numLocalPlayers > 6) {
         dispatch(setDialog('TOO_MANY_PLAYERS'));
       } else {
-        dispatch(changeSettings({numLocalPlayers, multitouch: true}));
+        dispatch(changeSettings({ numLocalPlayers, multitouch: true }));
         dispatch(toNavCard({}));
       }
     },
     onPlayerManualSelect: () => {
-      dispatch(toCard({name: 'PLAYER_COUNT_SETTING'}));
+      dispatch(toCard({ name: 'PLAYER_COUNT_SETTING' }));
     },
   };
 };
 
 const SplashScreenContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SplashScreen);
 
 export default SplashScreenContainer;

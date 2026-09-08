@@ -428,11 +428,7 @@ export class Node<C extends Context> {
   public isEnd(): boolean {
     return (
       this.getTag() === 'trigger' &&
-      this.elem
-        .text()
-        .toLowerCase()
-        .split(' ')[0]
-        .trim() === 'end'
+      this.elem.text().toLowerCase().split(' ')[0].trim() === 'end'
     );
   }
 }

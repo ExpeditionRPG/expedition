@@ -1,5 +1,7 @@
 describe('cors', () => {
   describe('limitCors', () => {
-    test.skip('limits cors requests', () => { /* TODO */ });
+    test.skip('limits cors requests', () => {
+      /* TODO */
+    });
   });
 });

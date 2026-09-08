@@ -1,18 +1,22 @@
 import Redux from 'redux';
-import {handleFetchErrors} from 'shared/requests';
-import {URLS} from '../Constants';
-import {AnnouncementSetAction, FetchAnnouncementResponse} from './ActionTypes';
+import { handleFetchErrors } from 'shared/requests';
+import { URLS } from '../Constants';
+import {
+  AnnouncementSetAction,
+  FetchAnnouncementResponse,
+} from './ActionTypes';
 
 export function fetchAnnouncements() {
   return (dispatch: Redux.Dispatch<any>): any => {
     fetch(URLS.ANNOUNCEMENTS)
-    .then(handleFetchErrors)
-    .then((response: Response) => response.json())
-    .then((data: FetchAnnouncementResponse) => {
-      dispatch(handleAnnouncements(data));
-    }).catch((error: Error) => {
-      // Don't do anything - not important if this fails
-    });
+      .then(handleFetchErrors)
+      .then((response: Response) => response.json())
+      .then((data: FetchAnnouncementResponse) => {
+        dispatch(handleAnnouncements(data));
+      })
+      .catch((error: Error) => {
+        // Don't do anything - not important if this fails
+      });
   };
 }
 
@@ -24,6 +28,10 @@ export function handleAnnouncements(data: FetchAnnouncementResponse) {
   };
 }
 
-export function setAnnouncement(open: boolean, message?: string, link?: string): AnnouncementSetAction {
-  return {type: 'ANNOUNCEMENT_SET', open, message, link};
+export function setAnnouncement(
+  open: boolean,
+  message?: string,
+  link?: string,
+): AnnouncementSetAction {
+  return { type: 'ANNOUNCEMENT_SET', open, message, link };
 }

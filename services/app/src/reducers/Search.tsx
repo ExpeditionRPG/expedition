@@ -30,7 +30,8 @@ export function search(
     case 'CHANGE_SETTINGS':
       // Clear results when invalidated.
       return { ...state, results: null };
-    case 'SEARCH_CHANGE_PARAMS': { // Update params and clear results
+    case 'SEARCH_CHANGE_PARAMS': {
+      // Update params and clear results
       const changes = (action as SearchChangeParamsAction).params || {};
       if (changes.language) {
         setStorageKeyValue(LANGUAGE_KEY, changes.language);

@@ -14,13 +14,13 @@ const mockMiddleware: Redux.Middleware[] = [thunk];
 
 export function newMockStore(state: object): MockStore<AppState> {
   // Since this is a testing function, we play it a bit loose with the state type.
-  return configureStore<AppState>(mockMiddleware)((state as any) as AppState);
+  return configureStore<AppState>(mockMiddleware)(state as any as AppState);
 }
 
 // Put stuff here that is assumed to always exist (like settings)
-const defaultGlobalState = ({
+const defaultGlobalState = {
   settings: { numLocalPlayers: 1 },
-} as any) as AppState;
+} as any as AppState;
 
 export function Reducer<A extends Redux.Action>(
   reducer: (state: object | undefined, action: A) => object,
@@ -72,7 +72,7 @@ export function Action<A>(
   baseState?: object,
 ) {
   let store = configureStore<AppState>(mockMiddleware)(
-    ((baseState as any) as AppState) || defaultGlobalState,
+    (baseState as any as AppState) || defaultGlobalState,
   );
 
   function internalActionCommands() {

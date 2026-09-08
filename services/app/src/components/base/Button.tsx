@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {AppState} from '../../reducers/StateTypes';
+import { connect } from 'react-redux';
+import { AppState } from '../../reducers/StateTypes';
 import MultiplayerRippleContainer from '../multiplayer/MultiplayerRippleContainer';
 
 interface Props extends React.Props<any> {
@@ -33,16 +33,23 @@ class ExpeditionButton extends React.Component<Props, {}> {
     if (!this.props.id) {
       return (
         <div className={className}>
-        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)}>
-          <div>{this.props.children}</div>
-        </Button>
+          <Button
+            disabled={this.props.disabled}
+            onClick={(e: any) => this._onClick(e)}
+          >
+            <div>{this.props.children}</div>
+          </Button>
         </div>
       );
     }
 
     return (
       <MultiplayerRippleContainer className={className} id={this.props.id}>
-        <Button disabled={this.props.disabled} onClick={(e: any) => this._onClick(e)} disableRipple={this.props.hasMultiplayerSession}>
+        <Button
+          disabled={this.props.disabled}
+          onClick={(e: any) => this._onClick(e)}
+          disableRipple={this.props.hasMultiplayerSession}
+        >
           <div>{this.props.children}</div>
         </Button>
       </MultiplayerRippleContainer>
@@ -52,13 +59,12 @@ class ExpeditionButton extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): Props => {
   return {
-    hasMultiplayerSession: state.multiplayer && state.multiplayer.session !== null,
+    hasMultiplayerSession:
+      state.multiplayer && state.multiplayer.session !== null,
     ...ownProps,
   };
 };
 
-const ExpeditionButtonContainer = connect(
-  mapStateToProps
-)(ExpeditionButton);
+const ExpeditionButtonContainer = connect(mapStateToProps)(ExpeditionButton);
 
 export default ExpeditionButtonContainer;

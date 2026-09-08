@@ -3,7 +3,7 @@ export const NAME = `Skill checks missing outcomes: light knowledge (failure)`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_decision_
+  `_decision_
 
 * on light knowledge success
 
@@ -27,7 +27,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_decision_
+  `_decision_
 
 * on light knowledge success
 

@@ -22,7 +22,7 @@ function newCombat(node: ParserNode): CombatState {
     initialSettings,
     false,
     node,
-    () => (({ multiplayer: initialMultiplayer } as any) as AppStateWithHistory),
+    () => ({ multiplayer: initialMultiplayer }) as any as AppStateWithHistory,
   );
 }
 

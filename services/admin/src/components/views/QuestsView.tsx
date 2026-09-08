@@ -5,28 +5,34 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import * as React from 'react';
 
-import {QuestEntry} from 'api/admin/QueryTypes';
+import { QuestEntry } from 'api/admin/QueryTypes';
 
 export interface QuestsViewStateProps {
   list: QuestEntry[];
-  selected: number|null;
+  selected: number | null;
 }
 
 export interface QuestsViewDispatchProps {
   onRowSelect: (row: number) => any;
 }
 
-export interface QuestsViewProps extends QuestsViewStateProps, QuestsViewDispatchProps {}
+export interface QuestsViewProps
+  extends QuestsViewStateProps, QuestsViewDispatchProps {}
 
 const QuestsView = (props: QuestsViewProps): JSX.Element => {
-
   const rows = props.list.map((entry, i) => {
     return (
       <TableRow key={i} selected={i === props.selected}>
         <TableCell>{entry.partition}</TableCell>
         <TableCell>{entry.title}</TableCell>
-        <TableCell className="smallColumn">{(entry.published) ? 'X' : ''}</TableCell>
-        <TableCell className="smallColumn">{(entry.ratingavg === null) ? 'None' : (entry.ratingavg + ' (' + entry.ratingcount + ')')}</TableCell>
+        <TableCell className="smallColumn">
+          {entry.published ? 'X' : ''}
+        </TableCell>
+        <TableCell className="smallColumn">
+          {entry.ratingavg === null
+            ? 'None'
+            : entry.ratingavg + ' (' + entry.ratingcount + ')'}
+        </TableCell>
         <TableCell>{entry.user.email}</TableCell>
       </TableRow>
     );
@@ -47,9 +53,7 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
           <TableCell>Author</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
-        {rows}
-      </TableBody>
+      <TableBody>{rows}</TableBody>
     </Table>
   );
 };

@@ -1,3 +1,5 @@
 describe('CardTemplates template types', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

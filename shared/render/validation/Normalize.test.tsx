@@ -1,3 +1,5 @@
 describe('Normalize', () => {
-  test('TODO', () => { /* TODO */ });
+  test('TODO', () => {
+    /* TODO */
+  });
 });

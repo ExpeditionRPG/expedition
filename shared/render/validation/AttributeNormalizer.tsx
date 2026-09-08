@@ -1,11 +1,11 @@
-import {Logger} from '../Logger';
+import { Logger } from '../Logger';
 
 export default class AttributeNormalizer {
   private keySet: string[];
-  private attrs: {[k: string]: string};
+  private attrs: { [k: string]: string };
   private log?: Logger;
 
-  constructor(attrs: {[k: string]: string}, log?: Logger) {
+  constructor(attrs: { [k: string]: string }, log?: Logger) {
     this.keySet = [];
     this.attrs = attrs;
     this.log = log;
@@ -30,11 +30,11 @@ export default class AttributeNormalizer {
       return v;
     }
 
-    if (typeof(v) === 'boolean') {
+    if (typeof v === 'boolean') {
       return v;
     }
 
-    if (typeof(v) === 'string') {
+    if (typeof v === 'string') {
       if (v.toLowerCase() === 'true') {
         return true;
       }
@@ -53,7 +53,7 @@ export default class AttributeNormalizer {
       return v;
     }
 
-    if (typeof(v) === 'string') {
+    if (typeof v === 'string') {
       return v;
     }
 
@@ -72,7 +72,7 @@ export default class AttributeNormalizer {
     }
 
     if (this.log) {
-      this.log.err(k + ' should be a number, but is ' + typeof(v), '426');
+      this.log.err(k + ' should be a number, but is ' + typeof v, '426');
     }
     return 0;
   }

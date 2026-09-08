@@ -1,3 +1,5 @@
 describe('Dialogs', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

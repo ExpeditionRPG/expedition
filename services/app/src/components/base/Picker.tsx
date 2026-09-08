@@ -16,19 +16,27 @@ export default class Picker extends React.Component<Props, {}> {
     return (
       <div className="base_picker">
         <div className="controls">
-          <MultiplayerRippleContainer id={(this.props.id) ? this.props.id + '-' : undefined}>
-          <IconButton onClick={(e: any) => this.props.onDelta(-1)}>
-            <ChevronLeft/>
-          </IconButton>
+          <MultiplayerRippleContainer
+            id={this.props.id ? this.props.id + '-' : undefined}
+          >
+            <IconButton onClick={(e: any) => this.props.onDelta(-1)}>
+              <ChevronLeft />
+            </IconButton>
           </MultiplayerRippleContainer>
-          <div className="value">{this.props.label}: {this.props.value}</div>
-          <MultiplayerRippleContainer id={(this.props.id) ? this.props.id + '+' : undefined}>
-          <IconButton onClick={(e: any) => this.props.onDelta(1)}>
-            <ChevronRight/>
-          </IconButton>
+          <div className="value">
+            {this.props.label}: {this.props.value}
+          </div>
+          <MultiplayerRippleContainer
+            id={this.props.id ? this.props.id + '+' : undefined}
+          >
+            <IconButton onClick={(e: any) => this.props.onDelta(1)}>
+              <ChevronRight />
+            </IconButton>
           </MultiplayerRippleContainer>
         </div>
-        <div className="subtext" id="subtext">{this.props.children}</div>
+        <div className="subtext" id="subtext">
+          {this.props.children}
+        </div>
       </div>
     );
   }

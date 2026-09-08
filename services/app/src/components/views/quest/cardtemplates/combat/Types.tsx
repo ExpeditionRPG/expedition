@@ -1,9 +1,14 @@
-import {numPlayers} from 'app/actions/Settings';
-import {CombatPhase} from 'app/Constants';
-import {Enemy, Loot} from 'app/reducers/QuestTypes';
-import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
-import {getCardTemplateTheme} from '../Template';
-import {ParserNode} from '../TemplateTypes';
+import { numPlayers } from 'app/actions/Settings';
+import { CombatPhase } from 'app/Constants';
+import { Enemy, Loot } from 'app/reducers/QuestTypes';
+import {
+  AppStateWithHistory,
+  CardThemeType,
+  MultiplayerState,
+  SettingsType,
+} from 'app/reducers/StateTypes';
+import { getCardTemplateTheme } from '../Template';
+import { ParserNode } from '../TemplateTypes';
 
 export interface CombatAttack {
   surge: boolean;
@@ -37,7 +42,8 @@ export interface CombatDifficultySettings {
   maxRoundDamage: number;
 }
 
-export interface CombatState extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
+export interface CombatState
+  extends CombatDifficultySettings, MidCombatPhase, EndCombatPhase {}
 
 export const EMPTY_COMBAT_STATE: CombatState = {
   enemies: [],
@@ -62,7 +68,10 @@ export interface StateProps {
   multiplayer: MultiplayerState;
 }
 
-export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+export function mapStateToProps(
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps {
   const node = ownProps.node || state.quest.node;
   return {
     node,

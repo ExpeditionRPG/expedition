@@ -1,3 +1,5 @@
 describe('Runner', () => {
-  test.skip('runs', () => { /* TODO */ });
+  test.skip('runs', () => {
+    /* TODO */
+  });
 });

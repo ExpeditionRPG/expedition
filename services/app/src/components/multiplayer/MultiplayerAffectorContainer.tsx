@@ -1,11 +1,25 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {MultiplayerEvent, MultiplayerEventBody} from 'shared/multiplayer/Events';
-import {sendEvent, subscribeToEvents, unsubscribeFromEvents} from '../../actions/Multiplayer';
-import {AppState} from '../../reducers/StateTypes';
-import MultiplayerAffector, {DispatchProps, Props, StateProps} from './MultiplayerAffector';
+import {
+  MultiplayerEvent,
+  MultiplayerEventBody,
+} from 'shared/multiplayer/Events';
+import {
+  sendEvent,
+  subscribeToEvents,
+  unsubscribeFromEvents,
+} from '../../actions/Multiplayer';
+import { AppState } from '../../reducers/StateTypes';
+import MultiplayerAffector, {
+  DispatchProps,
+  Props,
+  StateProps,
+} from './MultiplayerAffector';
 
-const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
+const mapStateToProps = (
+  state: AppState,
+  ownProps: Partial<Props>,
+): StateProps => {
   return {
     id: ownProps.id,
     abortOnScroll: ownProps.abortOnScroll,
@@ -33,7 +47,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const MultiplayerAffectorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MultiplayerAffector);
 
 export default MultiplayerAffectorContainer;

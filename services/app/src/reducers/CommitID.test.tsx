@@ -16,13 +16,13 @@ function stubConnection(bufferedAtOrbelow: boolean) {
 }
 
 function stateWith(overrides: object): AppStateWithHistory {
-  return ({
+  return {
     card: { name: 'QUEST_CARD' },
     quest: { details: { title: 'In Flight' } },
     settings: { numLocalPlayers: 3 },
     multiplayer: { connected: true },
     ...overrides,
-  } as any) as AppStateWithHistory;
+  } as any as AppStateWithHistory;
 }
 
 describe('CommitID reducer', () => {

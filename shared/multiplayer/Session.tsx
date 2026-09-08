@@ -1,4 +1,4 @@
-import {ClientID, InstanceID} from './Events';
+import { ClientID, InstanceID } from './Events';
 
 export type SessionID = number;
 

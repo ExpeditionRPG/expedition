@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {MAX_ADVENTURERS} from '../../Constants';
+import { MAX_ADVENTURERS } from '../../Constants';
 import Picker from './Picker';
 
 interface Props extends React.Props<any> {
@@ -22,9 +22,23 @@ export default class PlayerCount extends React.Component<Props, {}> {
 
   public render() {
     return (
-      <Picker id={this.props.id} label="Players" value={this.props.localPlayers} onDelta={(i: number) => this.onDelta(i)}>
-        {(this.props.allPlayers > 1) ? 'The number of players.' : <div><strong>Solo play:</strong> Play as two adventurers with double the timer.</div>}
-        {(this.props.allPlayers > this.props.localPlayers) && <div>({this.props.allPlayers} across all devices)</div>}
+      <Picker
+        id={this.props.id}
+        label="Players"
+        value={this.props.localPlayers}
+        onDelta={(i: number) => this.onDelta(i)}
+      >
+        {this.props.allPlayers > 1 ? (
+          'The number of players.'
+        ) : (
+          <div>
+            <strong>Solo play:</strong> Play as two adventurers with double the
+            timer.
+          </div>
+        )}
+        {this.props.allPlayers > this.props.localPlayers && (
+          <div>({this.props.allPlayers} across all devices)</div>
+        )}
       </Picker>
     );
   }

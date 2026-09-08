@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
-import {UserState} from '../reducers/StateTypes';
+import { UserState } from '../reducers/StateTypes';
 
 export interface StateProps {
   user: UserState;
@@ -21,23 +21,25 @@ const Splash = (props: Props): JSX.Element => {
       <div className="splash_app_bar">
         <AppBar>
           <Toolbar>
-            <Typography variant="title">
-              Expedition Admin Dashboard
-            </Typography>
+            <Typography variant="title">Expedition Admin Dashboard</Typography>
             <div>
-              {props.user.loggedIn && <div className="login">
-                <span className="email">{props.user.email}</span>
-              </div>}
-              {!props.user.loggedIn && <div className="login">
-                <Button onClick={() => props.onLogin('appbar')}>Log In</Button>
-              </div>}
+              {props.user.loggedIn && (
+                <div className="login">
+                  <span className="email">{props.user.email}</span>
+                </div>
+              )}
+              {!props.user.loggedIn && (
+                <div className="login">
+                  <Button onClick={() => props.onLogin('appbar')}>
+                    Log In
+                  </Button>
+                </div>
+              )}
             </div>
           </Toolbar>
         </AppBar>
       </div>
-      <div className="body">
-        TODO: Splash Page
-      </div>
+      <div className="body">TODO: Splash Page</div>
     </div>
   );
 };

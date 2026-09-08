@@ -1,3 +1,5 @@
 describe('Combat TimerCard', () => {
-  test.skip('shows timer card', () => { /* TODO */ });
+  test.skip('shows timer card', () => {
+    /* TODO */
+  });
 });

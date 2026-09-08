@@ -102,9 +102,9 @@ describe('Routes', () => {
     });
 
     afterAll(() => {
-      return new Promise<void>(resolve =>
-        server.close(() => resolve()),
-      ).then(() => db.sequelize.close());
+      return new Promise<void>(resolve => server.close(() => resolve())).then(
+        () => db.sequelize.close(),
+      );
     });
 
     beforeEach(() => {
@@ -343,12 +343,7 @@ describe('Routes', () => {
       // 500 is requireAuth turning away an unauthenticated caller; what matters
       // is that the request reached it at all.
       expect(results.map(r => r.status)).toEqual([
-        500,
-        500,
-        500,
-        500,
-        500,
-        429,
+        500, 500, 500, 500, 500, 429,
       ]);
       results.slice(0, 5).forEach(r => expect(r.body).toEqual(NOT_SIGNED_IN));
 

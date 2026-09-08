@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {toClientKey} from 'shared/multiplayer/Session';
-import {CardThemeType} from '../../reducers/StateTypes';
-import {MultiplayerState} from '../../reducers/StateTypes';
-import {getStore} from '../../Store';
+import { toClientKey } from 'shared/multiplayer/Session';
+import { CardThemeType } from '../../reducers/StateTypes';
+import { MultiplayerState } from '../../reducers/StateTypes';
+import { getStore } from '../../Store';
 import MultiTouchTrigger from './MultiTouchTrigger';
 
 interface Props extends React.Props<any> {
@@ -18,13 +18,20 @@ interface Props extends React.Props<any> {
 
 export default class TimerCard extends React.Component<Props, {}> {
   public interval: any;
-  public state: {startTimeMillis: number, timeRemaining: number};
+  public state: { startTimeMillis: number; timeRemaining: number };
 
   constructor(props: Props) {
     super(props);
-    this.state = {startTimeMillis: Date.now(), timeRemaining: this.props.roundTimeTotalMillis};
+    this.state = {
+      startTimeMillis: Date.now(),
+      timeRemaining: this.props.roundTimeTotalMillis,
+    };
     this.interval = setInterval(() => {
-      this.setState({timeRemaining: this.props.roundTimeTotalMillis - (Date.now() - this.state.startTimeMillis)});
+      this.setState({
+        timeRemaining:
+          this.props.roundTimeTotalMillis -
+          (Date.now() - this.state.startTimeMillis),
+      });
     }, 100);
   }
 
@@ -51,15 +58,27 @@ export default class TimerCard extends React.Component<Props, {}> {
   public render() {
     let unheldClientCount = 0;
     let timerHeld = false;
-    if (this.props.multiplayerState && this.props.multiplayerState.clientStatus) {
-      for (const client of Object.keys(this.props.multiplayerState.clientStatus)) {
+    if (
+      this.props.multiplayerState &&
+      this.props.multiplayerState.clientStatus
+    ) {
+      for (const client of Object.keys(
+        this.props.multiplayerState.clientStatus,
+      )) {
         const clientStatus = this.props.multiplayerState.clientStatus[client];
         if (!clientStatus.connected) {
           continue;
         }
         const waitingOn = clientStatus.waitingOn;
-        const waitingOnTimer = (waitingOn && waitingOn.type === 'TIMER') || false;
-        if (client === toClientKey(this.props.multiplayerState.client, this.props.multiplayerState.instance)) {
+        const waitingOnTimer =
+          (waitingOn && waitingOn.type === 'TIMER') || false;
+        if (
+          client ===
+          toClientKey(
+            this.props.multiplayerState.client,
+            this.props.multiplayerState.instance,
+          )
+        ) {
           timerHeld = waitingOnTimer;
         } else if (!waitingOnTimer) {
           unheldClientCount++;
@@ -93,7 +112,11 @@ export default class TimerCard extends React.Component<Props, {}> {
 
     const cardTheme = this.props.theme || 'light';
     const questTheme = getStore().getState().quest.details.theme || 'base';
-    const classes = ['base_timer_card', 'card_theme_' + cardTheme, 'quest_theme_' + questTheme];
+    const classes = [
+      'base_timer_card',
+      'card_theme_' + cardTheme,
+      'quest_theme_' + questTheme,
+    ];
     if (!this.props.icon) {
       classes.push('no_icon');
     }
@@ -103,10 +126,17 @@ export default class TimerCard extends React.Component<Props, {}> {
         <div className="value">{formattedTimer}</div>
         {secondaryText && <div className="secondary">{secondaryText}</div>}
         {tertiaryText && <div className="tertiary">{tertiaryText}</div>}
-        {!timerHeld && <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />}
-        {this.props.icon && <div className="timer_icon_wrapper">
-          <img className="timer_icon" src={'images/' + this.props.icon + '_white.svg'} />
-        </div>}
+        {!timerHeld && (
+          <MultiTouchTrigger onTouchChange={this.onTouchChange.bind(this)} />
+        )}
+        {this.props.icon && (
+          <div className="timer_icon_wrapper">
+            <img
+              className="timer_icon"
+              src={'images/' + this.props.icon + '_white.svg'}
+            />
+          </div>
+        )}
       </div>
     );
   }

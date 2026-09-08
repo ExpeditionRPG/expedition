@@ -1,3 +1,5 @@
 describe('QuestHistory', () => {
-  test('Empty', () => { /* TODO */ });
+  test('Empty', () => {
+    /* TODO */
+  });
 });

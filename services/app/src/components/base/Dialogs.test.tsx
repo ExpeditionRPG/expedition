@@ -52,33 +52,17 @@ describe('Dialogs', () => {
     }
     test('renders title & content', () => {
       const { e } = setup();
-      expect(
-        e
-          .find('DialogTitle')
-          .render()
-          .text(),
-      ).toContain('Test Title');
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('Test Content');
+      expect(e.find('DialogTitle').render().text()).toContain('Test Title');
+      expect(e.find('DialogContent').render().text()).toContain('Test Content');
     });
     test('calls onAction on action tap', () => {
       const { e } = setup();
-      e
-        .find('#actionButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#actionButton').hostNodes().prop('onClick')();
       expect(e.instance().actionSpy).toHaveBeenCalledTimes(1);
     });
     test('calls onClose on cancel tap', () => {
       const { props, e } = setup();
-      e
-        .find('#closeButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#closeButton').hostNodes().prop('onClick')();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -110,18 +94,8 @@ describe('Dialogs', () => {
     }
     test('renders title & content', () => {
       const { e } = setup();
-      expect(
-        e
-          .find('DialogTitle')
-          .render()
-          .text(),
-      ).toContain('Test Title');
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('Test Content');
+      expect(e.find('DialogTitle').render().text()).toContain('Test Title');
+      expect(e.find('DialogContent').render().text()).toContain('Test Content');
     });
     test('updates text state', () => {
       const { e, props } = setup();
@@ -133,46 +107,24 @@ describe('Dialogs', () => {
       ).toEqual(true);
 
       e.find('TextField').prop('onChange')({ target: { value: 'asdf' } });
-      e
-        .find('#submitButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#submitButton').hostNodes().prop('onClick')();
       expect(e.instance().onSubmitSpy).toHaveBeenCalledWith({ text: 'asdf' });
     });
     test('calls onSubmit on submission', () => {
       const { e } = setup();
-      e
-        .find('#submitButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#submitButton').hostNodes().prop('onClick')();
       expect(e.instance().onSubmitSpy).toHaveBeenCalledTimes(1);
     });
     test('clears text on submission', () => {
       const { e } = setup();
       e.find('TextField').prop('onChange')({ target: { value: 'asdf' } });
-      expect(
-        e
-          .find('TextField')
-          .render()
-          .text(),
-      ).toContain('asdf');
-      e
-        .find('#submitButton')
-        .hostNodes()
-        .prop('onClick')();
-      expect(
-        e
-          .find('TextField')
-          .render()
-          .text(),
-      ).not.toContain('asdf');
+      expect(e.find('TextField').render().text()).toContain('asdf');
+      e.find('#submitButton').hostNodes().prop('onClick')();
+      expect(e.find('TextField').render().text()).not.toContain('asdf');
     });
     test('calls onClose on Cancel tap', () => {
       const { props, e } = setup();
-      e
-        .find('#cancelButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#cancelButton').hostNodes().prop('onClick')();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -195,12 +147,9 @@ describe('Dialogs', () => {
     }
     test('shows stats', () => {
       const { e } = setup({ receivedEvents: 500 });
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('receivedEvents: 500');
+      expect(e.find('DialogContent').render().text()).toContain(
+        'receivedEvents: 500',
+      );
     });
   });
 
@@ -228,10 +177,7 @@ describe('Dialogs', () => {
           },
         },
       });
-      const text = e
-        .find('DialogContent')
-        .render()
-        .text();
+      const text = e.find('DialogContent').render().text();
       expect(text).toMatch(/p1.?3 Players/);
       expect(text).toMatch(/p2.?2 Players/);
     });
@@ -253,10 +199,7 @@ describe('Dialogs', () => {
 
     test('sets no content sets if base game', () => {
       const { props, e } = setup();
-      e
-        .find('#base')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#base').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({
         horror: false,
         future: false,
@@ -264,10 +207,7 @@ describe('Dialogs', () => {
     });
     test('sets horror content set', () => {
       const { props, e } = setup();
-      e
-        .find('#horror')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#horror').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({
         horror: true,
         future: false,
@@ -275,10 +215,7 @@ describe('Dialogs', () => {
     });
     test('sets horror + future content sets', () => {
       const { props, e } = setup();
-      e
-        .find('#future')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#future').hostNodes().prop('onClick')();
       expect(props.onExpansionSelect).toHaveBeenCalledWith({
         horror: true,
         future: true,
@@ -321,12 +258,7 @@ describe('Dialogs', () => {
     }
     test('enables play under normal circumstances', () => {
       const { props, e } = setup();
-      expect(
-        e
-          .find('#play')
-          .hostNodes()
-          .prop('disabled'),
-      ).toEqual(false);
+      expect(e.find('#play').hostNodes().prop('disabled')).toEqual(false);
     });
     test('can adjust player count', () => {
       const { props, e } = setup();
@@ -335,40 +267,25 @@ describe('Dialogs', () => {
     });
     test('can enable/disable multitouch', () => {
       const { props, e } = setup();
-      e
-        .find('#multitouch')
-        .hostNodes()
-        .find('Button')
-        .prop('onClick')();
+      e.find('#multitouch').hostNodes().find('Button').prop('onClick')();
       expect(props.onMultitouchChange).toHaveBeenCalledWith(false);
     });
     test('shows requirement if player count is outside of quest num players range and disables play', () => {
       const { props, e } = setup({
         settings: { ...initialSettings, numLocalPlayers: 7 },
       });
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('Quest requires');
-      expect(
-        e
-          .find('#play')
-          .hostNodes()
-          .prop('disabled'),
-      ).toEqual(true);
+      expect(e.find('DialogContent').render().text()).toContain(
+        'Quest requires',
+      );
+      expect(e.find('#play').hostNodes().prop('disabled')).toEqual(true);
     });
     test('indicates required expansion (and hides Play) if not properly configured', () => {
       const { props, e } = setup({
         quest: new Quest({ ...TUTORIAL_QUESTS[0], expansionhorror: true }),
       });
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('expansion is required');
+      expect(e.find('DialogContent').render().text()).toContain(
+        'expansion is required',
+      );
       expect(e.find('#play').length).toEqual(0);
     });
   });
@@ -388,26 +305,17 @@ describe('Dialogs', () => {
 
     test('renders title & content', () => {
       const { e } = setup();
-      expect(
-        e
-          .find('DialogTitle')
-          .render()
-          .text(),
-      ).toContain('Too many players!');
-      expect(
-        e
-          .find('DialogContent')
-          .render()
-          .text(),
-      ).toContain('Expedition can only be played by a maximum of 6 players.');
+      expect(e.find('DialogTitle').render().text()).toContain(
+        'Too many players!',
+      );
+      expect(e.find('DialogContent').render().text()).toContain(
+        'Expedition can only be played by a maximum of 6 players.',
+      );
     });
 
     test('calls onClose on Cancel tap', () => {
       const { props, e } = setup();
-      e
-        .find('#cancelButton')
-        .hostNodes()
-        .prop('onClick')();
+      e.find('#cancelButton').hostNodes().prop('onClick')();
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });

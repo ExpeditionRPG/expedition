@@ -1,3 +1,5 @@
 describe('Counters', () => {
-  test('None', () => { /* super simple */ });
+  test('None', () => {
+    /* super simple */
+  });
 });

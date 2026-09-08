@@ -1,8 +1,8 @@
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
-import {CSSTransition, TransitionGroup} from 'react-transition-group';
-import {CARD_TRANSITION_ANIMATION_MS, NAV_CARDS} from '../Constants';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CARD_TRANSITION_ANIMATION_MS, NAV_CARDS } from '../Constants';
 import {
   CardName,
   CardState,
@@ -11,7 +11,7 @@ import {
   QuestState,
   SettingsType,
   SnackbarState,
-  TransitionClassType
+  TransitionClassType,
 } from '../reducers/StateTypes';
 import AudioContainer from './base/AudioContainer';
 import DialogsContainer from './base/DialogsContainer';
@@ -26,7 +26,7 @@ import GMCornerContainer from './views/GMCornerContainer';
 import ModeSelectContainer from './views/ModeSelectContainer';
 import MultiplayerConnectContainer from './views/MultiplayerConnectContainer';
 import MultiplayerLobbyContainer from './views/MultiplayerLobbyContainer';
-import {renderCardTemplate} from './views/quest/cardtemplates/Template';
+import { renderCardTemplate } from './views/quest/cardtemplates/Template';
 import QuestEndContainer from './views/quest/QuestEndContainer';
 import QuestSetupContainer from './views/quest/QuestSetupContainer';
 import QuestHistoryContainer from './views/QuestHistoryContainer';
@@ -65,7 +65,6 @@ export function isNavCard(name: CardName) {
 }
 
 export default class Compositor extends React.Component<Props, {}> {
-
   public snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
     if (this.props.snackbar.action) {
       this.props.snackbar.action(e);
@@ -120,7 +119,7 @@ export default class Compositor extends React.Component<Props, {}> {
     }
   }
 
-  private renderFooter(): JSX.Element|null {
+  private renderFooter(): JSX.Element | null {
     // Show no footers for certain cards
     for (const noShow of ['SPLASH_CARD', 'PLAYER_COUNT_SETTING']) {
       if (this.props.card.name === noShow) {
@@ -129,13 +128,17 @@ export default class Compositor extends React.Component<Props, {}> {
     }
 
     // Multiplayer-only view during the quest.
-    if (this.props.multiplayer && this.props.multiplayer.session && !isNavCard(this.props.card.name)) {
-      return <MultiplayerFooterContainer cardTheme={this.props.theme}/>;
+    if (
+      this.props.multiplayer &&
+      this.props.multiplayer.session &&
+      !isNavCard(this.props.card.name)
+    ) {
+      return <MultiplayerFooterContainer cardTheme={this.props.theme} />;
     }
 
     // Only show nav footer for certain cards
     if (isNavCard(this.props.card.name)) {
-      return <NavigationContainer cardTheme={this.props.theme}/>;
+      return <NavigationContainer cardTheme={this.props.theme} />;
     }
     return null;
   }
@@ -155,7 +158,6 @@ export default class Compositor extends React.Component<Props, {}> {
   }
 
   public render() {
-
     const containerClass = ['app_container'];
     if (this.props.settings.fontSize === 'SMALL') {
       containerClass.push('smallFont');
@@ -170,14 +172,21 @@ export default class Compositor extends React.Component<Props, {}> {
     return (
       <div className={containerClass.join(' ')}>
         <TransitionGroup
-          childFactory={(child) => React.cloneElement(
-              child, {classNames: this.props.transition}
-          )}>
+          childFactory={child =>
+            React.cloneElement(child, { classNames: this.props.transition })
+          }
+        >
           <CSSTransition
             key={this.props.card.key}
             classNames={''}
-            timeout={{enter: CARD_TRANSITION_ANIMATION_MS, exit: CARD_TRANSITION_ANIMATION_MS}}>
-            <div className={'base_main' + ((footer !== null) ? ' has_footer' : '')}>
+            timeout={{
+              enter: CARD_TRANSITION_ANIMATION_MS,
+              exit: CARD_TRANSITION_ANIMATION_MS,
+            }}
+          >
+            <div
+              className={'base_main' + (footer !== null ? ' has_footer' : '')}
+            >
               {this.renderCard()}
             </div>
           </CSSTransition>
@@ -191,7 +200,20 @@ export default class Compositor extends React.Component<Props, {}> {
           message={<span>{this.props.snackbar.message}</span>}
           autoHideDuration={this.props.snackbar.timeout}
           onClose={this.props.closeSnackbar}
-          action={(this.props.snackbar.actionLabel) ? [<Button key={1} onClick={(e: React.MouseEvent<HTMLElement>) => this.snackbarActionClicked(e)}>{this.props.snackbar.actionLabel}</Button>] : []}
+          action={
+            this.props.snackbar.actionLabel
+              ? [
+                  <Button
+                    key={1}
+                    onClick={(e: React.MouseEvent<HTMLElement>) =>
+                      this.snackbarActionClicked(e)
+                    }
+                  >
+                    {this.props.snackbar.actionLabel}
+                  </Button>,
+                ]
+              : []
+          }
         />
         <AudioContainer />
         <MultiplayerClientContainer />

@@ -1,21 +1,30 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
 
-import {setDialog} from '../../actions/Dialogs';
-import {AppState} from '../../reducers/StateTypes';
-import UsersView, {UsersViewDispatchProps, UsersViewStateProps} from './UsersView';
+import { setDialog } from '../../actions/Dialogs';
+import { AppState } from '../../reducers/StateTypes';
+import UsersView, {
+  UsersViewDispatchProps,
+  UsersViewStateProps,
+} from './UsersView';
 
-const mapStateToProps = (state: AppState, ownProps: any): UsersViewStateProps => {
+const mapStateToProps = (
+  state: AppState,
+  ownProps: any,
+): UsersViewStateProps => {
   return {
     list: state.view.users,
     selected: state.view.selected.user,
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): UsersViewDispatchProps => {
+const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+  ownProps: any,
+): UsersViewDispatchProps => {
   return {
     onRowSelect: (row: number) => {
-      dispatch({type: 'SELECT_ROW', table: 'user', row});
+      dispatch({ type: 'SELECT_ROW', table: 'user', row });
       dispatch(setDialog('USER_DETAILS'));
     },
   };
@@ -23,7 +32,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>, ownProps: any): Users
 
 const UsersViewContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(UsersView);
 
 export default UsersViewContainer;

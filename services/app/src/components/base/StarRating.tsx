@@ -25,52 +25,50 @@ export default class StarRating extends React.Component<Props, {}> {
       'Liked it',
       'Loved it',
     ];
-    const stars = [1, 2, 3, 4, 5].map(
-      (i: number): JSX.Element => {
-        let star: JSX.Element;
+    const stars = [1, 2, 3, 4, 5].map((i: number): JSX.Element => {
+      let star: JSX.Element;
 
-        const classes = ['star'];
-        if (!this.props.readOnly) {
-          classes.push('editable');
-        }
+      const classes = ['star'];
+      if (!this.props.readOnly) {
+        classes.push('editable');
+      }
 
-        if (i <= this.props.value) {
-          classes.push('filled');
-          star = <Star />;
-        } else if (i <= this.props.value + 0.5) {
-          classes.push('filled');
-          star = <StarHalf />;
-        } else {
-          classes.push('outline');
-          star = <StarBorder />;
-        }
+      if (i <= this.props.value) {
+        classes.push('filled');
+        star = <Star />;
+      } else if (i <= this.props.value + 0.5) {
+        classes.push('filled');
+        star = <StarHalf />;
+      } else {
+        classes.push('outline');
+        star = <StarBorder />;
+      }
 
-        // TODO: Flatten this structure so ripples are circular
-        // We use a non-button element here due to redux errors on nesting buttons
-        // when the stars are just used in a display-only fashion.
-        if (this.props.readOnly) {
-          return (
-            <div key={i} className={classes.join(' ')}>
+      // TODO: Flatten this structure so ripples are circular
+      // We use a non-button element here due to redux errors on nesting buttons
+      // when the stars are just used in a display-only fashion.
+      if (this.props.readOnly) {
+        return (
+          <div key={i} className={classes.join(' ')}>
+            {star}
+          </div>
+        );
+      } else {
+        return (
+          <div key={i} className={classes.join(' ')}>
+            <IconButton
+              onClick={() => {
+                if (this.props.onChange) {
+                  this.props.onChange(i);
+                }
+              }}
+            >
               {star}
-            </div>
-          );
-        } else {
-          return (
-            <div key={i} className={classes.join(' ')}>
-              <IconButton
-                onClick={() => {
-                  if (this.props.onChange) {
-                    this.props.onChange(i);
-                  }
-                }}
-              >
-                {star}
-              </IconButton>
-            </div>
-          );
-        }
-      },
-    );
+            </IconButton>
+          </div>
+        );
+      }
+    });
     return (
       <span id={this.props.id} className="starContainer">
         <div className="stars" style={this.props.style}>

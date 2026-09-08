@@ -1,14 +1,14 @@
-import {QuestNodeAction} from 'app/actions/ActionTypes';
-import {audioSet} from 'app/actions/Audio';
-import {toCard} from 'app/actions/Card';
-import {endQuest, loadNode} from 'app/actions/Quest';
-import {CombatPhase} from 'app/Constants';
-import {remoteify} from 'app/multiplayer/Remoteify';
-import {AppStateWithHistory, SettingsType} from 'app/reducers/StateTypes';
+import { QuestNodeAction } from 'app/actions/ActionTypes';
+import { audioSet } from 'app/actions/Audio';
+import { toCard } from 'app/actions/Card';
+import { endQuest, loadNode } from 'app/actions/Quest';
+import { CombatPhase } from 'app/Constants';
+import { remoteify } from 'app/multiplayer/Remoteify';
+import { AppStateWithHistory, SettingsType } from 'app/reducers/StateTypes';
 import Redux from 'redux';
-import {Cheerio} from 'shared/Cheerio';
-import {findCombatParent, handleCombatEnd} from '../combat/Actions';
-import {ParserNode} from '../TemplateTypes';
+import { Cheerio } from 'shared/Cheerio';
+import { findCombatParent, handleCombatEnd } from '../combat/Actions';
+import { ParserNode } from '../TemplateTypes';
 
 export function initRoleplay(node: ParserNode) {
   return (dispatch: Redux.Dispatch<any>): any => {
@@ -16,23 +16,29 @@ export function initRoleplay(node: ParserNode) {
     // the history from grabbing the quest state before navigating.
     // This bug manifests as toPrevious() sliding back to the same card
     // content.
-    dispatch({type: 'PUSH_HISTORY'});
-    dispatch({type: 'QUEST_NODE', node} as QuestNodeAction);
-    dispatch(toCard({name: 'QUEST_CARD', noHistory: true}));
+    dispatch({ type: 'PUSH_HISTORY' });
+    dispatch({ type: 'QUEST_NODE', node } as QuestNodeAction);
+    dispatch(toCard({ name: 'QUEST_CARD', noHistory: true }));
   };
 }
 
-type evalState = 'END'|'ENDROUND'|'ENDCOMBAT'|'VICTORY'|'DEFEAT';
+type evalState = 'END' | 'ENDROUND' | 'ENDCOMBAT' | 'VICTORY' | 'DEFEAT';
 
 function combatContainsNode(combatElem: Cheerio, node: ParserNode) {
   const nodeParent = findCombatParent(node);
   if (nodeParent !== null && combatElem !== null) {
-    return nodeParent.length > 0 && combatElem.attr('data-line') === nodeParent.attr('data-line');
+    return (
+      nodeParent.length > 0 &&
+      combatElem.attr('data-line') === nodeParent.attr('data-line')
+    );
   }
   return false;
 }
 
-export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode: ParserNode, state: evalState|null} {
+export function getNextMidCombatNode(
+  node: ParserNode,
+  index: number,
+): { nextNode: ParserNode; state: evalState | null } {
   const parentCombatElem = findCombatParent(node);
   const nextNode = node.handleAction(index);
 
@@ -43,7 +49,7 @@ export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode
     if (nextNode === null) {
       throw new Error('Could not find next node');
     }
-    return {nextNode, state: 'ENDCOMBAT'};
+    return { nextNode, state: 'ENDCOMBAT' };
   }
 
   const next = node.getNext(index);
@@ -52,7 +58,7 @@ export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode
     nextIsInSameCombat = combatContainsNode(parentCombatElem, nextNode);
 
     // Check for and resolve triggers
-    const nextIsTrigger = (next && next.getTag() === 'trigger');
+    const nextIsTrigger = next && next.getTag() === 'trigger';
     if (nextIsTrigger) {
       const triggerName = next.elem.text().trim().toLowerCase();
       if (triggerName === 'win' || triggerName === 'lose') {
@@ -60,29 +66,32 @@ export function getNextMidCombatNode(node: ParserNode, index: number): {nextNode
         // combat end card
         return {
           nextNode: new ParserNode(parentCombatElem, node.ctx, index),
-          state: (triggerName === 'win') ? 'VICTORY' : 'DEFEAT',
+          state: triggerName === 'win' ? 'VICTORY' : 'DEFEAT',
         };
       } else if (triggerName.startsWith('goto') && nextIsInSameCombat) {
         // If we jump to somewhere in the same combat,
         // it's handled like a normal combat RP choice change (below).
       } else if (next.isEnd()) {
         // Treat quest end as normal, also stopping combat audio.
-        return {nextNode: node, state: 'END'};
+        return { nextNode: node, state: 'END' };
       } else {
         // Otherwise, treat like a typical event trigger.
         // Make sure we stop combat audio since we're exiting this combat.
-        return {nextNode, state: 'ENDCOMBAT'};
+        return { nextNode, state: 'ENDCOMBAT' };
       }
     }
   }
 
   if (nextNode && nextIsInSameCombat) {
     // Continue in-combat roleplay with the next node.
-    return {nextNode, state: null};
+    return { nextNode, state: null };
   } else {
     // If the next node is out of this combat, that means we've dropped off the end of the
     // interestitial roleplay. Go back to combat resolution phase.
-    return {nextNode: new ParserNode(parentCombatElem, node.ctx, index), state: 'ENDROUND'};
+    return {
+      nextNode: new ParserNode(parentCombatElem, node.ctx, index),
+      state: 'ENDROUND',
+    };
   }
 }
 
@@ -93,45 +102,59 @@ interface MidCombatChoiceArgs {
   seed: string;
   settings?: SettingsType;
 }
-export const midCombatChoice = remoteify(function midCombatChoice(a: MidCombatChoiceArgs, dispatch: Redux.Dispatch<any>, getState: () => AppStateWithHistory): MidCombatChoiceArgs {
+export const midCombatChoice = remoteify(function midCombatChoice(
+  a: MidCombatChoiceArgs,
+  dispatch: Redux.Dispatch<any>,
+  getState: () => AppStateWithHistory,
+): MidCombatChoiceArgs {
   if (!a.node || !a.settings) {
     a.node = getState().quest.node;
     a.settings = getState().settings;
   }
 
-  const remoteArgs: MidCombatChoiceArgs = {index: a.index, seed: a.seed, maxTier: a.maxTier};
-  const {nextNode, state} = getNextMidCombatNode(a.node, a.index);
+  const remoteArgs: MidCombatChoiceArgs = {
+    index: a.index,
+    seed: a.seed,
+    maxTier: a.maxTier,
+  };
+  const { nextNode, state } = getNextMidCombatNode(a.node, a.index);
   switch (state) {
     case 'ENDCOMBAT':
       nextNode.ctx.templates.combat.phase = CombatPhase.drawEnemies;
       dispatch(loadNode(nextNode));
-      dispatch(audioSet({intensity: 0}));
+      dispatch(audioSet({ intensity: 0 }));
       break;
     case 'VICTORY':
     case 'DEFEAT':
-      dispatch(handleCombatEnd({
-        maxTier: a.maxTier,
-        node: nextNode,
-        seed: a.seed,
-        settings: a.settings,
-        victory: (state === 'VICTORY'),
-      }));
+      dispatch(
+        handleCombatEnd({
+          maxTier: a.maxTier,
+          node: nextNode,
+          seed: a.seed,
+          settings: a.settings,
+          victory: state === 'VICTORY',
+        }),
+      );
       break;
     case 'END':
       dispatch(endQuest({}));
-      dispatch(audioSet({intensity: 0}));
+      dispatch(audioSet({ intensity: 0 }));
       break;
     case 'ENDROUND':
-      dispatch({type: 'PUSH_HISTORY'});
+      dispatch({ type: 'PUSH_HISTORY' });
       nextNode.ctx.templates.combat.phase = CombatPhase.resolveAbilities;
-      dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', overrideDebounce: true, noHistory: true}));
+      dispatch({ type: 'QUEST_NODE', node: nextNode } as QuestNodeAction);
+      dispatch(
+        toCard({ name: 'QUEST_CARD', overrideDebounce: true, noHistory: true }),
+      );
       break;
     default: // in-combat roleplay continues
-      dispatch({type: 'PUSH_HISTORY'});
+      dispatch({ type: 'PUSH_HISTORY' });
       nextNode.ctx.templates.combat.phase = CombatPhase.midCombatRoleplay;
-      dispatch({type: 'QUEST_NODE', node: nextNode} as QuestNodeAction);
-      dispatch(toCard({name: 'QUEST_CARD', overrideDebounce: true, noHistory: true}));
+      dispatch({ type: 'QUEST_NODE', node: nextNode } as QuestNodeAction);
+      dispatch(
+        toCard({ name: 'QUEST_CARD', overrideDebounce: true, noHistory: true }),
+      );
       break;
   }
   return remoteArgs;

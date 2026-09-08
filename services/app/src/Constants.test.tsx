@@ -1,4 +1,4 @@
-import {UNSUPPORTED_BROWSERS} from './Constants';
+import { UNSUPPORTED_BROWSERS } from './Constants';
 
 describe('Constants', () => {
   test('properly identifies unsupported browsers', () => {

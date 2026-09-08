@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {UserQuestInstance, UserQuestsType} from '../../reducers/StateTypes';
+import { UserQuestInstance, UserQuestsType } from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 
@@ -21,20 +21,28 @@ const QuestHistory = (props: Props): JSX.Element => {
     return (
       <Card title="Quest History">
         <p>You haven't played any quests yet.</p>
-        <p>Once you've signed in and played a few quests, they will appear here.</p>
+        <p>
+          Once you've signed in and played a few quests, they will appear here.
+        </p>
       </Card>
     );
   }
 
-  const items: JSX.Element[] = Object.keys(props.played)
-    .map((k: string, i: number): JSX.Element => {
+  const items: JSX.Element[] = Object.keys(props.played).map(
+    (k: string, i: number): JSX.Element => {
       const h = props.played[k];
       return (
-        <QuestButtonContainer key={i} id={`quest${i}`} quest={h.details} onClick={() => props.onSelect(h)}>
+        <QuestButtonContainer
+          key={i}
+          id={`quest${i}`}
+          quest={h.details}
+          onClick={() => props.onSelect(h)}
+        >
           <span className="details">{Moment(h.lastPlayed).fromNow()}</span>
         </QuestButtonContainer>
       );
-    });
+    },
+  );
 
   return (
     <Card title="Quest History" icon="hourglass" onReturn={props.onReturn}>

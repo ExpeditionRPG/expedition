@@ -4,7 +4,7 @@ export const DESCRIPTION = `Your card has no next choice, nor does it end the qu
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_roleplay card_
+  `_roleplay card_
 
 with some text!
 
@@ -12,7 +12,7 @@ with some text!
 ];
 
 export const VALID = [
-`_roleplay card_
+  `_roleplay card_
 
 with some text!
 

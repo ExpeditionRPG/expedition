@@ -21,7 +21,7 @@ export function remoteify<A>(
   ) => any,
 ) {
   const remoted = (args: A) => {
-    return ([a.name, a, args] as any) as Redux.Action; // We know better >:}
+    return [a.name, a, args] as any as Redux.Action; // We know better >:}
   };
   if (MULTIPLAYER_ACTIONS[a.name]) {
     console.error(

@@ -3,5 +3,7 @@ describe('config', () => {
     require('./config');
   });
 
-  test.skip('loads defaults', () => { /* TODO */ });
+  test.skip('loads defaults', () => {
+    /* TODO */
+  });
 });

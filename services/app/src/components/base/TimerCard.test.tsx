@@ -27,7 +27,7 @@ describe('TimerCard', () => {
       ...overrides,
     };
     return {
-      a: shallow(<TimerCard {...((props as any) as Props)} />, undefined),
+      a: shallow(<TimerCard {...(props as any as Props)} />, undefined),
     };
   }
 

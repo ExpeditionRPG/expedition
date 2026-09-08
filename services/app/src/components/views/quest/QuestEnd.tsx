@@ -342,14 +342,17 @@ export default class QuestEnd extends React.Component<Props, {}> {
   private formatFeedback(): string {
     if (this.isGoodRating()) {
       if (this.state.favoritePart || this.state.text) {
-        return `Favorite Part: ${this.state.favoritePart ||
-          'not given'}\nDetails: ${this.state.text || '--'}`;
+        return `Favorite Part: ${
+          this.state.favoritePart || 'not given'
+        }\nDetails: ${this.state.text || '--'}`;
       }
     } else {
       if (this.state.primaryIssue || this.state.issueQualifier) {
-        return `Primary Issue: ${this.state.primaryIssue ||
-          'not given'}\nQualifier: ${this.state.issueQualifier ||
-          'not given'}\nDetails: ${this.state.text}`;
+        return `Primary Issue: ${
+          this.state.primaryIssue || 'not given'
+        }\nQualifier: ${
+          this.state.issueQualifier || 'not given'
+        }\nDetails: ${this.state.text}`;
       }
     }
     return '';
@@ -399,8 +402,8 @@ export default class QuestEnd extends React.Component<Props, {}> {
     const buttonText = this.state.submitted
       ? `Waiting on ${unacted} devices`
       : rated
-      ? 'Submit'
-      : 'Return home';
+        ? 'Submit'
+        : 'Return home';
     return (
       <Card
         title={this.props.quest.details.title}

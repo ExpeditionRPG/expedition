@@ -39,8 +39,7 @@ type Nullable<T, K extends keyof T> = Omit<T, K> & { [P in K]: T[P] | null };
 // aliases.
 
 export interface AnalyticsEventInstance
-  extends Sequelize.Model<Partial<AnalyticsEvent>>,
-    Columns<AnalyticsEvent> {
+  extends Sequelize.Model<Partial<AnalyticsEvent>>, Columns<AnalyticsEvent> {
   dataValues: AnalyticsEvent;
 }
 type AnalyticsEventModel = typeof Sequelize.Model & {
@@ -48,8 +47,7 @@ type AnalyticsEventModel = typeof Sequelize.Model & {
 };
 
 export interface UserInstance
-  extends Sequelize.Model<Partial<User>>,
-    Columns<User> {
+  extends Sequelize.Model<Partial<User>>, Columns<User> {
   dataValues: User;
 }
 export type UserModel = typeof Sequelize.Model & {
@@ -57,8 +55,7 @@ export type UserModel = typeof Sequelize.Model & {
 };
 
 export interface UserBadgeInstance
-  extends Sequelize.Model<Partial<UserBadge>>,
-    Columns<UserBadge> {
+  extends Sequelize.Model<Partial<UserBadge>>, Columns<UserBadge> {
   dataValues: UserBadge;
 }
 export type UserBadgeModel = typeof Sequelize.Model & {
@@ -72,8 +69,7 @@ export type QuestAttributes = Nullable<
   'published' | 'tombstone' | 'ratingavg' | 'ratingcount'
 >;
 export interface QuestInstance
-  extends Sequelize.Model<Partial<QuestAttributes>>,
-    Columns<Quest> {
+  extends Sequelize.Model<Partial<QuestAttributes>>, Columns<Quest> {
   dataValues: Quest;
 }
 export type QuestModel = typeof Sequelize.Model & {
@@ -81,7 +77,8 @@ export type QuestModel = typeof Sequelize.Model & {
 };
 
 export interface QuestDataInstance
-  extends Sequelize.Model<Partial<Nullable<QuestData, 'tombstone'>>>,
+  extends
+    Sequelize.Model<Partial<Nullable<QuestData, 'tombstone'>>>,
     Columns<QuestData> {
   dataValues: QuestData;
 }
@@ -90,7 +87,8 @@ export type QuestDataModel = typeof Sequelize.Model & {
 };
 
 export interface FeedbackInstance
-  extends Sequelize.Model<Partial<Nullable<Feedback, 'tombstone'>>>,
+  extends
+    Sequelize.Model<Partial<Nullable<Feedback, 'tombstone'>>>,
     Columns<Feedback> {
   dataValues: Feedback;
 }
@@ -99,15 +97,13 @@ export type FeedbackModel = typeof Sequelize.Model & {
 };
 
 export interface RenderedQuestInstance
-  extends Sequelize.Model<Partial<RenderedQuest>>,
-    Columns<RenderedQuest> {}
+  extends Sequelize.Model<Partial<RenderedQuest>>, Columns<RenderedQuest> {}
 export type RenderedQuestModel = typeof Sequelize.Model & {
   new (): RenderedQuestInstance;
 };
 
 export interface EventInstance
-  extends Sequelize.Model<Partial<Event>>,
-    Columns<Event> {
+  extends Sequelize.Model<Partial<Event>>, Columns<Event> {
   dataValues: Event;
 }
 export type EventModel = typeof Sequelize.Model & {
@@ -115,8 +111,7 @@ export type EventModel = typeof Sequelize.Model & {
 };
 
 export interface SessionClientInstance
-  extends Sequelize.Model<Partial<SessionClient>>,
-    Columns<SessionClient> {
+  extends Sequelize.Model<Partial<SessionClient>>, Columns<SessionClient> {
   dataValues: SessionClient;
 }
 export type SessionClientModel = typeof Sequelize.Model & {
@@ -124,8 +119,7 @@ export type SessionClientModel = typeof Sequelize.Model & {
 };
 
 export interface SessionInstance
-  extends Sequelize.Model<Session>,
-    Columns<Session> {
+  extends Sequelize.Model<Session>, Columns<Session> {
   dataValues: Session;
 }
 export type SessionModel = typeof Sequelize.Model & {

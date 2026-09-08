@@ -1,3 +1,5 @@
 describe('MultiplayerConnect', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('TODO', () => {
+    /* TODO */
+  });
 });

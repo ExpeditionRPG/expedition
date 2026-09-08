@@ -3,7 +3,7 @@ export const NAME = `Combat card has no enemies listed`;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_combat_
+  `_combat_
 
 * on win
 
@@ -15,7 +15,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Skeleton Swordsman
 

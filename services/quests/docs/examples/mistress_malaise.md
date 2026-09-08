@@ -1,4 +1,5 @@
 # Mistress Malaise
+
 summary: Mystery, Misfortune, and a Mistress.
 author: Scott Martin
 email: smartin015@gmail.com
@@ -52,8 +53,6 @@ If your party can travel to the mausoleum and find the phylactery, Pell can perf
 
 You begin the hunt immediately.
 
-
-
 _Outside the Tomb_ {"icon": "bandit"}
 
 The moist soil squishes underfoot as you enter the graveyard - the musty smell is much stronger here.
@@ -64,31 +63,30 @@ Lurking near the entrance to the mausoleum, you find three stealthy-looking figu
 
 What do you do?
 
-*   Call out to them.
+- Call out to them.
 
-  You shout out to them, announcing your presence. They appear startled and disappear inside.
+You shout out to them, announcing your presence. They appear startled and disappear inside.
 
-  Not too long after, the screams begin.
+Not too long after, the screams begin.
 
-  As you make it to the door, you hear a small explosion, a sickening crunching sound, and then silence. The Order doesn't pay you nearly enough for this.
+As you make it to the door, you hear a small explosion, a sickening crunching sound, and then silence. The Order doesn't pay you nearly enough for this.
 
-  _Inside the Tomb_ {"icon": "undead"}
+_Inside the Tomb_ {"icon": "undead"}
 
-  You take a last deep breath of the damp air outside and venture within.
+You take a last deep breath of the damp air outside and venture within.
 
-  As you go deeper, you find each of the three bandits in turn, victim to the magical traps and wards set up by Malaise. You try not to think of the state the bodies are in, but make careful note of how they died and safely navigate the dangers of the outer rooms.
+As you go deeper, you find each of the three bandits in turn, victim to the magical traps and wards set up by Malaise. You try not to think of the state the bodies are in, but make careful note of how they died and safely navigate the dangers of the outer rooms.
 
-  Towards the end of a long corridor, you find one last door into the mausoleum's innermost chamber. You hear a creaking sound as you press against the door - but the noise didn't come from the door...
+Towards the end of a long corridor, you find one last door into the mausoleum's innermost chamber. You hear a creaking sound as you press against the door - but the noise didn't come from the door...
 
-* Attempt to incapacitate them.
+- Attempt to incapacitate them.
 
   _Subterfuge_ {"icon": "bandit"}
 
   Your party quickly takes cover behind some nearby headstones and sneaks towards the group.
 
-  >  One of your party must roll a die at this time. Choose a next action based on the result of that roll:
-
-  * Rolled above 10
+  > One of your party must roll a die at this time. Choose a next action based on the result of that roll:
+  - Rolled above 10
 
     _Hit and Run_
 
@@ -96,7 +94,7 @@ What do you do?
 
     After a quick check you can confirm they're still breathing. Searching their pockets, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
 
-  * Rolled 10 or below
+  - Rolled 10 or below
 
     _Bad Timing_
 
@@ -106,7 +104,6 @@ What do you do?
     - Archer
     - Rogue
     - Brigand
-
     * on win
 
       Searching the slain, you find a piece of parchment listing what appears to be the locations of various traps within. Paper in hand, you proceed into the tomb.
@@ -123,8 +120,8 @@ What do you do?
 
     You hear a creaking sound as you press against the door - but the noise didn't come from the door...
 
-
 _combat_ {"icon": "undead"}
+
 - Zombie
 - Skeleton Mage
 
@@ -152,7 +149,7 @@ You emerge from the tomb, taking a moment to breathe the (mostly) fresh air. Wha
 
 The moving headstone is actually an old, feeble woman, who was apparently waiting for you to emerge. She calls herself Malaise, and begs for you to listen.
 
-* Listen to her story
+- Listen to her story
 
   _Malaise Unmasked_ {"icon": "adventurer"}
 
@@ -170,7 +167,6 @@ The moving headstone is actually an old, feeble woman, who was apparently waitin
   - Wight
   - Zombie Hand
   - Zombie
-
   * on win
 
     _Change of Plans_ {"icon": "d20"}
@@ -187,7 +183,7 @@ The moving headstone is actually an old, feeble woman, who was apparently waitin
 
     **end**
 
-* Attack her before she can speak
+- Attack her before she can speak
 
   _Death of Malaise_
 
@@ -199,7 +195,6 @@ The moving headstone is actually an old, feeble woman, who was apparently waitin
 
   Brother Pell's misdirection can only mean one thing: That he is the lich.
 
-
 _Change of Plans_ {"icon": "d20"}
 
 Your only hope is that Pell has hidden the real phylactery somewhere within his house - but you don't know exactly where.
@@ -208,11 +203,11 @@ You entertain the thought of kicking down the door and incapacitating him with s
 
 On the other hand, you could send some of your party to sneak into the house. Meanwhile, the others could distract Pell at the entrance by asking for a place to recover, claiming that the rest of the party was "slain" after a failed assault on the Mausoleum. If any part of the bluff fails, you may not have your full party to fight with.
 
-* Take the direct approach.
+- Take the direct approach.
 
   **goto planA**
 
-* Split your party to look for the phylactery.
+- Split your party to look for the phylactery.
 
   **goto planB**
 
@@ -225,6 +220,7 @@ Pell stands up from his dining table, sees your intent, and with a word summons 
 Any doubts you had are gone. Enraged at his betrayal, you attack.
 
 _combat_ {"icon": "undead"}
+
 - Lich
 - Zombie
 - Skeleton Swordsman
@@ -239,9 +235,9 @@ _combat_ {"icon": "undead"}
 
   **end**
 
-*   on lose
+* on lose
 
-  **goto pelldefeat**
+**goto pelldefeat**
 
 _A Cunning Plan_ (#planB) {"icon": "undead"}
 
@@ -268,6 +264,7 @@ _The Phylactery_
 > Combat is ended when all enemies and the phylactery are destroyed.
 
 _combat_ {"icon": "undead"}
+
 - Lich
 - Zombie
 - Skeleton Swordsman

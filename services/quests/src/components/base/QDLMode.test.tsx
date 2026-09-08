@@ -5,7 +5,11 @@
 // (of course, won't be that simple, will also have to mock several parts of session object)
 
 describe('QDL Mode', () => {
-  test.skip('correctly identifies rows to show the fold widget on', () => { /* TODO */ });
+  test.skip('correctly identifies rows to show the fold widget on', () => {
+    /* TODO */
+  });
 
-  test.skip('correctly identifies the start and end row of an expansion', () => { /* TODO */ });
+  test.skip('correctly identifies the start and end row of an expansion', () => {
+    /* TODO */
+  });
 });

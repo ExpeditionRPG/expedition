@@ -1,4 +1,4 @@
-import {Block} from './block/BlockList';
+import { Block } from './block/BlockList';
 
 // Info: Generally not shown to the user; internal debugging only.
 // Warning: Won't break your quest, but important to know about. Does not change quest.
@@ -30,7 +30,7 @@ export interface LogMessageMap {
 export function prettifyMsg(msg: LogMessage): string {
   let result = '';
   result += msg.type.toUpperCase();
-  result += ' L' + ((msg.line !== undefined) ? msg.line : 0);
+  result += ' L' + (msg.line !== undefined ? msg.line : 0);
   result += ':\n';
   result += msg.text;
 
@@ -65,33 +65,15 @@ export class Logger {
   }
 
   public internal(text: string, url: string, line?: number) {
-    this.messages.push(this.msg(
-      this.context,
-      'internal',
-      text,
-      url,
-      line
-    ));
+    this.messages.push(this.msg(this.context, 'internal', text, url, line));
   }
 
   public err(text: string, url: string, line?: number) {
-    this.messages.push(this.msg(
-      this.context,
-      'error',
-      text,
-      url,
-      line
-    ));
+    this.messages.push(this.msg(this.context, 'error', text, url, line));
   }
 
   public warn(text: string, url: string, line?: number) {
-    this.messages.push(this.msg(
-      this.context,
-      'warning',
-      text,
-      url,
-      line
-    ));
+    this.messages.push(this.msg(this.context, 'warning', text, url, line));
   }
 
   public extend(msgs: LogMessage[]) {
@@ -100,19 +82,21 @@ export class Logger {
 
   public finalize(): LogMessage[] {
     if (this.info.length > 0) {
-      this.messages.push(this.msg(
-        this.context,
-        'info',
-        this.info.join('\n'),
-        '100'
-      ));
+      this.messages.push(
+        this.msg(this.context, 'info', this.info.join('\n'), '100'),
+      );
     }
     return this.messages;
   }
 
   public getFinalizedLogs(): LogMessageMap {
     const finalized = this.finalize();
-    const logMap: LogMessageMap = {info: [], warning: [], error: [], internal: []};
+    const logMap: LogMessageMap = {
+      info: [],
+      warning: [],
+      error: [],
+      internal: [],
+    };
     for (const m of finalized) {
       switch (m.type) {
         case 'info':
@@ -128,14 +112,22 @@ export class Logger {
           logMap.internal.push(m);
           break;
         default:
-          logMap.internal.push(this.msg([], 'internal', 'Unknown message type', '506'));
+          logMap.internal.push(
+            this.msg([], 'internal', 'Unknown message type', '506'),
+          );
           break;
       }
     }
     return logMap;
   }
 
-  private msg(group: Block[], type: LogSeverity, text: string, url: string, line?: number): LogMessage {
+  private msg(
+    group: Block[],
+    type: LogSeverity,
+    text: string,
+    url: string,
+    line?: number,
+  ): LogMessage {
     const message: LogMessage = {
       text,
       type,
@@ -144,7 +136,7 @@ export class Logger {
     if (line) {
       message.line = line;
     } else {
-      message.line = (group.length > 0) ? (group[0].startLine || 0) : 0;
+      message.line = group.length > 0 ? group[0].startLine || 0 : 0;
     }
     return message;
   }

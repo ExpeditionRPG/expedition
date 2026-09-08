@@ -1,4 +1,4 @@
-import {EditableString, EditableMap, EditableModel} from './Editable';
+import { EditableString, EditableMap, EditableModel } from './Editable';
 
 describe('Editable', () => {
   describe('EditableString', () => {
@@ -11,7 +11,7 @@ describe('Editable', () => {
   });
   describe('EditableMap', () => {
     test('can set and get item', () => {
-      const e = new EditableMap('test', {a: 5});
+      const e = new EditableMap('test', { a: 5 });
       expect(e.get('a')).toEqual(5);
       e.set('a', 3);
       expect(e.get('a')).toEqual(3);
@@ -22,6 +22,6 @@ describe('Editable', () => {
       expect(e.isEmpty()).toEqual(true);
       e.set('a', 5);
       expect(e.isEmpty()).toEqual(false);
-    })
+    });
   });
 });

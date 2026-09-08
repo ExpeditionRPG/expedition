@@ -121,7 +121,7 @@ describe('Context', () => {
       // shorthand method: only plain functions carry an own `prototype`, and
       // Function.prototype.bind() strips it. That is exactly what the second
       // assertion below uses to prove the stored function is the original.
-      ctx.scope._.viewCount = function(id: string) {
+      ctx.scope._.viewCount = function (id: string) {
         return this.views[id] || 0;
       };
       evaluateOp('n = 5', ctx, () => 0.1);

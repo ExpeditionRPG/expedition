@@ -1,4 +1,5 @@
 # Oust Albanus
+
 summary: Your party encounters a smelly situation.
 author: Scott Martin
 email: smartin015@gmail.com
@@ -20,7 +21,7 @@ You attempt to console them, and ask for clarification.
 
 This simply won't do.
 
-* Help the villagers recover their precious cheese.
+- Help the villagers recover their precious cheese.
 
   "Thank you!" they shout, weeping with joy. "That cheese is our livelihood here in Gruyere!"
 
@@ -32,14 +33,13 @@ This simply won't do.
 
   Down the fetid hole you go...
 
-* Attack the filthy peasants for wasting your time.
+- Attack the filthy peasants for wasting your time.
 
   You begin to swing your weapons and cast magicks indescriminately into the crowd. Needless to say, the town guard is NOT pleased by your actions...
 
   _combat_
   - Archer
   - Veteran
-
   * on win
 
     _The Map_
@@ -52,7 +52,7 @@ This simply won't do.
 
     Curious, you head to the nearest red X, finding an open manhole cover leading to the sewers below the town. The bandits must have come from down there.
 
-    * Head down the manhole.
+    - Head down the manhole.
 
       Down the fetid hole you go...
 
@@ -71,6 +71,7 @@ But wafting on the air, you smell the distinctly foot-like stench of fresh Limbu
 As you head deeper into the sewers, the light grows dark. A skittering sound ahead makes you think you're not the only one searching for a tasty morsel in these tunnels...
 
 _combat_
+
 - Giant Rat
 
 * on win
@@ -85,14 +86,13 @@ _combat_
 
   "Ho, there!"
 
-  * Run towards the figure.
+  - Run towards the figure.
 
     You run towards the figure, weapons still drawn and bloody. The person shouts for help; looks like you've got another fight on your hands.
 
     _combat_
     - Captain
     - Brigand
-
     * on win
 
       _Albanus_
@@ -161,7 +161,7 @@ There's a small powder keg nearby. If it were to "accidentally" land in the fire
 
 You also spy a giant rat in a cage, over in the corner. It looks malnourished and _very_ hungry.
 
-* Toss the powder keg into the fire.
+- Toss the powder keg into the fire.
 
   _Bang!_
 
@@ -183,7 +183,7 @@ You also spy a giant rat in a cage, over in the corner. It looks malnourished an
 
   **end**
 
-* Let the rat out of its cage.
+- Let the rat out of its cage.
 
   _Ratted Out_
 
@@ -194,7 +194,6 @@ You also spy a giant rat in a cage, over in the corner. It looks malnourished an
   _combat_
   - Captain
   - Brigand
-
   * on win
 
     _Return_

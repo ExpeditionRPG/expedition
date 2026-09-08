@@ -55,10 +55,7 @@ function walkDir(root) {
 // path, and keyed off a literal '/expedition/' segment that does not exist in a
 // git worktree or a differently-named checkout.
 function repoRelativeStem(file) {
-  const rel = path
-    .relative(REPO_ROOT, file)
-    .split(path.sep)
-    .join('/');
+  const rel = path.relative(REPO_ROOT, file).split(path.sep).join('/');
   return rel.replace(/\.(tsx|ts|js)$/, '');
 }
 

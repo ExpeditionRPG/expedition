@@ -1,7 +1,8 @@
 const packageJson: any = require('../package.json');
 
 export const NODE_ENV = process.env.NODE_ENV || 'dev';
-export const API_HOST = process.env.API_HOST || 'http://betaapi.expeditiongame.com';
+export const API_HOST =
+  process.env.API_HOST || 'http://betaapi.expeditiongame.com';
 export const VERSION = packageJson.version;
 export const METADATA_FIELDS = [
   'summary',
@@ -18,7 +19,8 @@ export const PARTITIONS = {
 };
 export const authSettings = {
   apiKey: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
-  clientId: '545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com',
+  clientId:
+    '545484140970-r95j0rmo8q1mefo0pko6l3v6p4s771ul.apps.googleusercontent.com',
   scopes: 'profile email',
   urlBase: API_HOST,
 };
