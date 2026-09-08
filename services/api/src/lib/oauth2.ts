@@ -137,19 +137,27 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
           if (u === null) {
             const jbody: any = { ...user, image };
             res.end(JSON.stringify(jbody));
-            db.users.upsert(user);
-            if ((req.get('host') || '').indexOf('quest') !== -1) {
-              // New quest writer; auto-subscribe to creator newsletter
-              return subscribeToCreatorsList(mailchimp, user.email);
-            }
-            // Otherwise, they'll send a separate subscribe request
+            // Sequelize 6 returns native promises. Keep this write in the
+            // chain so failures are handled and loginCount updates the new row.
+            return db.users.upsert(user).then(() => {
+              if ((req.get('host') || '').indexOf('quest') !== -1) {
+                // New quest writer; auto-subscribe to creator newsletter
+                return subscribeToCreatorsList(mailchimp, user.email);
+              }
+              // Otherwise, they'll send a separate subscribe request
+            });
           } else {
             res.end(JSON.stringify(u));
             return null;
           }
         })
         .then(() => incrementLoginCount(db, user.id))
-        .catch(console.error);
+        .catch((error: Error) => {
+          console.error(error);
+          if (!res.headersSent) {
+            res.status(500).end('Could not load user.');
+          }
+        });
     },
   );
 
@@ -193,6 +201,10 @@ export function installOAuthRoutes(db: Database, router: express.Router) {
           } else {
             res.end(JSON.stringify(u));
           }
+        })
+        .catch((error: Error) => {
+          console.error(error);
+          res.status(500).end('Could not load user.');
         });
     },
   );

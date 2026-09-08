@@ -184,21 +184,40 @@ export class Connection extends ClientBase {
     // latched `connected = false` -- silently disabling sendEvent() -- and the
     // next reconnect() aimed at `/session/?client=..&secret=` forever.
     //
-    // Do not resetState() here either: the message retry buffer and the
-    // exponential-backoff counter both have to survive a reconnect.
+    // Preserve retries only when reconnecting to the same session. Actions
+    // queued for a different session must never be sent to its replacement.
     if (this.session) {
       this.connected = false;
       this.session.close(1000);
+    }
+    if (this.sessionID !== sessionID || this.secret !== secret) {
+      this.messageBuffer = [];
+      this.reconnectAttempts = 0;
     }
     this.sessionID = sessionID;
     this.secret = secret;
     this.session = new WebSocket(
       `${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`,
     );
-    this.session.onmessage = this.onMessage.bind(this);
+    // A close handshake can finish after the replacement socket opens.
+    // Ignore callbacks from old sockets so they cannot mutate the new session.
+    const socket = this.session;
+    this.session.onmessage = ev => {
+      if (this.session === socket) {
+        this.onMessage(ev);
+      }
+    };
     this.session.onerror = console.error;
-    this.session.onclose = this.onClose.bind(this);
-    this.session.onopen = this.onOpen.bind(this);
+    this.session.onclose = ev => {
+      if (this.session === socket) {
+        this.onClose(ev);
+      }
+    };
+    this.session.onopen = () => {
+      if (this.session === socket) {
+        this.onOpen();
+      }
+    };
   }
 
   private onMessage(ev: MessageEvent) {

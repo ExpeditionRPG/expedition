@@ -195,6 +195,44 @@ describe('oauth2', () => {
         });
     });
 
+    test('handles a failed new-user write without an unhandled rejection', async () => {
+      nextToken!.payload.sub = 'failed-new-user';
+      const failure = new Error('User write failed');
+      const logged = jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(db.users, 'upsert').mockRejectedValueOnce(failure);
+      const update = jest.spyOn(db.users, 'update');
+
+      const res = await login();
+      expect(res.status).toEqual(200);
+      // The response is deliberately sent before the background write settles.
+      await new Promise<void>(resolve => setImmediate(resolve));
+      expect(logged).toHaveBeenCalledWith(failure);
+      expect(update).not.toHaveBeenCalled();
+    });
+
+    test('answers a failed login lookup', async () => {
+      const failure = new Error('User lookup failed');
+      const logged = jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(db.users, 'findOne').mockRejectedValueOnce(failure);
+
+      const res = await login();
+      expect(res.status).toEqual(500);
+      expect(res.body).toEqual('Could not load user.');
+      expect(logged).toHaveBeenCalledWith(failure);
+    });
+
+    test('answers a failed session lookup without an unhandled rejection', async () => {
+      const signedIn = await login();
+      const failure = new Error('Session lookup failed');
+      const logged = jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(db.users, 'findOne').mockRejectedValueOnce(failure);
+
+      const res = await req('GET', '/auth/session', signedIn.cookie);
+      expect(res.status).toEqual(500);
+      expect(res.body).toEqual('Could not load user.');
+      expect(logged).toHaveBeenCalledWith(failure);
+    });
+
     test('regenerates the session on login', () => {
       // CVE-2022-25896: before passport 0.6 a session id chosen by an attacker
       // survived the victim's login. Logging in again over an existing session

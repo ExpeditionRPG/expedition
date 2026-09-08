@@ -357,5 +357,6 @@ export function recalculateRatings(
     })
     .then(() => {
       res.status(200).end('All quest ratings updated');
-    });
+    })
+    .catch(handleErrors(res));
 }

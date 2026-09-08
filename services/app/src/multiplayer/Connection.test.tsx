@@ -31,6 +31,90 @@ function flush(times = 5) {
 }
 
 describe('Connection', () => {
+  describe('replacing a socket', () => {
+    interface SocketMock {
+      close: jest.Mock<void, [code?: number]>;
+      send: jest.Mock<void, [data: string]>;
+      onopen: () => void;
+      onclose: (event: CloseEvent) => void;
+      onmessage: (event: MessageEvent) => void;
+    }
+
+    function setup() {
+      jest.clearAllTimers();
+      const sockets: SocketMock[] = [];
+      jest.spyOn(global, 'WebSocket').mockImplementation(() => {
+        const socket: SocketMock = {
+          close: jest.fn(),
+          send: jest.fn(),
+          onopen: jest.fn(),
+          onclose: jest.fn(),
+          onmessage: jest.fn(),
+        };
+        sockets.push(socket);
+        return socket as WebSocket;
+      });
+      const handler = {
+        onConnectionChange: jest.fn(),
+        onReject: jest.fn(),
+        onEvent: jest.fn(),
+      };
+      const c = new Connection(() => Promise.resolve(true));
+      c.registerHandler(handler);
+      c.configure('testid', 'testinstance');
+      c.connect('first', 'secret');
+      sockets[0].onopen();
+      return { c, handler, sockets };
+    }
+
+    afterEach(() => jest.clearAllTimers());
+
+    test('does not retry a previous session action in a new session', () => {
+      const { c, sockets } = setup();
+      c.sendEvent({ type: 'ACTION', name: 'NAVIGATE', args: '{}' }, 0);
+      c.connect('second', 'other-secret');
+      sockets[1].onopen();
+      jest.advanceTimersByTime(2200);
+      expect(sockets[1].send).not.toHaveBeenCalled();
+      expect(c.getMaxBufferID()).toBeNull();
+    });
+
+    test('preserves pending actions when reconnecting to the same session', () => {
+      const { c, sockets } = setup();
+      c.sendEvent({ type: 'ACTION', name: 'NAVIGATE', args: '{}' }, 0);
+      c.connect('first', 'secret');
+      sockets[1].onopen();
+      jest.advanceTimersByTime(2200);
+      expect(sockets[1].send).toHaveBeenCalledWith(
+        sockets[0].send.mock.calls[0][0],
+      );
+    });
+
+    test('ignores callbacks from a replaced socket after the new socket opens', () => {
+      const { c, handler, sockets } = setup();
+      c.connect('first', 'secret');
+      sockets[1].onopen();
+      handler.onConnectionChange.mockClear();
+      sockets[0].onclose(new CloseEvent('close', { code: 1000 }));
+      sockets[0].onopen();
+      sockets[0].onmessage(
+        new MessageEvent('message', {
+          data: JSON.stringify({
+            client: 'peer',
+            instance: 'peer-instance',
+            id: null,
+            event: { type: 'STATUS', connected: false },
+          }),
+        }),
+      );
+      expect(c.isConnected()).toBe(true);
+      expect(handler.onConnectionChange).not.toHaveBeenCalled();
+      expect(handler.onEvent).not.toHaveBeenCalled();
+      jest.advanceTimersByTime(1000);
+      expect(sockets).toHaveLength(2);
+    });
+  });
+
   beforeEach(() => {
     serverSockets.length = 0;
     serverMessages.length = 0;

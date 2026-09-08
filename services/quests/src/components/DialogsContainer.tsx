@@ -23,7 +23,7 @@ const mapStateToProps = (state: AppState): DialogsStateProps => {
   };
 };
 
-const mapDispatchToProps = (
+export const mapDispatchToProps = (
   dispatch: Redux.Dispatch<any>,
 ): DialogsDispatchProps => {
   return {
@@ -61,8 +61,10 @@ const mapDispatchToProps = (
         language: Joi.string().valid(...enumValues(Language)),
         maxplayers: Joi.number().min(Joi.ref('minplayers')).max(6),
         maxtimeminutes: Joi.number().min(Joi.ref('mintimeminutes')).max(999),
-        minplayers: Joi.number().min(1).max(Joi.ref('maxplayers')),
-        mintimeminutes: Joi.number().min(1).max(Joi.ref('maxtimeminutes')),
+        // Each maximum already checks its minimum. References in both
+        // directions create a dependency cycle in Joi 16+.
+        minplayers: Joi.number().min(1),
+        mintimeminutes: Joi.number().min(1),
         requirespenpaper: Joi.boolean(),
         summary: Joi.string().min(6).max(200),
         title: Joi.string().min(4).max(100),
