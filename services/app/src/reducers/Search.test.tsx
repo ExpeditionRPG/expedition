@@ -95,14 +95,10 @@ describe('Search reducer', () => {
       const state = populated({
         params: { ...initialSearch.params, expansions: [] },
       });
-      const result = search(
-        state,
-        changeSettings(),
-        {
-          ...initialSettings,
-          contentSets: { horror: true, future: true },
-        },
-      );
+      const result = search(state, changeSettings(), {
+        ...initialSettings,
+        contentSets: { horror: true, future: true },
+      });
       expect(result.params.expansions).toEqual([
         Expansion.horror,
         Expansion.future,
@@ -116,11 +112,10 @@ describe('Search reducer', () => {
           expansions: [Expansion.horror, Expansion.future],
         },
       });
-      const result = search(
-        state,
-        changeSettings(),
-        { ...initialSettings, contentSets: { horror: true, future: false } },
-      );
+      const result = search(state, changeSettings(), {
+        ...initialSettings,
+        contentSets: { horror: true, future: false },
+      });
       expect(result.params.expansions).toEqual([Expansion.horror]);
     });
   });

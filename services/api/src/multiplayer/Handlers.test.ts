@@ -137,7 +137,11 @@ describe('multiplayer handlers', () => {
             Buffer.from(
               JSON.stringify({
                 client: 'c1',
-                event: { args: '{"loser":true}', name: 'NAVIGATE', type: 'ACTION' },
+                event: {
+                  args: '{"loser":true}',
+                  name: 'NAVIGATE',
+                  type: 'ACTION',
+                },
                 id: 2,
                 instance: 'i1',
               }),
