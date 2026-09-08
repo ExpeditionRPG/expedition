@@ -26,10 +26,10 @@ betabuild() {
   echo
   if [[ $REPLY =~ ^(y| ) ]] || [[ -z $REPLY ]]; then
     echo "BUILD ALL"
-    npm run build-all
+    yarn run build-all
   else
     echo "NOPE"
-    npm run build
+    yarn run build
   fi
 }
 
@@ -61,7 +61,7 @@ prodbuild() {
     read -s androidkeystorepassphrase
 
     # build the web app
-    webpack --config ./webpack.dist.config.js
+    yarn run build
 
     # Android: build the signed prod app
     cordova build --release android
@@ -78,7 +78,7 @@ prodbuild() {
     echo "Skipping building Cordova apps"
 
     # build the web app
-    webpack --config ./webpack.dist.config.js
+    yarn run build
   fi
 }
 

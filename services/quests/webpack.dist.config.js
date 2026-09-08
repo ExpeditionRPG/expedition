@@ -4,8 +4,18 @@ const shared = require('../../shared/webpack.dist.shared');
 const dev = require('./webpack.config');
 const app = require('../app/webpack.dist.config');
 
+// The playtest `runner` chunk is dev-server only: `src/runner.html` is the sole
+// page that loads runner.js, and it is not among the files copied into dist
+// below. Shipping it produced a ~2.3 MB bundle on S3 that nothing could ever
+// load. This used to be expressed as `SKIP_RUNNER=true` in the build script,
+// which meant a POSIX-only env-var prefix that silently did nothing on Windows
+// and was omitted entirely by deploy.sh -- so deploys shipped the dead chunk
+// and local Windows builds disagreed with CI. Dropping it here instead makes it
+// structural: no build can emit it, whatever the shell.
+const { runner, ...distEntry } = dev.entry;
+
 const options = {
-  entry: dev.entry,
+  entry: distEntry,
   plugins: [
     new CopyWebpackPlugin({
       patterns: [

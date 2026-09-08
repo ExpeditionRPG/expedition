@@ -8,7 +8,7 @@ prebuild() {
 betabuild() {
   prebuild
   export NODE_ENV='dev'
-  webpack --config ./webpack.dist.config.js
+  yarn run build
 }
 
 beta() {
@@ -20,7 +20,7 @@ beta() {
 prodbuild() {
   prebuild
   export NODE_ENV='production'
-  webpack --config ./webpack.dist.config.js
+  yarn run build
 }
 
 prod() {

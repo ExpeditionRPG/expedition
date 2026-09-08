@@ -5,7 +5,7 @@
   "homepage": "http://quests.expeditiongame.com",
   "license": "CC-BY-NC-ND-4.0",
   "scripts": {
-    "start": "webpack serve --progress",
-    "build": "SKIP_RUNNER=true webpack --config webpack.dist.config.js"
+    "start": "node ../../node_modules/webpack/bin/webpack.js serve --progress",
+    "build": "node ../../node_modules/webpack/bin/webpack.js --config webpack.dist.config.js"
   }
 }

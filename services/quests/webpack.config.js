@@ -5,11 +5,12 @@ const shared = require('../../shared/webpack.shared');
 const entry = {
   bundle: ['./src/React.tsx', './src/Style.scss', '../app/src/Style.scss'],
   playtest: ['./src/playtest/PlaytestWorker.tsx'],
+  // Dev-server only. `src/runner.html` is the only page that loads runner.js,
+  // and it is copied by this config's CopyWebpackPlugin below but NOT by
+  // webpack.dist.config.js -- so a runner.js in dist has nothing to load it.
+  // webpack.dist.config.js therefore drops this entry; see the note there.
+  runner: ['./src/playtest/Runner.tsx'],
 };
-
-if (process.env.SKIP_RUNNER !== 'true') {
-  entry.runner = ['./src/playtest/Runner.tsx'];
-}
 
 const options = {
   entry,

@@ -2,7 +2,7 @@
   "name": "expedition-admin",
   "version": "1.6.4",
   "scripts": {
-    "start": "webpack serve --progress --hot",
-    "build": "webpack --config webpack.dist.config.js --progress"
+    "start": "node ../../node_modules/webpack/bin/webpack.js serve --progress --hot",
+    "build": "node ../../node_modules/webpack/bin/webpack.js --config webpack.dist.config.js --progress"
   }
 }
