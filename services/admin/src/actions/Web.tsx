@@ -19,13 +19,44 @@ import {
   UpdateUserAction,
 } from './ActionTypes';
 
-function maybeParse(r: Response) {
+// The part of the fetch Response that maybeParse actually reads. A real
+// Response satisfies it structurally; declaring it this way lets the tests
+// hand over a plain object instead of a whole polyfilled Response.
+export interface ParsableResponse {
+  ok: boolean;
+  status: number;
+  json: () => Promise<any>;
+  text: () => Promise<string>;
+}
+
+// Error bodies are not necessarily JSON. requireAdminAuth answers
+// `res.status(401).end('You are not signed in.')` -- plain text -- and a proxy
+// or load balancer in front of the API can answer with HTML. Calling r.json()
+// on those replaced the real message with
+// `SyntaxError: Unexpected token 'Y', "You are no"... is not valid JSON`.
+// Read the body as text, and only treat it as JSON if it parses.
+export function maybeParse(r: ParsableResponse) {
   if (!r.ok) {
-    return r.json().then((e: any) => {
-      throw Error(e.error || 'Server Error');
+    return r.text().then((body: string) => {
+      throw Error(errorMessage(r, body));
     });
   }
   return r.json();
+}
+
+function errorMessage(r: ParsableResponse, body: string): string {
+  const trimmed = (body || '').trim();
+  if (trimmed) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      const fromJson = parsed && (parsed.error || parsed.message);
+      return fromJson ? String(fromJson) : trimmed;
+    } catch (e) {
+      // Not JSON: the body is already the message.
+      return trimmed;
+    }
+  }
+  return `Server Error (${r.status})`;
 }
 
 export function feedbackQuery(q: FeedbackQuery) {

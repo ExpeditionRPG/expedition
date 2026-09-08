@@ -1,8 +1,8 @@
 import { MAX_ADVENTURERS } from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import { enumValues, Expansion } from 'shared/schema/Constants';
 import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
+import { enabledExpansions } from '../reducers/Settings';
 import {
   ContentSetsType,
   MultiplayerState,
@@ -104,8 +104,7 @@ export function getContentSets(
   if (mp && mp.session) {
     return getContentSetIntersection(mp);
   }
-  const cs = (settings && settings.contentSets) || {};
-  return new Set(enumValues(Expansion).filter(s => cs[s]));
+  return new Set(enabledExpansions(settings));
 }
 
 // Get the content sets supported by all connected devices.

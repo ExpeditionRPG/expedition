@@ -83,6 +83,16 @@ describe('view reducer', () => {
     expect(view(undefined, { type: '@@INIT' } as any)).toBe(defaultView);
   });
 
+  test('starts with no rows rather than fabricated placeholder data', () => {
+    // The admin tables render whatever is in state. Seeding them with
+    // plausible-looking rows showed invented users, quests and feedback as if
+    // they were production records until a query returned.
+    expect(defaultView.feedback).toEqual([]);
+    expect(defaultView.quests).toEqual([]);
+    expect(defaultView.users).toEqual([]);
+    expect(defaultView.lastQueryError).toBeNull();
+  });
+
   test('switches the active view on SET_VIEW', () => {
     const result = view(state(), { type: 'SET_VIEW', view: 'QUESTS' } as any);
     expect(result.view).toEqual('QUESTS');

@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 // import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertWarning from '@material-ui/icons/Warning';
@@ -23,7 +24,7 @@ export interface DispatchProps {
   onFilterUpdate: (view: ViewType, filter: string) => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const FILTER_DEBOUNCE = 750;
 export interface FilterProps {
@@ -84,11 +85,15 @@ const TopBar = (props: Props): JSX.Element => {
     props.view.lastQueryError &&
     props.view.lastQueryError.view === props.view.view
   ) {
-    // TODO tooltip={props.view.lastQueryError.error.toString()}
+    // The warning icon was the only surface for lastQueryError, and it had no
+    // tooltip, so the error itself was never shown to the operator anywhere.
+    const message = String(props.view.lastQueryError.error);
     warn = (
-      <Button>
-        <AlertWarning />
-      </Button>
+      <Tooltip title={message}>
+        <Button className="queryError" aria-label={message}>
+          <AlertWarning />
+        </Button>
+      </Tooltip>
     );
   }
 
