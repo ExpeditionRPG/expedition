@@ -211,7 +211,7 @@ describe('Routes', () => {
   //
   // /multiplayer/v1/new_session is limit 5, delayAfter 4, 3s per step, and its
   // limiter is mounted *before* requireAuth -- so an unauthenticated request
-  // still goes through the limiter and answers 500, which makes the limiting
+  // still goes through the limiter and answers 401, which makes the limiting
   // observable without a session.
   describe('rate limiting', () => {
     const SESSION_PATH = '/multiplayer/v1/new_session';
@@ -340,10 +340,10 @@ describe('Routes', () => {
         results.push(await post(SESSION_PATH));
       }
 
-      // 500 is requireAuth turning away an unauthenticated caller; what matters
+      // 401 is requireAuth turning away an unauthenticated caller; what matters
       // is that the request reached it at all.
       expect(results.map(r => r.status)).toEqual([
-        500, 500, 500, 500, 500, 429,
+        401, 401, 401, 401, 401, 429,
       ]);
       results.slice(0, 5).forEach(r => expect(r.body).toEqual(NOT_SIGNED_IN));
 
@@ -415,5 +415,142 @@ describe('Routes', () => {
         ),
       ).toEqual(true);
     }, 30000);
+  });
+
+  // Two QA-found bugs live here:
+  //  - /multiplayer/* answered 500 for "you are not signed in", so every client
+  //    saw a server fault where it should have seen an auth failure.
+  //  - /admin/* mounted requireAdminAuth *before* limitCors, so the 401 went
+  //    out with no Access-Control-Allow-Origin header and a browser turned it
+  //    into net::ERR_FAILED instead of a readable 401.
+  describe('unauthenticated requests', () => {
+    let db: Database;
+    let server: http.Server | undefined;
+    let port: number;
+
+    interface HeaderedResult extends Result {
+      headers: http.IncomingHttpHeaders;
+    }
+
+    function post(path: string): Promise<HeaderedResult> {
+      return new Promise((resolve, reject) => {
+        const r = http.request(
+          {
+            agent: false,
+            headers: {
+              'content-length': '2',
+              'content-type': 'text/plain',
+              origin: 'http://localhost:8080',
+            },
+            host: '127.0.0.1',
+            method: 'POST',
+            path,
+            port,
+          },
+          res => {
+            let data = '';
+            res.setEncoding('utf8');
+            res.on('data', d => (data += d));
+            res.on('end', () =>
+              resolve({
+                body: data,
+                headers: res.headers,
+                status: res.statusCode || 0,
+              }),
+            );
+          },
+        );
+        r.on('error', reject);
+        r.end('{}');
+      });
+    }
+
+    beforeAll(() => {
+      Config.set('API_URL_BASE', 'http://localhost:8081');
+      Config.set('SUPER_USER_IDS', '["someone-else"]');
+      return testingDBWithState([]).then(d => {
+        db = d;
+        const app = express();
+        app.use(bodyParser.text({ type: '*/*', limit: '5mb' }));
+        app.use(
+          session({
+            resave: false,
+            saveUninitialized: false,
+            secret: 'auth-test-secret',
+          }),
+        );
+        const router = express.Router();
+        installRoutes(db, router);
+        app.use(router);
+        server = http.createServer(app);
+        return new Promise<void>((resolve, reject) =>
+          (server as http.Server).listen(0, '127.0.0.1', () => {
+            const address = (server as http.Server).address();
+            if (address === null || typeof address === 'string') {
+              return reject(new Error('Expected a TCP address'));
+            }
+            port = address.port;
+            resolve();
+          }),
+        );
+      });
+    });
+
+    afterAll(() => {
+      const running = server;
+      server = undefined;
+      return (
+        running
+          ? new Promise<void>(resolve => running.close(() => resolve()))
+          : Promise.resolve()
+      ).then(() => db.sequelize.close());
+    });
+
+    test('POST /multiplayer/v1/connect answers 401, not 500', () => {
+      return post('/multiplayer/v1/connect').then(res => {
+        expect(res.status).toEqual(401);
+        expect(res.body).toEqual('You are not signed in.');
+      });
+    });
+
+    test('an unauthenticated /multiplayer 401 still carries CORS headers', () => {
+      return post('/multiplayer/v1/connect').then(res => {
+        expect(res.headers['access-control-allow-origin']).toEqual(
+          'http://localhost:8080',
+        );
+        expect(res.headers['access-control-allow-credentials']).toEqual('true');
+      });
+    });
+
+    test('an unauthenticated /admin 401 carries CORS headers', () => {
+      return post('/admin/quest/query').then(res => {
+        expect(res.status).toEqual(401);
+        expect(res.body).toEqual('You are not signed in.');
+        // Without limitCors running first, this header is absent and the
+        // browser reports a network error rather than a 401.
+        expect(res.headers['access-control-allow-origin']).toEqual(
+          'http://localhost:8080',
+        );
+        expect(res.headers['access-control-allow-credentials']).toEqual('true');
+      });
+    });
+
+    test('every /admin route mounts limitCors ahead of requireAdminAuth', () => {
+      return Promise.all([
+        post('/admin/feedback/query'),
+        post('/admin/feedback/modify'),
+        post('/admin/quest/query'),
+        post('/admin/quest/modify'),
+        post('/admin/user/query'),
+        post('/admin/user/modify'),
+      ]).then(results => {
+        results.forEach(res => {
+          expect(res.status).toEqual(401);
+          expect(res.headers['access-control-allow-origin']).toEqual(
+            'http://localhost:8080',
+          );
+        });
+      });
+    });
   });
 });

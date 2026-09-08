@@ -152,18 +152,33 @@ function doSearch(
   return searchQuests(db, userId, params)
     .then((quests: QuestInstance[]) => {
       // Map quest published URL to the API server so we can proxy quest data.
-      const results: Quest[] = quests
-        .map((q: QuestInstance) => Quest.create(q.dataValues))
-        .filter((q: Quest | Error): q is Quest => !(q instanceof Error))
-        .map((q: Quest) => {
-          proxifyQuestURL(q);
-          return q;
-        });
+      // A row that fails Quest.create() validation (e.g. a genre outside the
+      // enum) is dropped -- but silently dropping it made quests vanish from
+      // search with nothing in the log to explain it, and the count logged
+      // below was the pre-filter one, so it did not even hint that anything
+      // had gone missing. Report each dropped row, and count what we return.
+      const results: Quest[] = [];
+      for (const instance of quests) {
+        const q = Quest.create(instance.dataValues);
+        if (q instanceof Error) {
+          console.error(
+            `Dropping quest ${instance.dataValues.partition}/${instance.dataValues.id} from search results: ${q.message}`,
+          );
+          continue;
+        }
+        proxifyQuestURL(q);
+        results.push(q);
+      }
 
       console.log(
         `Found ${
-          quests.length
-        } quests for user ${userId}, params: ${JSON.stringify(params)}`,
+          results.length
+        } quests for user ${userId}, params: ${JSON.stringify(params)}` +
+          (results.length === quests.length
+            ? ''
+            : ` (${quests.length - results.length} of ${
+                quests.length
+              } matching rows dropped as invalid)`),
       );
       return {
         error: null,

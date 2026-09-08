@@ -1,4 +1,5 @@
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { Partition } from 'shared/schema/Constants';
 import {
   feedback,
   healthCheck,
@@ -19,6 +20,7 @@ import {
   QuestInstance,
 } from './models/Database';
 import { getQuest } from './models/Quests';
+import { prepare } from './models/Schema';
 import {
   analyticsEvents as ae,
   questData as qd,
@@ -69,6 +71,101 @@ describe('handlers', () => {
           done();
         })
         .catch(done);
+    });
+
+    // The app sends showPrivate: true by default (reducers/Search
+    // initialSearch), and POST /quests is unauthenticated. Passing the
+    // undefined res.locals.id straight into the query made sequelize throw
+    // `WHERE parameter "userid" has invalid "undefined" value`, which the
+    // handler reported as a 500 -- so a logged-out player's default search
+    // failed outright. Falling back to the public partition is the answer the
+    // client is asking for: there are no private quests of "mine" to add.
+    test('showPrivate without a session returns public quests, not a 500', (done: DoneFn) => {
+      const res = mockRes();
+      testingDBWithState([q.basic, q.private])
+        .then(db => search(db, mockReq({ body: '{"showPrivate":true}' }), res))
+        .then(() => {
+          expect(res.status.getCall(0).args[0]).toEqual(200);
+          const body = JSON.parse(res.end.getCall(0).args[0]);
+          expect(body.error).toEqual(null);
+          expect(body.quests).toEqual([
+            expect.objectContaining({ id: q.basic.id }),
+          ]);
+          done();
+        })
+        .catch(done);
+    });
+
+    test('showPrivate with a session still returns the private quests it owns', (done: DoneFn) => {
+      const res = mockRes();
+      res.locals = { id: q.private.userid };
+      testingDBWithState([q.basic, q.private])
+        .then(db => search(db, mockReq({ body: '{"showPrivate":true}' }), res))
+        .then(() => {
+          expect(res.status.getCall(0).args[0]).toEqual(200);
+          const partitions = JSON.parse(res.end.getCall(0).args[0]).quests.map(
+            (quest: { partition: string }) => quest.partition,
+          );
+          expect(partitions).toContain(Partition.expeditionPrivate);
+          expect(partitions).toContain(Partition.expeditionPublic);
+          done();
+        })
+        .catch(done);
+    });
+
+    // A row whose stored values no longer satisfy the schema (an out-of-enum
+    // genre, say) is dropped from the results. That is the right call, but it
+    // used to happen in total silence, and the "Found N quests" line printed
+    // the pre-filter count -- so a quest disappearing from search left no
+    // trace at all.
+    test('logs quests dropped by validation and counts only what it returns', (done: DoneFn) => {
+      const res = mockRes();
+      const errors: string[] = [];
+      const logs: string[] = [];
+      const errorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation((...args: unknown[]) =>
+          errors.push(args.map(String).join(' ')),
+        );
+      const logSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation((...args: unknown[]) =>
+          logs.push(args.map(String).join(' ')),
+        );
+      testingDBWithState([q.basic])
+        .then(db =>
+          db.quests
+            .create({
+              ...prepare(q.basic),
+              genre: 'Adventure', // not a member of the Genre enum
+              id: 'questidbadgenre',
+            })
+            .then(() => search(db, mockReq({ body: '{}' }), res)),
+        )
+        .then(() => {
+          const body = JSON.parse(res.end.getCall(0).args[0]);
+          // Still filtered out -- that behaviour is unchanged.
+          expect(body.quests).toEqual([
+            expect.objectContaining({ id: q.basic.id }),
+          ]);
+          // ...but now it says so, naming the row and the reason.
+          expect(
+            errors.filter(
+              e => e.includes('questidbadgenre') && e.includes('genre'),
+            ).length,
+          ).toEqual(1);
+          // ...and the count is what was actually returned, not what matched.
+          expect(logs.some(l => l.includes('Found 1 quests'))).toEqual(true);
+          expect(
+            logs.some(l => l.includes('1 of 2 matching rows dropped')),
+          ).toEqual(true);
+          done();
+        })
+        .catch(done)
+        .then(() => {
+          errorSpy.mockRestore();
+          logSpy.mockRestore();
+        });
     });
   });
 

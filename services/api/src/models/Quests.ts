@@ -70,7 +70,7 @@ export function searchQuests(
   };
   const order: OrderItem[] = [];
 
-  if (params.showPrivate === true) {
+  if (params.showPrivate === true && userId) {
     andClauses.push({
       [Op.or]: [
         { partition: Partition.expeditionPublic },
@@ -78,6 +78,16 @@ export function searchQuests(
       ],
     });
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
+  } else if (params.showPrivate === true) {
+    // `showPrivate` means "public quests plus the private ones that are mine".
+    // With no session there is no "mine", so the honest answer is the public
+    // set -- not an error. POST /quests is deliberately unauthenticated and the
+    // app sends showPrivate: true by default (see reducers/Search initialSearch),
+    // so 401ing here would break search for every logged-out player. Before
+    // this branch existed the undefined userid reached the query and sequelize
+    // threw `WHERE parameter "userid" has invalid "undefined" value`, which the
+    // handler turned into a 500.
+    where.partition = Partition.expeditionPublic;
   } else {
     where.partition = params.partition || Partition.expeditionPublic;
   }

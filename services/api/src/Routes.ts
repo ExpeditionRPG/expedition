@@ -65,7 +65,9 @@ export function installRoutes(db: Database, router: express.Router) {
     next: express.NextFunction,
   ) {
     if (!res.locals || !res.locals.id) {
-      return res.status(500).end('You are not signed in.');
+      // 401, not 500: this is the client's problem, not the server's, and it
+      // matches requireAdminAuth and lib/oauth2's requireAuth.
+      return res.status(401).end('You are not signed in.');
     }
     next();
   }
