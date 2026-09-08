@@ -5,7 +5,7 @@
   "homepage": "http://app.expeditiongame.com",
   "license": "CC-BY-NC-ND-4.0",
   "scripts": {
-    "start": "webpack-dev-server --progress",
+    "start": "webpack serve --progress",
     "build": "webpack --config ./webpack.dist.config.js --progress",
     "build-all": "npm run build && cordova build android && cordova build ios"
   },

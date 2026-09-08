@@ -1,5 +1,6 @@
 // This config is run to compile and export the production environment to the dist/ folder.
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Path = require('path');
 const Webpack = require('webpack');
 const shared = require('./webpack.shared');
 
@@ -37,6 +38,11 @@ const options = {
       'process.env.OAUTH2_CLIENT_ID': JSON.stringify(
         process.env.OAUTH2_CLIENT_ID ||
           '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
+      ),
+      // See shared/webpack.shared.js: defined for every browser service,
+      // because shared/schema/Constants.tsx reads it.
+      'process.env.VERSION': JSON.stringify(
+        require(Path.resolve(process.cwd(), 'package.json')).version,
       ),
     }),
     new CopyWebpackPlugin({ patterns: [{ from: 'src/index.html' }] }),

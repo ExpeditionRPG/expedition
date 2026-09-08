@@ -111,6 +111,14 @@ const options = {
         process.env.OAUTH2_CLIENT_ID ||
           '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
       ),
+      // shared/schema/Constants.tsx reads this, and that module is imported by
+      // every browser service -- so it has to be defined for all of them, not
+      // just the two that used to declare it in their own config. Webpack runs
+      // with the service directory as cwd (as `devServer.static.directory`
+      // above already assumes), so this picks up each service's own version.
+      'process.env.VERSION': JSON.stringify(
+        require(Path.resolve(process.cwd(), 'package.json')).version,
+      ),
     }),
     // Don't import bloated Moment locales. The two-positional-argument form of
     // IgnorePlugin was removed in webpack 5.

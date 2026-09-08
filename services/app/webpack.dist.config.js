@@ -1,6 +1,5 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
-const Webpack = require('webpack');
 const shared = require('../../shared/webpack.dist.shared');
 const dev = require('./webpack.config');
 
@@ -10,9 +9,6 @@ const options = {
     path: __dirname + '/www/',
   },
   plugins: [
-    new Webpack.DefinePlugin({
-      'process.env.VERSION': JSON.stringify(require('./package.json').version),
-    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/robots.txt' },

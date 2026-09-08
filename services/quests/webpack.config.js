@@ -1,5 +1,4 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const Webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const shared = require('../../shared/webpack.shared');
 
@@ -18,9 +17,6 @@ const options = {
     globalObject: 'this', // Fixes web workers - https://github.com/webpack/webpack/issues/6642
   },
   plugins: [
-    new Webpack.DefinePlugin({
-      'process.env.VERSION': JSON.stringify(require('./package.json').version),
-    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/index.html' },

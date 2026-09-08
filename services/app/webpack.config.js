@@ -1,5 +1,4 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const Webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const shared = require('../../shared/webpack.shared');
 
@@ -8,9 +7,6 @@ const options = {
     bundle: ['./src/Init.tsx', './src/Style.scss'],
   },
   plugins: [
-    new Webpack.DefinePlugin({
-      'process.env.VERSION': JSON.stringify(require('./package.json').version),
-    }),
     // copy-webpack-plugin 6 dropped `from: {glob}` and `flatten`; a glob string
     // plus a `[name][ext]` template in `to` is the replacement for both.
     new CopyWebpackPlugin({
