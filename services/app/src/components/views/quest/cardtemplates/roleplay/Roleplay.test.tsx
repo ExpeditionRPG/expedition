@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import { initialSettings } from 'app/reducers/Settings';
 
@@ -9,6 +9,7 @@ import { ParserNode, TemplateContext } from '../TemplateTypes';
 import Roleplay, { loadRoleplayNode, RoleplayResult } from './Roleplay';
 
 import * as cheerio from 'shared/Cheerio';
+import { getNextMidCombatNode } from './Actions';
 
 function loadRP(xml: any, ctx: TemplateContext): RoleplayResult {
   return loadRoleplayNode(new ParserNode(xml, ctx));
@@ -256,4 +257,126 @@ describe('Roleplay', () => {
     retry.simulate('click');
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
+});
+
+describe('bundled quest navigation', () => {
+  const directory = resolve(process.cwd(), 'services/app/src/quests');
+  const files = readdirSync(directory).filter(file => file.endsWith('.xml'));
+
+  test.each(files)(
+    '%s renders its branches without evaluation errors',
+    file => {
+      const xml = cheerio.load(readFileSync(resolve(directory, file), 'utf8'));
+      const errors: string[] = [];
+      const covered = new Set<string>();
+      let location = 'start';
+      const originalOnError = window.onerror;
+      window.onerror = message => {
+        errors.push(`${location}: ${String(message)}`);
+        return true;
+      };
+      try {
+        // Exercise both sides of the bundled party-size conditions, and odd/even
+        // round conditions. Combat outcomes are selected directly, without timers.
+        for (const players of [1, 2, 4]) {
+          for (const round of [1, 2]) {
+            const ctx = defaultContext();
+            ctx.scope._.contentSets = () => ({
+              base: true,
+              horror: true,
+              future: true,
+            });
+            ctx.scope._.numAdventurers = () => players;
+            ctx.templates.combat = {
+              ...ctx.templates.combat,
+              roundCount: round,
+              numAliveAdventurers: players,
+            };
+            const queue: Array<{ node: ParserNode; prev?: ParserNode }> = [
+              {
+                node: new ParserNode(
+                  xml('quest').children().first(),
+                  ctx,
+                  undefined,
+                  'bundled-quest-audit',
+                ),
+              },
+            ];
+            const visits = new Map<string, number>();
+            const lineVisits = new Map<string, number>();
+            for (let i = 0; i < queue.length; i++) {
+              // Endless GM quests and round handlers intentionally contain cycles.
+              expect(i).toBeLessThan(3000);
+              const { node, prev } = queue[i];
+              const line = node.elem.attr('data-line') || '';
+              location = `${file}:${line} ${node.elem.attr('title') || node.getTag()}`;
+              if (node.isEnd()) {
+                continue;
+              }
+              const key = `${line}:${JSON.stringify({ ...node.ctx.scope, _: undefined })}`;
+              if (
+                (visits.get(key) || 0) >= 2 ||
+                (lineVisits.get(line) || 0) >= 12
+              ) {
+                continue;
+              }
+              lineVisits.set(line, (lineVisits.get(line) || 0) + 1);
+              visits.set(key, (visits.get(key) || 0) + 1);
+              covered.add(line);
+              if (node.getTag() === 'roleplay') {
+                shallow(
+                  <Roleplay
+                    node={node}
+                    prevNode={prev}
+                    questID={file}
+                    settings={initialSettings}
+                    onChoice={jest.fn()}
+                    onRetry={jest.fn()}
+                  />,
+                );
+              }
+              const keys = node.getVisibleKeys();
+              if (!keys.length) {
+                keys.push(0);
+              }
+              for (const action of keys) {
+                location = `${file}:${line} action ${action}`;
+                const inRound =
+                  node.getTag() === 'roleplay' &&
+                  node.elem.parents('event').first().attr('on') === 'round';
+                const next =
+                  inRound && typeof action === 'number'
+                    ? getNextMidCombatNode(node, action).nextNode
+                    : node.handleAction(action, 'bundled-quest-audit');
+                if (next) {
+                  const previous =
+                    node.getTag() === 'combat' ? node.clone() : node;
+                  if (previous.getTag() === 'combat') {
+                    previous.ctx.templates.combat.numAliveAdventurers =
+                      action === 'lose' ? 0 : players;
+                  }
+                  queue.push({ node: next, prev: previous });
+                }
+              }
+              errors.push(
+                ...node
+                  .getErrors()
+                  .map(error => `${location}: ${error.message}`),
+              );
+            }
+          }
+        }
+        const unvisited = xml('roleplay,combat,decision')
+          .toArray()
+          .map(el => xml(el).attr('data-line') || '')
+          .filter(line => !covered.has(line));
+        // This empty legacy card follows a combat whose win and lose handlers
+        // both jump elsewhere, so normal play cannot reach it.
+        expect(unvisited).toEqual(file === 'custom_combat.xml' ? ['146'] : []);
+        expect([...new Set(errors)]).toEqual([]);
+      } finally {
+        window.onerror = originalOnError;
+      }
+    },
+  );
 });
