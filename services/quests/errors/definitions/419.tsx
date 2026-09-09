@@ -5,7 +5,7 @@ This may be a spelling/capitalization error.`;
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_combat_
+  `_combat_
 
 - Custom Enemy
 
@@ -19,7 +19,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Custom Enemy {"tier": 3}
 

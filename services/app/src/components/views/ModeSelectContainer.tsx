@@ -1,10 +1,10 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {toNavCard} from '../../actions/Card';
-import {loadMultiplayer} from '../../actions/Multiplayer';
-import {changeSettings} from '../../actions/Settings';
-import {AppState, UserState} from '../../reducers/StateTypes';
-import ModeSelect, {DispatchProps, StateProps} from './ModeSelect';
+import { toNavCard } from '../../actions/Card';
+import { loadMultiplayer } from '../../actions/Multiplayer';
+import { changeSettings } from '../../actions/Settings';
+import { AppState, UserState } from '../../reducers/StateTypes';
+import ModeSelect, { DispatchProps, StateProps } from './ModeSelect';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -18,24 +18,24 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onPlayerChange: (numLocalPlayers: number) => {
-      dispatch(changeSettings({numLocalPlayers}));
+      dispatch(changeSettings({ numLocalPlayers }));
     },
     onLocalSelect: () => {
-      dispatch(changeSettings({multitouch: false}));
+      dispatch(changeSettings({ multitouch: false }));
       dispatch(toNavCard({}));
     },
     onMultiplayerSelect: (user: UserState) => {
       dispatch(loadMultiplayer(user));
     },
     onMultitouchChange: (v: boolean) => {
-      dispatch(changeSettings({multitouch: v}));
+      dispatch(changeSettings({ multitouch: v }));
     },
   };
 };
 
 const ModeSelectContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ModeSelect);
 
 export default ModeSelectContainer;

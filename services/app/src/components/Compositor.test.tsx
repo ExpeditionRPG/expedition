@@ -34,7 +34,7 @@ function setup(props: Partial<Props>) {
   });
   const wrapper = render(
     <Provider store={store}>
-      <Compositor {...((props as any) as Props)} />
+      <Compositor {...(props as any as Props)} />
     </Provider>,
     {}, // renderOptions
   );

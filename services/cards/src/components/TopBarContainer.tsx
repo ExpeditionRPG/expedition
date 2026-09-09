@@ -1,9 +1,9 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {downloadCards} from '../actions/Cards';
-import {filterChange} from '../actions/Filters';
-import {AppState} from '../reducers/StateTypes';
-import TopBar, {DispatchProps, StateProps} from './TopBar';
+import { downloadCards } from '../actions/Cards';
+import { filterChange } from '../actions/Filters';
+import { AppState } from '../reducers/StateTypes';
+import TopBar, { DispatchProps, StateProps } from './TopBar';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -21,14 +21,13 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       dispatch(filterChange(name, value));
     },
     openHelp: () => {
-      window.open('https://github.com/ExpeditionRPG/expedition/blob/master/services/cards/CARD-CREATION.md');
+      window.open(
+        'https://github.com/ExpeditionRPG/expedition/blob/master/services/cards/CARD-CREATION.md',
+      );
     },
   };
 };
 
-const TopBarContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TopBar);
+const TopBarContainer = connect(mapStateToProps, mapDispatchToProps)(TopBar);
 
 export default TopBarContainer;

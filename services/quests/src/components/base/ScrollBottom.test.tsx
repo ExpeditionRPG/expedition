@@ -1,3 +1,5 @@
 describe('ScrollBottom', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

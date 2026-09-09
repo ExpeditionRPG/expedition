@@ -1,6 +1,6 @@
-import {connect} from 'react-redux';
-import {AppState} from '../../reducers/StateTypes';
-import MultiplayerRipple, {Props} from './MultiplayerRipple';
+import { connect } from 'react-redux';
+import { AppState } from '../../reducers/StateTypes';
+import MultiplayerRipple, { Props } from './MultiplayerRipple';
 
 const mapStateToProps = (state: AppState, ownProps: Partial<Props>): Props => {
   return {

@@ -10,7 +10,7 @@ import { EMPTY_DECISION_STATE } from '../components/views/quest/cardtemplates/de
 import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
 import { QuestState } from './StateTypes';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 export const initialQuestState: QuestState = {
   details: new Quest({

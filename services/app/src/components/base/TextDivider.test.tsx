@@ -1,3 +1,5 @@
 describe('TextDivider', () => {
-  test.skip('Empty', () => { /* Empty */ });
+  test.skip('Empty', () => {
+    /* Empty */
+  });
 });

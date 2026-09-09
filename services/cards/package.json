@@ -1,11 +1,11 @@
 {
   "name": "expedition-cards",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The card creator for Expedition: The Roleplaying Card Game",
   "homepage": "http://cards.expeditiongame.com",
   "scripts": {
-    "build": "webpack --config ./webpack.dist.config.js --display-error-details --verbose --progress",
-    "start": "webpack-dev-server --progress"
+    "build": "node ../../node_modules/webpack/bin/webpack.js --config ./webpack.dist.config.js --stats-error-details --progress",
+    "start": "node ../../node_modules/webpack/bin/webpack.js serve --progress"
   },
   "dependencies": {}
 }

@@ -5,7 +5,7 @@ export const POKER_CARDS_PER_LETTER_PAGE = 9;
 export interface CardSource {
   name: string;
   key: string;
-  sheets: {[key: string]: string};
+  sheets: { [key: string]: string };
 }
 
 export const SHEETS: CardSource[] = [

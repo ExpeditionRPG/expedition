@@ -4,7 +4,7 @@ Making your own cards is easy! The card creator uses Google Sheets as its data s
 
 1. Create a Google Sheet with the card information you'd like. Here's an [example card data sheet](https://docs.google.com/spreadsheets/d/1MVZ2hqihag6QvbRgBGafOi_NbNhZ1TL2a1DH_ojG__o/edit#gid=987926921), we recommend copying it to your Google account and working from there.
 2. Publish your sheet to the web in Sheets. File -> Share -> Publish to the Web. Make sure it's set to "Link", one of your sheets in particular (e.g. "Ability") and "Comma-separated Values (.csv)", then hit publish.
-   * NOTE: As of Nov 2021 Google's Sheets API was restricted, making it unfortunately difficult to import the whole sheet at once. To work around this, we'll be importing an individual sheet containing one type of cards (e.g. Abilities) at a time.
+   - NOTE: As of Nov 2021 Google's Sheets API was restricted, making it unfortunately difficult to import the whole sheet at once. To work around this, we'll be importing an individual sheet containing one type of cards (e.g. Abilities) at a time.
 3. Copy the web page's URL in your browser's URL bar.
 4. Open the [card creator website](http://cards.expeditiongame.com), select Source -> Custom, then type the name of your sheet (e.g. "Ability") and paste your publish link.
 5. Refresh the page.

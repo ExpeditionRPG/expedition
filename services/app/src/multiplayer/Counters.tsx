@@ -1,4 +1,3 @@
-
 export interface MultiplayerCounters {
   [field: string]: number;
   compactionEvents: number;
@@ -24,16 +23,16 @@ export const initialMultiplayerCounters: MultiplayerCounters = {
   syncs: 0,
 };
 
-let stats: MultiplayerCounters = {...initialMultiplayerCounters};
+let stats: MultiplayerCounters = { ...initialMultiplayerCounters };
 
 export function counterAdd(name: keyof MultiplayerCounters, delta: number) {
   stats[name] += delta;
 }
 
 export function resetCounters() {
-  stats = {...initialMultiplayerCounters};
+  stats = { ...initialMultiplayerCounters };
 }
 
 export function getCounters(): MultiplayerCounters {
-  return {...stats};
+  return { ...stats };
 }

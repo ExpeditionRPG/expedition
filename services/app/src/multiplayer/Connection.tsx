@@ -149,7 +149,11 @@ export class Connection extends ClientBase {
 
   public reconnect() {
     if (this.session) {
-      this.session.close();
+      // Close deliberately (1000) with `connected` already false, so that the
+      // resulting onClose takes the "closed normally" branch instead of
+      // scheduling a *second* reconnect on top of the one below.
+      this.connected = false;
+      this.session.close(1000);
     }
     counterAdd('reconnectCount', 1);
 
@@ -170,18 +174,50 @@ export class Connection extends ClientBase {
   }
 
   public connect(sessionID: string, secret: string): void {
+    // Tear down any live socket *before* recording the new credentials.
+    //
+    // This used to assign this.sessionID/this.secret first and then call
+    // disconnect(), whose resetState() promptly set them both back to ''.
+    // The socket below still opened (it is built from the local arguments),
+    // but the instance was left with no session id, so five seconds later
+    // checkOnlineState() saw `!this.sessionID && this.isConnected()` and
+    // latched `connected = false` -- silently disabling sendEvent() -- and the
+    // next reconnect() aimed at `/session/?client=..&secret=` forever.
+    //
+    // Preserve retries only when reconnecting to the same session. Actions
+    // queued for a different session must never be sent to its replacement.
+    if (this.session) {
+      this.connected = false;
+      this.session.close(1000);
+    }
+    if (this.sessionID !== sessionID || this.secret !== secret) {
+      this.messageBuffer = [];
+      this.reconnectAttempts = 0;
+    }
     this.sessionID = sessionID;
     this.secret = secret;
-    if (this.isConnected()) {
-      this.disconnect();
-    }
     this.session = new WebSocket(
       `${MULTIPLAYER_SETTINGS.websocketSession}/${sessionID}?client=${this.id}&instance=${this.instance}&secret=${secret}`,
     );
-    this.session.onmessage = this.onMessage.bind(this);
+    // A close handshake can finish after the replacement socket opens.
+    // Ignore callbacks from old sockets so they cannot mutate the new session.
+    const socket = this.session;
+    this.session.onmessage = ev => {
+      if (this.session === socket) {
+        this.onMessage(ev);
+      }
+    };
     this.session.onerror = console.error;
-    this.session.onclose = this.onClose.bind(this);
-    this.session.onopen = this.onOpen.bind(this);
+    this.session.onclose = ev => {
+      if (this.session === socket) {
+        this.onClose(ev);
+      }
+    };
+    this.session.onopen = () => {
+      if (this.session === socket) {
+        this.onOpen();
+      }
+    };
   }
 
   private onMessage(ev: MessageEvent) {
@@ -207,10 +243,18 @@ export class Connection extends ClientBase {
 
   private onClose(ev: CloseEvent) {
     counterAdd('disconnectCount', 1);
+
+    // `connected` doubles as "did somebody else close this socket": every
+    // close we initiate ourselves clears it first. Read it before clearing,
+    // then clear it -- leaving it true once the socket is gone made
+    // isConnected() lie, so sendEvent() kept writing into a dead socket.
+    const closedByPeer = this.connected;
+    this.connected = false;
+
     this.handler.onConnectionChange(false);
     switch (ev.code) {
       case 1000: // CLOSE_NORMAL
-        if (this.connected === false) {
+        if (!closedByPeer) {
           console.log('WS: closed normally');
         } else {
           console.warn('WS: closed by server');

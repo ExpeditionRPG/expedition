@@ -1,13 +1,13 @@
 {
   "name": "expedition-app",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "description": "The App for Expedition: The Roleplaying Card Game",
   "homepage": "http://app.expeditiongame.com",
   "license": "CC-BY-NC-ND-4.0",
   "scripts": {
-    "start": "webpack-dev-server --progress",
-    "build": "webpack --config ./webpack.dist.config.js --progress",
-    "build-all": "npm run build && cordova build android && cordova build ios"
+    "start": "node ../../node_modules/webpack/bin/webpack.js serve --progress",
+    "build": "node ../../node_modules/webpack/bin/webpack.js --config ./webpack.dist.config.js --progress",
+    "build-all": "yarn run build && cordova build android && cordova build ios"
   },
   "cordova": {
     "plugins": {

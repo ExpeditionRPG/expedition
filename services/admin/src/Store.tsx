@@ -8,11 +8,13 @@ declare let module: any;
 
 // from https://github.com/zalmoxisus/redux-devtools-extension#13-use-redux-devtools-extension-package-from-npm
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const initialState = {};
 const middleware = [thunk];
+// No preloaded state: combinedReduce() normalises a falsy state to `{}` itself
+// (`state = state || {}`), so `createStore(r, {}, e)` and `createStore(r, e)`
+// produce the same first state. redux 4.2 tightened `PreloadedState<S>` to
+// require every key of S, so `{}` no longer type-checks.
 export const store: Redux.Store<any> = createStore(
   adminApp,
-  initialState,
   composeEnhancers(applyMiddleware(...middleware)),
 );
 

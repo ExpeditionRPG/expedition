@@ -259,7 +259,7 @@ export class BlockRenderer {
   public finalize(zeroIndentBlockGroupRoots: Block[], log: Logger): any {
     const toRender: any[] = [];
 
-    let quest: any = null;
+    let quest: any;
     if (zeroIndentBlockGroupRoots && zeroIndentBlockGroupRoots.length > 0) {
       const questBlock = zeroIndentBlockGroupRoots[0];
       if (
@@ -385,9 +385,10 @@ export class BlockRenderer {
     };
   }
 
-  private extractTrigger(
-    line: string,
-  ): { text: string | null; visible: string | null } {
+  private extractTrigger(line: string): {
+    text: string | null;
+    visible: string | null;
+  } {
     const m = line.match(REGEX.TRIGGER);
     if (!m) {
       return {

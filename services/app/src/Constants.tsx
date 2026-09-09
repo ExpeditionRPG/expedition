@@ -1,10 +1,18 @@
-import {API_HOST, AUTH_SETTINGS as AUTH_SETTINGS_BASE, NODE_ENV, Partition} from 'shared/schema/Constants';
-import {Quest} from 'shared/schema/Quests';
+import {
+  API_HOST,
+  AUTH_SETTINGS as AUTH_SETTINGS_BASE,
+  NODE_ENV,
+  Partition,
+} from 'shared/schema/Constants';
+import { Quest } from 'shared/schema/Quests';
 
 export const AUTH_SETTINGS = {
   ...AUTH_SETTINGS_BASE,
   RAVEN: 'https://990df74f1b58424395ec3d3ec6f79b42@sentry.io/420182',
-  STRIPE: (NODE_ENV === 'production') ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp' : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
+  STRIPE:
+    NODE_ENV === 'production'
+      ? 'pk_live_vcpOgs95UFKNV0kYOwj9JWPp'
+      : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
 };
 
 const splitURL = API_HOST.split('/');
@@ -12,11 +20,13 @@ export const MULTIPLAYER_SETTINGS = {
   connectURI: API_HOST + '/multiplayer/v1/connect',
   firstLoadURI: API_HOST + '/multiplayer/v1/user',
   newSessionURI: API_HOST + '/multiplayer/v1/new_session',
-  websocketSession: 'wss://' + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
+  websocketSession:
+    'wss://' + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
 };
 
 const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped
-export const BUNDLED_QUESTS: Quest[] = [ // TODO - actually put GM quests here.
+export const BUNDLED_QUESTS: Quest[] = [
+  // TODO - actually put GM quests here.
   new Quest({
     id: '0BzrQOdaJcH9MU3Z4YnE2Qi1oZGs',
     partition: Partition.expeditionPublic,
@@ -171,7 +181,8 @@ export const GM_QUESTS: Quest[] = [
     theme: 'base',
     official: true,
     title: 'Future Inspirations',
-    summary: 'A general framework for telling your own stories with The Future. (for more advanced GM\'s)',
+    summary:
+      "A general framework for telling your own stories with The Future. (for more advanced GM's)",
     author: 'Greg Miller',
     publishedurl: 'quests/future_inspirations.xml',
     minplayers: 1,
@@ -188,7 +199,8 @@ export const GM_QUESTS: Quest[] = [
     published: EPOCH,
   }),
 ];
-export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from publishing, but don't leave them published!
+export const TUTORIAL_QUESTS: Quest[] = [
+  // Featured quest ids generated from publishing, but don't leave them published!
   new Quest({
     id: '0B7K9abSH1xEOeEZSVVMwNHNqaFE',
     partition: Partition.expeditionPublic,
@@ -252,32 +264,35 @@ export const TUTORIAL_QUESTS: Quest[] = [ // Featured quest ids generated from p
 ];
 
 if (NODE_ENV === 'dev') {
-  TUTORIAL_QUESTS.unshift(new Quest({
-    id: '0B7K9abSH1xEOV3M2bTVMdWc4NVk',
-    partition: 'expedition-private',
-    title: 'Test quest',
-    summary: 'DEV',
-    author: 'DEV',
-    publishedurl: 'quests/test_quest.xml',
-    expansionhorror: false,
-    expansionfuture: false,
-    minplayers: 1,
-    maxplayers: 6,
-    mintimeminutes: 20,
-    maxtimeminutes: 40,
-    genre: 'Drama',
-    contentrating: 'Kid-friendly',
-    language: 'English',
-    created: EPOCH,
-    published: EPOCH,
-  }));
+  TUTORIAL_QUESTS.unshift(
+    new Quest({
+      id: '0B7K9abSH1xEOV3M2bTVMdWc4NVk',
+      partition: 'expedition-private',
+      title: 'Test quest',
+      summary: 'DEV',
+      author: 'DEV',
+      publishedurl: 'quests/test_quest.xml',
+      expansionhorror: false,
+      expansionfuture: false,
+      minplayers: 1,
+      maxplayers: 6,
+      mintimeminutes: 20,
+      maxtimeminutes: 40,
+      genre: 'Drama',
+      contentrating: 'Kid-friendly',
+      language: 'English',
+      created: EPOCH,
+      published: EPOCH,
+    }),
+  );
 }
 
 export const MAX_ADVENTURERS = 6;
 export const MAX_ADVENTURER_HEALTH = 12;
 export const MIN_FEEDBACK_LENGTH = 16;
 
-export const UNSUPPORTED_BROWSERS = /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
+export const UNSUPPORTED_BROWSERS =
+  /^(.*amazon silk.*)|(.*(iphone|ipad|ipod|ios) os 9_.*)$/i;
 
 export const URLS = {
   CODE: 'https://github.com/ExpeditionRPG/expedition',
@@ -285,7 +300,8 @@ export const URLS = {
   PRIVACY_POLICY: 'https://expeditiongame.com/privacy',
   QUEST_CREATOR: 'https://quests.expeditiongame.com/?utm_source=app',
   // lowercase to match lowercase platform names
-  android: 'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
+  android:
+    'https://play.google.com/store/apps/details?id=io.fabricate.expedition',
   ios: 'https://itunes.apple.com/us/app/expedition-roleplaying-card/id1085063478?ls=1&mt=8',
   web: 'http://expeditiongame.com/app',
 };
@@ -308,7 +324,7 @@ export const PLAYTIME_MINUTES_BUCKETS = [20, 30, 45, 60, 90, 120];
 
 // Based on 4 players, scaling up / down on a curve
 // since a bit more or less damage makes a huge difference in # of rounds survivable
-export const PLAYER_DAMAGE_MULT: {[key: number]: number} = {
+export const PLAYER_DAMAGE_MULT: { [key: number]: number } = {
   1: 0.5,
   2: 0.5,
   3: 0.8,
@@ -318,7 +334,7 @@ export const PLAYER_DAMAGE_MULT: {[key: number]: number} = {
 };
 
 // Give solo players 2x time since they're controlling two adventurers
-export const PLAYER_TIME_MULT: {[key: number]: number} = {
+export const PLAYER_TIME_MULT: { [key: number]: number } = {
   1: 2,
   2: 1,
   3: 1,
@@ -328,7 +344,7 @@ export const PLAYER_TIME_MULT: {[key: number]: number} = {
 };
 
 /* tslint:disable:object-literal-sort-keys */
-export const COMBAT_DIFFICULTY: {[key: string]: any} = {
+export const COMBAT_DIFFICULTY: { [key: string]: any } = {
   EASY: {
     damageMultiplier: 0.7,
     maxRoundDamage: 4,
@@ -391,13 +407,21 @@ export interface MusicDefinition {
   variants: number;
 }
 
-export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}} = {
+export const MUSIC_DEFINITIONS: {
+  [key: string]: { [key: string]: MusicDefinition };
+} = {
   combat: {
     heavy: {
       baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
       bpm: 140,
       directory: 'combat/heavy/',
-      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
+      instruments: [
+        'Drums',
+        'LowStrings',
+        'LowBrass',
+        'HighStrings',
+        'HighBrass',
+      ],
       loopMs: 13712,
       maxIntensity: MUSIC_INTENSITY_MAX,
       minIntensity: 12,
@@ -409,7 +433,13 @@ export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}
       baselineInstruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings'],
       bpm: 120,
       directory: 'combat/light/',
-      instruments: ['Drums', 'LowStrings', 'LowBrass', 'HighStrings', 'HighBrass'],
+      instruments: [
+        'Drums',
+        'LowStrings',
+        'LowBrass',
+        'HighStrings',
+        'HighBrass',
+      ],
       loopMs: 8000,
       maxIntensity: 24,
       minIntensity: 0,
@@ -421,7 +451,13 @@ export const MUSIC_DEFINITIONS: {[key: string]: {[key: string]: MusicDefinition}
 
 export const MUSIC_FADE_SECONDS = 1.5;
 
-export const NAV_CARDS = ['SEARCH_CARD', 'TUTORIAL_QUESTS', 'GM_CARD', 'SAVED_QUESTS', 'QUEST_HISTORY'];
+export const NAV_CARDS = [
+  'SEARCH_CARD',
+  'TUTORIAL_QUESTS',
+  'GM_CARD',
+  'SAVED_QUESTS',
+  'QUEST_HISTORY',
+];
 export const NAV_CARD_STORAGE_KEY = 'nav_card';
 
 export enum CombatPhase {

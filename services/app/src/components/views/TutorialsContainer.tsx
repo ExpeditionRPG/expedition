@@ -1,12 +1,15 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {Quest} from 'shared/schema/Quests';
-import {toPrevious} from '../../actions/Card';
-import {previewQuest} from '../../actions/Quest';
-import {getContentSets} from '../../actions/Settings';
-import {TUTORIAL_QUESTS} from '../../Constants';
-import {AppState} from '../../reducers/StateTypes';
-import QuestListCard, {DispatchProps, StateProps} from '../base/QuestListCard';
+import { Quest } from 'shared/schema/Quests';
+import { toPrevious } from '../../actions/Card';
+import { previewQuest } from '../../actions/Quest';
+import { getContentSets } from '../../actions/Settings';
+import { TUTORIAL_QUESTS } from '../../Constants';
+import { AppState } from '../../reducers/StateTypes';
+import QuestListCard, {
+  DispatchProps,
+  StateProps,
+} from '../base/QuestListCard';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -20,7 +23,7 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onQuestSelect(quest: Quest): void {
-      dispatch(previewQuest({quest}));
+      dispatch(previewQuest({ quest }));
     },
     onReturn(): void {
       dispatch(toPrevious({}));
@@ -30,7 +33,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const TutorialsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(QuestListCard);
 
 export default TutorialsContainer;

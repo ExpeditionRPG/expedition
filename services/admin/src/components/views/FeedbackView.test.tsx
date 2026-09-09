@@ -1,3 +1,5 @@
 describe('Feedback View', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

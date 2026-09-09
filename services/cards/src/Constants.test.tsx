@@ -1,3 +1,5 @@
 describe('Constants', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('TODO', () => {
+    /* TODO */
+  });
 });

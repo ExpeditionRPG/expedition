@@ -1,3 +1,5 @@
 describe('OverrideTextArea', () => {
-  test.skip('TODO', () => { /* TODO */ });
+  test.skip('TODO', () => {
+    /* TODO */
+  });
 });

@@ -1,9 +1,14 @@
-import {AppStateWithHistory, CardThemeType, MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import {
+  AppStateWithHistory,
+  CardThemeType,
+  MultiplayerState,
+  SettingsType,
+} from 'app/reducers/StateTypes';
 const seedrandom = require('seedrandom');
-import {DecisionPhase} from 'app/Constants';
-import {Outcome, SkillCheck} from 'shared/schema/templates/Decision';
-import {getCardTemplateTheme} from '../Template';
-import {ParserNode} from '../TemplateTypes';
+import { DecisionPhase } from 'app/Constants';
+import { Outcome, SkillCheck } from 'shared/schema/templates/Decision';
+import { getCardTemplateTheme } from '../Template';
+import { ParserNode } from '../TemplateTypes';
 
 export enum Difficulty {
   easy = 'easy',
@@ -24,10 +29,14 @@ export const RETRY_THRESHOLD_MAP: Record<keyof typeof Difficulty, number> = {
 };
 
 export interface LeveledSkillCheck extends SkillCheck {
-  difficulty: (keyof typeof Difficulty);
+  difficulty: keyof typeof Difficulty;
   requiredSuccesses: number;
 }
-export const EMPTY_LEVELED_CHECK: LeveledSkillCheck = {skill: 'athletics', difficulty: 'medium', requiredSuccesses: 1};
+export const EMPTY_LEVELED_CHECK: LeveledSkillCheck = {
+  skill: 'athletics',
+  difficulty: 'medium',
+  requiredSuccesses: 1,
+};
 
 // TODO: Allow specific icons for each instruction.
 export interface OutcomeContent {
@@ -35,11 +44,15 @@ export interface OutcomeContent {
   text: string;
   instructions: string[];
 }
-export const EMPTY_OUTCOME: OutcomeContent = {type: 'retry', text: '', instructions: []};
+export const EMPTY_OUTCOME: OutcomeContent = {
+  type: 'retry',
+  text: '',
+  instructions: [],
+};
 
 export interface DecisionState {
   leveledChecks: LeveledSkillCheck[];
-  selected: LeveledSkillCheck|null;
+  selected: LeveledSkillCheck | null;
   rolls: number[];
   phase: DecisionPhase;
 }
@@ -58,7 +71,10 @@ export interface StateProps {
   theme: CardThemeType;
 }
 
-export function mapStateToProps(state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps {
+export function mapStateToProps(
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps {
   const node = ownProps.node || state.quest.node;
   return {
     multiplayerState: state.multiplayer,

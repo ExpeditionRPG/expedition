@@ -1,8 +1,8 @@
 import { MAX_ADVENTURERS } from 'app/Constants';
 import Redux from 'redux';
 import * as seedrandom from 'seedrandom';
-import { enumValues, Expansion } from 'shared/schema/Constants';
 import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
+import { enabledExpansions } from '../reducers/Settings';
 import {
   ContentSetsType,
   MultiplayerState,
@@ -23,7 +23,8 @@ export function numAliveAdventurers(
   mp: MultiplayerState,
 ): number {
   if (!mp || !mp.clientStatus || Object.keys(mp.clientStatus).length < 2) {
-    if (node.elem.get(0).tagName === 'combat') {
+    const el = node.elem.get(0);
+    if (el && el.tagName === 'combat') {
       return node.ctx.templates.combat.numAliveAdventurers;
     }
     return numLocalAdventurers(settings);
@@ -103,8 +104,7 @@ export function getContentSets(
   if (mp && mp.session) {
     return getContentSetIntersection(mp);
   }
-  const cs = (settings && settings.contentSets) || {};
-  return new Set(enumValues(Expansion).filter(s => cs[s]));
+  return new Set(enabledExpansions(settings));
 }
 
 // Get the content sets supported by all connected devices.

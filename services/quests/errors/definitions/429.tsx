@@ -4,10 +4,8 @@ export const METADATA_ERROR = true;
 export const DESCRIPTION = `Simply delete existing metadata (except title)`;
 
 export const INVALID = [
-`# Title
+  `# Title
 author: migrated`,
 ];
 
-export const VALID = [
-`# Title`,
-];
+export const VALID = [`# Title`];

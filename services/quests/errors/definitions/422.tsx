@@ -3,7 +3,7 @@ export const NAME = `Invalid skill check: "text"`;
 export const DESCRIPTION = `Skill checks must be of the form: <light/dark> <athletics/knowledge/charisma> <success/failure/retry/interrupted>. Only the middle value is strictly required.`;
 
 export const INVALID = [
-`_decision_
+  `_decision_
 
 * on light athletics
 
@@ -27,7 +27,7 @@ export const INVALID = [
 ];
 
 export const VALID = [
-`_decision_
+  `_decision_
 
 * on light athletics
 

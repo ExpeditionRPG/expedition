@@ -1,13 +1,14 @@
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {connect} from 'react-redux';
+import { AppStateWithHistory } from 'app/reducers/StateTypes';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {
-  handleCombatTimerStart,
-} from './Actions';
-import PrepareTimer, {DispatchProps} from './PrepareTimer';
-import {mapStateToProps as mapStateToPropsBase, StateProps} from './Types';
+import { handleCombatTimerStart } from './Actions';
+import PrepareTimer, { DispatchProps } from './PrepareTimer';
+import { mapStateToProps as mapStateToPropsBase, StateProps } from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps => {
   return mapStateToPropsBase(state, ownProps);
 };
 
@@ -19,7 +20,4 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PrepareTimer);
+export default connect(mapStateToProps, mapDispatchToProps)(PrepareTimer);

@@ -1,15 +1,26 @@
-import {toPrevious} from 'app/actions/Card';
-import {choice} from 'app/actions/Quest';
-import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory, CardName, SettingsType} from 'app/reducers/StateTypes';
-import {connect} from 'react-redux';
+import { toPrevious } from 'app/actions/Card';
+import { choice } from 'app/actions/Quest';
+import { CombatPhase } from 'app/Constants';
+import {
+  AppStateWithHistory,
+  CardName,
+  SettingsType,
+} from 'app/reducers/StateTypes';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {ParserNode} from '../TemplateTypes';
-import Roleplay, {DispatchProps, Props, StateProps} from './Roleplay';
+import { ParserNode } from '../TemplateTypes';
+import Roleplay, { DispatchProps, Props, StateProps } from './Roleplay';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): StateProps => {
-  const histIdx = state._history.length - 2; // the card before this one
-  const prevNode = state._history[histIdx] && state._history[histIdx].quest && state._history[histIdx].quest.node;
+export const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: Partial<Props>,
+): StateProps => {
+  // initRoleplay records the departing card before installing the new node.
+  const histIdx = state._history.length - 1;
+  const prevNode =
+    state._history[histIdx] &&
+    state._history[histIdx].quest &&
+    state._history[histIdx].quest.node;
 
   if (ownProps.node === undefined) {
     throw Error('Node not given');
@@ -27,17 +38,23 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<Props>): 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onChoice: (settings: SettingsType, node: ParserNode, index: number) => {
-      dispatch(choice({node, index}));
+      dispatch(choice({ node, index }));
     },
     onRetry: () => {
-      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase === CombatPhase.drawEnemies, before: true}));
+      dispatch(
+        toPrevious({
+          matchFn: (c: CardName, n: ParserNode) =>
+            n.ctx.templates.combat.phase === CombatPhase.drawEnemies,
+          before: true,
+        }),
+      );
     },
   };
 };
 
 const RoleplayContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Roleplay);
 
 export default RoleplayContainer;

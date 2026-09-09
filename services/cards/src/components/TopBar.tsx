@@ -11,7 +11,7 @@ import AutoRenew from '@material-ui/icons/Autorenew';
 import HelpOutline from '@material-ui/icons/HelpOutline';
 import * as React from 'react';
 
-import {FiltersState} from '../reducers/StateTypes';
+import { FiltersState } from '../reducers/StateTypes';
 
 export interface StateProps extends React.Props<any> {
   filters: FiltersState;
@@ -32,49 +32,69 @@ class TopBar extends React.Component<Props, {}> {
       return null;
     }
 
-    const filtersCurrent = Object.keys(this.props.filters).reduce((acc: any, name: string) => {
-      acc[name] = this.props.filters[name].current;
-      return acc;
-    }, {});
-    const filters = Object.keys(this.props.filters).map((name: string, index: number) => {
-      const filter = this.props.filters[name];
-      const options = filter.options.map((option: any, j: number) => {
-        let text = option;
-        // For "all" default values, nicen up their text presentation to users
-        if (typeof option === 'string' && option.toLowerCase() === 'all') {
-          text = 'All ' + name + ((['s', 'x'].indexOf(name[name.length - 1]) !== -1) ? 'es' : 's');
+    const filtersCurrent = Object.keys(this.props.filters).reduce(
+      (acc: any, name: string) => {
+        acc[name] = this.props.filters[name].current;
+        return acc;
+      },
+      {},
+    );
+    const filters = Object.keys(this.props.filters).map(
+      (name: string, index: number) => {
+        const filter = this.props.filters[name];
+        const options = filter.options.map((option: any, j: number) => {
+          let text = option;
+          // For "all" default values, nicen up their text presentation to users
+          if (typeof option === 'string' && option.toLowerCase() === 'all') {
+            text =
+              'All ' +
+              name +
+              (['s', 'x'].indexOf(name[name.length - 1]) !== -1 ? 'es' : 's');
+          }
+          return (
+            <MenuItem key={j} value={option}>
+              {text}
+            </MenuItem>
+          );
+        });
+        if (name === 'source') {
+          options.push(
+            <MenuItem key="custom" value="custom">
+              Custom
+            </MenuItem>,
+          );
         }
-        return <MenuItem key={j} value={option}>{text}</MenuItem>;
-      });
-      if (name === 'source') {
-        options.push(<MenuItem key="custom" value="custom">Custom</MenuItem>);
-      }
-      return (
-        <FormControl key={index}>
-          <InputLabel htmlFor={name}>{name}</InputLabel>
-          <Select
-            className="filter"
-            key={index}
-            value={filtersCurrent[name]}
-            inputProps={{id: name}}
-            onChange={(e: any) => { this.props.handleFilterChange(name, e.target.value); }}
-            autoWidth={true}
-          >
-            {options}
-          </Select>
-        </FormControl>
-      );
-    });
+        return (
+          <FormControl key={index}>
+            <InputLabel htmlFor={name}>{name}</InputLabel>
+            <Select
+              className="filter"
+              key={index}
+              value={filtersCurrent[name]}
+              inputProps={{ id: name }}
+              onChange={(e: any) => {
+                this.props.handleFilterChange(name, e.target.value);
+              }}
+              autoWidth={true}
+            >
+              {options}
+            </Select>
+          </FormControl>
+        );
+      },
+    );
 
     return (
       <AppBar className="printHide">
         <Toolbar>
-          <Typography variant="title">
-            Expedition
-          </Typography>
+          <Typography variant="title">Expedition</Typography>
           {filters}
           <Tooltip title="Reload card data">
-            <IconButton onClick={() => this.props.downloadCards(this.props.filters.source.current)}>
+            <IconButton
+              onClick={() =>
+                this.props.downloadCards(this.props.filters.source.current)
+              }
+            >
               <AutoRenew />
             </IconButton>
           </Tooltip>

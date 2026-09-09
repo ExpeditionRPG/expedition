@@ -1,4 +1,4 @@
-import {ErrorType} from './types';
+import { ErrorType } from './types';
 
 import * as e411 from './definitions/411';
 import * as e412 from './definitions/412';
@@ -28,7 +28,7 @@ import * as e435 from './definitions/435';
 import * as e436 from './definitions/436';
 import * as e437 from './definitions/437';
 
-const errors: {[id: string]: ErrorType} = {
+const errors: { [id: string]: ErrorType } = {
   411: e411,
   412: e412,
   413: e413,

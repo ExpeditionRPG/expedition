@@ -31,11 +31,11 @@ import { toCard } from './Card';
 
 export function local(a: Redux.Action): LocalAction {
   const inflight = (a as any)._inflight;
-  return ({
+  return {
     type: 'LOCAL',
     action: a,
     _inflight: inflight,
-  } as any) as LocalAction;
+  } as any as LocalAction;
 }
 
 export function multiplayerDisconnect(c = getMultiplayerConnection()) {
@@ -246,7 +246,7 @@ export function sendStatus(
       const event: StatusEvent = {
         connected: true,
         lastEventID: commitID,
-        line: (elem && parseInt(elem.attr('data-line'), 10)) || undefined,
+        line: (elem && parseInt(elem.attr('data-line') || '', 10)) || undefined,
         numLocalPlayers: (settings && settings.numLocalPlayers) || 1,
         aliveAdventurers: combat && combat.numAliveAdventurers,
         type: 'STATUS',

@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 import Config from './config';
-import { Database, QuestInstance } from './models/Database';
+import { Database, postgresSSLOptions, QuestInstance } from './models/Database';
 
 const request = require('request');
 
@@ -34,8 +34,12 @@ function doFn(quest: QuestInstance) {
 function main() {
   const db = new Database(
     new Sequelize(Config.get('DATABASE_URL'), {
+      // Handed in explicitly, as in index.ts: sequelize resolves its dialect
+      // driver with a dynamic `require(dialectName)`, which webpack cannot see
+      // through, and `pg` is declared an external in webpack.dist.config.js.
+      dialectModule: require('pg'),
       dialectOptions: {
-        ssl: true,
+        ssl: postgresSSLOptions(Config.get('SEQUELIZE_SSL')),
       },
       logging: Config.get('SEQUELIZE_LOGGING') === 'true',
     }),

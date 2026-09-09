@@ -1,10 +1,15 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {setDialog} from '../../actions/Dialog';
-import {changeSettings} from '../../actions/Settings';
-import {logEvent} from '../../Logging';
-import {AppState, DifficultyType} from '../../reducers/StateTypes';
-import Settings, {DispatchProps, fontSizeValues, StateProps, timerValues} from './Settings';
+import { setDialog } from '../../actions/Dialog';
+import { changeSettings } from '../../actions/Settings';
+import { logEvent } from '../../Logging';
+import { AppState, DifficultyType } from '../../reducers/StateTypes';
+import Settings, {
+  DispatchProps,
+  fontSizeValues,
+  StateProps,
+  timerValues,
+} from './Settings';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -32,10 +37,10 @@ const difficultySub: any = {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onAudioChange: (v: boolean) => {
-      dispatch(changeSettings({audioEnabled: v}));
+      dispatch(changeSettings({ audioEnabled: v }));
     },
     onAutoRollChange: (v: boolean) => {
-      dispatch(changeSettings({autoRoll: v}));
+      dispatch(changeSettings({ autoRoll: v }));
     },
     onDifficultyDelta: (difficulty: DifficultyType, i: number) => {
       if (i > 0) {
@@ -43,14 +48,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       } else {
         difficulty = difficultySub[difficulty];
       }
-      dispatch(changeSettings({difficulty}));
+      dispatch(changeSettings({ difficulty }));
     },
     onExpansionSelect: () => {
       dispatch(setDialog('EXPANSION_SELECT'));
     },
     onExperimentalChange: (v: boolean) => {
-      logEvent('settings', 'experimental_settings_changed_to', {label: v.toString()});
-      dispatch(changeSettings({experimental: v}));
+      logEvent('settings', 'experimental_settings_changed_to', {
+        label: v.toString(),
+      });
+      dispatch(changeSettings({ experimental: v }));
     },
     onFontSizeDelta: (idx: number, delta: number) => {
       let i = idx + delta;
@@ -59,16 +66,16 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       } else if (i < 0) {
         i = fontSizeValues.length - 1;
       }
-      dispatch(changeSettings({fontSize: fontSizeValues[i]}));
+      dispatch(changeSettings({ fontSize: fontSizeValues[i] }));
     },
     onMultitouchChange: (v: boolean) => {
-      dispatch(changeSettings({multitouch: v}));
+      dispatch(changeSettings({ multitouch: v }));
     },
     onPlayerChange: (numLocalPlayers: number) => {
-      dispatch(changeSettings({numLocalPlayers}));
+      dispatch(changeSettings({ numLocalPlayers }));
     },
     onShowHelpChange: (v: boolean) => {
-      dispatch(changeSettings({showHelp: v}));
+      dispatch(changeSettings({ showHelp: v }));
     },
     onTimerSecondsDelta: (idx: number, delta: number) => {
       let i = idx + delta;
@@ -77,17 +84,17 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       } else if (i < 0) {
         i = timerValues.length - 1;
       }
-      dispatch(changeSettings({timerSeconds: timerValues[i]}));
+      dispatch(changeSettings({ timerSeconds: timerValues[i] }));
     },
     onVibrationChange: (v: boolean) => {
-      dispatch(changeSettings({vibration: v}));
+      dispatch(changeSettings({ vibration: v }));
     },
   };
 };
 
 const SettingsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Settings);
 
 export default SettingsContainer;

@@ -3,10 +3,12 @@ const acequire: any = require('brace').acequire;
 const oop = acequire('ace/lib/oop');
 const { Range } = acequire('ace/range');
 const TextMode = acequire('ace/mode/text').Mode;
-const MatchingBraceOutdent = acequire('ace/mode/matching_brace_outdent')
-  .MatchingBraceOutdent;
-const MarkdownHighlightRules = acequire('ace/mode/markdown_highlight_rules')
-  .MarkdownHighlightRules;
+const MatchingBraceOutdent = acequire(
+  'ace/mode/matching_brace_outdent',
+).MatchingBraceOutdent;
+const MarkdownHighlightRules = acequire(
+  'ace/mode/markdown_highlight_rules',
+).MarkdownHighlightRules;
 
 // `brace` ships no typings, and ace builds both of the objects below with
 // old-style constructor functions, so `this` is the instance under
@@ -42,7 +44,7 @@ interface AceMode {
 }
 
 // designed with https://ace.c9.io/tool/mode_creator.html
-const QDLHighlightRules: any = function(this: AceHighlightRules) {
+const QDLHighlightRules: any = function (this: AceHighlightRules) {
   this.$rules = new MarkdownHighlightRules().getRules();
 
   const listblock = this.$rules.listblock;
@@ -163,7 +165,7 @@ class QDLFoldMode {
   }
 }
 
-export const QDLMode: any = function(this: AceMode) {
+export const QDLMode: any = function (this: AceMode) {
   // set everything up
   this.HighlightRules = QDLHighlightRules;
   this.$outdent = new MatchingBraceOutdent();
@@ -171,12 +173,12 @@ export const QDLMode: any = function(this: AceMode) {
 };
 oop.inherits(QDLMode, TextMode);
 
-(function(this: AceMode) {
+(function (this: AceMode) {
   // configure comment start/end characters
   this.lineCommentStart = '//';
   this.blockComment = { start: '/*', end: '*/' };
 
-  this.getNextLineIndent = function(state: any, line: any, tab: any) {
+  this.getNextLineIndent = function (state: any, line: any, tab: any) {
     const indent = this.$getIndent(line);
 
     // Add some space right after a choice.
@@ -187,13 +189,13 @@ oop.inherits(QDLMode, TextMode);
     return indent;
   };
 
-  this.checkOutdent = function(state: any, line: any, input: any) {
+  this.checkOutdent = function (state: any, line: any, input: any) {
     return this.$outdent.checkOutdent(line, input);
   };
 
-  this.autoOutdent = function(state: any, doc: any, row: any) {
+  this.autoOutdent = function (state: any, doc: any, row: any) {
     return this.$outdent.autoOutdent(doc, row);
   };
 
   // TODO: create worker for live syntax checking/validation
-}.call(QDLMode.prototype));
+}).call(QDLMode.prototype);

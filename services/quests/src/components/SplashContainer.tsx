@@ -1,12 +1,12 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {UserState} from 'shared/auth/UserState';
-import {registerUserAndIdToken} from 'shared/auth/Web';
-import {AUTH_SETTINGS} from 'shared/schema/Constants';
-import {loadQuestFromURL} from '../actions/Quest';
-import {postLoginUser} from '../actions/User';
-import {AppState} from '../reducers/StateTypes';
-import Splash, {DispatchProps, StateProps} from './Splash';
+import { UserState } from 'shared/auth/UserState';
+import { registerUserAndIdToken } from 'shared/auth/Web';
+import { AUTH_SETTINGS } from 'shared/schema/Constants';
+import { loadQuestFromURL } from '../actions/Quest';
+import { postLoginUser } from '../actions/User';
+import { AppState } from '../reducers/StateTypes';
+import Splash, { DispatchProps, StateProps } from './Splash';
 
 const ReactGA = require('react-ga');
 
@@ -30,9 +30,11 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
         category: 'interaction',
         label: 'splashscreen',
       });
-      registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then((user: UserState) => {
-        dispatch(postLoginUser(user, true));
-      });
+      registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then(
+        (user: UserState) => {
+          dispatch(postLoginUser(user, true));
+        },
+      );
     },
     onNewQuest: (user: UserState) => {
       dispatch(loadQuestFromURL(user));
@@ -40,9 +42,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const SplashContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Splash);
+const SplashContainer = connect(mapStateToProps, mapDispatchToProps)(Splash);
 
 export default SplashContainer;

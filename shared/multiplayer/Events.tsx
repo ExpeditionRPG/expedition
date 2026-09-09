@@ -10,7 +10,9 @@ export type InstanceID = string;
 
 // Array of [vw, vh] coordinates keyed by ID, e.g. {0: [1,2], 1: [3,4]}.
 // The object structure is influenced by Cloud Firestore restrictions on nested arrays.
-export interface TouchList {[id: string]: number[]; }
+export interface TouchList {
+  [id: string]: number[];
+}
 
 // ------ Events (Passed Client-to-Client) --------
 
@@ -22,7 +24,7 @@ export interface TimerWait {
 export interface ReviewWait {
   type: 'REVIEW';
 }
-export type WaitType = TimerWait|ReviewWait;
+export type WaitType = TimerWait | ReviewWait;
 export interface StatusEvent {
   type: 'STATUS';
 
@@ -108,13 +110,20 @@ export interface InflightRejectEvent {
   // A list of one or more events that conflict with the inflight event.
   // This may not be all events up to the most recent one, due to query
   // limits and potential transactions occuring as this event is sent out.
-  conflicts: MultiEvent|null;
+  conflicts: MultiEvent | null;
 }
 
-export type MultiplayerEventBody = StatusEvent|InteractionEvent|ErrorEvent|ActionEvent|MultiEvent|InflightCommitEvent|InflightRejectEvent;
+export type MultiplayerEventBody =
+  | StatusEvent
+  | InteractionEvent
+  | ErrorEvent
+  | ActionEvent
+  | MultiEvent
+  | InflightCommitEvent
+  | InflightRejectEvent;
 export interface MultiplayerEvent {
   client: ClientID;
   instance: InstanceID;
   event: MultiplayerEventBody;
-  id: number|null; // Monotonically increasing, unique to a single event per session
+  id: number | null; // Monotonically increasing, unique to a single event per session
 }

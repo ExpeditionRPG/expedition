@@ -1,7 +1,6 @@
-import {sanitizeStyles} from './Renderer';
+import { sanitizeStyles } from './Renderer';
 
 describe('Renderer', () => {
-
   describe('sanitizeStyles', () => {
     test('keeps whitelist <strong>, <em> and <del>', () => {
       const input = '<strong>1</strong><b>1</b><em>2</em><i>2</i><del>3</del>';
@@ -96,13 +95,15 @@ describe('Renderer', () => {
       expect(output).toEqual(expected);
     });
     test('properly handles multiple [art] and :icon:', () => {
-      const input = 'Text containing many :roll: and [art_file_full] and :roll_white_small: and [art_white]';
+      const input =
+        'Text containing many :roll: and [art_file_full] and :roll_white_small: and [art_white]';
       const output = sanitizeStyles(input);
       const expected = input;
       expect(output).toEqual(expected);
     });
     test('collapses nested styles', () => {
-      const input = '<strong><strong>1</strong></strong><em><em>2</em></em><del><del>3</del></del>';
+      const input =
+        '<strong><strong>1</strong></strong><em><em>2</em></em><del><del>3</del></del>';
       const output = sanitizeStyles(input);
       const expected = '<b>1</b><i>2</i><del>3</del>';
       expect(output).toEqual(expected);

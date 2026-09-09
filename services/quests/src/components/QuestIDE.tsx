@@ -1,8 +1,8 @@
 import CompositorContainer from 'app/components/CompositorContainer';
-import {getStore as getAppStore} from 'app/Store';
+import { getStore as getAppStore } from 'app/Store';
 import * as React from 'react';
-import {Provider} from 'react-redux';
-import {AnnotationType, TutorialState} from '../reducers/StateTypes';
+import { Provider } from 'react-redux';
+import { AnnotationType, TutorialState } from '../reducers/StateTypes';
 import TextView from './base/TextView';
 
 export interface StateProps {
@@ -40,12 +40,19 @@ const QuestIDE = (props: Props): JSX.Element => {
           showSpellcheck={props.showSpellcheck}
           onChange={(text: string) => props.onDirty(props.realtime, text)}
           onLine={(line: number) => props.onLine(line)}
-          onAnnotationClick={(annotations: number[]) => props.onAnnotationClick(annotations)} />
+          onAnnotationClick={(annotations: number[]) =>
+            props.onAnnotationClick(annotations)
+          }
+        />
       </div>
       <div className="preview">
-        {props.tutorial.playFromCursor &&
-          <div className="play-from-cursor-tutorial">Click "Play from Cursor" above<br/>to test your quest.</div>
-        }
+        {props.tutorial.playFromCursor && (
+          <div className="play-from-cursor-tutorial">
+            Click "Play from Cursor" above
+            <br />
+            to test your quest.
+          </div>
+        )}
         <div className="app_root">
           <div className="app editor_override">
             <Provider store={getAppStore()}>

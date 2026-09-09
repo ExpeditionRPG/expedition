@@ -9,7 +9,7 @@ import { connect, Provider } from 'react-redux';
 import Redux, { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 const MAX_PARALLELISM = 10;
 
 interface RunState {

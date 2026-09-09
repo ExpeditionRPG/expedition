@@ -2,7 +2,6 @@
 // Import the themes below the base styles so that they don't override constants assignment
 
 .card {
-
   height: $card-height;
   width: $card-width;
   position: relative;
@@ -60,10 +59,9 @@
   /* Card subsets */
 
   &.horizontal {
-
     .contents {
-      width: $card-height - 2*$border;
-      height: $card-width - 2*$border;
+      width: $card-height - 2 * $border;
+      height: $card-width - 2 * $border;
       transform: rotate(90deg);
       transform-origin: 36% 48%; /* the magic raio??? */
       box-sizing: border-box;
@@ -73,13 +71,11 @@
   }
 
   &.back {
-
     text-align: center;
     font-size: $text-size-back-title;
     font-family: $font-header;
 
     &.horizontal {
-
       .contents {
         transform-origin: 35% 50%; /* the magic raio??? */
         margin-top: 0.125in;
@@ -88,7 +84,6 @@
   }
 
   &.dark {
-
     color: $text-color-white;
 
     svg {

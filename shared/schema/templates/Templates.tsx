@@ -1,21 +1,28 @@
-export interface Instruction {text: string; visible?: string; }
+export interface Instruction {
+  text: string;
+  visible?: string;
+}
 
 export type TemplateType = 'roleplay' | 'combat' | 'decision';
 
-export const TEMPLATE_TYPES: TemplateType[] = ['roleplay', 'combat', 'decision'];
+export const TEMPLATE_TYPES: TemplateType[] = [
+  'roleplay',
+  'combat',
+  'decision',
+];
 
 // If null, the event has no attributes and instead has a text block.
-export const TEMPLATE_ATTRIBUTE_MAP: {[e: string]: string|null} = {
+export const TEMPLATE_ATTRIBUTE_MAP: { [e: string]: string | null } = {
   combat: 'enemies',
   roleplay: null,
   decision: null,
 };
 
-export const TEMPLATE_ATTRIBUTE_SHORTHAND: {[k: string]: string} = {
+export const TEMPLATE_ATTRIBUTE_SHORTHAND: { [k: string]: string } = {
   enemies: 'e',
 };
 
-export function getTemplateType(header: string): TemplateType|null {
+export function getTemplateType(header: string): TemplateType | null {
   for (const t of TEMPLATE_TYPES) {
     if (header === t) {
       return t;
@@ -31,4 +38,4 @@ export interface TemplateChild {
   json?: any;
 }
 
-export type TemplateBodyType = Array<string|TemplateChild|Instruction>;
+export type TemplateBodyType = Array<string | TemplateChild | Instruction>;

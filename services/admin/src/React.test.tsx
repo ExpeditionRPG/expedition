@@ -1,3 +1,5 @@
 describe('React', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

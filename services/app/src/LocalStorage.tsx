@@ -1,9 +1,9 @@
-import {getLocalStorage} from './Globals';
+import { getLocalStorage } from './Globals';
 
 // Force specifying a default, since just doing (|| fallback) would bork on stored falsey values
 export function getStorageBoolean(key: string, fallback: boolean): boolean {
   const val = getLocalStorage().getItem(key);
-  return (val !== null) ? (val.toLowerCase() === 'true') : fallback;
+  return val !== null ? val.toLowerCase() === 'true' : fallback;
 }
 
 export function getStorageJson(key: string, fallback: object): object {
@@ -13,7 +13,7 @@ export function getStorageJson(key: string, fallback: object): object {
       return fallback;
     }
     const val = JSON.parse(item);
-    return (val !== null) ? val : fallback;
+    return val !== null ? val : fallback;
   } catch (err) {
     return fallback;
   }
@@ -21,16 +21,20 @@ export function getStorageJson(key: string, fallback: object): object {
 
 export function getStorageNumber(key: string, fallback: number): number {
   const val = getLocalStorage().getItem(key);
-  return (val !== null) ? Number(val) : fallback;
+  return val !== null ? Number(val) : fallback;
 }
 
 export function getStorageString(key: string, fallback: string): string {
   const val = getLocalStorage().getItem(key);
-  return (val !== null) ? val : fallback;
+  return val !== null ? val : fallback;
 }
 
 // Value can be boolean, number, string or stringifiable JSON
-export function setStorageKeyValue(key: string, value: any, ignoreErrors= true) {
+export function setStorageKeyValue(
+  key: string,
+  value: any,
+  ignoreErrors = true,
+) {
   if (typeof value === 'object') {
     value = JSON.stringify(value);
   } else {

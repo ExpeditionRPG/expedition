@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {MAX_COUNTER_HEALTH} from '../../Constants';
-import {healthCounter, romanize, translate} from '../../helpers';
-import {CardType} from '../../reducers/StateTypes';
+import { MAX_COUNTER_HEALTH } from '../../Constants';
+import { healthCounter, romanize, translate } from '../../helpers';
+import { CardType } from '../../reducers/StateTypes';
 
 export default class CardBack extends React.Component<CardType, {}> {
   public render() {
@@ -10,7 +10,9 @@ export default class CardBack extends React.Component<CardType, {}> {
     switch (card.sheet) {
       case 'Ability':
         return (
-          <div className={`card back vertical ${card.classicon || card.class} ${card.sheet}`}>
+          <div
+            className={`card back vertical ${card.classicon || card.class} ${card.sheet}`}
+          >
             <div className="contents">
               <h1>{card.class}</h1>
               <h2>{translate(card.sheet, translations)}</h2>
@@ -20,7 +22,9 @@ export default class CardBack extends React.Component<CardType, {}> {
         );
       case 'Adventurer':
         return (
-          <div className={`card back horizontal ${card.classicon || card.class} ${card.sheet}`}>
+          <div
+            className={`card back horizontal ${card.classicon || card.class} ${card.sheet}`}
+          >
             <div className="contents">
               <h1>{translate(card.sheet, translations)}</h1>
               {card.naming && <div className="naming">{card.naming}</div>}
@@ -30,7 +34,9 @@ export default class CardBack extends React.Component<CardType, {}> {
       case 'Encounter':
         return (
           <div className="white-background">
-            <div className={`card back dark horizontal ${card.classicon || card.class} ${card.sheet} tier${card.tier}`}>
+            <div
+              className={`card back dark horizontal ${card.classicon || card.class} ${card.sheet} tier${card.tier}`}
+            >
               <div className="contents">
                 <h1>{card.class}</h1>
                 {healthCounter(MAX_COUNTER_HEALTH, true)}

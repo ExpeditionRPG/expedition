@@ -1,8 +1,9 @@
+// joi-browser was a 2018 fork of joi 13 packaged for the browser; joi itself
+// has shipped a `browser` entry (dist/joi-browser.min.js) since v16, which
+// webpack resolves for the four browser bundles, so the fork is gone and this
+// is the real, typed package.
+import * as Joi from 'joi';
 import 'reflect-metadata';
-
-// Lightweight, browser-compatible version of Joi
-// TODO(scott): Figure out a way to type this
-const Joi: any = require('joi-browser'); // tslint:disable-line
 
 export const NOW = '_now';
 export const PLACEHOLDER_DATE = new Date(0);
@@ -92,9 +93,12 @@ export class SchemaBase {
       throw new Error('Missing fields: ' + JSON.stringify(missingFields));
     }
 
-    this.getJoiValidationParams();
-    const result = Joi.validate(parsedFields, this.getJoiValidationParams());
-    if (result.error !== null) {
+    // joi 16 removed the free `Joi.validate(value, schema)` function in favour
+    // of `schema.validate(value)`, and a passing validation now reports
+    // `error: undefined` rather than `error: null` -- so this has to test
+    // truthiness, not `!== null`.
+    const result = this.getJoiValidationParams().validate(parsedFields);
+    if (result.error) {
       throw result.error;
     }
 
@@ -103,7 +107,7 @@ export class SchemaBase {
     }
   }
 
-  private joiType(o: Partial<SchemaOptions>) {
+  private joiType(o: Partial<SchemaOptions>): Joi.Schema {
     switch (o.type) {
       case 'Boolean':
         return Joi.boolean();
@@ -120,19 +124,30 @@ export class SchemaBase {
     }
   }
 
-  private getJoiValidationParams() {
-    const keys: { [property: string]: any } = {};
+  private getJoiValidationParams(): Joi.ObjectSchema {
+    const keys: Joi.SchemaMap = {};
 
     for (const k of Object.keys(this.optionsMap)) {
       const m = this.optionsMap[k];
-      let j = this.joiType(m);
+      let j: Joi.Schema = this.joiType(m);
       if (m.allowNull !== undefined && m.allowNull === true) {
         j = j.allow(null);
       }
       if (m.valid !== undefined) {
-        j = j.valid(m.valid);
+        // joi 13 took a single array and deep-flattened it (Hoek.flatten);
+        // joi 16+ takes varargs and treats an array argument as one literal
+        // allowed value, so the list has to be spread.
+        j = j.valid(...m.valid);
       }
       if (m.maxLength !== undefined) {
+        // `max` is declared on the string/number/array/date schemas but not on
+        // `any` or `boolean`; a field that sets maxLength on one of those was
+        // already a schema-construction error under joi 13.
+        if (!('max' in j)) {
+          throw new Error(
+            `maxLength is not meaningful for ${m.type} field '${k}'`,
+          );
+        }
         j = j.max(m.maxLength);
       }
       keys[k] = j;

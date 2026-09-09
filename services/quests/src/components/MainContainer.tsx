@@ -1,9 +1,9 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {lineNumbersToggle, panelToggle} from '../actions/Editor';
-import {setSnackbar} from '../actions/Snackbar';
-import {AppState, PanelType} from '../reducers/StateTypes';
-import Main, {DispatchProps, StateProps} from './Main';
+import { lineNumbersToggle, panelToggle } from '../actions/Editor';
+import { setSnackbar } from '../actions/Snackbar';
+import { AppState, PanelType } from '../reducers/StateTypes';
+import Main, { DispatchProps, StateProps } from './Main';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState): StateProps => {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onDragFinished: (size: number) => {
-      dispatch({type: 'PANEL_DRAG'});
+      dispatch({ type: 'PANEL_DRAG' });
     },
     onLineNumbersToggle: () => {
       dispatch(lineNumbersToggle());
@@ -32,9 +32,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const MainContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Main);
+const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export default MainContainer;

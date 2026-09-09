@@ -1,5 +1,9 @@
 import Redux from 'redux';
-import {CardType, FiltersState, TranslationsType} from '../reducers/StateTypes';
+import {
+  CardType,
+  FiltersState,
+  TranslationsType,
+} from '../reducers/StateTypes';
 
 export interface CardsLoadingAction extends Redux.Action {
   type: 'CARDS_LOADING';

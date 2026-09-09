@@ -1,10 +1,10 @@
 interface QueryBase {
-  order?: {column: string, ascending: boolean};
+  order?: { column: string; ascending: boolean };
 }
 
 export interface FeedbackQuery extends QueryBase {
   questid?: string;
-  rating?: {condition: '>'|'<'|'=', value: number};
+  rating?: { condition: '>' | '<' | '='; value: number };
   substring?: string;
   userid?: string;
 }
@@ -22,11 +22,11 @@ export interface UserQuery extends QueryBase {
 
 export interface FeedbackEntry {
   partition: string;
-  quest: {id: string, title: string};
+  quest: { id: string; title: string };
   rating: number;
   suppressed: boolean;
   text: string;
-  user: {id: string, email: string};
+  user: { id: string; email: string };
 }
 
 export interface UserEntry {
@@ -44,7 +44,7 @@ export interface QuestEntry {
   ratingavg: number;
   ratingcount: number;
   title: string;
-  user: {id: string, email: string};
+  user: { id: string; email: string };
 }
 
 export interface FeedbackMutation {
@@ -67,5 +67,5 @@ export interface UserMutation {
 
 export interface Response {
   error?: string;
-  status: 'OK'|'ERROR';
+  status: 'OK' | 'ERROR';
 }

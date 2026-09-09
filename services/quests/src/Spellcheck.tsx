@@ -56,10 +56,18 @@ export default class Spellcheck {
         .replace(/\n/g, ' ')
         // split to array of words on spaces
         .split(' ')
-        // remove empty strings
-        .filter((s: string): boolean => Boolean(s) && s.length > 0)
         // remove non-word characters
         .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
+        // Drop anything that is not a word. This has to run *after* the strip,
+        // not before it: a token like "#" or "--" is non-empty going in and
+        // becomes '' coming out, and an '' in this list is fatal downstream --
+        // dictionary.check('') is false, so '' joins the misspellings, and
+        // /\b(|teh)\b/ then matches the empty string at column 0 of every line,
+        // which made spellcheck() bail before adding a single marker for any
+        // document. NOT_WORD keeps apostrophes (for "don't"), so require at
+        // least one letter rather than just a non-empty string -- a bare "'"
+        // would otherwise match inside every contraction.
+        .filter((s: string): boolean => /[a-zA-Z]/.test(s))
         // only return the first instance of each word
         .filter(
           (s: string, i: number, arr: string[]): boolean =>
@@ -103,6 +111,12 @@ export default class Spellcheck {
         );
       });
 
+      // Nothing to highlight. Bailing here also avoids building /\b()\b/,
+      // which matches the empty string everywhere.
+      if (misspellings.length === 0) {
+        return true;
+      }
+
       // create a regex to find all instances of the known mispelled words in the corpus
       const misspellingsRegex = new RegExp(
         '\\b(' + misspellings.join('|') + ')\\b',
@@ -116,11 +130,13 @@ export default class Spellcheck {
         .forEach((line: string, i: number) => {
           // Before we check for misspellings, remove elements we don't want to check
           line = line.replace(elementRegexes, '');
+          // The regex is /g and shared across lines, so start each line at 0.
+          misspellingsRegex.lastIndex = 0;
           let match = misspellingsRegex.exec(line);
-          if (match && match[0] !== '') {
+          if (match) {
             this.session.addGutterDecoration(i, 'misspelled');
           }
-          while (match && match[0] !== '') {
+          while (match) {
             const range = new Range(
               i,
               match.index,

@@ -1,5 +1,6 @@
 // This config is run to compile and export the production environment to the dist/ folder.
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Path = require('path');
 const Webpack = require('webpack');
 const shared = require('./webpack.shared');
 
@@ -9,8 +10,12 @@ const options = {
   resolve: {
     alias: require('./webpack.aliases'),
     extensions: ['.js', '.ts', '.tsx', '.json', '.txt'],
+    // Replaces webpack 4's `node: {fs: 'empty', net: 'empty', tls: 'empty'}`
+    // plus its implicit `stream` polyfill - see shared/webpack.shared.js.
+    fallback: shared.resolve.fallback,
   },
-  entry: ['babel-polyfill', 'whatwg-fetch', 'promise-polyfill'],
+  // No `entry`: every service defines one as an object, which replaces this
+  // rather than concatenating. See shared/webpack.shared.js.
   output: {
     // This must be an absolute path, and thus must be defined per-service
     // path: 'dist',
@@ -23,7 +28,7 @@ const options = {
     ],
   },
   plugins: [
-    new Webpack.optimize.AggressiveMergingPlugin(),
+    // Webpack.optimize.AggressiveMergingPlugin was removed in webpack 5.
     new Webpack.DefinePlugin({
       // Default to beta for safety
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
@@ -34,18 +39,21 @@ const options = {
         process.env.OAUTH2_CLIENT_ID ||
           '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
       ),
+      // See shared/webpack.shared.js: defined for every browser service,
+      // because shared/schema/Constants.tsx reads it.
+      'process.env.VERSION': JSON.stringify(
+        require(Path.resolve(process.cwd(), 'package.json')).version,
+      ),
     }),
-    new CopyWebpackPlugin([{ from: 'src/index.html' }]),
+    new CopyWebpackPlugin({ patterns: [{ from: 'src/index.html' }] }),
   ],
   optimization: {
-    noEmitOnErrors: true,
+    // `noEmitOnErrors: true` became `emitOnErrors: false` (the meaning inverted).
+    emitOnErrors: false,
   },
-  node: {
-    console: true,
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
+  // ES6, matching the dev config. See shared/webpack.shared.js for why the
+  // ES5 target was dropped.
+  target: 'web',
 };
 
 module.exports = options;

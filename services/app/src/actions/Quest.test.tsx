@@ -8,7 +8,7 @@ import { initialSettings } from '../reducers/Settings';
 import { Action } from '../Testing';
 import { endQuest, exitQuest, initQuest } from './Quest';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 const fetchMock = require('fetch-mock');
 
 describe('Quest actions', () => {

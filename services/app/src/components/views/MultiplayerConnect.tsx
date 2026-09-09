@@ -1,6 +1,10 @@
 import * as React from 'react';
-import {SessionID} from 'shared/multiplayer/Session';
-import {MultiplayerSessionMeta, MultiplayerState, UserState} from '../../reducers/StateTypes';
+import { SessionID } from 'shared/multiplayer/Session';
+import {
+  MultiplayerSessionMeta,
+  MultiplayerState,
+  UserState,
+} from '../../reducers/StateTypes';
 import Button from '../base/Button';
 import Card from '../base/Card';
 
@@ -22,11 +26,11 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 class MultiplayerConnect extends React.Component<Props, {}> {
-  public state: {secret: string};
+  public state: { secret: string };
 
   constructor(props: Props) {
     super(props);
-    this.state = {secret: ''};
+    this.state = { secret: '' };
   }
 
   public handleSecret(e: any) {
@@ -35,17 +39,25 @@ class MultiplayerConnect extends React.Component<Props, {}> {
       return;
     }
 
-    this.setState({secret: v.toUpperCase()});
+    this.setState({ secret: v.toUpperCase() });
   }
 
   public render() {
-    const history = this.props.multiplayer.history.map((m: MultiplayerSessionMeta, i: number) => {
-      return (
-        <Button key={i} onClick={() => {this.props.onReconnect(this.props.user, m.id, m.secret); }}>
-          {m.questTitle} ({m.peerCount || 0} peers) - {Moment(m.lastAction).fromNow()}
-        </Button>
-      );
-    });
+    const history = this.props.multiplayer.history.map(
+      (m: MultiplayerSessionMeta, i: number) => {
+        return (
+          <Button
+            key={i}
+            onClick={() => {
+              this.props.onReconnect(this.props.user, m.id, m.secret);
+            }}
+          >
+            {m.questTitle} ({m.peerCount || 0} peers) -{' '}
+            {Moment(m.lastAction).fromNow()}
+          </Button>
+        );
+      },
+    );
 
     return (
       <Card title="Online Multiplayer">
@@ -54,13 +66,46 @@ class MultiplayerConnect extends React.Component<Props, {}> {
           <ul>
             <li>Multiple players can play on one device</li>
             <li>Up to 6 players can play in a session</li>
-            <li>Each device needs <a href="#" onClick={() => window.open('https://expeditiongame.com/store?utm_source=app', '_blank')}>Expedition</a> to play.</li>
-            <li>If you are using an older device or encounter performance issues, please use a separate device for communication.</li>
+            <li>
+              Each device needs{' '}
+              <a
+                href="#"
+                onClick={() =>
+                  window.open(
+                    'https://expeditiongame.com/store?utm_source=app',
+                    '_blank',
+                  )
+                }
+              >
+                Expedition
+              </a>{' '}
+              to play.
+            </li>
+            <li>
+              If you are using an older device or encounter performance issues,
+              please use a separate device for communication.
+            </li>
           </ul>
           <p>Start a new session, or join an existing one:</p>
-          <Button onClick={() => {this.props.onNewSessionRequest(this.props.user); }}>Start a new session</Button>
-          <Button onClick={() => {this.props.onConnect(this.props.user); }}>Join a session</Button>
-          {history.length > 0 && <div className="helptext">You may also reconnect to these sessions:</div>}
+          <Button
+            onClick={() => {
+              this.props.onNewSessionRequest(this.props.user);
+            }}
+          >
+            Start a new session
+          </Button>
+          <Button
+            onClick={() => {
+              this.props.onConnect(this.props.user);
+            }}
+          >
+            Join a session
+          </Button>
+          {history.length > 0 && (
+            <div className="helptext">
+              You may also reconnect to these sessions:
+            </div>
+          )}
           {history}
         </div>
       </Card>

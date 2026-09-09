@@ -1,12 +1,12 @@
 import Divider from '@material-ui/core/Divider';
 import * as React from 'react';
-import {Badge, BADGE_DESC} from 'shared/schema/Constants';
-import {Quest} from 'shared/schema/Quests';
-import {IUserFeedback, UserState} from '../../reducers/StateTypes';
+import { Badge, BADGE_DESC } from 'shared/schema/Constants';
+import { Quest } from 'shared/schema/Quests';
+import { IUserFeedback, UserState } from '../../reducers/StateTypes';
 import Card from '../base/Card';
 import QuestButtonContainer from '../base/QuestButtonContainer';
 import StarRating from '../base/StarRating';
-import {renderLoading} from './Search';
+import { renderLoading } from './Search';
 import SearchContainer from './SearchContainer';
 
 export interface IStateProps {
@@ -34,15 +34,21 @@ class Account extends React.Component<IProps, {}> {
     if (feedbacks.length === 0) {
       return `You haven't submitted any feedback`;
     }
-    return feedbacks.map((feedback) => {
+    return feedbacks.map(feedback => {
       if (!feedback || !feedback.quest) {
         return;
       }
       const quest = feedback.quest.details;
       return (
-        <QuestButtonContainer key={quest.id} id={quest.id} summary={feedback.text} quest={quest} onClick={() => this.props.onQuestSelect(quest)}>
+        <QuestButtonContainer
+          key={quest.id}
+          id={quest.id}
+          summary={feedback.text}
+          quest={quest}
+          onClick={() => this.props.onQuestSelect(quest)}
+        >
           <div className={`details ratingavg`}>
-            <StarRating readOnly={true} value={feedback.rating} quantity={5}/>
+            <StarRating readOnly={true} value={feedback.rating} quantity={5} />
           </div>
         </QuestButtonContainer>
       );
@@ -52,17 +58,31 @@ class Account extends React.Component<IProps, {}> {
   public renderUserBadges(badges: Badge[]) {
     const results: JSX.Element[] = [];
     for (let i = 0; i < badges.length; i++) {
-      results.push(<tr key={i}><td colSpan={2}><img className="inline_icon" src={`images/${badges[i].toLowerCase()}_small.svg`} /> {BADGE_DESC[badges[i]]}</td></tr>);
+      results.push(
+        <tr key={i}>
+          <td colSpan={2}>
+            <img
+              className="inline_icon"
+              src={`images/${badges[i].toLowerCase()}_small.svg`}
+            />{' '}
+            {BADGE_DESC[badges[i]]}
+          </td>
+        </tr>,
+      );
     }
 
     if (results.length > 0) {
-      results.unshift(<tr key="badges"><th colSpan={2}>Badges:</th></tr>);
+      results.unshift(
+        <tr key="badges">
+          <th colSpan={2}>Badges:</th>
+        </tr>,
+      );
     }
     return results;
   }
 
   public render() {
-    const {user, onReturn} = this.props;
+    const { user, onReturn } = this.props;
     if (!user.loggedIn) {
       return <SearchContainer />;
     }
@@ -74,16 +94,27 @@ class Account extends React.Component<IProps, {}> {
         <div className="detailsCard">
           <table className="detailsTable">
             <tbody>
-              {user.name && <tr><th>Name</th><td>{user.name}</td></tr>}
-              <tr><th>Email</th><td>{user.email}</td></tr>
-              <tr><th>Loot Points</th><td>{user.lootPoints || 'No points'}</td></tr>
+              {user.name && (
+                <tr>
+                  <th>Name</th>
+                  <td>{user.name}</td>
+                </tr>
+              )}
+              <tr>
+                <th>Email</th>
+                <td>{user.email}</td>
+              </tr>
+              <tr>
+                <th>Loot Points</th>
+                <td>{user.lootPoints || 'No points'}</td>
+              </tr>
               {this.renderUserBadges(user.badges || [])}
             </tbody>
           </table>
-          <br/>
+          <br />
           <h3>My Reviews</h3>
-          <Divider/>
-          <br/>
+          <Divider />
+          <br />
           {this.renderUserFeedbacks(user.feedbacks)}
         </div>
       </Card>

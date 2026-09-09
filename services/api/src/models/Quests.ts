@@ -1,11 +1,15 @@
-import * as Bluebird from 'bluebird';
 import Sequelize, { OrderItem, WhereOptions } from 'sequelize';
 import { enumValues, Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
 import { RenderedQuest } from 'shared/schema/RenderedQuests';
 import { User } from 'shared/schema/Users';
 import { MailService } from '../Mail';
-import { Database, FeedbackInstance, QuestInstance } from './Database';
+import {
+  Database,
+  FeedbackInstance,
+  QuestAttributes,
+  QuestInstance,
+} from './Database';
 import { getFeedbackByQuestId } from './Feedback';
 import { prepare } from './Schema';
 import { getUser } from './Users';
@@ -40,7 +44,7 @@ export function getQuest(
   db: Database,
   partition: string,
   id: string,
-): Bluebird<Quest> {
+): Promise<Quest> {
   return db.quests
     .findOne({ where: { partition, id } })
     .then(
@@ -53,23 +57,37 @@ export function searchQuests(
   db: Database,
   userId: string,
   params: QuestSearchParams,
-): Bluebird<QuestInstance[]> {
+): Promise<QuestInstance[]> {
   // TODO: Validate search params
+  // Held separately from `where` so the pushes below don't have to reach back
+  // through WhereOptions, which does not expose its Op.and slot for indexing.
+  // It is the same array object either way.
+  const andClauses: WhereOptions[] = []; // Use this for multiple OR clauses
   const where: WhereOptions = {
-    published: { [Op.ne]: null } as any,
+    published: { [Op.ne]: null },
     tombstone: null,
-    [Op.and]: [], // Use this for multiple OR clauses
+    [Op.and]: andClauses,
   };
   const order: OrderItem[] = [];
 
-  if (params.showPrivate === true) {
-    (where as any)[Op.and].push({
+  if (params.showPrivate === true && userId) {
+    andClauses.push({
       [Op.or]: [
         { partition: Partition.expeditionPublic },
         { partition: Partition.expeditionPrivate, userid: userId },
       ],
     });
     order.push(['partition', 'ASC']); // PRIVATE, then PUBLIC
+  } else if (params.showPrivate === true) {
+    // `showPrivate` means "public quests plus the private ones that are mine".
+    // With no session there is no "mine", so the honest answer is the public
+    // set -- not an error. POST /quests is deliberately unauthenticated and the
+    // app sends showPrivate: true by default (see reducers/Search initialSearch),
+    // so 401ing here would break search for every logged-out player. Before
+    // this branch existed the undefined userid reached the query and sequelize
+    // threw `WHERE parameter "userid" has invalid "undefined" value`, which the
+    // handler turned into a 500.
+    where.partition = Partition.expeditionPublic;
   } else {
     where.partition = params.partition || Partition.expeditionPublic;
   }
@@ -84,8 +102,7 @@ export function searchQuests(
 
   // Require results to be published if we're not querying our own quests.
   // `published` is already constrained to IS NOT NULL by the initializer
-  // above, and re-stating it here only repeated an operator shape sequelize 5's
-  // typings cannot express (their [Op.ne] union omits null).
+  // above, so there is nothing more to add here.
   if (params.owner) {
     where.userid = params.owner;
   }
@@ -97,7 +114,7 @@ export function searchQuests(
 
   if (params.text && params.text !== '') {
     const text = '%' + params.text.toLowerCase() + '%';
-    (where as any)[Op.and].push({
+    andClauses.push({
       [Op.or]: [
         Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
           [Op.like]: text,
@@ -237,13 +254,13 @@ export function publishQuest(
   majorRelease: boolean,
   quest: Quest,
   xml: string,
-): Bluebird<QuestInstance> {
+): Promise<QuestInstance> {
   // TODO: Validate XML via crawler
   if (!userid) {
-    return Bluebird.reject(new Error('Could not publish - no user id.'));
+    return Promise.reject(new Error('Could not publish - no user id.'));
   }
   if (!xml) {
-    return Bluebird.reject(new Error('Could not publish - no xml data.'));
+    return Promise.reject(new Error('Could not publish - no xml data.'));
   }
 
   let instance: QuestInstance;
@@ -257,11 +274,23 @@ export function publishQuest(
       if (isNew && quest.partition === Partition.expeditionPublic) {
         mailNewQuestToAdmin(mail, quest);
 
+        // These two are deliberately not awaited - neither the loot award nor
+        // the congratulations email should be able to fail a publish. They do
+        // need their own .catch(): sequelize 5 handed back bluebird promises,
+        // which only warn about an unhandled rejection, but sequelize 6 returns
+        // native ones, and an unhandled native rejection terminates the process
+        // on Node >= 15. `getUser` in particular rejects outright when the
+        // author has no user row yet.
+        const logSideEffectFailure = (e: Error) =>
+          console.error('Publish side effect failed', e);
+
         // New publish on public = 100 loot point award
-        getUser(db, userid).then((u: User) => {
-          u.lootPoints = (u.lootPoints || 0) + 100;
-          db.users.upsert(prepare(u));
-        });
+        getUser(db, userid)
+          .then((u: User) => {
+            u.lootPoints = (u.lootPoints || 0) + 100;
+            return db.users.upsert(prepare(u));
+          })
+          .catch(logSideEffectFailure);
 
         // If this is the author's first published quest, email them a congratulations
         db.quests
@@ -270,16 +299,17 @@ export function publishQuest(
             if (!qi) {
               mailFirstQuestPublish(mail, quest);
             }
-          });
+          })
+          .catch(logSideEffectFailure);
       }
 
-      const updateValues: Partial<Quest> = {
+      const updateValues: Partial<QuestAttributes> = {
         ...quest.withoutDefaults(),
         published: new Date(),
         publishedurl: `http://quests.expeditiongame.com/raw/${quest.partition}/${quest.id}/${quest.questversion}`,
         questversion:
           (instance.get('questversion') || quest.questversion || 0) + 1,
-        tombstone: null as any, // Remove tombstone; need null instead of undefined to trigger Sequelize update override
+        tombstone: null, // Remove tombstone; need null instead of undefined to trigger Sequelize update override
         userid, // Not included in the request - pull from auth
       };
       if (majorRelease) {
@@ -289,15 +319,18 @@ export function publishQuest(
         updateValues.ratingcount = 0;
       }
 
-      // Publish to RenderedQuests (async)
-      db.renderedQuests.create(
-        new RenderedQuest({
-          id: quest.id,
-          partition: quest.partition,
-          questversion: updateValues.questversion,
-          xml,
-        }),
-      );
+      // Publish to RenderedQuests (async) - same reasoning as above, this is
+      // fire-and-forget and must not reject unhandled.
+      db.renderedQuests
+        .create(
+          new RenderedQuest({
+            id: quest.id,
+            partition: quest.partition,
+            questversion: updateValues.questversion,
+            xml,
+          }),
+        )
+        .catch((e: Error) => console.error('Rendered quest write failed', e));
 
       return instance.update(updateValues);
     });
@@ -324,7 +357,7 @@ export function updateQuestRatings(
   db: Database,
   partition: string,
   id: string,
-): Bluebird<QuestInstance> {
+): Promise<QuestInstance> {
   let quest: QuestInstance;
   return db.quests
     .findOne({ where: { partition, id } })

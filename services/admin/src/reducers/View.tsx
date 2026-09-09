@@ -11,40 +11,18 @@ import {
 } from '../actions/ActionTypes';
 import { ViewState } from './StateTypes';
 
+// Every table starts empty. This used to ship one hardcoded row per table --
+// a "test quest" with id 129348, a "Test user" holding 5 loot points, and a
+// piece of "Test feedback" -- which rendered indistinguishably from real
+// production data until the first query happened to come back. An empty table
+// is the honest state before a query has returned.
 export const defaultView: ViewState = {
-  feedback: [
-    {
-      partition: 'expedition-public',
-      quest: { id: '129348', title: 'test quest' },
-      user: { id: '12345', email: 'asdf@ghkjl.com' },
-      rating: 5,
-      text: 'Test feedback',
-      suppressed: false,
-    },
-  ],
+  feedback: [],
   filter: '',
   lastQueryError: null,
-  quests: [
-    {
-      id: '129348',
-      title: 'test quest',
-      partition: 'expedition-public',
-      ratingavg: 3.5,
-      ratingcount: 10,
-      user: { id: '12345', email: 'author@test.com' },
-      published: true,
-    },
-  ],
+  quests: [],
   selected: { user: null, quest: null, feedback: null },
-  users: [
-    {
-      id: '12345',
-      email: 'asdf@ghjkl.com',
-      name: 'Test user',
-      loot_points: 5,
-      last_login: new Date(),
-    },
-  ],
+  users: [],
   view: 'FEEDBACK',
 };
 

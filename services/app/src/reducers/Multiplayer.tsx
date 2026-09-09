@@ -26,7 +26,7 @@ export function multiplayer(
 ): MultiplayerState {
   switch (action.type) {
     case 'MULTIPLAYER_SESSION': {
-      const rpsa = (action as any) as MultiplayerSessionAction;
+      const rpsa = action as any as MultiplayerSessionAction;
       return {
         ...state,
         session: rpsa.session,
@@ -35,7 +35,7 @@ export function multiplayer(
       };
     }
     case 'MULTIPLAYER_HISTORY': {
-      const rph = (action as any) as MultiplayerHistoryAction;
+      const rph = action as any as MultiplayerHistoryAction;
       return { ...state, history: rph.history || [] };
     }
     case 'MULTIPLAYER_SYNC':
@@ -55,7 +55,7 @@ export function multiplayer(
     case 'MULTIPLAYER_MULTI_EVENT':
       return { ...state, multiEvent: false, syncing: false, syncID: 0 };
     case 'MULTIPLAYER_CLIENT_STATUS': {
-      const rpcs = (action as any) as MultiplayerClientStatus;
+      const rpcs = action as any as MultiplayerClientStatus;
       const newClientStatus = { ...state.clientStatus };
       const k = rpcs.client + '|' + rpcs.instance;
       newClientStatus[k] = { ...newClientStatus[k], ...rpcs.status };

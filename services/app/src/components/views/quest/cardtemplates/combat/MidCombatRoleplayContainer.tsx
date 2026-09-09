@@ -1,21 +1,36 @@
-import {toPrevious} from 'app/actions/Card';
-import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory, CardName, SettingsType} from 'app/reducers/StateTypes';
-import {connect} from 'react-redux';
-import Redux from 'redux';
+import { toPrevious } from 'app/actions/Card';
+import { CombatPhase } from 'app/Constants';
 import {
-  midCombatChoice,
-} from '../roleplay/Actions';
-import {ParserNode} from '../TemplateTypes';
-import MidCombatRoleplay, {DispatchProps, StateProps} from './MidCombatRoleplay';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+  AppStateWithHistory,
+  CardName,
+  SettingsType,
+} from 'app/reducers/StateTypes';
+import { connect } from 'react-redux';
+import Redux from 'redux';
+import { midCombatChoice } from '../roleplay/Actions';
+import { ParserNode } from '../TemplateTypes';
+import MidCombatRoleplay, {
+  DispatchProps,
+  StateProps,
+} from './MidCombatRoleplay';
+import { mapStateToProps as mapStateToPropsBase } from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps => {
   let maxTier = 0;
   let histIdx: number = state._history.length - 1;
   // card.phase currently represents combat boundaries - non-combat cards don't use phases
-  while (Boolean(state._history[histIdx]) && state._history[histIdx].quest && state._history[histIdx].quest.node && state._history[histIdx].quest.node.ctx.templates.combat && histIdx > 0) {
-    const combatContext = state._history[histIdx].quest.node.ctx.templates.combat;
+  while (
+    Boolean(state._history[histIdx]) &&
+    state._history[histIdx].quest &&
+    state._history[histIdx].quest.node &&
+    state._history[histIdx].quest.node.ctx.templates.combat &&
+    histIdx > 0
+  ) {
+    const combatContext =
+      state._history[histIdx].quest.node.ctx.templates.combat;
     if (!combatContext) {
       break;
     }
@@ -38,20 +53,36 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onChoice: (node: ParserNode, settings: SettingsType, index: number, maxTier: number, seed: string) => {
-      dispatch(midCombatChoice({node, settings, index, maxTier, seed}));
+    onChoice: (
+      node: ParserNode,
+      settings: SettingsType,
+      index: number,
+      maxTier: number,
+      seed: string,
+    ) => {
+      dispatch(midCombatChoice({ node, settings, index, maxTier, seed }));
     },
     onRetry: () => {
-      dispatch(toPrevious({matchFn: (c: CardName, n: ParserNode) => n.getTag() === 'combat' && n.ctx.templates.combat.phase === CombatPhase.drawEnemies, before: true}));
+      dispatch(
+        toPrevious({
+          matchFn: (c: CardName, n: ParserNode) =>
+            n.getTag() === 'combat' &&
+            n.ctx.templates.combat.phase === CombatPhase.drawEnemies,
+          before: true,
+        }),
+      );
     },
     onReturn: () => {
       // Return to the "Ready for Combat?" card instead of doing the timed round again.
-      dispatch(toPrevious({before: false, matchFn: (c: CardName, n: ParserNode) => n.ctx.templates.combat.phase !== CombatPhase.timer}));
+      dispatch(
+        toPrevious({
+          before: false,
+          matchFn: (c: CardName, n: ParserNode) =>
+            n.ctx.templates.combat.phase !== CombatPhase.timer,
+        }),
+      );
     },
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MidCombatRoleplay);
+export default connect(mapStateToProps, mapDispatchToProps)(MidCombatRoleplay);

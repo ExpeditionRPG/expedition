@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import Sequelize from 'sequelize';
 import { Feedback } from 'shared/schema/Feedback';
 import { Quest } from 'shared/schema/Quests';
@@ -17,10 +16,7 @@ export const FabricateQuestFeedbackEmail =
   'expedition+questfeedback@fabricate.io';
 
 export type FeedbackType =
-  | 'feedback'
-  | 'rating'
-  | 'report_error'
-  | 'report_quest';
+  'feedback' | 'rating' | 'report_error' | 'report_quest';
 
 export function getFeedback(
   db: Database,
@@ -80,12 +76,12 @@ function mailFeedbackToAdmin(
 
   message += `
     <p>User settings: ${feedback.players} adventurers on ${
-    feedback.difficulty
-  } difficulty.</p>
+      feedback.difficulty
+    } difficulty.</p>
     <p>Raw platform string: ${platformDump}</p>
     <p>User email that reported it: <a href="mailto:${feedback.email}">${
-    feedback.email
-  }</a></p>
+      feedback.email
+    }</a></p>
     <p>${formatUserMetadata(user)}</p>
     <p>Multiplayer stats: ${feedback.stats}</p>
   `;
@@ -133,7 +129,7 @@ export function submitFeedback(
       if (feedback.partition && feedback.questid) {
         return getQuest(db, feedback.partition, feedback.questid);
       }
-      return null as any;
+      return null;
     })
     .then((q: Quest | null) => {
       return mailFeedbackToAdmin(
@@ -205,8 +201,8 @@ function mailNewRating(
     )} out of 5 across ${quest.ratingcount} ratings.</p>
     <p>Was submitted for ${quest.title} by ${quest.author}</p>
     <p>They played with ${feedback.players} adventurers on ${
-    feedback.difficulty
-  } difficulty on ${feedback.platform} v${feedback.version}.</p>
+      feedback.difficulty
+    } difficulty on ${feedback.platform} v${feedback.version}.</p>
     <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
       feedback.questid
     }">https://quests.expeditiongame.com/#${feedback.questid}</a></p>
@@ -258,10 +254,13 @@ export function suppressFeedback(
   suppress: boolean,
 ): Promise<any> {
   return db.feedback
-    .update({ tombstone: suppress ? new Date() : PLACEHOLDER_DATE } as any, {
-      where: { partition, questid, userid },
-      limit: 1,
-    })
+    .update(
+      { tombstone: suppress ? new Date() : PLACEHOLDER_DATE },
+      {
+        where: { partition, questid, userid },
+        limit: 1,
+      },
+    )
     .then(() => {
       return updateQuestRatings(db, partition, questid);
     });
@@ -277,12 +276,12 @@ function mailReportToAdmin(
   const subject = `Quest reported: ${quest.title}`;
   let message = `<p>Message: ${feedback.text}</p>
     <p>They played with ${feedback.players} adventurers on ${
-    feedback.difficulty
-  } difficulty on ${feedback.platform} v${feedback.version}.</p>
+      feedback.difficulty
+    } difficulty on ${feedback.platform} v${feedback.version}.</p>
     <p>Raw platform string: ${platformDump}</p>
     <p>User email that reported it: <a href="mailto:${feedback.email}">${
-    feedback.email
-  }</a></p>
+      feedback.email
+    }</a></p>
     <p>${formatUserMetadata(user)}</p>
     <p>Link to edit quest: <a href="https://quests.expeditiongame.com/#${
       feedback.questid

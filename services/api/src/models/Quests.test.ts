@@ -283,36 +283,28 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 5.0,
         ratingcount: 6,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q3 = new Quest({
         ...q.basic,
         id: 'q3',
         ratingavg: 5.0,
         ratingcount: 8,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q4 = new Quest({
         ...q.basic,
         id: 'q4',
         ratingavg: 4.5,
         ratingcount: 4,
-        created: Moment()
-          .subtract(6, 'days')
-          .toDate(),
+        created: Moment().subtract(6, 'days').toDate(),
       });
 
       testingDBWithState([q1, q2, q3, q4])
@@ -335,18 +327,14 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment()
-          .subtract(1, 'day')
-          .toDate(),
+        created: Moment().subtract(1, 'day').toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -364,18 +352,14 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: null,
         ratingcount: null,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment()
-          .subtract(1, 'day')
-          .toDate(),
+        created: Moment().subtract(1, 'day').toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -393,18 +377,14 @@ describe('quest', () => {
         id: 'q1',
         ratingavg: 4.0,
         ratingcount: 10,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
         ratingavg: 4.0,
         ratingcount: 2,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -420,16 +400,12 @@ describe('quest', () => {
       const q1 = new Quest({
         ...q.basic,
         id: 'q1',
-        published: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        published: Moment().subtract(1, 'month').toDate(),
       });
       const q2 = new Quest({
         ...q.basic,
         id: 'q2',
-        published: Moment()
-          .subtract(13, 'month')
-          .toDate(),
+        published: Moment().subtract(13, 'month').toDate(),
       });
 
       testingDBWithState([q1, q2])
@@ -446,30 +422,22 @@ describe('quest', () => {
     const q1 = new Quest({
       ...q.basic,
       id: 'q1',
-      created: Moment()
-        .subtract(1, 'month')
-        .toDate(),
+      created: Moment().subtract(1, 'month').toDate(),
     });
     const q3 = new Quest({
       ...q.basic,
       id: 'q3',
-      created: Moment()
-        .subtract(3, 'month')
-        .toDate(),
+      created: Moment().subtract(3, 'month').toDate(),
     });
     const q4 = new Quest({
       ...q.basic,
       id: 'q4',
-      created: Moment()
-        .subtract(4, 'month')
-        .toDate(),
+      created: Moment().subtract(4, 'month').toDate(),
     });
     const q2 = new Quest({
       ...q.basic,
       id: 'q2',
-      created: Moment()
-        .subtract(2, 'month')
-        .toDate(),
+      created: Moment().subtract(2, 'month').toDate(),
     });
 
     testingDBWithState([q1, q2, q3, q4])
@@ -661,9 +629,7 @@ describe('quest', () => {
         ...q.basic,
         partition: Partition.expeditionPublic,
         id: f.rating.questid,
-        created: Moment()
-          .subtract(1, 'month')
-          .toDate(),
+        created: Moment().subtract(1, 'month').toDate(),
       });
       let db: any;
       testingDBWithState([q1, f.rating])

@@ -42,7 +42,7 @@ describe('Audio', () => {
     };
     return {
       props,
-      a: shallow(<Audio {...((props as any) as Props)} />, undefined),
+      a: shallow(<Audio {...(props as any as Props)} />, undefined),
     };
   }
 

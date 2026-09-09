@@ -1,3 +1,5 @@
 describe('Templates', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

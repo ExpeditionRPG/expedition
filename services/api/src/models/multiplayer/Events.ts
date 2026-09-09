@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
 import {
   ActionEvent,
@@ -14,10 +13,10 @@ const { Op } = Sequelize;
 export function getLastEvent(
   db: Database,
   session: number,
-): Bluebird<EventInstance | null> {
+): Promise<EventInstance | null> {
   return db.events.findOne({
     order: [['timestamp', 'DESC']],
-    where: { session } as any,
+    where: { session },
   });
 }
 
@@ -25,7 +24,7 @@ export function getOrderedEventsAfter(
   db: Database,
   session: number,
   start: number,
-): Bluebird<EventInstance[]> {
+): Promise<EventInstance[]> {
   return db.events.findAll({
     order: [['timestamp', 'ASC']],
     where: { session, id: { [Op.gt]: start } },
@@ -35,7 +34,7 @@ export function getOrderedEventsAfter(
 export function getLargestEventID(
   db: Database,
   session: number,
-): Bluebird<number> {
+): Promise<number> {
   return getLastEvent(db, session).then((e: EventInstance | null) => {
     if (e === null) {
       return 0;
@@ -57,7 +56,7 @@ export function commitAndBroadcastAction(
   client: ClientID,
   instance: string,
   action: ActionEvent,
-): Bluebird<void> {
+): Promise<void> {
   const ev = {
     client: 'SERVER',
     event: action,
@@ -80,7 +79,7 @@ export function commitEventWithoutID(
   instance: string,
   type: string,
   struct: object,
-): Bluebird<number | null> {
+): Promise<number | null> {
   // Events by the server may need to be committed without a specific set ID.
   // In these cases, we pass the full object before serialization and fill it
   // with the next available event ID.
@@ -158,7 +157,7 @@ export function commitEvent(
   event: number,
   type: string,
   json: string,
-): Bluebird<number | null> {
+): Promise<number | null> {
   let s: SessionInstance;
   return db.sequelize
     .transaction((txn: Sequelize.Transaction) => {

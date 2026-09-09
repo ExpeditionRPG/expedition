@@ -1,12 +1,15 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../actions/Card';
-import {changeSearchParams} from '../../actions/Search';
-import {getContentSets} from '../../actions/Settings';
-import {AppStateWithHistory, SearchParams} from '../../reducers/StateTypes';
-import SearchSettings, {DispatchProps, StateProps} from './SearchSettings';
+import { toCard } from '../../actions/Card';
+import { changeSearchParams } from '../../actions/Search';
+import { getContentSets } from '../../actions/Settings';
+import { AppStateWithHistory, SearchParams } from '../../reducers/StateTypes';
+import SearchSettings, { DispatchProps, StateProps } from './SearchSettings';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps => {
   return {
     params: state.search.params,
     settings: state.settings,
@@ -18,18 +21,18 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onChangeParams: (params: Partial<SearchParams>) => {
-      dispatch(changeSearchParams({params}));
+      dispatch(changeSearchParams({ params }));
     },
     onSearch: (params: SearchParams) => {
-      dispatch(changeSearchParams({params}));
-      dispatch(toCard({name: 'SEARCH_CARD'}));
+      dispatch(changeSearchParams({ params }));
+      dispatch(toCard({ name: 'SEARCH_CARD' }));
     },
   };
 };
 
 const SearchSettingsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SearchSettings);
 
 export default SearchSettingsContainer;

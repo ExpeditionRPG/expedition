@@ -9,6 +9,7 @@ This is the companion to the [Expedition App](https://github.com/ExpeditionRPG/e
 ## Installation
 
 Install:
+
 - [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for Chrome.
 - [NodeJS v6.0+](nodejs.org)
 

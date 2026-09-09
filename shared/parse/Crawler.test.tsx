@@ -1,16 +1,33 @@
-import {Context, defaultContext} from './Context';
-import {CrawlEntry, CrawlerBase, CrawlEvent} from './Crawler';
-import {Node} from './Node';
+import { Context, defaultContext } from './Context';
+import { CrawlEntry, CrawlerBase, CrawlEvent } from './Crawler';
+import { Node } from './Node';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from '../Cheerio';
 
 class CrawlTest extends CrawlerBase<Context> {
-  public efn: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null;
-  public nfn: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null;
+  public efn: ((q: CrawlEntry<Context>, e: CrawlEvent) => any) | null;
+  public nfn:
+    | ((
+        q: CrawlEntry<Context>,
+        nodeStr: string,
+        id: string,
+        line: number,
+      ) => any)
+    | null;
 
-  constructor(onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any)|null,
-              onNode: ((q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => any)|null,
-              onErrors: ((q: CrawlEntry<Context>, errors: Error[], line: number) => any)|null) {
+  constructor(
+    onEvent: ((q: CrawlEntry<Context>, e: CrawlEvent) => any) | null,
+    onNode:
+      | ((
+          q: CrawlEntry<Context>,
+          nodeStr: string,
+          id: string,
+          line: number,
+        ) => any)
+      | null,
+    onErrors:
+      ((q: CrawlEntry<Context>, errors: Error[], line: number) => any) | null,
+  ) {
     super();
     this.efn = onEvent;
     this.nfn = onNode;
@@ -22,7 +39,12 @@ class CrawlTest extends CrawlerBase<Context> {
       this.efn(q, e);
     }
   }
-  protected onNode(q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) {
+  protected onNode(
+    q: CrawlEntry<Context>,
+    nodeStr: string,
+    id: string,
+    line: number,
+  ) {
     if (this.nfn) {
       this.nfn(q, nodeStr, id, line);
     }
@@ -47,11 +69,17 @@ describe('CrawlerBase', () => {
       `)('combat');
 
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundEnd = foundEnd || (e === 'END' && q.prevLine === 1 && q.prevId === 'test');
-        expect(e).not.toEqual('IMPLICIT_END');
-        expect(e).not.toEqual('INVALID');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundEnd =
+            foundEnd ||
+            (e === 'END' && q.prevLine === 1 && q.prevId === 'test');
+          expect(e).not.toEqual('IMPLICIT_END');
+          expect(e).not.toEqual('INVALID');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
@@ -73,13 +101,18 @@ describe('CrawlerBase', () => {
       `)(':first-child');
 
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundEnd = foundEnd || (e === 'END' && q.prevLine === 2 && q.prevId === 'A1');
-        expect(e).not.toEqual('IMPLICIT_END');
-        expect(e).not.toEqual('INVALID');
-      }, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
-        expect(line).not.toEqual(12);
-      }, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundEnd =
+            foundEnd || (e === 'END' && q.prevLine === 2 && q.prevId === 'A1');
+          expect(e).not.toEqual('IMPLICIT_END');
+          expect(e).not.toEqual('INVALID');
+        },
+        (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
+          expect(line).not.toEqual(12);
+        },
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
@@ -104,11 +137,16 @@ describe('CrawlerBase', () => {
         </quest>
       `)('quest > :first-child');
       let foundEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundEnd = foundEnd || (e === 'END' && q.prevLine === 6 && q.prevId === 'B4');
-        expect(e).not.toEqual('IMPLICIT_END');
-        expect(e).not.toEqual('INVALID');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundEnd =
+            foundEnd || (e === 'END' && q.prevLine === 6 && q.prevId === 'B4');
+          expect(e).not.toEqual('IMPLICIT_END');
+          expect(e).not.toEqual('INVALID');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundEnd).toEqual(true);
@@ -121,24 +159,38 @@ describe('CrawlerBase', () => {
         <trigger data-line="2">end</trigger>
       </quest>`)('quest > :first-child');
       let foundImplicitEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 0 && q.prevId === 'START');
-        expect(e).not.toEqual('END');
-        expect(e).not.toEqual('INVALID');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundImplicitEnd =
+            foundImplicitEnd ||
+            (e === 'IMPLICIT_END' && q.prevLine === 0 && q.prevId === 'START');
+          expect(e).not.toEqual('END');
+          expect(e).not.toEqual('INVALID');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundImplicitEnd).toEqual(true);
     });
 
     test('tracks implicit end', () => {
-      const xml = cheerio.load(`<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`)(':first-child');
+      const xml = cheerio.load(
+        `<roleplay title="A1" id="A1" data-line="2"><p></p></roleplay>`,
+      )(':first-child');
       let foundImplicitEnd = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundImplicitEnd = foundImplicitEnd || (e === 'IMPLICIT_END' && q.prevLine === 2 && q.prevId === 'A1');
-        expect(e).not.toEqual('END');
-        expect(e).not.toEqual('INVALID');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundImplicitEnd =
+            foundImplicitEnd ||
+            (e === 'IMPLICIT_END' && q.prevLine === 2 && q.prevId === 'A1');
+          expect(e).not.toEqual('END');
+          expect(e).not.toEqual('INVALID');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundImplicitEnd).toEqual(true);
@@ -150,12 +202,18 @@ describe('CrawlerBase', () => {
         <roleplay title="A1" id="A1"><p></p></roleplay>
         <roleplay title="A2"><p></p></roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'A0');
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundInvalid =
+            foundInvalid ||
+            (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'A0');
 
-        // We don't traverse past.
-        expect(q.prevId).not.toEqual('A1');
-      }, null, null);
+          // We don't traverse past.
+          expect(q.prevId).not.toEqual('A1');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
@@ -177,13 +235,19 @@ describe('CrawlerBase', () => {
 
       let foundEnd = false;
       let didLoop = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundEnd = foundEnd || (e === 'END' && q.prevLine === 10 && q.prevId === 'cond');
-        expect(e).not.toEqual('IMPLICIT_END');
-        expect(e).not.toEqual('INVALID');
-      }, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
-        didLoop = didLoop || (line === 6 && q.prevId === 'cond');
-      }, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundEnd =
+            foundEnd ||
+            (e === 'END' && q.prevLine === 10 && q.prevId === 'cond');
+          expect(e).not.toEqual('IMPLICIT_END');
+          expect(e).not.toEqual('INVALID');
+        },
+        (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
+          didLoop = didLoop || (line === 6 && q.prevId === 'cond');
+        },
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(didLoop).toEqual(true);
@@ -211,9 +275,13 @@ describe('CrawlerBase', () => {
         </quest>`)('quest > :first-child');
 
       let foundExceeded = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundExceeded = foundExceeded || (e === 'MAX_DEPTH_EXCEEDED');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundExceeded = foundExceeded || e === 'MAX_DEPTH_EXCEEDED';
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()), 500, 1, 150);
       expect(foundExceeded).toEqual(true);
     });
@@ -226,9 +294,13 @@ describe('CrawlerBase', () => {
         </quest>`)('quest > :first-child');
 
       let foundExceeded = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundExceeded = foundExceeded || (e === 'VISIT_LIMIT_EXCEEDED');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundExceeded = foundExceeded || e === 'VISIT_LIMIT_EXCEEDED';
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()), 500, 150, 1);
       expect(foundExceeded).toEqual(true);
     });
@@ -252,9 +324,15 @@ describe('CrawlerBase', () => {
           <choice text="a1"></choice>
         </roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundInvalid =
+            foundInvalid ||
+            (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
@@ -266,9 +344,15 @@ describe('CrawlerBase', () => {
           <choice text="a1"><roleplay></roleplay></choice>
         </roleplay>`)(':first-child');
       let foundInvalid = false;
-      const crawler = new CrawlTest((q: CrawlEntry<Context>, e: CrawlEvent) => {
-        foundInvalid = foundInvalid || (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
-      }, null, null);
+      const crawler = new CrawlTest(
+        (q: CrawlEntry<Context>, e: CrawlEvent) => {
+          foundInvalid =
+            foundInvalid ||
+            (e === 'INVALID' && q.prevLine === 2 && q.prevId === 'START');
+        },
+        null,
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundInvalid).toEqual(true);
@@ -292,16 +376,26 @@ describe('CrawlerBase', () => {
             </choice>
           </roleplay>
         </quest>`)('quest > :first-child');
-      const uniqueCounter: {[line: number]: boolean} = {};
+      const uniqueCounter: { [line: number]: boolean } = {};
       const lineOrder: number[] = [];
-      const crawler = new CrawlTest(null, (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
-        lineOrder.push(line);
-        if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {
-          throw new Error('Came across second instance of line ' + line +
-            ' when only ' + Object.keys(uniqueCounter) + ' and not all 0,1,2,4,5 seen. Order: ' + lineOrder);
-        }
-        uniqueCounter[line] = true;
-      }, null);
+      const crawler = new CrawlTest(
+        null,
+        (q: CrawlEntry<Context>, nodeStr: string, id: string, line: number) => {
+          lineOrder.push(line);
+          if (Object.keys(uniqueCounter).length < 5 && uniqueCounter[line]) {
+            throw new Error(
+              'Came across second instance of line ' +
+                line +
+                ' when only ' +
+                Object.keys(uniqueCounter) +
+                ' and not all 0,1,2,4,5 seen. Order: ' +
+                lineOrder,
+            );
+          }
+          uniqueCounter[line] = true;
+        },
+        null,
+      );
       crawler.crawl(new Node(xml, defaultContext()));
     });
 
@@ -311,11 +405,15 @@ describe('CrawlerBase', () => {
           <choice if="notavar"><roleplay></roleplay></choice>
         </roleplay>`)(':first-child');
       let foundErrors = false;
-      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
-        foundErrors = true;
-        expect(errors[0].toString()).toContain('notavar');
-        expect(line).toEqual(2);
-      });
+      const crawler = new CrawlTest(
+        null,
+        null,
+        (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+          foundErrors = true;
+          expect(errors[0].toString()).toContain('notavar');
+          expect(line).toEqual(2);
+        },
+      );
       crawler.crawl(new Node(xml, defaultContext()));
 
       expect(foundErrors).toEqual(true);
@@ -327,11 +425,15 @@ describe('CrawlerBase', () => {
           <p>{{notavar}}</p>
         </roleplay>`)(':first-child');
       let foundErrors = false;
-      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
-        foundErrors = true;
-        expect(errors[0].toString()).toContain('notavar');
-        expect(line).toEqual(2);
-      });
+      const crawler = new CrawlTest(
+        null,
+        null,
+        (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+          foundErrors = true;
+          expect(errors[0].toString()).toContain('notavar');
+          expect(line).toEqual(2);
+        },
+      );
       crawler.crawl(new Node(xml, defaultContext()));
       expect(foundErrors).toEqual(true);
     });
@@ -342,11 +444,15 @@ describe('CrawlerBase', () => {
           <trigger>{{notavar}}</trigger>
         </roleplay>`)(':first-child');
       let foundErrors = false;
-      const crawler = new CrawlTest(null, null, (q: CrawlEntry<Context>, errors: Error[], line: number) => {
-        foundErrors = true;
-        expect(errors[0].toString()).toContain('notavar');
-        expect(line).toEqual(2);
-      });
+      const crawler = new CrawlTest(
+        null,
+        null,
+        (q: CrawlEntry<Context>, errors: Error[], line: number) => {
+          foundErrors = true;
+          expect(errors[0].toString()).toContain('notavar');
+          expect(line).toEqual(2);
+        },
+      );
       crawler.crawl(new Node(xml, defaultContext()));
       expect(foundErrors).toEqual(true);
     });

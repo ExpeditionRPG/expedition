@@ -1,10 +1,10 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
 
-import {logoutUser} from '../actions/User';
-import {queryView} from '../actions/View';
-import {AppState, UserState, ViewType} from '../reducers/StateTypes';
-import TopBar, {DispatchProps, StateProps} from './TopBar';
+import { logoutUser } from '../actions/User';
+import { queryView } from '../actions/View';
+import { AppState, UserState, ViewType } from '../reducers/StateTypes';
+import TopBar, { DispatchProps, StateProps } from './TopBar';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -24,9 +24,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   };
 };
 
-const TopBarContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TopBar);
+const TopBarContainer = connect(mapStateToProps, mapDispatchToProps)(TopBar);
 
 export default TopBarContainer;

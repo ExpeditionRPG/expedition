@@ -112,20 +112,30 @@ export enum Theme {
   horror = 'horror',
 }
 
-export const VERSION =
-  (process && process.env && process.env.VERSION) || '0.0.1'; // Webpack
-export const NODE_ENV =
-  (process && process.env && process.env.NODE_ENV) || 'dev';
+// These four `process.env.X` reads must stay written out in full: webpack's
+// DefinePlugin substitutes the whole `process.env.X` member expression for a
+// string literal at build time, and only recognises it spelled exactly this
+// way. Every key read here is therefore defined in shared/webpack.shared.js.
+//
+// They used to be guarded as `(process && process.env && process.env.X)`.
+// Webpack 4 injected a `process` mock so the bare identifier resolved; webpack
+// 5 does not, DefinePlugin leaves a bare `process` alone, and the module threw
+// `ReferenceError: process is not defined` before React could mount -- a blank
+// page for app, admin and quests. A `typeof process !== 'undefined'` guard
+// would be worse than useless: it is false in a browser, so the whole `&&`
+// chain would short-circuit and every value would silently fall back to the
+// defaults below, discarding what DefinePlugin substituted.
+export const VERSION = process.env.VERSION || '0.0.1';
+export const NODE_ENV = process.env.NODE_ENV || 'dev';
 export const API_HOST =
-  (process && process.env && process.env.API_HOST) ||
-  'https://betaapi.expeditiongame.com';
+  process.env.API_HOST || 'https://betaapi.expeditiongame.com';
 
 export const AUTH_SETTINGS = {
   // Android: '545484140970-qrhcn069bbvae1mub2237h5k32mnp04k.apps.googleusercontent.com',
   // iOS: (REVERSE_CLIENT_ID) '545484140970-lgcbm3df469kscbngg2iof57muj3p588.apps.googleusercontent.com',
   API_KEY: 'AIzaSyCgvf8qiaVoPE-F6ZGqX6LzukBftZ6fJr8',
   CLIENT_ID:
-    (process && process.env && process.env.OAUTH2_CLIENT_ID) ||
+    process.env.OAUTH2_CLIENT_ID ||
     '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',
   SCOPES: 'profile email',
   URL_BASE: API_HOST,

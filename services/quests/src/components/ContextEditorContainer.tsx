@@ -1,20 +1,30 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {setOpInit} from '../actions/Editor';
-import {AppState} from '../reducers/StateTypes';
-import ContextEditor, {DispatchProps, StateProps} from './ContextEditor';
+import { setOpInit } from '../actions/Editor';
+import { AppState } from '../reducers/StateTypes';
+import ContextEditor, { DispatchProps, StateProps } from './ContextEditor';
 
 const mapStateToProps = (state: AppState): StateProps => {
   const scopeHistory: any[] = [];
 
   for (const pastState of state.preview._history) {
     const pastQuest = pastState.quest;
-    if (pastQuest && pastQuest.node && pastQuest.node.ctx && pastQuest.node.ctx.scope) {
+    if (
+      pastQuest &&
+      pastQuest.node &&
+      pastQuest.node.ctx &&
+      pastQuest.node.ctx.scope
+    ) {
       scopeHistory.push(pastQuest.node.ctx.scope);
     }
   }
 
-  if (state.preview.quest && state.preview.quest.node && state.preview.quest.node.ctx && state.preview.quest.node.ctx.scope) {
+  if (
+    state.preview.quest &&
+    state.preview.quest.node &&
+    state.preview.quest.node.ctx &&
+    state.preview.quest.node.ctx.scope
+  ) {
     scopeHistory.push(state.preview.quest.node.ctx.scope);
   }
 
@@ -34,7 +44,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const ContextEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ContextEditor);
 
 export default ContextEditorContainer;

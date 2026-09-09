@@ -1,9 +1,9 @@
-import {CombatPhase, DecisionPhase} from 'app/Constants';
-import {Context} from 'shared/parse/Context';
-import {Node} from 'shared/parse/Node';
-import {CombatState} from './combat/Types';
-import {DecisionState} from './decision/Types';
-import {RoleplayPhase} from './roleplay/Types';
+import { CombatPhase, DecisionPhase } from 'app/Constants';
+import { Context } from 'shared/parse/Context';
+import { Node } from 'shared/parse/Node';
+import { CombatState } from './combat/Types';
+import { DecisionState } from './decision/Types';
+import { RoleplayPhase } from './roleplay/Types';
 
 export interface TemplateState {
   combat: CombatState;
@@ -18,6 +18,10 @@ export interface TemplateContext extends Context {
 
 export class ParserNode extends Node<TemplateContext> {
   public inCombat(): boolean {
-    return this.getTag() === 'combat' || this.ctx.templates.combat.phase === CombatPhase.midCombatDecision || this.ctx.templates.combat.phase === CombatPhase.midCombatRoleplay;
+    return (
+      this.getTag() === 'combat' ||
+      this.ctx.templates.combat.phase === CombatPhase.midCombatDecision ||
+      this.ctx.templates.combat.phase === CombatPhase.midCombatRoleplay
+    );
   }
 }

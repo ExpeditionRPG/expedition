@@ -1,3 +1,5 @@
 describe('Combat PrepareTimer', () => {
-  test.skip('shows preparation card', () => { /* TODO */ });
+  test.skip('shows preparation card', () => {
+    /* TODO */
+  });
 });

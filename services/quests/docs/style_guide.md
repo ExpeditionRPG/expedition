@@ -62,10 +62,10 @@ Combat should slowly increase in difficulty over the length of your quest, to ac
 
 A good starting progression of tiers is something like:
 
-* Tier 3 combat
-* Tier 4 combat
-* Tier 5 combat
-* Tier 6 combat
+- Tier 3 combat
+- Tier 4 combat
+- Tier 5 combat
+- Tier 6 combat
 
 Of course, you can shape combat how you want to fit your quest - for instance, some quests start with an "unwinnable" battle (Tier 9+)
 that is designed to fail and move the story forward from there; others may start with an extremely simple Tier 1 combat, but foreshadow that perhaps the fight shouldn't have been that easy...

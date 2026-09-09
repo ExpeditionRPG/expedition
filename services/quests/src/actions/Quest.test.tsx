@@ -1,7 +1,14 @@
+import { EditableString } from '../Editable';
+import { QuestType } from '../reducers/StateTypes';
 import { API_HOST } from 'shared/schema/Constants';
 import { loggedOutUser } from '../reducers/User';
 import { Action } from '../Testing';
-import { loadQuest, LoadResult, QUEST_NOTES_HEADER } from './Quest';
+import {
+  loadQuest,
+  LoadResult,
+  publishQuest,
+  QUEST_NOTES_HEADER,
+} from './Quest';
 
 const fetchMock = require('fetch-mock');
 const nodeFetch = require('node-fetch');
@@ -154,6 +161,50 @@ describe('quest actions', () => {
   });
 
   describe('publishQuest', () => {
+    test.each([false, true])(
+      'sends encoded publish metadata (private: %s)',
+      privatePublish => {
+        const request = {
+          done: jest.fn().mockReturnThis(),
+          fail: jest.fn().mockReturnThis(),
+        };
+        const ajax = jest.fn().mockReturnValue(request);
+        const previousDollar = Object.getOwnPropertyDescriptor(globalThis, '$');
+        Object.defineProperty(globalThis, '$', {
+          value: { ajax },
+          configurable: true,
+        });
+        try {
+          const quest: QuestType = {
+            id: 'qa-quest',
+            title: 'A & B?',
+            author: 'QA Author',
+            mdRealtime: new EditableString(
+              'quest',
+              '# Test Quest\n\nHello adventurer.',
+            ),
+          };
+          publishQuest(quest, true, privatePublish)(jest.fn());
+          const options = ajax.mock.calls[0][0];
+          const url = new URL(options.url);
+          expect(url.pathname).toBe('/publish/qa-quest');
+          expect(url.searchParams.get('title')).toBe('A & B?');
+          expect(url.searchParams.get('author')).toBe('QA Author');
+          expect(url.searchParams.get('majorRelease')).toBe('true');
+          expect(url.searchParams.get('partition')).toBe(
+            privatePublish ? 'expedition-private' : 'expedition-public',
+          );
+          expect(options.type).toBe('POST');
+          expect(options.data).toContain('<quest');
+        } finally {
+          if (previousDollar) {
+            Object.defineProperty(globalThis, '$', previousDollar);
+          } else {
+            Reflect.deleteProperty(globalThis, '$');
+          }
+        }
+      },
+    );
     test.skip('throws error(s) with default metadata', () => {
       /* TODO */
     });

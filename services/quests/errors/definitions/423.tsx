@@ -4,7 +4,7 @@ export const METADATA_ERROR = true;
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`# Test Quest
+  `# Test Quest
 
   _text_
 
@@ -16,7 +16,7 @@ Text`,
 ];
 
 export const VALID = [
-`# Test Quest
+  `# Test Quest
 
 _text_
 

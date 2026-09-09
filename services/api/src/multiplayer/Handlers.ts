@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import * as express from 'express';
 import * as http from 'http';
 import {
@@ -68,7 +67,10 @@ export function user(
           };
 
           if (meta.peerCount === undefined || meta.peerCount <= 0) {
-            return null;
+            // Resolved rather than bare: every other branch of this map is a
+            // promise, and Promise.all over a mixed array is what
+            // @typescript-eslint/await-thenable objects to.
+            return Promise.resolve(null);
           }
 
           // Get last action on this session
@@ -372,11 +374,20 @@ export function websocketSession(
     }
   }
 
-  ws.on('message', (msg: WebSocket.Data) => {
-    if (typeof msg !== 'string') {
-      sendError(ws, 'Invalid type for inbound message: ' + typeof msg);
+  // ws 8 no longer decodes text frames before handing them to the 'message'
+  // listener: the payload always arrives as raw data (a Buffer here), and a
+  // second `isBinary` argument says which kind of frame it came from. Under
+  // ws 7 a text frame arrived as a string, so the old `typeof msg !== 'string'`
+  // guard rejected *every* inbound multiplayer message the moment ws was
+  // upgraded. The unit tests drive a mocked socket and so cannot see this;
+  // 'rejects binary frames' / 'accepts text frames' in Handlers.test.ts cover
+  // it now.
+  ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
+    if (isBinary) {
+      sendError(ws, 'Invalid type for inbound message: binary');
       return;
     }
+    const msg = data.toString();
 
     let event: MultiplayerEvent;
     try {
@@ -435,7 +446,16 @@ export function websocketSession(
       .catch((error: Error) => {
         console.error('WS commit error:', error);
         let multiEvent: MultiEvent | null = null;
-        makeMultiEvent(db, params.session, eventID)
+        // `eventID - 1`, not `eventID`. The commit failed because some other
+        // client already committed this id, so the catch-up has to *include*
+        // that id -- it is the authoritative version of the event this client
+        // just lost, and the thing it needs in order to reconcile.
+        // `getOrderedEventsAfter` filters on `id > start`, so passing `eventID`
+        // asks for everything after the contested id and, when that id is the
+        // newest, returns an empty `MULTI_EVENT` carrying `lastId: 0`.
+        // Contrast `maybeFastForwardClient`, which correctly passes the
+        // client's *last received* id.
+        makeMultiEvent(db, params.session, eventID - 1)
           .then((e: MultiEvent | undefined) => {
             multiEvent = e || null;
           })

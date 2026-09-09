@@ -31,7 +31,7 @@ export type ThunkAction<
   R,
   S = {},
   E = {},
-  A extends Redux.Action<any> = Redux.AnyAction
+  A extends Redux.Action<any> = Redux.AnyAction,
 > = (dispatch: Redux.Dispatch<A>, getState: () => S, extraArgument: E) => R;
 declare module 'redux' {
   export interface Dispatch<A extends Redux.Action<any> = Redux.AnyAction> {
@@ -151,37 +151,39 @@ window.onOlarkLoad = () => {
   }, 1000);
 
   // every 12 hours, check for the latest version
-  setInterval(() => {
-    $.ajax({
-      dataType: 'json',
-      success: (data: any) => {
-        if (data && data.version) {
-          const newVersion = data.version.split('.').map(Number);
-          const oldVersion = VERSION.split('.').map(Number);
-          if (
-            newVersion[0] > oldVersion[0] ||
-            newVersion[1] > oldVersion[1] ||
-            newVersion[2] > oldVersion[2]
-          ) {
-            store.dispatch(
-              setSnackbar(
-                true,
-                "There's a new version of the Quest Creator available!",
-                (event: any) => {
-                  location.reload();
-                },
-                'reload',
-                true,
-              ),
-            );
+  setInterval(
+    () => {
+      $.ajax({
+        dataType: 'json',
+        success: (data: any) => {
+          if (data && data.version) {
+            const newVersion = data.version.split('.').map(Number);
+            const oldVersion = VERSION.split('.').map(Number);
+            if (
+              newVersion[0] > oldVersion[0] ||
+              newVersion[1] > oldVersion[1] ||
+              newVersion[2] > oldVersion[2]
+            ) {
+              store.dispatch(
+                setSnackbar(
+                  true,
+                  "There's a new version of the Quest Creator available!",
+                  (event: any) => {
+                    location.reload();
+                  },
+                  'reload',
+                  true,
+                ),
+              );
+            }
           }
-        }
-      },
-      url:
-        'https://raw.githubusercontent.com/ExpeditionRPG/expedition/master/services/quests/package.json',
-      xhrFields: { withCredentials: false },
-    });
-  }, 12 * 60 * 60 * 1000);
+        },
+        url: 'https://raw.githubusercontent.com/ExpeditionRPG/expedition/master/services/quests/package.json',
+        xhrFields: { withCredentials: false },
+      });
+    },
+    12 * 60 * 60 * 1000,
+  );
 
   // Alert user if cookies disabled
   // Based on https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cookies.js

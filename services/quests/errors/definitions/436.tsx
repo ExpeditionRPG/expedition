@@ -6,13 +6,13 @@ export const DESCRIPTION = `Make sure that its indentation matches with the line
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`* choice
+  `* choice
 
    text with three leading spaces`,
 ];
 
 export const VALID = [
-`* choice
+  `* choice
 
   text with two leading spaces`,
 ];

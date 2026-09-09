@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import Sequelize from 'sequelize';
 import { makeSecret } from 'shared/multiplayer/Session';
 import { Session } from 'shared/schema/multiplayer/Sessions';
@@ -9,7 +8,7 @@ const { Op } = Sequelize;
 export function getSessionBySecret(
   db: Database,
   secret: string,
-): Bluebird<SessionInstance | null> {
+): Promise<SessionInstance | null> {
   return db.sessions
     .findOne({ where: { secret, locked: false } })
     .then((result: SessionInstance | null) => {
@@ -17,7 +16,7 @@ export function getSessionBySecret(
     });
 }
 
-export function createSession(db: Database): Bluebird<SessionInstance> {
+export function createSession(db: Database): Promise<SessionInstance> {
   return db.sessions.create(
     new Session({
       eventCounter: 0,
@@ -31,12 +30,12 @@ export function createSession(db: Database): Bluebird<SessionInstance> {
 export function getSessionQuestTitle(
   db: Database,
   session: number,
-): Bluebird<string | null> {
+): Promise<string | null> {
   return db.events
     .findOne({
       attributes: ['json'],
       order: [['created_at', 'DESC']],
-      where: { session, json: { [Op.like]: '%fetchQuestXML%' } } as any,
+      where: { session, json: { [Op.like]: '%fetchQuestXML%' } },
     })
     .then((e: EventInstance | null) => {
       if (e === null) {

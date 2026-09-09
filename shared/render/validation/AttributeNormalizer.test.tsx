@@ -1,3 +1,5 @@
 describe('Attribute Normalizer', () => {
-  test('TODO', () => { /* TODO */ });
+  test('TODO', () => {
+    /* TODO */
+  });
 });

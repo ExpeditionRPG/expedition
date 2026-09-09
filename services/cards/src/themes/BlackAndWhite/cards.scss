@@ -12,7 +12,6 @@ $footer-height: 0.4in;
 $text-color-white: #fff;
 
 #renderer.BlackAndWhite {
-
   strong {
     font-family: $font-header;
   }
@@ -27,7 +26,6 @@ $text-color-white: #fff;
   }
 
   .hp-tracker-vertical-left {
-
     list-style: none;
     text-align: right;
     display: block;
@@ -50,7 +48,6 @@ $text-color-white: #fff;
   }
 
   .hp-tracker-vertical-right {
-
     list-style: none;
     text-align: right;
     display: block;
@@ -68,8 +65,8 @@ $text-color-white: #fff;
     }
   }
 
-  .hp-tracker-horizontal, .counter-horizontal {
-
+  .hp-tracker-horizontal,
+  .counter-horizontal {
     list-style: none;
     display: block;
     margin: 0;
@@ -99,7 +96,6 @@ $text-color-white: #fff;
   }
 
   .adventurer-hp-tracker {
-
     font-size: $text-size-content;
     font-family: $font-body;
     list-style: none;
@@ -119,11 +115,9 @@ $text-color-white: #fff;
     }
   }
 
-
   /* ===== THE CARDS ===== */
 
   .card {
-
     border: $border solid black;
     border-radius: $border * 2;
     font-family: $font-body;
@@ -143,7 +137,6 @@ $text-color-white: #fff;
     }
 
     header {
-
       position: relative;
       margin: $top-padding $edge 3pt $edge;
 
@@ -156,7 +149,6 @@ $text-color-white: #fff;
       }
 
       .health {
-
         position: absolute;
         top: 0.03in;
         right: 0;
@@ -170,9 +162,7 @@ $text-color-white: #fff;
       }
     }
 
-
     article {
-
       position: relative;
       clear: left;
       margin: 0 $edge $edge $edge;
@@ -181,13 +171,12 @@ $text-color-white: #fff;
 
       .indicators {
         /* fixed height for this box for consistent card layout */
-        height: .5in;
+        height: 0.5in;
         font-weight: bold;
         text-align: center;
       }
 
       .abilitytext {
-
         display: table;
         height: 1.65in;
         width: 100%;
@@ -200,7 +189,7 @@ $text-color-white: #fff;
 
       br {
         display: block;
-        content: "";
+        content: '';
 
         &.padded {
           margin: 7px 0;
@@ -209,9 +198,10 @@ $text-color-white: #fff;
     }
 
     footer {
-
       position: absolute;
-      left: $edge; bottom: $border; right: $edge;
+      left: $edge;
+      bottom: $border;
+      right: $edge;
       height: $footer-height;
       text-align: left;
 
@@ -226,7 +216,6 @@ $text-color-white: #fff;
     }
 
     &.horizontal {
-
       &.front .contents {
         margin-top: -$border/2;
         margin-left: -$border/2;
@@ -255,7 +244,6 @@ $text-color-white: #fff;
     }
 
     &.dark {
-
       border-color: $text-color-white;
       background-color: $text-color;
       color: $text-color-white;
@@ -272,14 +260,11 @@ $text-color-white: #fff;
     }
 
     &.Ability {
-
       header {
-
         padding: 0;
         text-align: center;
 
         .typeicon {
-
           position: absolute;
           left: -3pt;
           top: -2pt;
@@ -291,7 +276,6 @@ $text-color-white: #fff;
         }
 
         .classicon {
-
           position: absolute;
           right: -4pt;
           top: -2pt;
@@ -309,7 +293,6 @@ $text-color-white: #fff;
       }
 
       article {
-
         .preamble {
           min-height: 0.65in;
           text-align: center;
@@ -338,13 +321,11 @@ $text-color-white: #fff;
     }
 
     &.Helper {
-
       article {
         padding-top: 0.2in;
       }
 
       .inline_icon {
-
         height: 1.4 * $icon-width;
         line-height: 1.4 * $icon-width;
         margin-top: 0.055in;
@@ -365,24 +346,24 @@ $text-color-white: #fff;
         padding: 0;
         height: 0.08in;
         line-height: 0in;
-        content: "";
+        content: '';
       }
     }
 
     /* Cards with trackers */
-    &.Adventurer, &.Encounter, &.Loot {
-
+    &.Adventurer,
+    &.Encounter,
+    &.Loot {
       .flavortext {
         padding: 0 $padding;
       }
 
       &.bottomBar .flavortext {
-        padding-bottom: 0.8*$padding;
+        padding-bottom: 0.8 * $padding;
       }
     }
 
     &.Adventurer {
-
       text-align: center;
 
       .level {
@@ -406,7 +387,6 @@ $text-color-white: #fff;
     }
 
     &.Encounter {
-
       header {
         padding-right: 0;
       }
@@ -416,12 +396,14 @@ $text-color-white: #fff;
           margin-top: $tiny;
         }
 
-        .surge, .death {
+        .surge,
+        .death {
           padding-top: $tiny;
         }
       }
 
-      .health, .hp-tracker {
+      .health,
+      .hp-tracker {
         opacity: 0.8;
       }
 
@@ -460,11 +442,9 @@ $text-color-white: #fff;
     }
 
     &.Loot {
-
       text-align: center;
 
       &.tracker {
-
         article {
           padding: 0 0.15in;
         }
@@ -528,8 +508,9 @@ $text-color-white: #fff;
         .personaMarker {
           margin: 0;
           td {
-            &:before, &:after {
-              content: "-";
+            &:before,
+            &:after {
+              content: '-';
               position: absolute;
             }
             &:before {
@@ -540,14 +521,16 @@ $text-color-white: #fff;
             }
           }
           &.personaMarkerTop td {
-            &:before, &:after {
+            &:before,
+            &:after {
               top: 0.035in;
             }
           }
           &.personaMarkerBottom td {
             padding-top: 6pt;
             padding-bottom: 2pt;
-            &:before, &:after {
+            &:before,
+            &:after {
               top: 2pt + 0.02in;
             }
           }
@@ -566,7 +549,7 @@ $text-color-white: #fff;
 
       .flavortext {
         text-align: center;
-        padding-bottom: 0.8*$padding;
+        padding-bottom: 0.8 * $padding;
       }
 
       .level {
@@ -592,12 +575,11 @@ $text-color-white: #fff;
     }
   }
 
-
   /* ===== THE CARD BACKS ===== */
 
   .card.back {
-
-    h1, h2 {
+    h1,
+    h2 {
       position: absolute;
       left: 0;
       right: 0;
@@ -624,7 +606,9 @@ $text-color-white: #fff;
 
     .tier {
       position: absolute;
-      bottom: 0.95in; left: 0; right: 0;
+      bottom: 0.95in;
+      left: 0;
+      right: 0;
       text-align: center;
     }
 
@@ -632,7 +616,8 @@ $text-color-white: #fff;
       padding-right: 14pt;
     }
 
-    .hp-tracker-vertical, .hp-tracker-horizontal {
+    .hp-tracker-vertical,
+    .hp-tracker-horizontal {
       font-size: $text-size-content;
       font-family: $font-body;
     }
@@ -646,14 +631,15 @@ $text-color-white: #fff;
       }
     }
 
-    &.Adventurer, &.Persona, &.Skill {
+    &.Adventurer,
+    &.Persona,
+    &.Skill {
       h1 {
         top: 0.45in;
       }
     }
 
     &.Encounter {
-
       h1 {
         top: 0.4in;
       }
@@ -663,7 +649,7 @@ $text-color-white: #fff;
       }
 
       .hp-tracker-vertical-right {
-        top: 0.10in;
+        top: 0.1in;
       }
       .hp-tracker-horizontal {
         bottom: 0;
@@ -674,14 +660,15 @@ $text-color-white: #fff;
     }
   }
 
-
   /* ===== BACKGROUNDS ===== */
 
-  .card.front, .card.back {
+  .card.front,
+  .card.back {
     &:before {
-      content: "";
+      content: '';
       position: absolute;
-      top: 1.125in; left: .625in;
+      top: 1.125in;
+      left: 0.625in;
       width: 1in;
       height: 1in;
 
@@ -692,9 +679,10 @@ $text-color-white: #fff;
 
   .card.back:after {
     /* Image is 2000x351 */
-    content: "";
+    content: '';
     position: absolute;
-    bottom: 0.25in; left: .625in;
+    bottom: 0.25in;
+    left: 0.625in;
     width: 1in;
     height: 0.175in;
 
@@ -713,47 +701,67 @@ $text-color-white: #fff;
     background-image: url(../../../../shared/images/logo/logo-white-on-black.png) !important;
   }
 
-  .card.back.Influence { &:before {
-    background-image: url(../../../../shared/images/icons/influence.svg) !important;
-  }}
-  .card.back.Magic { &:before {
-    background-image: url(../../../../shared/images/icons/magic.svg) !important;
-  }}
-  .card.back.Melee { &:before {
-    background-image: url(../../../../shared/images/icons/melee.svg) !important;
-  }}
-  .card.back.Music { &:before {
-    background-image: url(../../../../shared/images/icons/music.svg) !important;
-  }}
-  .card.back.Ranged { &:before {
-    background-image: url(../../../../shared/images/icons/ranged.svg) !important;
-  }}
-  .card.back.Tech { &:before {
-    background-image: url(../../../../shared/images/icons/tech.svg) !important;
-  }}
+  .card.back.Influence {
+    &:before {
+      background-image: url(../../../../shared/images/icons/influence.svg) !important;
+    }
+  }
+  .card.back.Magic {
+    &:before {
+      background-image: url(../../../../shared/images/icons/magic.svg) !important;
+    }
+  }
+  .card.back.Melee {
+    &:before {
+      background-image: url(../../../../shared/images/icons/melee.svg) !important;
+    }
+  }
+  .card.back.Music {
+    &:before {
+      background-image: url(../../../../shared/images/icons/music.svg) !important;
+    }
+  }
+  .card.back.Ranged {
+    &:before {
+      background-image: url(../../../../shared/images/icons/ranged.svg) !important;
+    }
+  }
+  .card.back.Tech {
+    &:before {
+      background-image: url(../../../../shared/images/icons/tech.svg) !important;
+    }
+  }
 
-  .card.back.Adventurer { &:before {
-    left: 0.4in;
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-    background-image: url(../../../../shared/images/icons/adventurer.svg) !important;
-  }}
-  .card.back.Persona { &:before {
-    left: 0.4in;
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-    background-image: url(../../../../shared/images/icons/persona.svg) !important;
-  }}
-  .card.back.Skill { &:before {
-    left: 0.4in;
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-    background-image: url(../../../../shared/images/icons/skill.svg) !important;
-  }}
+  .card.back.Adventurer {
+    &:before {
+      left: 0.4in;
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+      background-image: url(../../../../shared/images/icons/adventurer.svg) !important;
+    }
+  }
+  .card.back.Persona {
+    &:before {
+      left: 0.4in;
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+      background-image: url(../../../../shared/images/icons/persona.svg) !important;
+    }
+  }
+  .card.back.Skill {
+    &:before {
+      left: 0.4in;
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+      background-image: url(../../../../shared/images/icons/skill.svg) !important;
+    }
+  }
 
-  .card.back.Helper { &:before {
-    background-image: url(../../../../shared/images/icons/helper.svg) !important;
-  }}
+  .card.back.Helper {
+    &:before {
+      background-image: url(../../../../shared/images/icons/helper.svg) !important;
+    }
+  }
 
   .card.back.Loot {
     .tier {

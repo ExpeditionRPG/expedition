@@ -79,9 +79,7 @@ describe('QuestButton', () => {
       lastLogin: Moment(),
       quest: new Quest({
         ...TUTORIAL_QUESTS[0],
-        created: Moment()
-          .subtract(6, 'days')
-          .toDate(),
+        created: Moment().subtract(6, 'days').toDate(),
         official: false,
       }),
     }).e.html();
@@ -93,9 +91,7 @@ describe('QuestButton', () => {
       lastLogin: Moment().subtract(30, 'days'),
       quest: new Quest({
         ...TUTORIAL_QUESTS[0],
-        created: Moment()
-          .subtract(20, 'days')
-          .toDate(),
+        created: Moment().subtract(20, 'days').toDate(),
         official: false,
       }),
     }).e.html();
@@ -119,9 +115,7 @@ describe('QuestButton', () => {
       lastLogin: Moment(),
       quest: new Quest({
         ...TUTORIAL_QUESTS[0],
-        created: Moment()
-          .subtract(30, 'days')
-          .toDate(),
+        created: Moment().subtract(30, 'days').toDate(),
         ratingcount: 6,
         official: false,
       }),

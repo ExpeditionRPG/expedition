@@ -1,6 +1,5 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const Webpack = require('webpack');
-const Merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const shared = require('../../shared/webpack.dist.shared');
 const dev = require('./webpack.config');
 
@@ -12,14 +11,16 @@ const dev = require('./webpack.config');
 const options = {
   entry: dev.entry,
   plugins: [
-    new CopyWebpackPlugin([
-      { from: 'src/scripts', to: 'dist/scripts' },
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/scripts', to: 'dist/scripts' },
 
-      // Copy ops for static folder (error/maintenance pages)
-      { from: 'src/error.html' },
-      { from: 'src/maintenance.html' },
-    ]),
+        // Copy ops for static folder (error/maintenance pages)
+        { from: 'src/error.html' },
+        { from: 'src/maintenance.html' },
+      ],
+    }),
   ],
 };
 
-module.exports = Merge(shared, options);
+module.exports = merge(shared, options);

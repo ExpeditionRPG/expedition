@@ -1,6 +1,6 @@
-import {connect} from 'react-redux';
-import {AppStateWithHistory} from '../../reducers/StateTypes';
-import MultiplayerSync, {Props} from './MultiplayerSync';
+import { connect } from 'react-redux';
+import { AppStateWithHistory } from '../../reducers/StateTypes';
+import MultiplayerSync, { Props } from './MultiplayerSync';
 
 const mapStateToProps = (state: AppStateWithHistory): Props => {
   return {

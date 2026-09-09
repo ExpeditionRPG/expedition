@@ -1,4 +1,8 @@
-import {remoteify, getMultiplayerAction, clearMultiplayerActions} from './Remoteify';
+import {
+  remoteify,
+  getMultiplayerAction,
+  clearMultiplayerActions,
+} from './Remoteify';
 
 describe('Remoteify', () => {
   beforeEach(clearMultiplayerActions);

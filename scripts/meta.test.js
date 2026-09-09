@@ -55,10 +55,7 @@ function walkDir(root) {
 // path, and keyed off a literal '/expedition/' segment that does not exist in a
 // git worktree or a differently-named checkout.
 function repoRelativeStem(file) {
-  const rel = path
-    .relative(REPO_ROOT, file)
-    .split(path.sep)
-    .join('/');
+  const rel = path.relative(REPO_ROOT, file).split(path.sep).join('/');
   return rel.replace(/\.(tsx|ts|js)$/, '');
 }
 
@@ -84,7 +81,6 @@ describe('Dependencies', () => {
       '@types/.*',
       'typescript',
       'webpack-cli',
-      'react-hot-loader',
 
       // Needed for tests. These are loaded by the runner rather than imported.
       'react-test-renderer', // peer of enzyme-adapter-react-16, used by mount()

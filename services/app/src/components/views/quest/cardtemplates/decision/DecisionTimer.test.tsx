@@ -28,7 +28,7 @@ const TEST_LEVELED_CHECKS: LeveledSkillCheck[] = [
   },
 ];
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 const TEST_NODE = new ParserNode(
   cheerio.load(`
   <decision>
@@ -70,17 +70,12 @@ describe('DecisionTimer', () => {
   });
   test('either shows persona or difficulty, not both', () => {
     const { e } = setup({});
-    const result = e
-      .find('.secondary')
-      .childAt(0)
-      .text();
+    const result = e.find('.secondary').childAt(0).text();
     expect(result).toMatch(/^\d \w+ (charisma|athletics|knowledge)$/);
   });
   test('triggers onSelect when a decision is selected', () => {
     const { props, e } = setup({});
-    e.find('button')
-      .at(0)
-      .simulate('click');
+    e.find('button').at(0).simulate('click');
     expect(props.onSelect).toHaveBeenCalledWith(
       props.node,
       TEST_LEVELED_CHECKS[0],

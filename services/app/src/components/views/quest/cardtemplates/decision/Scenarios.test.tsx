@@ -9,7 +9,7 @@ describe('combat decision scenarios', () => {
           test(`has value for ${p} ${s} ${o}`, () => {
             expect(
               getScenarioInstruction(
-                { persona: (p as any) as Persona, skill: (s as any) as Skill },
+                { persona: p as any as Persona, skill: s as any as Skill },
                 o,
                 () => 0,
               ),

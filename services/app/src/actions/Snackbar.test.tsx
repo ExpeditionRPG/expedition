@@ -1,3 +1,5 @@
 describe('Snackbar action', () => {
-  test('Empty', () => { /* TODO */ });
+  test('Empty', () => {
+    /* TODO */
+  });
 });

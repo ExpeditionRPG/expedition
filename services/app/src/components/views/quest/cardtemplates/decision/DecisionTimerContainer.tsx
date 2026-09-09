@@ -1,14 +1,21 @@
-import {DecisionPhase} from 'app/Constants';
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {connect} from 'react-redux';
+import { DecisionPhase } from 'app/Constants';
+import { AppStateWithHistory } from 'app/reducers/StateTypes';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {LeveledSkillCheck} from '../decision/Types';
-import {ParserNode} from '../TemplateTypes';
-import {handleDecisionSelect, skillTimeMillis, toDecisionCard} from './Actions';
-import DecisionTimer, {DispatchProps, StateProps} from './DecisionTimer';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+import { LeveledSkillCheck } from '../decision/Types';
+import { ParserNode } from '../TemplateTypes';
+import {
+  handleDecisionSelect,
+  skillTimeMillis,
+  toDecisionCard,
+} from './Actions';
+import DecisionTimer, { DispatchProps, StateProps } from './DecisionTimer';
+import { mapStateToProps as mapStateToPropsBase } from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProps>): StateProps => {
+const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: Partial<StateProps>,
+): StateProps => {
   return {
     ...mapStateToPropsBase(state, ownProps),
     roundTimeTotalMillis: skillTimeMillis(state.settings, state.multiplayer),
@@ -17,16 +24,26 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: Partial<StateProp
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
-    onSelect: (node: ParserNode, selected: LeveledSkillCheck, elapsedMillis: number) => {
-      dispatch(handleDecisionSelect({node, elapsedMillis, selected}));
-      dispatch(toDecisionCard({name: 'QUEST_CARD', phase: DecisionPhase.resolve, noHistory: true}));
+    onSelect: (
+      node: ParserNode,
+      selected: LeveledSkillCheck,
+      elapsedMillis: number,
+    ) => {
+      dispatch(handleDecisionSelect({ node, elapsedMillis, selected }));
+      dispatch(
+        toDecisionCard({
+          name: 'QUEST_CARD',
+          phase: DecisionPhase.resolve,
+          noHistory: true,
+        }),
+      );
     },
   };
 };
 
 const DecisionTimerContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DecisionTimer);
 
 export default DecisionTimerContainer;

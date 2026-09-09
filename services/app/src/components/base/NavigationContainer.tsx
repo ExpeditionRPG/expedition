@@ -1,16 +1,20 @@
-import {NAV_CARD_STORAGE_KEY} from 'app/Constants';
-import {connect} from 'react-redux';
+import { NAV_CARD_STORAGE_KEY } from 'app/Constants';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {toCard} from '../../actions/Card';
-import {setStorageKeyValue} from '../../LocalStorage';
-import {AppState, CardName} from '../../reducers/StateTypes';
-import Navigation, {DispatchProps, Props, StateProps} from './Navigation';
+import { toCard } from '../../actions/Card';
+import { setStorageKeyValue } from '../../LocalStorage';
+import { AppState, CardName } from '../../reducers/StateTypes';
+import Navigation, { DispatchProps, Props, StateProps } from './Navigation';
 
-const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps => {
+const mapStateToProps = (
+  state: AppState,
+  ownProps: Partial<Props>,
+): StateProps => {
   return {
     card: state.card,
     cardTheme: ownProps.cardTheme || 'light',
-    hasSearchResults: (state.search.results || false) && state.search.results.length > 0,
+    hasSearchResults:
+      (state.search.results || false) && state.search.results.length > 0,
     questTheme: state.quest.details.theme || 'base',
     settings: state.settings,
   };
@@ -19,7 +23,7 @@ const mapStateToProps = (state: AppState, ownProps: Partial<Props>): StateProps 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     toCard: (name: CardName) => {
-      dispatch(toCard({name, noHistory: true}));
+      dispatch(toCard({ name, noHistory: true }));
 
       // Save nav state in local storage so we can persist the user's
       // last used page next time they load.
@@ -30,7 +34,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
 
 const NavigationContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Navigation);
 
 export default NavigationContainer;

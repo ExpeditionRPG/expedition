@@ -1,4 +1,4 @@
-import {applyMiddleware, createStore} from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import app from './reducers/CombinedReducers';
 
@@ -14,8 +14,9 @@ function installStore(createdStore: any) {
 }
 
 function createAppStore() {
-
-  const devtools: any = window.devToolsExtension ? window.devToolsExtension() : (f: any) => f;
+  const devtools: any = window.devToolsExtension
+    ? window.devToolsExtension()
+    : (f: any) => f;
   const middleware = applyMiddleware(thunk);
 
   installStore(middleware(devtools(createStore))(app, {}));

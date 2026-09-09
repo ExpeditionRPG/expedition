@@ -1,8 +1,11 @@
-import {Logger} from '../Logger';
+import { Logger } from '../Logger';
 import AttributeNormalizer from './AttributeNormalizer';
 
 export default class Normalize {
-  public static questAttrs(attrs: {[k: string]: string}, log?: Logger): ({[k: string]: any}) {
+  public static questAttrs(
+    attrs: { [k: string]: string },
+    log?: Logger,
+  ): { [k: string]: any } {
     const n = new AttributeNormalizer(attrs, log);
     const result = {
       author: n.getString('author'),

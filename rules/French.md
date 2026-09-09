@@ -10,8 +10,8 @@ Ce document est basé sur l’application Expedition version 1.13.8. Vous pouvez
 
 Pour jouer, vous avez besoin d’une copie des cartes d’Expedition. Pour cela vous pouvez :
 
-* Acheter une copie dans la boutique d’Expedition : ExpeditionGame.com/store ou bien sur Amazon.
-* Imprimer vous-même vos cartes à l’aide de l’adresse suivante : ExpeditionGame.com/print-and-play . Si vous imprimez vous-même, vous aurez besoin d’un dé 20 ainsi que d’une douzaine de clips (trombones).
+- Acheter une copie dans la boutique d’Expedition : ExpeditionGame.com/store ou bien sur Amazon.
+- Imprimer vous-même vos cartes à l’aide de l’adresse suivante : ExpeditionGame.com/print-and-play . Si vous imprimez vous-même, vous aurez besoin d’un dé 20 ainsi que d’une douzaine de clips (trombones).
 
 Vous pouvez aussi imprimer ces règles comme référence lors de vos parties.
 
@@ -25,9 +25,9 @@ Dès que vous êtes prêts à jouer, chaque joueur sauf le MJ font les actions s
 
 Il sélectionne un aventurier de son choix dans le paquet, le pose devant lui face visible et passe le paquet au joueur suivant.
 
-*S’il n’y a qu’un seul joueur*, il sélectionne et met en place deux aventuriers.
+_S’il n’y a qu’un seul joueur_, il sélectionne et met en place deux aventuriers.
 
-*Si vous jouez avec The Horror*, il pioche une carte Persona, la pose devant lui face visible et met un clip sur
+_Si vous jouez avec The Horror_, il pioche une carte Persona, la pose devant lui face visible et met un clip sur
 
 « Base », puis met un clip sur les points de vie maximum.
 
@@ -35,7 +35,7 @@ Il sélectionne un aventurier de son choix dans le paquet, le pose devant lui fa
 
 Piocher les capacités de départ listées sur la carte d’aventurier.
 
-*Si vous jouez avec The Horror*, le joueur pioche une carte additionnelle Influence et la mélange avec ses capacités (les joueurs ont donc 7 capacités).
+_Si vous jouez avec The Horror_, le joueur pioche une carte additionnelle Influence et la mélange avec ses capacités (les joueurs ont donc 7 capacités).
 
 Il regarde ses capacités. Les joueurs qui le veulent peuvent faire un mulligan (mélanger ses capacités dans le paquet puis re-piocher).
 
@@ -53,12 +53,12 @@ Seulement avec Expedition, quand le MJ demande un test de compétence (comme se 
 
 Par exemple, le MJ peut laisser le joueur augmenter son jet par +1 pour chaque capacité que le joueur possède.
 
-| Capacité | Test de compétences compatible |
-| ----- | ----- |
-| Mêlée | Force, endurance, constitution, intimidation |
+| Capacité | Test de compétences compatible                                 |
+| -------- | -------------------------------------------------------------- |
+| Mêlée    | Force, endurance, constitution, intimidation                   |
 | Distance | Dextérité, se cacher, perception, escalade, acrobaties, larcin |
-| Magie | Intelligence, connaissance, traditions, histoire, sagesse |
-| Musique | Charisme, diplomatie, persuasion, négociation |
+| Magie    | Intelligence, connaissance, traditions, histoire, sagesse      |
+| Musique  | Charisme, diplomatie, persuasion, négociation                  |
 
 Le MJ peut aussi laisser un joueur utiliser une de ses capacités spécifiques comme un « raccourcie » - par exemple, au lieu d’essayer de casser une porte avec la force brute, le joueur pourrait essayer avec une boule de feu.
 
@@ -66,7 +66,7 @@ Le MJ peut aussi laisser un joueur utiliser une de ses capacités spécifiques c
 
 ### Mise en place
 
-Dans les scénarios il y aura parfois des combats. La difficulté est déterminée par la « somme des Rangs » de tous les ennemis en jeu. Par exemple, un Rat Géant rang 3 avec une Main Zombie rang 1 est une rencontre rang 4. 
+Dans les scénarios il y aura parfois des combats. La difficulté est déterminée par la « somme des Rangs » de tous les ennemis en jeu. Par exemple, un Rat Géant rang 3 avec une Main Zombie rang 1 est une rencontre rang 4.
 
 Généralement, le premier combat des joueurs sera du rang 2-3, augmentant le rang de 1 à chaque combat, avec un combat contre le boss d’un rang 6-9. Si vous récompensez les joueurs avec un butin en dehors d’un combat, 4 rangs de butin permettent au MJ d’augmenter le rang d’un combat de 1.
 
@@ -88,15 +88,15 @@ Mélanger sa pioche de capacités. Les capacités utilisées lors de ce combat s
 
 Si vous jouez avec un minuteur:
 
-* Chaque joueur pioche 3 capacités sans les regarder.
-* Le Mj démarre le minuteur pour 10 ou 30 secondes.
-* Les joueurs regardent leurs capacités puis en jouent une.
-* Si le minuteur finit avant que tous les joueurs aient joué, multipliez les dégâts reçus ce tour par 1,5 (arrondi au-dessus)
+- Chaque joueur pioche 3 capacités sans les regarder.
+- Le Mj démarre le minuteur pour 10 ou 30 secondes.
+- Les joueurs regardent leurs capacités puis en jouent une.
+- Si le minuteur finit avant que tous les joueurs aient joué, multipliez les dégâts reçus ce tour par 1,5 (arrondi au-dessus)
 
 Si vous jouez sans minuteur
 
-* Chaque joueur pioche 3 capacités
-* Puis joue une capacité de leur main.
+- Chaque joueur pioche 3 capacités
+- Puis joue une capacité de leur main.
 
 #### Surcharge
 
@@ -108,7 +108,7 @@ Les effets d’une surcharge s’appliquent avant les capacités. Les capacités
 
 ### Jet et résolution
 
-*Si vous jouez avec The Horror*: les aventuriers avec une Persona à Min doivent résoudre l’effet de leur Persona et la passer à Base avant d’utiliser une capacité. Les aventuriers à Max peuvent choisir de résoudre l’effet de leur Persona et passer à Base maintenant ou dans un tour suivant.
+_Si vous jouez avec The Horror_: les aventuriers avec une Persona à Min doivent résoudre l’effet de leur Persona et la passer à Base avant d’utiliser une capacité. Les aventuriers à Max peuvent choisir de résoudre l’effet de leur Persona et passer à Base maintenant ou dans un tour suivant.
 
 Jet: Chaque aventurier lance un dé pour chaque capacité qu’il a jouée. Si le jet est inférieur ou égal à la valeur du test, c’est une réussite. Les capacités peuvent avoir des effets additionnels basés sur le jet, même en cas d’échec.
 
@@ -129,30 +129,30 @@ Si vous voulez un combat plus facile, vous pouvez utiliser la table pour un joue
 ##### 1 - 2 joueurs (2 aventuriers)
 
 | Somme des Rangs | Jet: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (moyen ne) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
-| 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
-| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
+| --------------- | -------- | --- | ---- | ----- | ----- | ---------- |
+| 1               | 0        | 0   | 0    | 1     | 2     | 0.6        |
+| 2               | 0        | 1   | 1    | 1     | 2     | 1          |
+| 3               | 0        | 1   | 2    | 2     | 3     | 1.6        |
+| 4               | 1        | 2   | 2    | 2     | 3     | 2          |
+| 5               | 2        | 2   | 2    | 3     | 4     | 2.6        |
+| 6               | 2        | 2   | 3    | 4     | 4     | 3          |
+| 7               | 2        | 3   | 4    | 4     | 5     | 3.6        |
+| 8               | 3        | 3   | 4    | 5     | 5     | 4          |
+| 9+              | 4        | 4   | 4    | 5     | 6     | 4.6        |
 
 ##### 3 joueurs
 
 | Somme des Rangs | Jet: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (moyen ne) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
-| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
-| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
-| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
-| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
-| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| --------------- | -------- | --- | ---- | ----- | ----- | ---------- |
+| 1               | 0        | 0   | 1    | 1     | 2     | 0.8        |
+| 2               | 1        | 1   | 1    | 2     | 2     | 1.4        |
+| 3               | 1        | 2   | 2    | 3     | 3     | 2.2        |
+| 4               | 1        | 2   | 3    | 3     | 4     | 2.6        |
+| 5               | 3        | 3   | 3    | 4     | 4     | 3.4        |
+| 6               | 3        | 3   | 4    | 4     | 5     | 3.8        |
+| 7               | 3        | 4   | 5    | 5     | 5     | 4.4        |
+| 8               | 4        | 4   | 5    | 5     | 6     | 4.8        |
+| 9+              | 5        | 5   | 5    | 6     | 6     | 5.4        |
 
 ##### 4 joueurs
 
@@ -206,23 +206,23 @@ Butin: Le groupe pioche du butin - utilisez la table suivante pour déterminer l
 Répartissez le butin entre les aventuriers. Il peut être utilisé n’importe quand et ne coûte aucune action (sauf si cela est spécifié).
 
 | Rang du Combat | Rang du butin |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| -------------- | ------------- |
+| 1              | 1             |
+| 2              | 1             |
+| 3              | 2             |
+| 4              | 3             |
+| 5              | 3             |
+| 6              | 4             |
+| 7              | 4             |
+| 8+             | 5             |
 
 Monter de niveau : Le groupe gagne de l’expérience égale à la somme des rangs du combat. Gardez une trace de l’expérience en utilisant une face arrière d’une carte d’ennemis ou une feuille de papier. Sur une autre carte ou bien sur la feuille, conservez aussi l’expérience requise pour monter de niveau. Celle-ci commence à 4 et augmente de 1 chaque fois qu’il y a une montée de niveau.
 
 Quand les aventuriers montent de niveau, ils apprennent une nouvelle capacité :
 
-* Pour cela les joueurs piochent 3 capacités provenant d’un des paquets listé sur leurs cartes d’aventurier. Si vous jouez avec The Horror : Tous les joueurs peuvent aussi piocher dans le paquet d’influence.
-* Les joueurs choisissent une capacité et l’ajoutent à leur paquet de capacité. Les deux autres retournent en-dessous du paquet d’où elles viennent.
-* Vous pouvez aussi choisir de supprimer une de vos capacités.
+- Pour cela les joueurs piochent 3 capacités provenant d’un des paquets listé sur leurs cartes d’aventurier. Si vous jouez avec The Horror : Tous les joueurs peuvent aussi piocher dans le paquet d’influence.
+- Les joueurs choisissent une capacité et l’ajoutent à leur paquet de capacité. Les deux autres retournent en-dessous du paquet d’où elles viennent.
+- Vous pouvez aussi choisir de supprimer une de vos capacités.
 
 ### Défaite
 

@@ -206,10 +206,7 @@ export interface UserQuestsState {
 }
 
 export type FeedbackType =
-  | 'feedback'
-  | 'rating'
-  | 'report_error'
-  | 'report_quest';
+  'feedback' | 'rating' | 'report_error' | 'report_quest';
 
 export interface MultiplayerSessionType {
   secret: string;

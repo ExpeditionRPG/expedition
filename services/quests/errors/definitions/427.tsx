@@ -4,7 +4,7 @@ export const DESCRIPTION = `Jumping between combat cards is not supported.`;
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_combat_
+  `_combat_
 
 - Giant Rat
 
@@ -31,7 +31,7 @@ export const INVALID = [
 * on lose
 
   Card`,
-`_combat_
+  `_combat_
 
 - Giant Rat
 
@@ -69,7 +69,7 @@ _combat_
 ];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Giant Rat
 
@@ -100,7 +100,7 @@ _combat_
 * on lose
 
   Card`,
-`_combat_
+  `_combat_
 
 - Giant Rat
 

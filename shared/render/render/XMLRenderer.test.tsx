@@ -1,7 +1,7 @@
 import { Logger } from '../Logger';
 import { XMLRenderer } from './XMLRenderer';
 
-const cheerio: any = require('cheerio') as CheerioAPI;
+import * as cheerio from '../../Cheerio';
 
 describe('XMLRenderer', () => {
   describe('toTemplate', () => {

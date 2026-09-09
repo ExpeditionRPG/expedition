@@ -1,4 +1,5 @@
 import { ENCOUNTERS } from 'app/Encounters';
+import { Cheerio } from 'shared/Cheerio';
 import { Context } from 'shared/parse/Context';
 import { Node } from 'shared/parse/Node';
 import { REGEX } from 'shared/Regex';
@@ -13,15 +14,21 @@ import { StatsCrawlEntry, StatsCrawler } from './StatsCrawler';
 const HEALTH_INSTRUCTION = /(\w+ \w+ (health|hp))/gi;
 const VALID_HEALTH_INSTRUCTION = /(([gG]ain|[lL]ose) (all|\d+) health)/;
 const ABILITY_INSTRUCTION = /(\w+ \w+ abili(ty|ties))/gi;
-const VALID_ABILITY_INSTRUCTION = /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
+const VALID_ABILITY_INSTRUCTION =
+  /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
 const LOOT_INSTRUCTION = /(\w*\s*\w*\s*\w+ \w+ loot)/gi;
-const VALID_LOOT_INSTRUCTION = /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
+const VALID_LOOT_INSTRUCTION =
+  /(([dD]raw|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) tier (I|II|III|IV|V) loot)|(discard \d+ loot)/;
 const ADVENTURER_INSTRUCTION = /(\w*\s*player(s?)\s*\w*)/g;
 
 function getCombatParent(node: Node<Context>): Cheerio | null {
   let e = node.elem.parent();
   while (e.get(0) && e.parent()) {
-    const tag = e.get(0).tagName;
+    const el = e.get(0);
+    if (!el) {
+      return null;
+    }
+    const tag = el.tagName;
 
     // Don't count being within the win/lose events of a combat node as being "in combat".
     if (
@@ -209,8 +216,9 @@ export class PlaytestCrawler extends StatsCrawler {
         continue;
       }
 
+      const destEl = dest.elem.get(0);
       const cp2 =
-        dest.elem.get(0).tagName === 'combat'
+        destEl && destEl.tagName === 'combat'
           ? dest.elem
           : getCombatParent(dest);
       if (cp2 && cp2.attr('data-line') !== line1) {

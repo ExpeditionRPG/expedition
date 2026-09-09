@@ -4,7 +4,7 @@ export const DESCRIPTION = `Some path to this combat card results in an incorrec
 export const TEST_WITH_CRAWLER = true;
 
 export const INVALID = [
-`_A card_
+  `_A card_
 
 {{useExtraEvent = true}}
 
@@ -26,7 +26,7 @@ _combat_
 ];
 
 export const VALID = [
-`_A card_
+  `_A card_
 
 {{useExtraEvent = true}}
 

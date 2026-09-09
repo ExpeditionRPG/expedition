@@ -7,7 +7,7 @@ import { initialSettings } from '../reducers/Settings';
 import { Action } from '../Testing';
 import { fetchQuestXML, loadQuestXML } from './Web';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 const fetchMock = require('fetch-mock');
 
 // The module transform defines exports as non-configurable getters, so

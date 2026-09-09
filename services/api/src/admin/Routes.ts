@@ -13,7 +13,7 @@ function requireAdminAuth(
   if (!res.locals || !res.locals.id) {
     return res.status(401).end('You are not signed in.');
   }
-  let superUsers: string[] = [];
+  let superUsers: string[];
   try {
     superUsers = JSON.parse(Config.get('SUPER_USER_IDS'));
   } catch (e) {
@@ -29,28 +29,34 @@ function requireAdminAuth(
 }
 
 export function installRoutes(db: Database, router: express.Router) {
+  // `limitCors` must come BEFORE `requireAdminAuth` on every route, exactly as
+  // it does in services/api/src/Routes.ts. requireAdminAuth answers 401 itself
+  // and never calls next(), so mounting it first meant the CORS middleware
+  // never ran and the 401 went out with no Access-Control-Allow-Origin header.
+  // A browser then rejects the response before the app can see the status,
+  // reporting net::ERR_FAILED instead of a readable 401.
   router.post(
     '/admin/feedback/query',
-    requireAdminAuth,
     limitCors,
+    requireAdminAuth,
     (req, res) => Handlers.queryFeedback(db, req, res),
   );
   router.post(
     '/admin/feedback/modify',
-    requireAdminAuth,
     limitCors,
+    requireAdminAuth,
     (req, res) => Handlers.modifyFeedback(db, req, res),
   );
-  router.post('/admin/quest/query', requireAdminAuth, limitCors, (req, res) =>
+  router.post('/admin/quest/query', limitCors, requireAdminAuth, (req, res) =>
     Handlers.queryQuest(db, req, res),
   );
-  router.post('/admin/quest/modify', requireAdminAuth, limitCors, (req, res) =>
+  router.post('/admin/quest/modify', limitCors, requireAdminAuth, (req, res) =>
     Handlers.modifyQuest(db, req, res),
   );
-  router.post('/admin/user/query', requireAdminAuth, limitCors, (req, res) =>
+  router.post('/admin/user/query', limitCors, requireAdminAuth, (req, res) =>
     Handlers.queryUser(db, req, res),
   );
-  router.post('/admin/user/modify', requireAdminAuth, limitCors, (req, res) =>
+  router.post('/admin/user/modify', limitCors, requireAdminAuth, (req, res) =>
     Handlers.modifyUser(db, req, res),
   );
   router.get('/admin/ratings/recalc', limitCors, (req, res) =>

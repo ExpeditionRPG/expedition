@@ -30,7 +30,7 @@ import { toCard } from './Card';
 import { initQuestNode } from './Quest';
 import { openSnackbar } from './Snackbar';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 declare interface SavedQuest {
   xml: string;
@@ -154,7 +154,7 @@ export function storeSavedQuest(
     const xml = node.getRootElem() + '';
     const path = node.ctx.path;
     const seed = node.ctx.seed;
-    const line = parseInt(node.elem.attr('data-line'), 10);
+    const line = parseInt(node.elem.attr('data-line') || '', 10);
 
     if (!xml || !path) {
       return Promise.reject(new Error('Could not save quest.'));

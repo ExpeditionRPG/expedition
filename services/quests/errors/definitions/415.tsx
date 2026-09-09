@@ -3,7 +3,7 @@ export const NAME = `trigger found with indented section - check your starting w
 export const DESCRIPTION = ``;
 
 export const INVALID = [
-`_title_
+  `_title_
 
 **goto somewhere**
 
@@ -16,7 +16,7 @@ More text
 ];
 
 export const VALID = [
-`_title_
+  `_title_
 
 **goto somewhere**
 

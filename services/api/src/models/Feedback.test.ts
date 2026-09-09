@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import { Partition } from 'shared/schema/Constants';
 import { Feedback } from 'shared/schema/Feedback';
 import { MailService } from '../Mail';

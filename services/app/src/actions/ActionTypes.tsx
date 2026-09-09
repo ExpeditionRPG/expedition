@@ -1,8 +1,8 @@
 import Redux from 'redux';
-import {ClientID, InstanceID, StatusEvent} from 'shared/multiplayer/Events';
-import {Badge} from 'shared/schema/Constants';
-import {Quest} from 'shared/schema/Quests';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import { ClientID, InstanceID, StatusEvent } from 'shared/multiplayer/Events';
+import { Badge } from 'shared/schema/Constants';
+import { Quest } from 'shared/schema/Quests';
+import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
 import {
   AudioDataState,
   AudioState,
@@ -112,6 +112,11 @@ export interface SearchRequestAction extends Redux.Action {
   type: 'SEARCH_REQUEST';
 }
 
+export interface SearchErrorAction extends Redux.Action {
+  type: 'SEARCH_ERROR';
+  error: Error;
+}
+
 export interface SearchResponseAction extends Redux.Action {
   type: 'SEARCH_RESPONSE';
   quests: Quest[];
@@ -122,8 +127,8 @@ export interface SearchResponseAction extends Redux.Action {
 export interface PreviewQuestAction extends Redux.Action {
   type: 'PREVIEW_QUEST';
   quest: Quest;
-  savedTS: number|null;
-  lastPlayed: Date|null;
+  savedTS: number | null;
+  lastPlayed: Date | null;
 }
 
 export interface UserLoginAction extends Redux.Action {
@@ -194,7 +199,7 @@ export interface StorageFreeAction {
 
 export interface MultiplayerSessionAction extends Redux.Action {
   type: 'MULTIPLAYER_SESSION';
-  session: {id: number, secret: string};
+  session: { id: number; secret: string };
   client: string;
   instance: string;
 }

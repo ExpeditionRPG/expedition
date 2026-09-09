@@ -1,14 +1,14 @@
 import AudioControlsContainer from 'app/components/base/AudioControlsContainer';
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {CombatPhase} from 'app/Constants';
-import {Enemy} from 'app/reducers/QuestTypes';
+import { CombatPhase } from 'app/Constants';
+import { Enemy } from 'app/reducers/QuestTypes';
 import * as React from 'react';
-import {REGEX} from 'shared/Regex';
-import {NUMERALS} from '../Render';
-import {ParserNode} from '../TemplateTypes';
-import {CombatState} from './Types';
-import {StateProps as StatePropsBase} from './Types';
+import { REGEX } from 'shared/Regex';
+import { NUMERALS } from '../Render';
+import { ParserNode } from '../TemplateTypes';
+import { CombatState } from './Types';
+import { StateProps as StatePropsBase } from './Types';
 
 export interface StateProps extends StatePropsBase {
   combat: CombatState;
@@ -26,48 +26,77 @@ export default function drawEnemies(props: Props): JSX.Element {
   let repeatEnemy = false;
   let uniqueEnemy = false;
   const enemyNames: Set<string> = new Set();
-  const oneEnemy = (props.combat.enemies.length === 1);
-  const enemies: JSX.Element[] = props.combat.enemies.map((enemy: Enemy, index: number) => {
-    uniqueEnemy = uniqueEnemy || !enemy.class;
-    let icon = null;
-    if (enemy.class) {
-      const iconName = enemy.class.replace(new RegExp(REGEX.HTML_TAG.source, 'g'), '').toLowerCase();
-      icon = <img className="inline_icon" src={`images/${iconName}_white_small.svg`} />;
-    }
-    if (enemyNames.has(enemy.name)) {
-      repeatEnemy = true;
-    } else {
-      enemyNames.add(enemy.name);
-    }
-    return (
-      <h2 className="combat draw_enemies center" key={index}>
-        {enemy.name} <span className="meta">(Tier {NUMERALS[enemy.tier]} {icon})</span>
-      </h2>
-    );
-  });
+  const oneEnemy = props.combat.enemies.length === 1;
+  const enemies: JSX.Element[] = props.combat.enemies.map(
+    (enemy: Enemy, index: number) => {
+      uniqueEnemy = uniqueEnemy || !enemy.class;
+      let icon = null;
+      if (enemy.class) {
+        const iconName = enemy.class
+          .replace(new RegExp(REGEX.HTML_TAG.source, 'g'), '')
+          .toLowerCase();
+        icon = (
+          <img
+            className="inline_icon"
+            src={`images/${iconName}_white_small.svg`}
+          />
+        );
+      }
+      if (enemyNames.has(enemy.name)) {
+        repeatEnemy = true;
+      } else {
+        enemyNames.add(enemy.name);
+      }
+      return (
+        <h2 className="combat draw_enemies center" key={index}>
+          {enemy.name}{' '}
+          <span className="meta">
+            (Tier {NUMERALS[enemy.tier]} {icon})
+          </span>
+        </h2>
+      );
+    },
+  );
 
   let helpText: JSX.Element = <span></span>;
   if (props.settings.showHelp) {
     helpText = (
       <div>
         <p>
-          Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above and place {oneEnemy ? 'it' : 'them'} in the center of the table.
-          Put {oneEnemy ? 'a token on the largest number on its health tracker' : 'tokens on the largest numbers on their health trackers'}.
+          Draw the enemy {oneEnemy ? 'card' : 'cards'} listed above and place{' '}
+          {oneEnemy ? 'it' : 'them'} in the center of the table. Put{' '}
+          {oneEnemy
+            ? 'a token on the largest number on its health tracker'
+            : 'tokens on the largest numbers on their health trackers'}
+          .
         </p>
-        {repeatEnemy && <p><strong>Duplicate enemies:</strong> Draw extra cards of the appropriate class and track health using the card backs.</p>}
-        {uniqueEnemy && <p><strong>Custom enemies (no icon):</strong> Draw a random card of the listed tier (of any class). If health is specified, track it using the back of the card and ignore all card-specific surges and effects. Otherwise, use the front of the card, starting at full health.</p>}
+        {repeatEnemy && (
+          <p>
+            <strong>Duplicate enemies:</strong> Draw extra cards of the
+            appropriate class and track health using the card backs.
+          </p>
+        )}
+        {uniqueEnemy && (
+          <p>
+            <strong>Custom enemies (no icon):</strong> Draw a random card of the
+            listed tier (of any class). If health is specified, track it using
+            the back of the card and ignore all card-specific surges and
+            effects. Otherwise, use the front of the card, starting at full
+            health.
+          </p>
+        )}
       </div>
     );
   }
 
   return (
     <Card title="Draw Enemies" theme="dark" inQuest={true}>
-      <p>
-        Prepare to Fight:
-      </p>
+      <p>Prepare to Fight:</p>
       {enemies}
       {helpText}
-      <Button onClick={() => props.onNext(props.node, CombatPhase.prepare)}>Next</Button>
+      <Button onClick={() => props.onNext(props.node, CombatPhase.prepare)}>
+        Next
+      </Button>
       <AudioControlsContainer />
     </Card>
   );

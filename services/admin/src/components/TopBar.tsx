@@ -4,12 +4,13 @@ import Button from '@material-ui/core/Button';
 // import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import AlertWarning from '@material-ui/icons/Warning';
 import * as React from 'react';
 
-import {UserState, ViewState, ViewType} from '../reducers/StateTypes';
+import { UserState, ViewState, ViewType } from '../reducers/StateTypes';
 
 // TODO INCLUDE VERSION
 
@@ -23,13 +24,16 @@ export interface DispatchProps {
   onFilterUpdate: (view: ViewType, filter: string) => void;
 }
 
-interface Props extends StateProps, DispatchProps {}
+export interface Props extends StateProps, DispatchProps {}
 
 const FILTER_DEBOUNCE = 750;
 export interface FilterProps {
   onFilterUpdate: (filter: string) => any;
 }
-export class Filter extends React.Component<FilterProps, {filter: string, lastFilter: string, debounce: number|null}> {
+export class Filter extends React.Component<
+  FilterProps,
+  { filter: string; lastFilter: string; debounce: number | null }
+> {
   constructor(props: FilterProps) {
     super(props);
     this.state = {
@@ -48,7 +52,7 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
       this.props.onFilterUpdate(this.state.filter);
       this.setState({
         debounce: setTimeout(() => {
-          this.setState({debounce: null});
+          this.setState({ debounce: null });
           this.sendUpdate();
         }, FILTER_DEBOUNCE) as any as number,
         lastFilter: this.state.filter,
@@ -57,7 +61,9 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
   }
 
   public handleFilterChange(event: React.FormEvent<HTMLInputElement>) {
-    this.setState({filter: event.currentTarget.value}, () => this.sendUpdate());
+    this.setState({ filter: event.currentTarget.value }, () =>
+      this.sendUpdate(),
+    );
   }
 
   public render(): JSX.Element {
@@ -74,10 +80,21 @@ export class Filter extends React.Component<FilterProps, {filter: string, lastFi
 const TopBar = (props: Props): JSX.Element => {
   // const loginText = 'Logged in as ' + props.user.displayName;
   const title = props.view.view;
-  let warn = <span/>;
-  if (props.view.lastQueryError && props.view.lastQueryError.view === props.view.view) {
-    // TODO tooltip={props.view.lastQueryError.error.toString()}
-    warn = <Button><AlertWarning/></Button>;
+  let warn = <span />;
+  if (
+    props.view.lastQueryError &&
+    props.view.lastQueryError.view === props.view.view
+  ) {
+    // The warning icon was the only surface for lastQueryError, and it had no
+    // tooltip, so the error itself was never shown to the operator anywhere.
+    const message = String(props.view.lastQueryError.error);
+    warn = (
+      <Tooltip title={message}>
+        <Button className="queryError" aria-label={message}>
+          <AlertWarning />
+        </Button>
+      </Tooltip>
+    );
   }
 
   /* TODO Menu attached to nav arrow drop down
@@ -102,12 +119,24 @@ const TopBar = (props: Props): JSX.Element => {
           {title}
         </Typography>
         <Toolbar className="toolbar">
-          <Filter onFilterUpdate={(f: string) => {props.onFilterUpdate(props.view.view, f); }}/>
+          <Filter
+            onFilterUpdate={(f: string) => {
+              props.onFilterUpdate(props.view.view, f);
+            }}
+          />
           {warn}
-          <Button onClick={(event: any) => {console.log('TODO'); }}>Help</Button>
+          <Button
+            onClick={(event: any) => {
+              console.log('TODO');
+            }}
+          >
+            Help
+          </Button>
           <div>
             <span className="email">{props.user.email}</span>
-            <Button><NavigationArrowDropDown /></Button>
+            <Button>
+              <NavigationArrowDropDown />
+            </Button>
           </div>
         </Toolbar>
       </AppBar>

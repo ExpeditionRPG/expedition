@@ -9,7 +9,7 @@ betabuild() {
   prebuild
   export NODE_ENV='dev'
   export API_HOST='http://betaapi.expeditiongame.com'
-  webpack --config ./webpack.dist.config.js
+  yarn run build
 }
 
 beta() {
@@ -22,7 +22,7 @@ prodbuild() {
   prebuild
   export NODE_ENV='production'
   export API_HOST='https://api.expeditiongame.com'
-  webpack --config ./webpack.dist.config.js
+  yarn run build
 }
 
 prod() {

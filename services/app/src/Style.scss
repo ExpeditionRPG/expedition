@@ -8,8 +8,12 @@
   font-family: 'Cinzel';
   font-style: normal;
   font-weight: 700;
-  src: url(../../../shared/fonts/Cinzel-Bold.woff2) format('woff2'), url(../../../shared/fonts/Cinzel-Bold.woff) format('woff');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  src:
+    url(../../../shared/fonts/Cinzel-Bold.woff2) format('woff2'),
+    url(../../../shared/fonts/Cinzel-Bold.woff) format('woff');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F,
+    U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
@@ -21,7 +25,9 @@
 @font-face {
   font-family: 'NothingYouCouldDo';
   font-style: normal;
-  src: url(../../../shared/fonts/NothingYouCouldDo-Regular.woff2) format('woff2'), url(../../../shared/fonts/NothingYouCouldDo-Regular.woff) format('woff');
+  src:
+    url(../../../shared/fonts/NothingYouCouldDo-Regular.woff2) format('woff2'),
+    url(../../../shared/fonts/NothingYouCouldDo-Regular.woff) format('woff');
 }
 
 // ===============================================
@@ -89,7 +95,6 @@
   transition: opacity 500ms ease-out;
 }
 
-
 // ===============================================
 // Constants
 // ===============================================
@@ -106,10 +111,10 @@ $sizemap: (
   appbar: 48px,
   remotefooter: 50px,
   inputsquare: 48px,
-  inputspacing: 16px, /* slightly larger on small devices (to prevent false touches) */
-  input: 32px, /* size of input icon-style buttons */
-  watermark: 36vh, /* height-specific */
-  navfooterbtn: 19vw,
+  inputspacing: 16px,
+  /* slightly larger on small devices (to prevent false touches) */ input: 32px,
+  /* size of input icon-style buttons */ watermark: 36vh,
+  /* height-specific */ navfooterbtn: 19vw,
   huge: 12vmin,
   large: 6vmin,
   icon: 4.5vmin,
@@ -170,7 +175,8 @@ body {
 }
 
 .app_container {
-  &, & > div:first-child {
+  &,
+  & > div:first-child {
     height: 100%;
     width: 100%;
   }
@@ -189,7 +195,8 @@ body {
   }
 }
 
-.remote_footer, .nav_footer {
+.remote_footer,
+.nav_footer {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -303,7 +310,9 @@ body {
   }
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: $headerFont;
   margin: 0.5em 0 0.2em 0;
   line-height: $lineheight;
@@ -315,7 +324,7 @@ h2 {
   font-size: 1.5em;
   .inline_icon {
     height: 6.5vmin;
-    margin-bottom: -1.0vmin;
+    margin-bottom: -1vmin;
   }
 }
 h3 {
@@ -365,7 +374,7 @@ span.line {
   font-family: $headerFont;
   text-align: center;
   font-size: fontsize(interactive);
-  margin: 1.5em 2*size(base) 0 2*size(base);
+  margin: 1.5em 2 * size(base) 0 2 * size(base);
   position: relative;
   overflow: hidden;
   line-height: 1;
@@ -375,9 +384,10 @@ span.line {
     zoom: 1;
     display: inline;
     position: relative;
-    padding: 0 2*size(base);
+    padding: 0 2 * size(base);
 
-    &:before, &:after {
+    &:before,
+    &:after {
       content: '';
       display: block;
       width: 1000px;
@@ -386,8 +396,12 @@ span.line {
       border-top: 1px solid $font_color_faded;
     }
 
-    &:before { right: 100%; }
-    &:after { left: 100%; }
+    &:before {
+      right: 100%;
+    }
+    &:after {
+      left: 100%;
+    }
   }
 }
 
@@ -425,7 +439,6 @@ body.android .dialog .textfield:focus-within {
 }
 
 @mixin styling() {
-
   button {
     &.large {
       width: 100% !important;
@@ -495,7 +508,9 @@ body.android .dialog .textfield:focus-within {
       .article {
         background: none;
       }
-      .base_button > button, .base_checkbox button, .base_picker {
+      .base_button > button,
+      .base_checkbox button,
+      .base_picker {
         background-color: $bg_red_interactive !important;
         svg {
           color: $font_color_red_primary !important;
@@ -520,7 +535,9 @@ body.android .dialog .textfield:focus-within {
       .article {
         background-image: url(images/encounter-tiled.jpg);
       }
-      .base_button > button, .base_checkbox button, .base_picker {
+      .base_button > button,
+      .base_checkbox button,
+      .base_picker {
         background-color: $bg_dark_interactive !important;
         svg {
           color: $font_color_dark_primary !important;
@@ -542,11 +559,17 @@ body.android .dialog .textfield:focus-within {
       -moz-filter: grayscale(50%);
       filter: grayscale(50%);
 
-      h1, h2, h3, .title {
+      h1,
+      h2,
+      h3,
+      .title {
         font-family: $horrorFont;
       }
     }
-    .title_container, .base_button > button, .base_checkbox button, .base_picker {
+    .title_container,
+    .base_button > button,
+    .base_checkbox button,
+    .base_picker {
       svg {
         color: $font_color_primary !important;
       }
@@ -662,7 +685,7 @@ body.android .dialog .textfield:focus-within {
       width: 100%;
       background-color: $bg_titlebar;
       line-height: $lineheight;
-      padding: size(base)/2 size(base) size(base)/2 size(base);
+      padding: size(base) / 2 size(base) size(base) / 2 size(base);
       font-size: fontsize(flavor);
       box-sizing: border-box;
 
@@ -694,13 +717,15 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  ol, ul {
+  ol,
+  ul {
     padding-left: size(icon);
 
     li {
       padding-bottom: size(small);
 
-      ol li, ul li {
+      ol li,
+      ul li {
         padding-bottom: 0;
       }
     }
@@ -712,8 +737,8 @@ body.android .dialog .textfield:focus-within {
   }
 
   i .inline_icon {
-    margin-left: fontsize(flavor)/8;
-    margin-right: -(fontsize(flavor)/8);
+    margin-left: fontsize(flavor) / 8;
+    margin-right: -(fontsize(flavor) / 8);
   }
   .starContainer {
     .stars {
@@ -726,7 +751,7 @@ body.android .dialog .textfield:focus-within {
       height: size(inputsquare);
       svg {
         height: size(inputsquare);
-        padding: 0 size(inputspacing)/2; /* /2 since applied to both sides */
+        padding: 0 size(inputspacing) / 2; /* /2 since applied to both sides */
       }
       button {
         min-width: 0 !important;
@@ -817,7 +842,8 @@ body.android .dialog .textfield:focus-within {
       color: inherit !important;
       width: 100% !important;
     }
-    div { /* style duct tape, otherwise line height not properly applied to children */
+    div {
+      /* style duct tape, otherwise line height not properly applied to children */
       line-height: $lineheight;
     }
     .label {
@@ -848,7 +874,8 @@ body.android .dialog .textfield:focus-within {
     padding: size(base) 0 size(large) 0 !important;
   }
 
-  .inputSpacer { /* for text inputs that are close to bottom, give the screen space to scroll up */
+  .inputSpacer {
+    /* for text inputs that are close to bottom, give the screen space to scroll up */
     margin-bottom: 100%;
   }
 
@@ -955,14 +982,14 @@ body.android .dialog .textfield:focus-within {
     &.card_theme_light {
       color: $font_color_primary;
       background-color: $bg_primary !important;
-      &.no_icon{
+      &.no_icon {
         background: url(/images/clock_small_light.svg) no-repeat center center;
       }
     }
     &.card_theme_dark {
       color: $font_color_dark_primary;
       background-color: $bg_dark_primary !important;
-      &.no_icon{
+      &.no_icon {
         background: url(/images/clock_small.svg) no-repeat center center;
       }
     }
@@ -986,10 +1013,10 @@ body.android .dialog .textfield:focus-within {
       width: 100%;
       height: 100%;
       -webkit-animation: fadeout 0.6s ease-in forwards;
-         -moz-animation: fadeout 0.6s ease-in forwards;
-          -ms-animation: fadeout 0.6s ease-in forwards;
-           -o-animation: fadeout 0.6s ease-in forwards;
-              animation: fadeout 0.6s ease-in forwards;
+      -moz-animation: fadeout 0.6s ease-in forwards;
+      -ms-animation: fadeout 0.6s ease-in forwards;
+      -o-animation: fadeout 0.6s ease-in forwards;
+      animation: fadeout 0.6s ease-in forwards;
     }
 
     .timer_icon {
@@ -1059,7 +1086,7 @@ body.android .dialog .textfield:focus-within {
     width: 100%;
     height: 100%;
     position: relative;
-    background-color: #4F301B;
+    background-color: #4f301b;
     background-image: url(images/leather.jpg);
     background-size: cover;
     color: $font_color_dark_primary;
@@ -1112,10 +1139,10 @@ body.android .dialog .textfield:focus-within {
       opacity: 0;
       transition: opacity 1s;
       -webkit-animation: fadein 1s ease-in;
-         -moz-animation: fadein 1s ease-in;
-          -ms-animation: fadein 1s ease-in;
-           -o-animation: fadein 1s ease-in;
-              animation: fadein 1s ease-in;
+      -moz-animation: fadein 1s ease-in;
+      -ms-animation: fadein 1s ease-in;
+      -o-animation: fadein 1s ease-in;
+      animation: fadein 1s ease-in;
       h2 {
         margin-bottom: 0;
       }
@@ -1125,10 +1152,10 @@ body.android .dialog .textfield:focus-within {
     }
     .splashMultitouchPlayerCount {
       -webkit-animation: fadein 1s ease-in 0s forwards;
-         -moz-animation: fadein 1s ease-in 0s forwards;
-          -ms-animation: fadein 1s ease-in 0s forwards;
-           -o-animation: fadein 1s ease-in 0s forwards;
-              animation: fadein 1s ease-in 0s forwards;
+      -moz-animation: fadein 1s ease-in 0s forwards;
+      -ms-animation: fadein 1s ease-in 0s forwards;
+      -o-animation: fadein 1s ease-in 0s forwards;
+      animation: fadein 1s ease-in 0s forwards;
       h1 {
         font-size: fontsize(timervalue);
         margin: 0;
@@ -1165,8 +1192,14 @@ body.android .dialog .textfield:focus-within {
       // (2 text lines) + (small top & bottom padding and top margin for logo)
       top: 2 * $lineheight * fontsize(interactive) + 3 * size(base);
       // iPhone X padding fix
-      top: calc(#{2 * $lineheight * fontsize(interactive) + 3 * size(base)} + constant(safe-area-inset-top));
-      top: calc(#{2 * $lineheight * fontsize(interactive) + 3 * size(base)} + env(safe-area-inset-top));
+      top: calc(
+        #{2 * $lineheight * fontsize(interactive) + 3 * size(base)} +
+          constant(safe-area-inset-top)
+      );
+      top: calc(
+        #{2 * $lineheight * fontsize(interactive) + 3 * size(base)} +
+          env(safe-area-inset-top)
+      );
     }
     .announcement {
       position: absolute;
@@ -1250,7 +1283,7 @@ body.android .dialog .textfield:focus-within {
 
     input {
       width: 50%;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       padding: size(base);
       font-size: fontsize(interactive) * 2;
       text-align: center;
@@ -1287,14 +1320,15 @@ body.android .dialog .textfield:focus-within {
     opacity: 0.8;
     #audioLoadingIndicator {
       -webkit-animation: rotate 4s;
-         -moz-animation: rotate 4s;
-          -ms-animation: rotate 4s;
-           -o-animation: rotate 4s;
-              animation: rotate 4s;
+      -moz-animation: rotate 4s;
+      -ms-animation: rotate 4s;
+      -o-animation: rotate 4s;
+      animation: rotate 4s;
     }
   }
 
-  .questButtonWithIcon, .questButton {
+  .questButtonWithIcon,
+  .questButton {
     padding-left: size(base);
     padding-right: size(base);
     &.played {
@@ -1368,13 +1402,13 @@ body.android .dialog .textfield:focus-within {
     }
     .searchResultsTitleTable {
       width: 100%;
-      .leftcell{
-          text-align: left;
-          line-height: $lineheight;
-          font-family: $headerFont;
-          letter-spacing: $headerFontLetterSpacing;
-          font-size: fontsize(interactive);
-          top: 0;
+      .leftcell {
+        text-align: left;
+        line-height: $lineheight;
+        font-family: $headerFont;
+        letter-spacing: $headerFontLetterSpacing;
+        font-size: fontsize(interactive);
+        top: 0;
       }
       .rightcell {
         display: block;
@@ -1399,22 +1433,22 @@ body.android .dialog .textfield:focus-within {
         }
       }
       .twoLinesMax {
-         overflow: hidden;
-         text-overflow: ellipsis;
-         display: -webkit-box;
-         -webkit-box-orient: vertical;
-         -webkit-line-clamp: 2; /* number of lines to show */
-         line-height: 1.2em;        /* fallback */
-         max-height: 1.2em*2;       /* fallback */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        line-height: 1.2em; /* fallback */
+        max-height: 1.2em * 2; /* fallback */
       }
       .threeLinesMax {
-         overflow: hidden;
-         text-overflow: ellipsis;
-         display: -webkit-box;
-         -webkit-box-orient: vertical;
-         -webkit-line-clamp: 3; /* number of lines to show */
-         line-height: 1.2em;        /* fallback */
-         max-height: 1.2em*3;       /* fallback */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3; /* number of lines to show */
+        line-height: 1.2em; /* fallback */
+        max-height: 1.2em * 3; /* fallback */
       }
     }
   }
@@ -1454,7 +1488,8 @@ body.android .dialog .textfield:focus-within {
     }
   }
 
-  .searchDetailsExtended, .detailsCard {
+  .searchDetailsExtended,
+  .detailsCard {
     margin-top: size(large);
     .detailsTable {
       width: 100%;
@@ -1483,10 +1518,10 @@ body.android .dialog .textfield:focus-within {
   .reportCategory {
     text-align: center;
     button {
-      border: 2px solid rgba(0,0,0,0) !important;
+      border: 2px solid rgba(0, 0, 0, 0) !important;
       min-width: 40px !important;
-      padding: 0 size(inputspacing)/2 !important; /* /2 since applied to both sides */
-      margin: size(inputspacing)/2 !important; /* /2 since applied to both sides */
+      padding: 0 size(inputspacing) / 2 !important; /* /2 since applied to both sides */
+      margin: size(inputspacing) / 2 !important; /* /2 since applied to both sides */
     }
     .selected button {
       border: 2px solid black !important;
@@ -1494,10 +1529,12 @@ body.android .dialog .textfield:focus-within {
   }
 
   .searchForm {
-    .textfield, .selectfield {
+    .textfield,
+    .selectfield {
       margin-bottom: size(base);
     }
-    .halfLeft, .halfRight {
+    .halfLeft,
+    .halfRight {
       width: 45%;
     }
     .halfLeft {
@@ -1537,7 +1574,8 @@ body.android .dialog .textfield:focus-within {
 
   .dialog {
     background: url(images/papyrus-tiled.jpg) !important;
-    .base_picker, .base_checkbox {
+    .base_picker,
+    .base_checkbox {
       color: $font_color_primary !important;
     }
   }
@@ -1654,8 +1692,8 @@ $sizemap: (
   inputspacing: 14px,
   inputsquare: 48px,
   input: 32px,
-  watermark: 36vmin * $abs_scale_vh, /* note: height-specific */
-  huge: 12vmin * $abs_scale_vh,
+  watermark: 36vmin * $abs_scale_vh,
+  /* note: height-specific */ huge: 12vmin * $abs_scale_vh,
   large: 6vmin * $abs_scale_vh,
   icon: 4vmin * $abs_scale_vh,
   base: 2vmin * $abs_scale_vh,
@@ -1672,11 +1710,14 @@ $fontsizemap: (
   label: 18px,
 );
 
-@media screen and (min-width: $abswidthmax), screen and (min-height: $absheightmax) {
+@media screen and (min-width: $abswidthmax),
+  screen and (min-height: $absheightmax) {
   // Use the new desktop values defined above, only at this size
   @include styling();
 
-  body, html, #react-app {
+  body,
+  html,
+  #react-app {
     height: 100%;
     width: 100%;
   }
@@ -1700,62 +1741,126 @@ $fontsizemap: (
     top: size(tiny);
   }
 
-  .splashMultitouchInstruction, .splashMultitouchPlayerCount {
+  .splashMultitouchInstruction,
+  .splashMultitouchPlayerCount {
     margin-top: -5% !important;
   }
 }
 
 @keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @-webkit-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @-ms-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeout {
-  0% { opacity: 1; height: 100%; }
-  99% { opacity: 0; height: 100%; }
-  100% { opacity: 0; height: 0; }
+  0% {
+    opacity: 1;
+    height: 100%;
+  }
+  99% {
+    opacity: 0;
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+  }
 }
 @-webkit-keyframes fadeout {
-  0% { opacity: 1; height: 100%; }
-  99% { opacity: 0; height: 100%; }
-  100% { opacity: 0; height: 0; }
+  0% {
+    opacity: 1;
+    height: 100%;
+  }
+  99% {
+    opacity: 0;
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+  }
 }
 @-ms-keyframes fadeout {
-  0% { opacity: 1; height: 100%; }
-  99% { opacity: 0; height: 100%; }
-  100% { opacity: 0; height: 0; }
+  0% {
+    opacity: 1;
+    height: 100%;
+  }
+  99% {
+    opacity: 0;
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @-webkit-keyframes rotate {
-  from { transform: rotate(0); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @-ms-keyframes rotate {
-  from { transform: rotate(0); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes lds-ellipsis1 {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 @keyframes lds-ellipsis2 {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(19px, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
 }
 @keyframes lds-ellipsis3 {
-  0% { transform: scale(1); }
-  100% { transform: scale(0); }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
 }

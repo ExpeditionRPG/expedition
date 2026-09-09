@@ -25,6 +25,7 @@ heroku config:set ENABLE_PAYMENT=false -a expedition-quest-creator
 ### Maintenance Page (for extended outages)
 
 In a hard outage where
+
 - the quest creator site is not visible at all
 - users cannot interact with the SQL database
 
@@ -54,6 +55,7 @@ git push heroku ${BRANCH_TO_DEPLOY}:master
 ```
 
 If you want to be especially cautious, you can even set up your default heroku remote to point to dev, and create an explicit `prod` remote for pushing to prod:
+
 ```
 heroku git:remote -a expedition-quest-creator-dev -r heroku
 heroku git:remote -a expedition-quest-creator -r prod
@@ -96,6 +98,7 @@ heroku pg:backups:url ${BACKUP} -a expedition-quest-creator
 ```
 
 Restoring backups:
+
 ```shell
 heroku pg:backups:restore ${BACKUP} DATABASE_URL -a expedition-quest-creator
 ```

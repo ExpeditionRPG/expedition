@@ -2,10 +2,10 @@
   "name": "expedition-api",
   "description": "The Expedition API Server",
   "homepage": "http://api.expeditiongame.com",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "CC-BY-NC-ND-4.0",
   "scripts": {
-    "build": "webpack --config webpack.dist.config.js",
+    "build": "node ../../node_modules/webpack/bin/webpack.js --config webpack.dist.config.js",
     "start": "npm run build && node dist/server.js"
   }
 }

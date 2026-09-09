@@ -30,7 +30,7 @@ export interface BaseDialogProps extends React.Props<any> {
   open: boolean;
 }
 export class ConfirmationDialog<
-  T extends BaseDialogProps
+  T extends BaseDialogProps,
 > extends React.Component<T, {}> {
   protected title!: string;
   protected content!: JSX.Element | null;
@@ -77,9 +77,7 @@ interface ExitMultiplayerDialogProps extends BaseDialogProps {
   onExit: () => void;
 }
 
-export class ExitMultiplayerDialog extends ConfirmationDialog<
-  ExitMultiplayerDialogProps
-> {
+export class ExitMultiplayerDialog extends ConfirmationDialog<ExitMultiplayerDialogProps> {
   public shouldComponentUpdate(nextProps: BaseDialogProps) {
     return nextProps.open !== this.props.open;
   }
@@ -102,9 +100,7 @@ interface DeleteSavedQuestDialogProps extends BaseDialogProps {
   savedQuest: SavedQuestMeta | null;
 }
 
-export class DeleteSavedQuestDialog extends ConfirmationDialog<
-  DeleteSavedQuestDialogProps
-> {
+export class DeleteSavedQuestDialog extends ConfirmationDialog<DeleteSavedQuestDialogProps> {
   public shouldComponentUpdate(nextProps: BaseDialogProps) {
     return nextProps.open !== this.props.open;
   }
@@ -328,7 +324,7 @@ export class ExpansionSelectDialog extends React.Component<
 }
 
 export class TooManyPlayersDialog<
-  T extends BaseDialogProps
+  T extends BaseDialogProps,
 > extends React.Component<T, {}> {
   protected title: string;
   protected content: JSX.Element;

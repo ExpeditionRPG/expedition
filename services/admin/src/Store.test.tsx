@@ -1,3 +1,5 @@
 describe('Store', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

@@ -11,7 +11,7 @@ export interface Props {
 
 class ExpeditionCheckbox extends React.Component<Props, {}> {
   public render() {
-    const icon = (this.props.value) ? <CheckBoxIcon/> : <CheckBoxOutlineIcon/>;
+    const icon = this.props.value ? <CheckBoxIcon /> : <CheckBoxOutlineIcon />;
     return (
       <span className="creatorCheckbox">
         <Button onClick={(e: any) => this.props.onChange(!this.props.value)}>
@@ -19,7 +19,9 @@ class ExpeditionCheckbox extends React.Component<Props, {}> {
             <span className="icon">{icon}</span>
             <span className="label">{this.props.label}</span>
           </div>
-          <div className="subtext" id="subtext">{this.props.children}</div>
+          <div className="subtext" id="subtext">
+            {this.props.children}
+          </div>
         </Button>
       </span>
     );

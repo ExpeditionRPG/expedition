@@ -1,3 +1,5 @@
 describe('Globals', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

@@ -9,7 +9,7 @@ import { generateCombatTemplate } from './Actions';
 import Defeat, { Props } from './Defeat';
 import { CombatState } from './Types';
 
-const cheerio: any = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 const TEST_NODE = new ParserNode(
   cheerio.load(
     '<combat><e>Thief</e><e>Brigand</e><e>Footpad</e><event on="win"></event><event on="lose"></event></combat>',
@@ -22,7 +22,7 @@ function newCombat(node: ParserNode): CombatState {
     initialSettings,
     false,
     node,
-    () => (({ multiplayer: initialMultiplayer } as any) as AppStateWithHistory),
+    () => ({ multiplayer: initialMultiplayer }) as any as AppStateWithHistory,
   );
 }
 

@@ -1,11 +1,13 @@
-import {Partition} from './Constants';
-import {Quest} from './Quests';
+import { Partition } from './Constants';
+import { Quest } from './Quests';
 
 describe('Quests Schema', () => {
-  const base = {partition: Partition.expeditionPrivate, id: '12345'};
+  const base = { partition: Partition.expeditionPrivate, id: '12345' };
   test('is invalid when no partition or id', () => {
-    expect(Quest.create({partition: Partition.expeditionPublic}) instanceof Error).toEqual(true);
-    expect(Quest.create({id: ''}) instanceof Error).toEqual(true);
+    expect(
+      Quest.create({ partition: Partition.expeditionPublic }) instanceof Error,
+    ).toEqual(true);
+    expect(Quest.create({ id: '' }) instanceof Error).toEqual(true);
   });
   test('is valid when partition and ID given', () => {
     const q = new Quest(base);
@@ -13,13 +15,19 @@ describe('Quests Schema', () => {
     expect(q.id).toEqual('12345');
   });
   test('rejects invalid genre', () => {
-    expect(Quest.create({...base, genre: 'Invalid'}) instanceof Error).toEqual(true);
+    expect(
+      Quest.create({ ...base, genre: 'Invalid' }) instanceof Error,
+    ).toEqual(true);
   });
   test('rejects invalid content rating', () => {
-    expect(Quest.create({...base, contentrating: 'Invalid'}) instanceof Error).toEqual(true);
+    expect(
+      Quest.create({ ...base, contentrating: 'Invalid' }) instanceof Error,
+    ).toEqual(true);
   });
   test('rejects invalid language', () => {
-    expect(Quest.create({...base, language: 'Invalid'}) instanceof Error).toEqual(true);
+    expect(
+      Quest.create({ ...base, language: 'Invalid' }) instanceof Error,
+    ).toEqual(true);
   });
   test('accepts valid genre, content rating, language and theme', () => {
     const q = new Quest({

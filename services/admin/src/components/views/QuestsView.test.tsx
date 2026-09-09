@@ -1,3 +1,5 @@
 describe('Quest View', () => {
-  test('Empty', () => { /* Empty */ });
+  test('Empty', () => {
+    /* Empty */
+  });
 });

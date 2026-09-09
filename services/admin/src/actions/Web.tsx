@@ -8,17 +8,55 @@ import {
   Response as APIResponse,
   UserEntry,
   UserMutation,
-  UserQuery
+  UserQuery,
 } from 'api/admin/QueryTypes';
 import Redux from 'redux';
-import {authSettings} from '../Constants';
-import {QueryErrorAction, UpdateFeedbackAction, UpdateQuestAction, UpdateUserAction} from './ActionTypes';
+import { authSettings } from '../Constants';
+import {
+  QueryErrorAction,
+  UpdateFeedbackAction,
+  UpdateQuestAction,
+  UpdateUserAction,
+} from './ActionTypes';
 
-function maybeParse(r: Response) {
+// The part of the fetch Response that maybeParse actually reads. A real
+// Response satisfies it structurally; declaring it this way lets the tests
+// hand over a plain object instead of a whole polyfilled Response.
+export interface ParsableResponse {
+  ok: boolean;
+  status: number;
+  json: () => Promise<any>;
+  text: () => Promise<string>;
+}
+
+// Error bodies are not necessarily JSON. requireAdminAuth answers
+// `res.status(401).end('You are not signed in.')` -- plain text -- and a proxy
+// or load balancer in front of the API can answer with HTML. Calling r.json()
+// on those replaced the real message with
+// `SyntaxError: Unexpected token 'Y', "You are no"... is not valid JSON`.
+// Read the body as text, and only treat it as JSON if it parses.
+export function maybeParse(r: ParsableResponse) {
   if (!r.ok) {
-    return r.json().then((e: any) => { throw Error(e.error || 'Server Error'); });
+    return r.text().then((body: string) => {
+      throw Error(errorMessage(r, body));
+    });
   }
   return r.json();
+}
+
+function errorMessage(r: ParsableResponse, body: string): string {
+  const trimmed = (body || '').trim();
+  if (trimmed) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      const fromJson = parsed && (parsed.error || parsed.message);
+      return fromJson ? String(fromJson) : trimmed;
+    } catch (e) {
+      // Not JSON: the body is already the message.
+      return trimmed;
+    }
+  }
+  return `Server Error (${r.status})`;
 }
 
 export function feedbackQuery(q: FeedbackQuery) {
@@ -29,14 +67,20 @@ export function feedbackQuery(q: FeedbackQuery) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((entries: FeedbackEntry[]) => {
-      dispatch({type: 'SET_VIEW_FEEDBACK', entries});
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'FEEDBACK', error} as QueryErrorAction);
-    });
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((entries: FeedbackEntry[]) => {
+        dispatch({ type: 'SET_VIEW_FEEDBACK', entries });
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'FEEDBACK',
+          error,
+        } as QueryErrorAction);
+      });
   };
 }
 
@@ -48,14 +92,20 @@ export function questsQuery(q: QuestQuery) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((entries: QuestEntry[]) => {
-      dispatch({type: 'SET_VIEW_QUESTS', entries});
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'QUESTS', error} as QueryErrorAction);
-    });
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((entries: QuestEntry[]) => {
+        dispatch({ type: 'SET_VIEW_QUESTS', entries });
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'QUESTS',
+          error,
+        } as QueryErrorAction);
+      });
   };
 }
 
@@ -67,19 +117,25 @@ export function usersQuery(q: UserQuery) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((entries: UserEntry[]) => {
-      dispatch({
-        entries: entries.map((e: UserEntry) => {
-          return {...e, last_login: new Date(e.last_login.toString())};
-        }),
-        type: 'SET_VIEW_USERS',
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((entries: UserEntry[]) => {
+        dispatch({
+          entries: entries.map((e: UserEntry) => {
+            return { ...e, last_login: new Date(e.last_login.toString()) };
+          }),
+          type: 'SET_VIEW_USERS',
+        });
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'USERS',
+          error,
+        } as QueryErrorAction);
       });
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'USERS', error} as QueryErrorAction);
-    });
   };
 }
 
@@ -91,18 +147,24 @@ export function mutateFeedback(m: FeedbackMutation) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((response: APIResponse) => {
-      if (response.status !== 'OK') {
-        throw Error(response.error);
-      }
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((response: APIResponse) => {
+        if (response.status !== 'OK') {
+          throw Error(response.error);
+        }
 
-      dispatch({type: 'UPDATE_FEEDBACK', m} as UpdateFeedbackAction);
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'FEEDBACK', error} as QueryErrorAction);
-    });
+        dispatch({ type: 'UPDATE_FEEDBACK', m } as UpdateFeedbackAction);
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'FEEDBACK',
+          error,
+        } as QueryErrorAction);
+      });
   };
 }
 
@@ -114,18 +176,24 @@ export function mutateQuest(m: QuestMutation) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((response: APIResponse) => {
-      if (response.status !== 'OK') {
-        throw Error(response.error);
-      }
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((response: APIResponse) => {
+        if (response.status !== 'OK') {
+          throw Error(response.error);
+        }
 
-      dispatch({type: 'UPDATE_QUEST', m} as UpdateQuestAction);
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'QUESTS', error} as QueryErrorAction);
-    });
+        dispatch({ type: 'UPDATE_QUEST', m } as UpdateQuestAction);
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'QUESTS',
+          error,
+        } as QueryErrorAction);
+      });
   };
 }
 
@@ -137,17 +205,23 @@ export function mutateUser(m: UserMutation) {
       headers: { 'Content-Type': 'text/plain' },
       method: 'POST',
     })
-    .then((response: Response) => {
-      return maybeParse(response);
-    }).then((response: APIResponse) => {
-      if (response.status !== 'OK') {
-        throw Error(response.error);
-      }
+      .then((response: Response) => {
+        return maybeParse(response);
+      })
+      .then((response: APIResponse) => {
+        if (response.status !== 'OK') {
+          throw Error(response.error);
+        }
 
-      dispatch({type: 'UPDATE_USER', m} as UpdateUserAction);
-    }).catch((error: Error) => {
-      console.error('Request failed', error);
-      dispatch({type: 'QUERY_ERROR', view: 'USERS', error} as QueryErrorAction);
-    });
+        dispatch({ type: 'UPDATE_USER', m } as UpdateUserAction);
+      })
+      .catch((error: Error) => {
+        console.error('Request failed', error);
+        dispatch({
+          type: 'QUERY_ERROR',
+          view: 'USERS',
+          error,
+        } as QueryErrorAction);
+      });
   };
 }

@@ -3,7 +3,7 @@ import { ParserNode } from '../components/views/quest/cardtemplates/TemplateType
 import { initialQuestState, quest } from './Quest';
 import { QuestState } from './StateTypes';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 // Reuse the context off the reducer's own initial node rather than importing
 // cardtemplates/combat/Types directly: that module cycles back through

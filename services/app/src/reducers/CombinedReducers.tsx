@@ -27,6 +27,11 @@ export default function combinedReduce(
   state = commitID(state, action, combinedReduce);
   state = history(state, action);
 
+  // Settings are reduced first: the search reducer derives its expansion
+  // params from the *resulting* settings, and CHANGE_SETTINGS carries only a
+  // delta, so it cannot work them out on its own.
+  const nextSettings = settings(state.settings, action);
+
   // Run the reducers on the new action
   return {
     audio: audio(state.audio, action),
@@ -38,9 +43,9 @@ export default function combinedReduce(
     multiplayer: multiplayer(state.multiplayer, action),
     quest: quest(state.quest, action),
     saved: saved(state.saved, action),
-    search: search(state.search, action),
+    search: search(state.search, action, nextSettings),
     serverstatus: serverstatus(state.serverstatus, action),
-    settings: settings(state.settings, action),
+    settings: nextSettings,
     snackbar: snackbar(state.snackbar, action),
     user: user(state.user, action),
     userQuests: userquests(state.userQuests, action),

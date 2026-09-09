@@ -1,10 +1,20 @@
 import { Expansion, Language } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
+import { ChangeSettingsAction } from '../actions/ActionTypes';
 import { getStorageString } from '../LocalStorage';
 import { Reducer } from '../Testing';
 import { initialSearch, search } from './Search';
+import { initialSettings } from './Settings';
 import { SearchState } from './StateTypes';
 import { TEST_SEARCH } from './TestData';
+
+// The search reducer is declared as taking a bare `Redux.Action`, so an inline
+// literal with a `settings` field trips excess-property checking. Build the real
+// action instead of casting it away -- what matters to these tests is the
+// *settings* argument, not the action payload.
+function changeSettings(): ChangeSettingsAction {
+  return { settings: { contentSets: {} }, type: 'CHANGE_SETTINGS' };
+}
 
 function testQuest(id: string, title: string): Quest {
   return new Quest({
@@ -65,6 +75,49 @@ describe('Search reducer', () => {
     expect(result.results).toBeNull();
     expect(result.params).toEqual(state.params);
     expect(result.searching).toEqual(true);
+  });
+
+  describe('expansion params follow settings', () => {
+    test('initial params ask for the expansions stored in settings', () => {
+      localStorage.setItem(
+        'contentSets',
+        JSON.stringify({ horror: true, future: true, scarredlands: false }),
+      );
+      jest.resetModules();
+      const fresh = require('./Search').initialSearch as SearchState;
+      expect(fresh.params.expansions).toEqual([
+        Expansion.horror,
+        Expansion.future,
+      ]);
+    });
+
+    test('CHANGE_SETTINGS re-derives expansions from the resulting settings', () => {
+      const state = populated({
+        params: { ...initialSearch.params, expansions: [] },
+      });
+      const result = search(state, changeSettings(), {
+        ...initialSettings,
+        contentSets: { horror: true, future: true },
+      });
+      expect(result.params.expansions).toEqual([
+        Expansion.horror,
+        Expansion.future,
+      ]);
+    });
+
+    test('CHANGE_SETTINGS drops expansions the player no longer owns', () => {
+      const state = populated({
+        params: {
+          ...initialSearch.params,
+          expansions: [Expansion.horror, Expansion.future],
+        },
+      });
+      const result = search(state, changeSettings(), {
+        ...initialSettings,
+        contentSets: { horror: true, future: false },
+      });
+      expect(result.params.expansions).toEqual([Expansion.horror]);
+    });
   });
 
   describe('SEARCH_CHANGE_PARAMS', () => {

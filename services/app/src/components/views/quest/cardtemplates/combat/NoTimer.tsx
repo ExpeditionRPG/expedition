@@ -1,17 +1,24 @@
 import Button from 'app/components/base/Button';
 import Card from 'app/components/base/Card';
-import {MultiplayerState, SettingsType} from 'app/reducers/StateTypes';
+import { MultiplayerState, SettingsType } from 'app/reducers/StateTypes';
 import * as React from 'react';
-import {ParserNode} from '../TemplateTypes';
-import {isSurgeNextRound} from './Actions';
-import {StateProps as StatePropsBase} from './Types';
+import { ParserNode } from '../TemplateTypes';
+import { isSurgeNextRound } from './Actions';
+import { StateProps as StatePropsBase } from './Types';
 
 export interface StateProps extends StatePropsBase {
   seed: string;
 }
 
 export interface DispatchProps {
-  onTimerStop: (node: ParserNode, settings: SettingsType, elapsedMillis: number, surge: boolean, seed: string, multiplayer: MultiplayerState) => void;
+  onTimerStop: (
+    node: ParserNode,
+    settings: SettingsType,
+    elapsedMillis: number,
+    surge: boolean,
+    seed: string,
+    multiplayer: MultiplayerState,
+  ) => void;
 }
 
 export interface Props extends StateProps, DispatchProps {}
@@ -20,20 +27,33 @@ export default function noTimer(props: Props): JSX.Element {
   // Note: similar help text in renderPrepareTimer()
   const surge = isSurgeNextRound(props.node.ctx.templates.combat);
   const solo = props.players === 1;
-  let helpText: JSX.Element = (<span></span>);
+  let helpText: JSX.Element = <span></span>;
   if (props.settings.showHelp) {
     helpText = (
       <div>
-        {solo && <p><strong>Solo play:</strong> Play as both adventurers, keeping each of their draw and discard piles separate.</p>}
+        {solo && (
+          <p>
+            <strong>Solo play:</strong> Play as both adventurers, keeping each
+            of their draw and discard piles separate.
+          </p>
+        )}
         <ol>
           <li>
             <strong>Shuffle</strong> your ability draw pile.
             <ul>
-              <li>Keep abilities played this combat in a separate discard pile.</li>
-              <li><strong>If you run out of ability cards to draw</strong>, shuffle your discards into a new draw pile and continue drawing.</li>
+              <li>
+                Keep abilities played this combat in a separate discard pile.
+              </li>
+              <li>
+                <strong>If you run out of ability cards to draw</strong>,
+                shuffle your discards into a new draw pile and continue drawing.
+              </li>
             </ul>
           </li>
-          <li><strong>No timer:</strong> Draw three abilities from your draw pile and play one ability.</li>
+          <li>
+            <strong>No timer:</strong> Draw three abilities from your draw pile
+            and play one ability.
+          </li>
           <li>Once everyone has selected their ability, tap next.</li>
         </ol>
       </div>
@@ -45,7 +65,17 @@ export default function noTimer(props: Props): JSX.Element {
       {helpText}
       <Button
         className="bigbutton"
-        onClick={() => props.onTimerStop(props.node, props.settings, 0, surge, props.seed, props.multiplayer)}>
+        onClick={() =>
+          props.onTimerStop(
+            props.node,
+            props.settings,
+            0,
+            surge,
+            props.seed,
+            props.multiplayer,
+          )
+        }
+      >
         Next
       </Button>
     </Card>

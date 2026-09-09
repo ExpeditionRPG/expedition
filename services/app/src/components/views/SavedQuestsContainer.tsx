@@ -1,9 +1,9 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {toPrevious} from '../../actions/Card';
-import {previewQuest} from '../../actions/Quest';
-import {AppState, SavedQuestMeta} from '../../reducers/StateTypes';
-import SavedQuests, {DispatchProps, StateProps} from './SavedQuests';
+import { toPrevious } from '../../actions/Card';
+import { previewQuest } from '../../actions/Quest';
+import { AppState, SavedQuestMeta } from '../../reducers/StateTypes';
+import SavedQuests, { DispatchProps, StateProps } from './SavedQuests';
 
 const mapStateToProps = (state: AppState): StateProps => {
   return {
@@ -12,10 +12,12 @@ const mapStateToProps = (state: AppState): StateProps => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     onSelect(saved: SavedQuestMeta): void {
-      dispatch(previewQuest({quest: saved.details, saveTS: saved.ts}));
+      dispatch(previewQuest({ quest: saved.details, saveTS: saved.ts }));
     },
     onReturn(): void {
       dispatch(toPrevious({}));
@@ -25,7 +27,7 @@ export const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps
 
 const SavedQuestsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SavedQuests);
 
 export default SavedQuestsContainer;

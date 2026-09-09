@@ -1,29 +1,61 @@
-import {initialMultiplayer} from 'app/reducers/Multiplayer';
-import {initialSettings} from 'app/reducers/Settings';
-import {MultiplayerState} from 'app/reducers/StateTypes';
-import {numAdventurers, numPlayers, playerOrder, numAliveAdventurers, numLocalAdventurers, getContentSets} from './Settings';
-import {Expansion} from 'shared/schema/Constants';
-import {defaultContext} from '../components/views/quest/cardtemplates/Template';
-import {ParserNode} from '../components/views/quest/cardtemplates/TemplateTypes';
+import { initialMultiplayer } from 'app/reducers/Multiplayer';
+import { initialSettings } from 'app/reducers/Settings';
+import { MultiplayerState } from 'app/reducers/StateTypes';
+import {
+  numAdventurers,
+  numPlayers,
+  playerOrder,
+  numAliveAdventurers,
+  numLocalAdventurers,
+  getContentSets,
+} from './Settings';
+import { Expansion } from 'shared/schema/Constants';
+import { defaultContext } from '../components/views/quest/cardtemplates/Template';
+import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
 
-
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 describe('Settings action', () => {
   describe('changeSettings', () => {
-    test('Empty', () => { /* Empty */ });
+    test('Empty', () => {
+      /* Empty */
+    });
   });
 
   describe('PlayerCount', () => {
-    const s = {...initialSettings, numLocalPlayers: 1};
-    const n = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: {numAliveAdventurers: 1}}});
-    const n0 = new ParserNode(cheerio.load('<quest/>')('quest'), {...defaultContext(), templates: {combat: null}});
-    const m4: MultiplayerState = {...initialMultiplayer, clientStatus: {
-      a: {type: 'STATUS', connected: false, aliveAdventurers: 10},
-      b: {type: 'STATUS', connected: true, numLocalPlayers: 1, aliveAdventurers: 1},
-      c: {type: 'STATUS', connected: true, numLocalPlayers: 2, aliveAdventurers: 0},
-      d: {type: 'STATUS', connected: true, numLocalPlayers: 1, aliveAdventurers: 1},
-    }};
+    const s = { ...initialSettings, numLocalPlayers: 1 };
+    const n = new ParserNode(cheerio.load('<quest/>')('quest'), {
+      ...defaultContext(),
+      templates: { combat: { numAliveAdventurers: 1 } },
+    });
+    const n0 = new ParserNode(cheerio.load('<quest/>')('quest'), {
+      ...defaultContext(),
+      templates: { combat: null },
+    });
+    const m4: MultiplayerState = {
+      ...initialMultiplayer,
+      clientStatus: {
+        a: { type: 'STATUS', connected: false, aliveAdventurers: 10 },
+        b: {
+          type: 'STATUS',
+          connected: true,
+          numLocalPlayers: 1,
+          aliveAdventurers: 1,
+        },
+        c: {
+          type: 'STATUS',
+          connected: true,
+          numLocalPlayers: 2,
+          aliveAdventurers: 0,
+        },
+        d: {
+          type: 'STATUS',
+          connected: true,
+          numLocalPlayers: 1,
+          aliveAdventurers: 1,
+        },
+      },
+    };
 
     describe('numAdventurers', () => {
       test('returns 2 adventurers for singler-player mode', () => {
@@ -35,7 +67,9 @@ describe('Settings action', () => {
     });
     describe('numLocalAdventurers', () => {
       test('returns local adventurers', () => {
-        expect(numLocalAdventurers({...s, numLocalPlayers: 3}, m4)).toEqual(3);
+        expect(numLocalAdventurers({ ...s, numLocalPlayers: 3 }, m4)).toEqual(
+          3,
+        );
       });
       test('returns 2 adventurers for singler-player mode', () => {
         expect(numLocalAdventurers(s, initialMultiplayer)).toEqual(2);
@@ -61,27 +95,33 @@ describe('Settings action', () => {
       });
       test('returns total adventurer count when invalid node', () => {
         expect(numAliveAdventurers(s, n0, initialMultiplayer)).toEqual(2);
-      })
+      });
     });
     describe('playerOrder', () => {
       test('returns order from 1-6', () => {
-        expect(playerOrder('').sort()).toEqual([1,2,3,4,5,6]);
+        expect(playerOrder('').sort()).toEqual([1, 2, 3, 4, 5, 6]);
       });
       test('returns same order based on seed', () => {
         expect(playerOrder('')).toEqual(playerOrder(''));
       });
       test('returns different orders for different seeds', () => {
         expect(playerOrder('a')).not.toEqual(playerOrder('b'));
-      })
+      });
     });
   });
 
   describe('getContentSets', () => {
-    const hf = {...initialSettings, contentSets: {horror: true, future: true, scarredlands: false}};
-    const b = {...initialSettings, contentSets: {horror: false, future: false, scarredlands: false}};
+    const hf = {
+      ...initialSettings,
+      contentSets: { horror: true, future: true, scarredlands: false },
+    };
+    const b = {
+      ...initialSettings,
+      contentSets: { horror: false, future: false, scarredlands: false },
+    };
     const mpHorror = {
       ...initialMultiplayer,
-      session: {id: 'adsf', secret: 'ghjk'},
+      session: { id: 'adsf', secret: 'ghjk' },
       clientStatus: {
         1: {
           connected: true,
@@ -98,7 +138,7 @@ describe('Settings action', () => {
 
     const mpBase = {
       ...initialMultiplayer,
-      session: {id: 'adsf', secret: 'ghjk'},
+      session: { id: 'adsf', secret: 'ghjk' },
       clientStatus: {
         1: {
           connected: true,
@@ -120,7 +160,10 @@ describe('Settings action', () => {
       expect([...getContentSets(hf, mpBase)]).toEqual([]);
     });
     test('computes content set from local when no multiplayer session', () => {
-      expect([...getContentSets(hf, initialMultiplayer)]).toEqual([Expansion.horror, Expansion.future]);
+      expect([...getContentSets(hf, initialMultiplayer)]).toEqual([
+        Expansion.horror,
+        Expansion.future,
+      ]);
       expect([...getContentSets(b, initialMultiplayer)]).toEqual([]);
     });
   });

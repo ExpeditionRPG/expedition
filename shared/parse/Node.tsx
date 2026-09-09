@@ -5,9 +5,11 @@ import {
   updateContext,
 } from './Context';
 
+import { Cheerio } from '../Cheerio';
+import { MathJS } from '../MathJS';
+
 const seedrandom = require('seedrandom');
 const Clone = require('clone');
-const Math = require('mathjs');
 
 const MAX_GOTO_FOLLOW_DEPTH = 50;
 
@@ -23,7 +25,11 @@ function isNumeric(n: any): boolean {
 }
 
 function getNodeAttributes(e: Cheerio): { [key: string]: string } {
-  return e.get(0).attribs;
+  // cheerio's own types (unlike @types/cheerio, which declared `get(i)` as
+  // always returning an element) correctly report `get(0)` as possibly
+  // undefined for an empty set.
+  const el = e.get(0);
+  return el ? el.attribs : {};
 }
 
 function getTriggerId(elem: Cheerio): string | null {
@@ -87,8 +93,9 @@ export class Node<C extends Context> {
     let choiceIdx = -1;
     const keys: Array<string | number> = [];
     this.loopChildren((tag, child, orig) => {
-      if (child.attr('on') !== undefined) {
-        keys.push(child.attr('on'));
+      const on = child.attr('on');
+      if (on !== undefined) {
+        keys.push(on);
       } else if (tag === 'choice') {
         choiceIdx++;
         keys.push(choiceIdx);
@@ -146,7 +153,7 @@ export class Node<C extends Context> {
   private renderChildren() {
     // Apply the random seed before rendering so we have deterministic
     // output when rendering the node's children.
-    Math.config({ randomSeed: this.ctx.seed });
+    MathJS.config({ randomSeed: this.ctx.seed });
     this.renderedChildren = [];
     for (let i = 0; i < this.elem.children().length; i++) {
       // TODO(scott): Parsing of text nodes using .contents().
@@ -216,7 +223,11 @@ export class Node<C extends Context> {
     cb: (tag: string, child: Cheerio, original: Cheerio) => any,
   ): any {
     for (const child of this.renderedChildren) {
-      const tag = child.rendered.get(0).tagName.toLowerCase();
+      const el = child.rendered.get(0);
+      if (!el) {
+        continue;
+      }
+      const tag = el.tagName.toLowerCase();
       const v = cb(tag, child.rendered, child.original);
       if (v !== undefined) {
         return v;
@@ -250,14 +261,12 @@ export class Node<C extends Context> {
 
     return JSON.stringify({
       ctx: ctxJSON,
-      line: parseInt(this.elem.attr('data-line'), 10),
+      line: parseInt(this.elem.attr('data-line') || '', 10),
     });
   }
 
-  private getNextNode(elem?: Cheerio): Cheerio | null {
-    if (!elem) {
-      elem = this.elem;
-    }
+  private getNextNode(start?: Cheerio): Cheerio | null {
+    let elem: Cheerio = start || this.elem;
     while (true) {
       if (elem.length === 0) {
         return null;
@@ -286,18 +295,21 @@ export class Node<C extends Context> {
 
   public getRootElem(): Cheerio {
     let elem = this.elem;
-    while (
-      elem &&
-      elem.get(0) &&
-      elem.get(0).tagName.toLowerCase() !== 'quest'
-    ) {
+    while (true) {
+      const el = elem.get(0);
+      if (!el || el.tagName.toLowerCase() === 'quest') {
+        return elem;
+      }
       elem = elem.parent();
     }
-    return elem;
   }
 
   private isElemControl(elem: Cheerio): boolean {
-    const tagName = elem.get(0).tagName.toLowerCase();
+    const el = elem.get(0);
+    if (!el) {
+      return false;
+    }
+    const tagName = el.tagName.toLowerCase();
     return (
       tagName === 'choice' || tagName === 'event' || Boolean(elem.attr('on'))
     );
@@ -347,7 +359,7 @@ export class Node<C extends Context> {
       ret.loot = p.attr('loot') === 'true';
     }
     if (p.attr('heal')) {
-      ret.heal = parseInt(p.attr('heal'), 10);
+      ret.heal = parseInt(p.attr('heal') || '', 10);
     }
     return ret;
   }
@@ -416,11 +428,7 @@ export class Node<C extends Context> {
   public isEnd(): boolean {
     return (
       this.getTag() === 'trigger' &&
-      this.elem
-        .text()
-        .toLowerCase()
-        .split(' ')[0]
-        .trim() === 'end'
+      this.elem.text().toLowerCase().split(' ')[0].trim() === 'end'
     );
   }
 }

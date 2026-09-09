@@ -108,7 +108,7 @@ describe('Web Auth', () => {
     test('throws if the GIS library is not loaded', () => {
       expect(() =>
         getAuthorizationToken(null, URL_BASE, 'testclient', 'test scopes'),
-      ).toThrowError('google GIS not loaded');
+      ).toThrow('google GIS not loaded');
     });
 
     test('resolves with the token response handed to the GIS callback', () => {

@@ -1,4 +1,5 @@
-
 describe('PlaytestWorker', () => {
-  test.skip('playtests', () => { /* TODO */ });
+  test.skip('playtests', () => {
+    /* TODO */
+  });
 });

@@ -5,7 +5,7 @@ export default {
   // Breakdown:
   // <(\w|(\/\w))             Math "<" or "</" plus an immediate alphanumeric
   // (.|\n)*?>                Greedily match any character (incl newline) until closing ">"
-  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/igm,
+  HTML_TAG: /<(\w|(\/\w))(.|\n)*?>/gim,
 
   // For selecting ID references, example: (#idName)
   ID: /\(#[a-zA-Z]*\)/g,

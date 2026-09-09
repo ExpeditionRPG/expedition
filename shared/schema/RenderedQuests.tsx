@@ -18,7 +18,9 @@ export class RenderedQuest extends SchemaBase {
     allowNull: false,
     maxLength: 32,
     primaryKey: true,
-    valid: [enumValues(Partition)],
+    // Un-nested: joi 13 deep-flattened the value list, joi 16+ does not, so a
+    // nested array would make the array itself the one allowed value.
+    valid: enumValues(Partition),
   })
   public partition!: string;
 

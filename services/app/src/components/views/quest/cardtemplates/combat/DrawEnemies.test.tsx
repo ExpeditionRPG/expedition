@@ -1,4 +1,3 @@
-
 describe('DRAW_ENEMIES', () => {
   test('renders all enemies in props', () => {
     /*
@@ -11,6 +10,10 @@ describe('DRAW_ENEMIES', () => {
     ]);
     */
   });
-  test.skip('calls tierSumDelta when tier changed (no enemies)', () => { /* TODO */ });
-  test.skip('if no enemies, displays current tier', () => { /* TODO */ });
+  test.skip('calls tierSumDelta when tier changed (no enemies)', () => {
+    /* TODO */
+  });
+  test.skip('if no enemies, displays current tier', () => {
+    /* TODO */
+  });
 });

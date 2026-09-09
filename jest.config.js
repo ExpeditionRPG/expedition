@@ -9,25 +9,57 @@
 // `import * as express from 'express'` stays callable and default imports
 // resolve to `.default`, exactly as tsc emits today.
 
+const swcJsc = {
+  parser: { syntax: 'typescript', tsx: true, decorators: true },
+  transform: {
+    // Match tsc: an uninitialized `public x: T;` declaration emits nothing.
+    // Left at swc's default, it emits `this.x = void 0` in the constructor,
+    // which shadows prototype values written by the @field decorator.
+    useDefineForClassFields: false,
+    legacyDecorator: true,
+    decoratorMetadata: true,
+    react: { runtime: 'classic', development: false },
+  },
+  target: 'es2020',
+  keepClassNames: true,
+};
+
 const swcTransform = [
   '@swc/jest',
-  {
-    jsc: {
-      parser: { syntax: 'typescript', tsx: true, decorators: true },
-      transform: {
-        // Match tsc: an uninitialized `public x: T;` declaration emits nothing.
-        // Left at swc's default, it emits `this.x = void 0` in the constructor,
-        // which shadows prototype values written by the @field decorator.
-        useDefineForClassFields: false,
-        legacyDecorator: true,
-        decoratorMetadata: true,
-        react: { runtime: 'classic', development: false },
-      },
-      target: 'es2020',
-      keepClassNames: true,
-    },
-    module: { type: 'commonjs', noInterop: true },
-  },
+  { jsc: swcJsc, module: { type: 'commonjs', noInterop: true } },
+];
+
+// Dependencies that ship *only* ESM. Node can require() them, webpack bundles
+// them natively, but jest's CommonJS runtime cannot -- it reaches the raw
+// `export` keyword and throws
+//   SyntaxError: Cannot use import statement outside a module
+// The fix is two-part: stop `transformIgnorePatterns` from skipping them (so
+// swc compiles them to CJS at all), and give them a transform of their own.
+//
+// The second half is the important one. The repo-wide transform sets
+// `noInterop: true` to mirror `esModuleInterop: false` in tsconfig.json, which
+// is a hard constraint here. That flag is wrong for *these* files: with it,
+// query-string's `import decodeComponent from 'decode-uri-component'` compiles
+// to a bare `.default` read against a module that may not have one. These
+// packages are ordinary ESM written to the spec and want spec interop, so they
+// get `noInterop: false`. Scoping it per-file rather than globally is what
+// lets ESM-only dependencies work without touching `esModuleInterop`.
+//
+// jest picks the first `transform` key whose regex matches, so this entry must
+// come before the catch-all. Path separators are written `/`; jest rewrites
+// them for Windows (`replacePathSepForRegex`) in both `transform` keys and
+// `transformIgnorePatterns`.
+const esmOnlyDeps = [
+  'query-string',
+  'decode-uri-component',
+  'filter-obj',
+  'split-on-first',
+];
+const esmOnlyDepsPattern = '(' + esmOnlyDeps.join('|') + ')';
+
+const esmDepTransform = [
+  '@swc/jest',
+  { jsc: swcJsc, module: { type: 'commonjs', noInterop: false } },
 ];
 
 // Derived from shared/webpack.aliases.js rather than restated, so the test
@@ -43,7 +75,14 @@ const moduleNameMapper = Object.keys(aliases).reduce((acc, name) => {
 
 const common = {
   rootDir: __dirname,
-  transform: { '^.+\\.(t|j)sx?$': swcTransform },
+  transform: {
+    ['/node_modules/' + esmOnlyDepsPattern + '/.+\\.js$']: esmDepTransform,
+    '^.+\\.(t|j)sx?$': swcTransform,
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!' + esmOnlyDepsPattern + '/)',
+    '\\.pnp\\.[^\\\\]+$',
+  ],
   moduleNameMapper,
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   // jasmine's spyOn restored itself after every spec; jest.spyOn does not, so

@@ -1,22 +1,19 @@
-// deepmerge ships two builds: a CommonJS `main` (dist/umd.js, which does
-// `module.exports = fn`) and an ESM `module` (dist/es.js, a default export and
-// nothing else). Webpack's default `mainFields` for the web target prefers
-// `module`, while Jest and Node resolve `main`. esModuleInterop is off (see
-// tsconfig.json), so tsc/swc emit a bare `require()` for every import form:
-// under webpack that yields the namespace object `{default: fn}` (not
-// callable), under Jest/Node it yields the function itself. Neither a default
-// import nor a namespace import is therefore correct in both environments --
-// unwrap the interop explicitly instead. Covered by UserQuests.test.tsx.
-import * as deepmergeModule from 'deepmerge';
+// deepmerge 2 shipped a CommonJS `main` (dist/umd.js) *and* an ESM `module`
+// (dist/es.js, default export only). Webpack's `mainFields` preferred `module`
+// while Jest and Node took `main`, and with esModuleInterop off (see
+// tsconfig.json) the same `require()` therefore yielded a non-callable
+// `{default: fn}` under webpack and the bare function under Jest -- so the
+// interop had to be unwrapped by hand. deepmerge 4 dropped the `module` field
+// entirely: every consumer now resolves dist/cjs.js, which does
+// `module.exports = fn`, so a plain namespace import is callable everywhere.
+// Covered by UserQuests.test.tsx.
+import * as merge from 'deepmerge';
 import Redux from 'redux';
 import {
   UserQuestsAction,
   UserQuestsDeltaAction,
 } from '../actions/ActionTypes';
 import { UserQuestsState } from './StateTypes';
-
-const merge: typeof deepmergeModule =
-  (deepmergeModule as any).default || deepmergeModule;
 
 const initialUserQuests: UserQuestsState = {
   history: {},

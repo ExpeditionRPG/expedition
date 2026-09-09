@@ -2,7 +2,7 @@ import { mount as enzymeMount, render as enzymeRender } from 'enzyme';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import * as Redux from 'redux';
-import configureStore from 'redux-mock-store';
+import configureStore, { MockStore } from 'redux-mock-store';
 import { loggedOutUser } from 'shared/auth/UserState';
 import { Connection, setMultiplayerConnection } from './multiplayer/Connection';
 import { createMiddleware } from './multiplayer/Middleware';
@@ -13,18 +13,13 @@ export function newMockStoreWithInitializedState() {
   return newMockStore(combinedReducers({} as any, { type: '@@INIT' }));
 }
 
-interface MockStore extends Redux.Store {
-  clearActions: () => void;
-  getActions: any;
-}
-
 export function newMockStore(
   state: object,
   client = new Connection(() => Promise.resolve(false)),
-): MockStore {
+): MockStore<AppStateWithHistory> {
   // Since this is a testing function, we play it a bit loose with the state type.
   const store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
-    (state as any) as AppStateWithHistory,
+    state as any as AppStateWithHistory,
   );
   (store as any).multiplayerClient = client;
   setMultiplayerConnection(client);
@@ -32,9 +27,9 @@ export function newMockStore(
 }
 
 // Put stuff here that is assumed to always exist (like settings)
-const defaultGlobalState = ({
+const defaultGlobalState = {
   settings: { numLocalPlayers: 1 },
-} as any) as AppStateWithHistory;
+} as any as AppStateWithHistory;
 
 export function Reducer<A extends Redux.Action>(
   reducer: (state: object | undefined, action: A) => object,
@@ -92,7 +87,7 @@ export function Action<A>(
   client.sendEvent = jest.fn();
   setMultiplayerConnection(client);
   let store = configureStore<AppStateWithHistory>([createMiddleware(client)])(
-    ((baseState as any) as AppStateWithHistory) || defaultGlobalState,
+    (baseState as any as AppStateWithHistory) || defaultGlobalState,
   );
 
   function internalActionCommands() {

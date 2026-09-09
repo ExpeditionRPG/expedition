@@ -28,7 +28,10 @@ export interface RoleplayResult {
   choices: Choice[];
   content: RoleplayElement[];
   ctx: TemplateContext;
-  icon: string;
+  // `icon` comes straight from an optional XML attribute, so it is genuinely
+  // absent on most nodes. @types/cheerio declared `attr()` as returning
+  // `string`, which hid that; `<Card icon?: string>` already handles it.
+  icon: string | undefined;
   title: string | JSX.Element;
 }
 
@@ -42,18 +45,19 @@ export function loadRoleplayNode(
   const content: RoleplayElement[] = [];
 
   node.loopChildren((tag, c) => {
-    let text = '';
+    let text: string;
     c = c.clone();
 
     // Accumulate 'choice' tags in choices[]
     if (tag === 'choice') {
       choiceCount++;
-      if (!c.attr('text')) {
+      const choiceText = c.attr('text');
+      if (!choiceText) {
         throw new Error(
           '<choice> inside <roleplay> must have "text" attribute',
         );
       }
-      text = c.attr('text');
+      text = choiceText;
       choices.push({
         jsx: generateIconElements(text, theme),
         idx: choiceCount,
@@ -130,13 +134,16 @@ export function loadRoleplayNode(
     content,
     ctx: node.ctx,
     icon: node.elem.attr('icon'),
-    title: generateIconElements(node.elem.attr('title'), theme),
+    title: generateIconElements(node.elem.attr('title') || '', theme),
   };
 }
 
-const Roleplay = (props: Props, theme: CardThemeType | {}): JSX.Element => {
+const Roleplay = (props: Props, theme?: CardThemeType | {}): JSX.Element => {
   // React passes the legacy context object here when a component declares no
   // contextTypes, so anything that is not one of the theme names is 'light'.
+  // The parameter is optional so that this matches React's FunctionComponent
+  // call signature `(props, context?)` — react-redux 7's connect() rejects a
+  // component whose call signature demands two arguments.
   const resolvedTheme: CardThemeType =
     theme === 'red' || theme === 'dark' ? theme : 'light';
   if (props.node.getTag() !== 'roleplay') {
@@ -175,7 +182,12 @@ const Roleplay = (props: Props, theme: CardThemeType | {}): JSX.Element => {
     props.prevNode.getTag() === 'combat' &&
     props.prevNode.ctx.templates.combat &&
     props.prevNode.ctx.templates.combat.numAliveAdventurers;
-  const nextNode = props.node.getNext();
+  // Looking ahead constructs and evaluates the next node. Only do that for
+  // defeat screens; other cards may lead to branches not initialized yet.
+  const nextNode =
+    prevNodeCombatAdventurers === 0 && rpResult.choices.length === 1
+      ? props.node.getNext()
+      : null;
   if (
     prevNodeCombatAdventurers === 0 &&
     rpResult.choices.length === 1 &&

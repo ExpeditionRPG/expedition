@@ -1,13 +1,21 @@
-import {REGEX} from '../../Regex';
-import {TemplateBodyType, TemplateType} from '../../schema/templates/Templates';
-import {Logger} from '../Logger';
+import { REGEX } from '../../Regex';
+import {
+  TemplateBodyType,
+  TemplateType,
+} from '../../schema/templates/Templates';
+import { Logger } from '../Logger';
 
 export interface Renderer {
- toTemplate: (type: TemplateType, attribs: {[k: string]: any}, body: TemplateBodyType, line: number) => any;
- toTrigger: (attribs: {[k: string]: any}, line: number) => any;
- toQuest: (attribs: {[k: string]: any}, line: number) => any;
- finalize: (quest: any, inner: any[]) => any;
- validate: (rendered: any, log?: Logger) => void;
+  toTemplate: (
+    type: TemplateType,
+    attribs: { [k: string]: any },
+    body: TemplateBodyType,
+    line: number,
+  ) => any;
+  toTrigger: (attribs: { [k: string]: any }, line: number) => any;
+  toQuest: (attribs: { [k: string]: any }, line: number) => any;
+  finalize: (quest: any, inner: any[]) => any;
+  validate: (rendered: any, log?: Logger) => void;
 }
 
 // cleans up styles in the passed string, which is to say:
@@ -18,13 +26,12 @@ export interface Renderer {
 // ** and __ to <b>
 // ~~ to <del>
 export function sanitizeStyles(text: string): string {
-
   // First, store and remove the contents of {{ops}} so they don't interfere with styling
   // We do this with basic bracket counting to avoid complicated and expensive regex parsing.
   // This handles the cases of escaped characters, curlies in strings, and MathJS objects
   // which would normally confuse op node extraction.
   const ops: string[] = [];
-  let startOfCapture: number|undefined;
+  let startOfCapture: number | undefined;
   const syntaxStack: string[] = [];
   for (let i = 0; i < text.length; i++) {
     const c1 = text[i];
@@ -45,7 +52,7 @@ export function sanitizeStyles(text: string): string {
       } else if (lastSyntax !== '"' && c1 === '}' && c2 === '}') {
         let openCurlyCount = 0; // Open curlies not including the initial '{{' of the op
         for (const s of syntaxStack) {
-          openCurlyCount += (s === '{') ? 1 : 0;
+          openCurlyCount += s === '{' ? 1 : 0;
         }
 
         // We count an op node as 'complete' if the closing double-curly cannot belong to
@@ -76,7 +83,10 @@ export function sanitizeStyles(text: string): string {
 
   // Now extract [art] and :icons:
   // This uses the global tag to statefully search for values.
-  const artOrIcon = new RegExp(`(${REGEX.ART.source}|${REGEX.ICON.source})`, 'g');
+  const artOrIcon = new RegExp(
+    `(${REGEX.ART.source}|${REGEX.ICON.source})`,
+    'g',
+  );
   const art: string[] = [];
   let matches = artOrIcon.exec(text);
   while (matches) {
@@ -86,11 +96,11 @@ export function sanitizeStyles(text: string): string {
   text = text.replace(artOrIcon, '[art]');
 
   // replace whitelist w/ markdown
-  text = text.replace(/<strong>(.*?)<\/strong>/igm, '**$1**');
-  text = text.replace(/<b>(.*?)<\/b>/igm, '**$1**');
-  text = text.replace(/<em>(.*?)<\/em>/igm, '*$1*');
-  text = text.replace(/<i>(.*?)<\/i>/igm, '*$1*');
-  text = text.replace(/<del>(.*?)<\/del>/igm, '~~$1~~');
+  text = text.replace(/<strong>(.*?)<\/strong>/gim, '**$1**');
+  text = text.replace(/<b>(.*?)<\/b>/gim, '**$1**');
+  text = text.replace(/<em>(.*?)<\/em>/gim, '*$1*');
+  text = text.replace(/<i>(.*?)<\/i>/gim, '*$1*');
+  text = text.replace(/<del>(.*?)<\/del>/gim, '~~$1~~');
 
   // strip html tags and attributes (but leave contents)
   text = text.replace(new RegExp(REGEX.HTML_TAG.source, 'g'), '');
@@ -99,11 +109,26 @@ export function sanitizeStyles(text: string): string {
   // general case: replace anything surrounded by markdown styles with their matching HTML tag:
   // \*\*([^\*]*)\*\*       non-greedily match the contents between two sets of **
   text = text.replace(new RegExp(REGEX.NEWLINE.source, 'g'), '<br/>');
-  text = text.replace(new RegExp(REGEX.BOLD_ASTERISKS.source, 'g'), '<b>$1</b>');
-  text = text.replace(new RegExp(REGEX.BOLD_UNDERSCORES.source, 'g'), '<b>$1</b>');
-  text = text.replace(new RegExp(REGEX.ITALIC_ASTERISKS.source, 'g'), '<i>$1</i>');
-  text = text.replace(new RegExp(REGEX.ITALIC_UNDERSCORES.source, 'g'), '<i>$1</i>');
-  text = text.replace(new RegExp(REGEX.STRIKETHROUGH.source, 'g'), '<del>$1</del>');
+  text = text.replace(
+    new RegExp(REGEX.BOLD_ASTERISKS.source, 'g'),
+    '<b>$1</b>',
+  );
+  text = text.replace(
+    new RegExp(REGEX.BOLD_UNDERSCORES.source, 'g'),
+    '<b>$1</b>',
+  );
+  text = text.replace(
+    new RegExp(REGEX.ITALIC_ASTERISKS.source, 'g'),
+    '<i>$1</i>',
+  );
+  text = text.replace(
+    new RegExp(REGEX.ITALIC_UNDERSCORES.source, 'g'),
+    '<i>$1</i>',
+  );
+  text = text.replace(
+    new RegExp(REGEX.STRIKETHROUGH.source, 'g'),
+    '<del>$1</del>',
+  );
 
   // Insert stored ops contents back into ops
   text = text.replace(/{{}}/g, () => '{{' + ops.shift() + '}}');

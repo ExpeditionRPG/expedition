@@ -1,4 +1,3 @@
-import * as Bluebird from 'bluebird';
 import { Sequelize, WhereOptions } from 'sequelize';
 import { Op } from 'sequelize';
 import { Badge, enumValues, Partition } from 'shared/schema/Constants';
@@ -12,21 +11,25 @@ export function setLootPoints(db: Database, id: string, lootPoints: number) {
     if (result === null) {
       throw new Error('No user with ID ' + id);
     }
-    result.update({ lootPoints });
+    // Returned, not fired and forgotten: sequelize 6 hands back a native
+    // promise, so a failed write here would otherwise reject unhandled instead
+    // of surfacing to the caller (and the caller would resolve before the row
+    // was actually written).
+    return result.update({ lootPoints });
   });
 }
 
 export function incrementLoginCount(db: Database, id: string) {
   return db.users.update(
     {
-      loginCount: Sequelize.literal('login_count + 1') as any,
-      lastLogin: Sequelize.literal('CURRENT_TIMESTAMP') as any,
+      loginCount: Sequelize.literal('login_count + 1'),
+      lastLogin: Sequelize.literal('CURRENT_TIMESTAMP'),
     },
     { where: { id } },
   );
 }
 
-export function getUser(db: Database, id: string): Bluebird<User> {
+export function getUser(db: Database, id: string): Promise<User> {
   return db.users
     .findOne({ where: { id } })
     .then(result => new User(result ? result.dataValues : {}));
@@ -35,7 +38,7 @@ export function getUser(db: Database, id: string): Bluebird<User> {
 export function maybeGetUserByEmail(
   db: Database,
   email: string,
-): Bluebird<User | null> {
+): Promise<User | null> {
   return db.users
     .findOne({ where: { email } })
     .then(result => (result ? new User(result.dataValues) : null));
@@ -69,7 +72,7 @@ export function getUserQuests(
   db: Database,
   id: string,
   questIds?: string[],
-): Bluebird<UserQuestsType> {
+): Promise<UserQuestsType> {
   const where: WhereOptions = {
     userID: id,
     category: 'quest',
@@ -98,7 +101,7 @@ export function getUserQuests(
         };
       });
 
-      const metas: Array<Bluebird<void>> = [];
+      const metas: Array<Promise<void>> = [];
       for (const k of Object.keys(userQuests)) {
         metas.push(
           db.quests
@@ -121,7 +124,7 @@ export function getUserQuests(
         );
       }
 
-      return Bluebird.all(metas).then(() => userQuests);
+      return Promise.all(metas).then(() => userQuests);
     });
 }
 
@@ -134,7 +137,7 @@ export interface IUserFeedback {
 export function getUserFeedbacks(
   db: Database,
   userid: string,
-): Bluebird<IUserFeedback[]> {
+): Promise<IUserFeedback[]> {
   return db.feedback
     .findAll({
       where: { userid, anonymous: false },
@@ -153,7 +156,7 @@ export function getUserFeedbacks(
     });
 }
 
-export function getUserBadges(db: Database, userid: string): Bluebird<Badge[]> {
+export function getUserBadges(db: Database, userid: string): Promise<Badge[]> {
   return db.userBadges
     .findAll({
       where: { userid },

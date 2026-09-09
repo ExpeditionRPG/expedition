@@ -1,6 +1,18 @@
-import {FeedbackEntry, FeedbackMutation, QuestEntry, QuestMutation, UserEntry, UserMutation} from 'api/admin/QueryTypes';
+import {
+  FeedbackEntry,
+  FeedbackMutation,
+  QuestEntry,
+  QuestMutation,
+  UserEntry,
+  UserMutation,
+} from 'api/admin/QueryTypes';
 import Redux from 'redux';
-import {DialogIDType, SnackbarState, UserState, ViewType} from '../reducers/StateTypes';
+import {
+  DialogIDType,
+  SnackbarState,
+  UserState,
+  ViewType,
+} from '../reducers/StateTypes';
 
 export const SIGN_IN: string = 'SIGN_IN';
 export const SIGN_OUT: string = 'SIGN_OUT';
@@ -22,7 +34,9 @@ export interface ToggleDrawerAction extends Redux.Action {
   type: 'TOGGLE_DRAWER';
 }
 
-export interface SnackbarSetAction extends SnackbarState {type: 'SNACKBAR_SET'; }
+export interface SnackbarSetAction extends SnackbarState {
+  type: 'SNACKBAR_SET';
+}
 
 export interface SetViewAction extends Redux.Action {
   type: 'SET_VIEW';
@@ -46,8 +60,8 @@ export interface SetViewUsersAction extends Redux.Action {
 
 export interface SelectRowAction extends Redux.Action {
   type: 'SELECT_ROW';
-  table: 'feedback'|'users'|'quests';
-  row: number|null;
+  table: 'feedback' | 'users' | 'quests';
+  row: number | null;
 }
 
 export interface UpdateUserAction extends Redux.Action {

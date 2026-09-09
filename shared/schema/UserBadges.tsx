@@ -25,7 +25,9 @@ export class UserBadge extends SchemaBase {
     maxLength: 255,
     primaryKey: true,
     allowNull: false,
-    valid: [enumValues(Badge)],
+    // Un-nested: joi 13 deep-flattened the value list, joi 16+ does not, so a
+    // nested array would make the array itself the one allowed value.
+    valid: enumValues(Badge),
   })
   public badge!: string;
 }

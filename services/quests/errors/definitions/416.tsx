@@ -4,7 +4,7 @@ export const DESCRIPTION = ``;
 
 // TODO fixme; need to check if line is bulleted in QDL before trying to .extractBulleted
 export const INVALID = [
-/*`_combat_
+  /*`_combat_
 
 - Skeleton Swordsman
 
@@ -20,7 +20,7 @@ some random text`*/
 ];
 
 export const VALID = [
-`_combat_
+  `_combat_
 
 - Skeleton Swordsman
 

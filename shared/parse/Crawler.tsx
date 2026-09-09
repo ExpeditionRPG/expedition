@@ -1,17 +1,23 @@
-import {Context} from './Context';
-import {Node} from './Node';
+import { Context } from './Context';
+import { Node } from './Node';
 
 const FastPriorityQueue: any = require('fastpriorityqueue');
 
-export type CrawlEvent = 'INVALID' | 'END' | 'IMPLICIT_END' | 'MAX_DEPTH_EXCEEDED' | 'VISIT_LIMIT_EXCEEDED' | 'ALREADY_SEEN';
+export type CrawlEvent =
+  | 'INVALID'
+  | 'END'
+  | 'IMPLICIT_END'
+  | 'MAX_DEPTH_EXCEEDED'
+  | 'VISIT_LIMIT_EXCEEDED'
+  | 'ALREADY_SEEN';
 
 export interface CrawlEntry<C extends Context> {
   depth: number;
-  node: Node<C>|null;
+  node: Node<C> | null;
   prevId: string;
   prevLine: number;
   prevNodeStr: string;
-  fromAction: string|number;
+  fromAction: string | number;
 }
 
 interface CrawlPriorityQueue<C extends Context> {
@@ -21,13 +27,13 @@ interface CrawlPriorityQueue<C extends Context> {
   size: number;
 }
 
-function getNodeLine(node: Node<Context>|null): number {
+function getNodeLine(node: Node<Context> | null): number {
   if (node === null) {
     return -1;
   }
 
   try {
-    return parseInt(node.elem.attr('data-line'), 10);
+    return parseInt(node.elem.attr('data-line') || '', 10);
   } catch (e) {
     return -1;
   }
@@ -35,7 +41,7 @@ function getNodeLine(node: Node<Context>|null): number {
 
 export abstract class CrawlerBase<C extends Context> {
   protected seen: Set<string>;
-  protected lineVisitCount: {[line: number]: number};
+  protected lineVisitCount: { [line: number]: number };
   protected queue: CrawlPriorityQueue<C>;
 
   constructor() {
@@ -46,11 +52,19 @@ export abstract class CrawlerBase<C extends Context> {
     // node in question (e.g. with different contexts). This ensures relatively
     // even coverage of all the nodes in the story.
     this.queue = new FastPriorityQueue((a: CrawlEntry<C>, b: CrawlEntry<C>) => {
-      return (this.lineVisitCount[getNodeLine(a.node)] || 0) < (this.lineVisitCount[getNodeLine(b.node)] || 0);
+      return (
+        (this.lineVisitCount[getNodeLine(a.node)] || 0) <
+        (this.lineVisitCount[getNodeLine(b.node)] || 0)
+      );
     });
   }
 
-  public crawl(root?: Node<C>, timeLimitMillis = 500, depthLimit = 150, visitLimit = 10): boolean {
+  public crawl(
+    root?: Node<C>,
+    timeLimitMillis = 500,
+    depthLimit = 150,
+    visitLimit = 10,
+  ): boolean {
     return this.traverse(root, timeLimitMillis, depthLimit, visitLimit);
   }
 
@@ -63,13 +77,27 @@ export abstract class CrawlerBase<C extends Context> {
 
   protected abstract onEvent(q: CrawlEntry<C>, e: CrawlEvent): void;
 
-  protected abstract onNode(q: CrawlEntry<C>, nodeStr: string, id: string, line: number): void;
+  protected abstract onNode(
+    q: CrawlEntry<C>,
+    nodeStr: string,
+    id: string,
+    line: number,
+  ): void;
 
-  protected abstract onErrors(q: CrawlEntry<C>, errors: Error[], line: number): void;
+  protected abstract onErrors(
+    q: CrawlEntry<C>,
+    errors: Error[],
+    line: number,
+  ): void;
 
   // Traverses the graph in breadth-first order starting with a given node.
   // Stats are collected separately per-id and per-line
-  private traverse(root?: Node<C>, timeLimitMillis?: number, depthLimit?: number, visitLimit?: number): boolean {
+  private traverse(
+    root?: Node<C>,
+    timeLimitMillis?: number,
+    depthLimit?: number,
+    visitLimit?: number,
+  ): boolean {
     if (root) {
       this.queue.add({
         depth: 0,
@@ -82,7 +110,10 @@ export abstract class CrawlerBase<C extends Context> {
     }
 
     const start = Date.now();
-    while (this.queue.size > 0 && (!timeLimitMillis || (Date.now() - start) < timeLimitMillis)) {
+    while (
+      this.queue.size > 0 &&
+      (!timeLimitMillis || Date.now() - start < timeLimitMillis)
+    ) {
       const q = this.queue.poll();
 
       // If we've gone too deep into the quest, don't crawl further.
@@ -98,7 +129,7 @@ export abstract class CrawlerBase<C extends Context> {
       }
 
       const id = q.node.elem.attr('id') || q.prevId;
-      const line = parseInt(q.node.elem.attr('data-line'), 10);
+      const line = parseInt(q.node.elem.attr('data-line') || '', 10);
       this.lineVisitCount[line] = (this.lineVisitCount[line] || 0) + 1;
 
       // If we've visited the same node too many times, don't crawl further.
@@ -115,7 +146,10 @@ export abstract class CrawlerBase<C extends Context> {
       }
 
       // This happens when we hit the end of a quest.
-      if (q.node.getTag() === 'trigger' && q.node.elem.text().trim() === 'end') {
+      if (
+        q.node.getTag() === 'trigger' &&
+        q.node.elem.text().trim() === 'end'
+      ) {
         this.onEvent(q, 'END');
         continue;
       }
@@ -153,6 +187,6 @@ export abstract class CrawlerBase<C extends Context> {
         this.onErrors(q, errors, line);
       }
     }
-    return (this.queue.size > 0);
+    return this.queue.size > 0;
   }
 }

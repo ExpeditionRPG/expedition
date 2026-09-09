@@ -1,17 +1,17 @@
 # Regras Offline para o Expedition
 
-Estas regras são para se jogar sem um dispositivo e com um jogador no papel de GM. Por este motivo, nós só recomendamos jogar com estas regras caso você já esteja familiarizado com o gênero de RPGs, ou já tenha jogado vários jogos do Expedition com o aplicativo. 
+Estas regras são para se jogar sem um dispositivo e com um jogador no papel de GM. Por este motivo, nós só recomendamos jogar com estas regras caso você já esteja familiarizado com o gênero de RPGs, ou já tenha jogado vários jogos do Expedition com o aplicativo.
 
 Se você quer jogar a última e melhor versão de Expedition, incluindo as dúzias de aventuras integradas que não necessitam de um Mestre, você pode usar o aplicativo na Web, Android ou iOS disponível no site [ExpeditionGame.com/app](http://ExpeditionGame.com/app).
 
-*Este documento é baseado no Aplicativo Expedition v1.13.8. Você pode ver a versão atual do aplicativo indo em Ferramentas (Tools) e olhando o número da versão, no final da tela.*
+_Este documento é baseado no Aplicativo Expedition v1.13.8. Você pode ver a versão atual do aplicativo indo em Ferramentas (Tools) e olhando o número da versão, no final da tela._
 
 ## Pré-requisitos
 
 Para jogar, você precisará de uma cópia das cartas de Expedition. Você pode:
 
-* Comprar uma cópia na loja Expedition (ExpeditionGame.com/store) ou na Amazon.
-* Ou, imprimir e jogar suas próprias em ExpeditionGame.com/print-and-play. Se você imprimir e jogar, você também precisará de pelo menos um dado d20 e alguns clipes para marcação (como clipes de papel).
+- Comprar uma cópia na loja Expedition (ExpeditionGame.com/store) ou na Amazon.
+- Ou, imprimir e jogar suas próprias em ExpeditionGame.com/print-and-play. Se você imprimir e jogar, você também precisará de pelo menos um dado d20 e alguns clipes para marcação (como clipes de papel).
 
 Talvez você também queira imprimir estas regras para ter uma referência enquanto joga.
 
@@ -25,19 +25,19 @@ Assim que vocês estiverem prontos para jogar, cada jogador, exceto o Mestre, de
 
 **Selecionar** um aventureiro de sua escolha do baralho, colocá-lo virado para cima à sua frente e passar o baralho adiante.
 
-*Se estiver jogar sozinho:* Selecione e prepare dois aventureiros.
+_Se estiver jogar sozinho:_ Selecione e prepare dois aventureiros.
 
-*Se estiver jogando com a expansão O Horror:* Pegue uma carta Persona, coloque-a virada para cima à sua frente, e coloque um clipe em “Base”.
+_Se estiver jogando com a expansão O Horror:_ Pegue uma carta Persona, coloque-a virada para cima à sua frente, e coloque um clipe em “Base”.
 
 **Coloque** um clip no seu aventureiro na vida máxima (12).
 
-*Se estiver jogando com apenas um jogador não-Mestre:* Pegue e prepare dois aventureiros.
+_Se estiver jogando com apenas um jogador não-Mestre:_ Pegue e prepare dois aventureiros.
 
 ### Habilidades
 
 **Pegue** as habilidades iniciais listadas no seu aventureiro.
 
-*Se estiver jogando com O Horror:* Pegue uma habilidade Influência adicional e embaralhe-a na sua pilha de habilidades (comece com 7 habilidades).
+_Se estiver jogando com O Horror:_ Pegue uma habilidade Influência adicional e embaralhe-a na sua pilha de habilidades (comece com 7 habilidades).
 
 **Leia** suas habilidades. Você pode trocar sua mão inteira uma vez, se quiser.
 
@@ -55,12 +55,12 @@ Sem o aplicativo, Expedition funciona como um RPG de mesa tradicional. Um jogado
 
 Por exemplo, eles podem deixá-lo aumentar seu lançamento em +1 para cada habilidade de um tipo relevante que você tenha:
 
-| Classe da Habilidade | Tipos de Verificação de Habilidade que poderia beneficiar |
-| ----- | ----- |
-| Corpo-a-corpo (melee) | Força, resistência, constituição, intimidação |
-| À Distância (Ranged) | Destreza, furtividade, percepção, subir, acrobacias, roubo |
-| Mágica | Inteligência, conhecimento, tradição, história, sabedoria |
-| Música | Carisma, diplomacia, persuasão, negociação |
+| Classe da Habilidade  | Tipos de Verificação de Habilidade que poderia beneficiar  |
+| --------------------- | ---------------------------------------------------------- |
+| Corpo-a-corpo (melee) | Força, resistência, constituição, intimidação              |
+| À Distância (Ranged)  | Destreza, furtividade, percepção, subir, acrobacias, roubo |
+| Mágica                | Inteligência, conhecimento, tradição, história, sabedoria  |
+| Música                | Carisma, diplomacia, persuasão, negociação                 |
 
 O Mestre também pode te permitir usar uma de suas cartas de habilidade específica como um “atalho” - por exemplo, ao invés de tentar usar força bruta para quebrar uma porta, você poderia tentar lançar uma Bola de Fogo nela.
 
@@ -90,15 +90,15 @@ Cada jogador deve, ao mesmo tempo:
 
 Se estiver jogando com um cronômetro:
 
-* **Pegue, do monte de cartas de habilidades**, 3 cartas na mão, viradas para baixo. Não olhe estas cartas até que você inicie o cronômetro.
-* **Inicie o cronômetro.**
-* **Jogue uma habilidade** da sua mão.
-* Se o cronômetro zerar, multiplique o dano recebido nesta rodada por 1,5 (arredondando para cima).
+- **Pegue, do monte de cartas de habilidades**, 3 cartas na mão, viradas para baixo. Não olhe estas cartas até que você inicie o cronômetro.
+- **Inicie o cronômetro.**
+- **Jogue uma habilidade** da sua mão.
+- Se o cronômetro zerar, multiplique o dano recebido nesta rodada por 1,5 (arredondando para cima).
 
 Se estiver jogando sem um cronômetro.
 
-* **Pegue 3 cartas** de habilidade em sua mão.
-* **Jogue uma habilidade** da sua mão.
+- **Pegue 3 cartas** de habilidade em sua mão.
+- **Jogue uma habilidade** da sua mão.
 
 #### Ondas
 
@@ -110,7 +110,7 @@ Efeitos de Onda acontecem antes das habilidades. Habilidades que se aplicam “n
 
 ### Lançando e Resolvendo
 
-*Se estiver jogando com a expansão O Horror:* Aventureiros com a Persona no mínimo devem resolver o efeito da sua Persona e voltá-la para Base antes de resolver as habilidades. Aventureiros com a Persona no máximo podem escolher resolver e voltá-la agora ou em uma próxima rodada.
+_Se estiver jogando com a expansão O Horror:_ Aventureiros com a Persona no mínimo devem resolver o efeito da sua Persona e voltá-la para Base antes de resolver as habilidades. Aventureiros com a Persona no máximo podem escolher resolver e voltá-la agora ou em uma próxima rodada.
 
 **Lançamento:** Cada aventureiro lança um dado para cada habilidade que jogaram. Se o lançamento for > X, a habilidade foi bem sucedida. Cartas de habilidade podem listar efeitos adicionais baseados no resultado do lançamento, mesmo se falhar.
 
@@ -131,70 +131,72 @@ Se você quiser que o combate seja mais fácil, use a tabela para 1 jogador a me
 #### 1 - 2 jogadores (2 aventureiros)
 
 | Soma de Níveis | Dado: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (média) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 0 | 1 | 2 | 0.6 |
-| 2 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 3 | 0 | 1 | 2 | 2 | 3 | 1.6 |
-| 4 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 5 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 6 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 7 | 2 | 3 | 4 | 4 | 5 | 3.6 |
-| 8 | 3 | 3 | 4 | 5 | 5 | 4 |
-| 9+ | 4 | 4 | 4 | 5 | 6 | 4.6 |
+| -------------- | --------- | --- | ---- | ----- | ----- | ------- |
+| 1              | 0         | 0   | 0    | 1     | 2     | 0.6     |
+| 2              | 0         | 1   | 1    | 1     | 2     | 1       |
+| 3              | 0         | 1   | 2    | 2     | 3     | 1.6     |
+| 4              | 1         | 2   | 2    | 2     | 3     | 2       |
+| 5              | 2         | 2   | 2    | 3     | 4     | 2.6     |
+| 6              | 2         | 2   | 3    | 4     | 4     | 3       |
+| 7              | 2         | 3   | 4    | 4     | 5     | 3.6     |
+| 8              | 3         | 3   | 4    | 5     | 5     | 4       |
+| 9+             | 4         | 4   | 4    | 5     | 6     | 4.6     |
 
 #### 3 jogadores
 
 | Soma de Níveis | Dado: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (média) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 0 | 1 | 1 | 2 | 0.8 |
-| 2 | 1 | 1 | 1 | 2 | 2 | 1.4 |
-| 3 | 1 | 2 | 2 | 3 | 3 | 2.2 |
-| 4 | 1 | 2 | 3 | 3 | 4 | 2.6 |
-| 5 | 3 | 3 | 3 | 4 | 4 | 3.4 |
-| 6 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 7 | 3 | 4 | 5 | 5 | 5 | 4.4 |
-| 8 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 9+ | 5 | 5 | 5 | 6 | 6 | 5.4 |
+| -------------- | --------- | --- | ---- | ----- | ----- | ------- |
+| 1              | 0         | 0   | 1    | 1     | 2     | 0.8     |
+| 2              | 1         | 1   | 1    | 2     | 2     | 1.4     |
+| 3              | 1         | 2   | 2    | 3     | 3     | 2.2     |
+| 4              | 1         | 2   | 3    | 3     | 4     | 2.6     |
+| 5              | 3         | 3   | 3    | 4     | 4     | 3.4     |
+| 6              | 3         | 3   | 4    | 4     | 5     | 3.8     |
+| 7              | 3         | 4   | 5    | 5     | 5     | 4.4     |
+| 8              | 4         | 4   | 5    | 5     | 6     | 4.8     |
+| 9+             | 5         | 5   | 5    | 6     | 6     | 5.4     |
 
 #### 4 jogadores
 
 | Soma de Níveis | Dado: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (média) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 2 | 1.6 |
-| 3 | 2 | 2 | 2 | 3 | 3 | 2.4 |
-| 4 | 2 | 2 | 3 | 4 | 4 | 3 |
-| 5 | 3 | 3 | 4 | 4 | 4 | 3.6 |
-| 6 | 3 | 4 | 4 | 5 | 5 | 4.2 |
-| 7 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 8 | 5 | 5 | 5 | 6 | 6 | 5.4 |
-| 9+ | 5 | 6 | 6 | 6 | 7 | 6 |
+| -------------- | --------- | --- | ---- | ----- | ----- | ------- |
+| 1              | 0         | 1   | 1    | 1     | 2     | 1       |
+| 2              | 1         | 1   | 2    | 2     | 2     | 1.6     |
+| 3              | 2         | 2   | 2    | 3     | 3     | 2.4     |
+| 4              | 2         | 2   | 3    | 4     | 4     | 3       |
+| 5              | 3         | 3   | 4    | 4     | 4     | 3.6     |
+| 6              | 3         | 4   | 4    | 5     | 5     | 4.2     |
+| 7              | 4         | 4   | 5    | 5     | 6     | 4.8     |
+| 8              | 5         | 5   | 5    | 6     | 6     | 5.4     |
+| 9+             | 5         | 6   | 6    | 6     | 7     | 6       |
 
 #### 5 jogadores
+
 | Soma de Níveis | Dado: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (média) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 0 | 1 | 1 | 1 | 2 | 1 |
-| 2 | 1 | 1 | 2 | 2 | 3 | 1.8 |
-| 3 | 2 | 2 | 2 | 3 | 4 | 2.6 |
-| 4 | 2 | 2 | 3 | 4 | 5 | 3.2 |
-| 5 | 3 | 3 | 4 | 4 | 5 | 3.8 |
-| 6 | 3 | 4 | 4 | 5 | 6 | 4.4 |
-| 7 | 4 | 5 | 5 | 5 | 6 | 5 |
-| 8 | 5 | 6 | 6 | 6 | 6 | 5.8 |
-| 9+ | 6 | 6 | 6 | 7 | 7 | 6.4 |
+| -------------- | --------- | --- | ---- | ----- | ----- | ------- |
+| 1              | 0         | 1   | 1    | 1     | 2     | 1       |
+| 2              | 1         | 1   | 2    | 2     | 3     | 1.8     |
+| 3              | 2         | 2   | 2    | 3     | 4     | 2.6     |
+| 4              | 2         | 2   | 3    | 4     | 5     | 3.2     |
+| 5              | 3         | 3   | 4    | 4     | 5     | 3.8     |
+| 6              | 3         | 4   | 4    | 5     | 6     | 4.4     |
+| 7              | 4         | 5   | 5    | 5     | 6     | 5       |
+| 8              | 5         | 6   | 6    | 6     | 6     | 5.8     |
+| 9+             | 6         | 6   | 6    | 7     | 7     | 6.4     |
 
 #### 6 players
+
 | Soma de Níveis | Dado: 1-4 | 5-8 | 9-12 | 13-16 | 17-20 | (média) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 1 | 1 | 1 | 1 | 2 | 1.2 |
-| 2 | 1 | 2 | 2 | 2 | 3 | 2 |
-| 3 | 2 | 2 | 3 | 3 | 4 | 2.8 |
-| 4 | 3 | 3 | 3 | 4 | 5 | 3.6 |
-| 5 | 4 | 4 | 4 | 4 | 5 | 4.2 |
-| 6 | 4 | 4 | 5 | 5 | 6 | 4.8 |
-| 7 | 5 | 5 | 6 | 6 | 6 | 5.6 |
-| 8 | 6 | 6 | 6 | 7 | 7 | 6.4 |
-| 9+ | 6 | 7 | 7 | 7 | 8 | 7 |
+| -------------- | --------- | --- | ---- | ----- | ----- | ------- |
+| 1              | 1         | 1   | 1    | 1     | 2     | 1.2     |
+| 2              | 1         | 2   | 2    | 2     | 3     | 2       |
+| 3              | 2         | 2   | 3    | 3     | 4     | 2.8     |
+| 4              | 3         | 3   | 3    | 4     | 5     | 3.6     |
+| 5              | 4         | 4   | 4    | 4     | 5     | 4.2     |
+| 6              | 4         | 4   | 5    | 5     | 6     | 4.8     |
+| 7              | 5         | 5   | 6    | 6     | 6     | 5.6     |
+| 8              | 6         | 6   | 6    | 7     | 7     | 6.4     |
+| 9+             | 6         | 7   | 7    | 7     | 8     | 7       |
 
 #### Vitória
 
@@ -209,23 +211,23 @@ Todos os aventureiros são curados para a vida máxima (mesmo se chegaram a 0), 
 Divida o Espólio entre os aventureiros. Podem ser usados a qualquer momento e não contam como uma ação (a não ser que seja especificado de outra maneira).
 
 | Nível do Combate | Recompensa de Espólio |
-| --- | --- |
-| 1 | 1 |
-| 2 | 1 |
-| 3 | 2 |
-| 4 | 3 |
-| 5 | 3 |
-| 6 | 4 |
-| 7 | 4 |
-| 8+ | 5 |
+| ---------------- | --------------------- |
+| 1                | 1                     |
+| 2                | 1                     |
+| 3                | 2                     |
+| 4                | 3                     |
+| 5                | 3                     |
+| 6                | 4                     |
+| 7                | 4                     |
+| 8+               | 5                     |
 
 **Subindo de Nível:** O grupo ganha experiência igual ao nível total da batalha. Registre sua quantidade de pontos de experiência nas costas de uma carta de inimigo ou em um papel. Nas costas de uma outra carta de inimigo, ou papel, registre a quantidade de experiência necessária para subir de nível. Começa em 4 e aumenta em 1 a cada vez que se sobe de nível.
 
 Quando você sobe de nível, todos os aventureiros podem aprender uma nova habilidade.
 
-* Pegue 3 habilidades de um dos baralhos listados em sua carta de aventureiro. Se estiver jogando com O Horror: Todos os aventureiros podem, também, pegar do baralho de Influência.
-* Adicione 1 carta ao seu monte de habilidades, e coloque as 2 restantes no fundo do baralho do qual você as pegou.
-* Você pode escolher descartar uma habilidade.
+- Pegue 3 habilidades de um dos baralhos listados em sua carta de aventureiro. Se estiver jogando com O Horror: Todos os aventureiros podem, também, pegar do baralho de Influência.
+- Adicione 1 carta ao seu monte de habilidades, e coloque as 2 restantes no fundo do baralho do qual você as pegou.
+- Você pode escolher descartar uma habilidade.
 
 ### Derrota
 
@@ -233,4 +235,4 @@ Você perde o combate caso todos os aventureiros cheguem a 0 pontos de vida. Nes
 
 ## Fim
 
-Isso é tudo o que precisas para jogar Expedition! Se você tiver qualquer pergunta ou feedback, nós adoraríamos ouvir você no  Expedition@Fabricate.io!
+Isso é tudo o que precisas para jogar Expedition! Se você tiver qualquer pergunta ou feedback, nós adoraríamos ouvir você no Expedition@Fabricate.io!

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import LoginButton from 'shared/auth/LoginButton';
-import {AUTH_SETTINGS} from 'shared/schema/Constants';
+import { AUTH_SETTINGS } from 'shared/schema/Constants';
 import Card from '../base/Card';
 import Checkbox from '../base/Checkbox';
 
@@ -21,27 +21,39 @@ class SearchDisclaimer extends React.Component<Props, {}> {
   }
 
   public onSubscribeChange(value: boolean) {
-    this.setState({subscribe: value});
+    this.setState({ subscribe: value });
   }
 
   public render() {
     return (
       <Card title="Disclaimer">
         <p>
-          Community quests are written by adventurers like yourselves using the free quest creator (Quests.ExpeditionGame.com).
-          We offer no guarantees for the quests you are about to play, but do our best to review them for quality, and provide players with
-          the ability to rate, review and report quests.
+          Community quests are written by adventurers like yourselves using the
+          free quest creator (Quests.ExpeditionGame.com). We offer no guarantees
+          for the quests you are about to play, but do our best to review them
+          for quality, and provide players with the ability to rate, review and
+          report quests.
         </p>
         <p>
-          We use your Google email as your identity when rating and reviewing quests.
+          We use your Google email as your identity when rating and reviewing
+          quests.
         </p>
-        <p>
-          You must log in to continue:
-        </p>
-        <Checkbox label="Join the Mailing List" value={this.state.subscribe} onChange={(v: boolean) => { this.onSubscribeChange(v); }}>
+        <p>You must log in to continue:</p>
+        <Checkbox
+          label="Join the Mailing List"
+          value={this.state.subscribe}
+          onChange={(v: boolean) => {
+            this.onSubscribeChange(v);
+          }}
+        >
           Learn about the latest quests, features and more - once per month!
         </Checkbox>
-        <LoginButton clientId={AUTH_SETTINGS.CLIENT_ID} onLogin={(jwt: string) => this.props.onLogin(jwt, this.state.subscribe)}/>
+        <LoginButton
+          clientId={AUTH_SETTINGS.CLIENT_ID}
+          onLogin={(jwt: string) =>
+            this.props.onLogin(jwt, this.state.subscribe)
+          }
+        />
       </Card>
     );
   }

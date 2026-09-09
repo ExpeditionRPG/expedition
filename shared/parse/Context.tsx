@@ -1,30 +1,16 @@
+import { Cheerio } from '../Cheerio';
+import { MathJS } from '../MathJS';
+
 const Clone = require('clone');
 const HtmlDecode = require('he').decode;
-const MathJS = require('mathjs');
-const seedrandom = require('seedrandom');
-
-// Later versions of MathJS come with a breaking change where
-// strings are compared semantically (i.e. parsed for a numeric
-// value and then compared) instead of literally (matching character-by-character),
-// which results in e.g. "1" == "a" throwing an exception when
-// "a" can't be parsed into a number.
-// The following code overrides the equality operator in order to make the behavior
-// expected/sane.
-//
-// https://github.com/josdejong/mathjs/issues/1051#issuecomment-369930811
-MathJS.import(
-  {
-    equal(a: any, b: any) {
-      return a === b;
-    },
-  },
-  { override: true },
-);
+// @types/seedrandom 3 dropped the global UMD namespace (and renamed `prng` to
+// `PRNG`), so the callback signature below needs the module's own types.
+import * as seedrandom from 'seedrandom';
 
 export function generateSeed(prevSeed?: string): string {
   let seed: string = '';
   seedrandom(prevSeed && prevSeed + seedrandom.alea(prevSeed), {
-    pass(p: seedrandom.prng, s: string): seedrandom.prng {
+    pass(p: seedrandom.PRNG, s: string): seedrandom.PRNG {
       seed = s;
       return p;
     },
@@ -142,7 +128,9 @@ export function evaluateOp(
 
   try {
     parsed = MathJS.parse(HtmlDecode(op));
-    evalResult = parsed.compile().eval(ctx.scope);
+    // mathjs 6 renamed `eval` to `evaluate` on both the namespace and the
+    // compiled-expression object.
+    evalResult = parsed.compile().evaluate(ctx.scope);
   } catch (err) {
     const message =
       (err instanceof Error ? err.message : String(err)) + ' Op: (' + op + ')';
@@ -150,7 +138,7 @@ export function evaluateOp(
       window.onerror(message, 'shared/parse/context');
       return null;
     } else {
-      throw new Error(message);
+      throw new Error(message, { cause: err });
     }
   } finally {
     // Replace bound scope functions with originals.

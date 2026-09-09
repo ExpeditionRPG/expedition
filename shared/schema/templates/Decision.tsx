@@ -58,10 +58,9 @@ export function getPossibleChecks(ss: SkillCheck[]): SkillCheck[] {
   const result: SkillCheck[] = [];
 
   const skills: Partial<Record<keyof typeof Skill, boolean>> = {};
-  const skillPersonas: Partial<Record<
-    keyof typeof Skill,
-    Array<keyof typeof Persona>
-  >> = {};
+  const skillPersonas: Partial<
+    Record<keyof typeof Skill, Array<keyof typeof Persona>>
+  > = {};
   for (const s of ss) {
     if (!s.skill) {
       continue;

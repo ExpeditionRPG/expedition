@@ -2,7 +2,7 @@ import { defaultContext } from 'shared/parse/Context';
 import { Node } from 'shared/parse/Node';
 import { StatsCrawler } from './StatsCrawler';
 
-const cheerio = require('cheerio') as CheerioAPI;
+import * as cheerio from 'shared/Cheerio';
 
 describe('StatsCrawler', () => {
   describe('crawl', () => {

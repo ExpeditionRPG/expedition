@@ -66,22 +66,14 @@ describe('QuestPreview', () => {
 
   test('shows last played information if it has been played before', () => {
     const { wrapper } = setup({ lastPlayed: new Date() });
-    expect(
-      wrapper
-        .render()
-        .text()
-        .toLowerCase(),
-    ).toContain('last completed');
+    expect(wrapper.render().text().toLowerCase()).toContain('last completed');
   });
 
   test('does not show last played infomation if it does not exist', () => {
     const { wrapper } = setup({ lastPlayed: null });
-    expect(
-      wrapper
-        .render()
-        .text()
-        .toLowerCase(),
-    ).not.toContain('last completed');
+    expect(wrapper.render().text().toLowerCase()).not.toContain(
+      'last completed',
+    );
   });
 
   test('does not show book icon if it does not exist', () => {

@@ -1,16 +1,16 @@
-import {CombatPhase} from 'app/Constants';
-import {AppStateWithHistory} from 'app/reducers/StateTypes';
-import {connect} from 'react-redux';
+import { CombatPhase } from 'app/Constants';
+import { AppStateWithHistory } from 'app/reducers/StateTypes';
+import { connect } from 'react-redux';
 import Redux from 'redux';
-import {ParserNode} from '../TemplateTypes';
-import {
-  tierSumDelta,
-  toCombatPhase,
-} from './Actions';
-import DrawEnemies, {DispatchProps, StateProps} from './DrawEnemies';
-import {mapStateToProps as mapStateToPropsBase} from './Types';
+import { ParserNode } from '../TemplateTypes';
+import { tierSumDelta, toCombatPhase } from './Actions';
+import DrawEnemies, { DispatchProps, StateProps } from './DrawEnemies';
+import { mapStateToProps as mapStateToPropsBase } from './Types';
 
-const mapStateToProps = (state: AppStateWithHistory, ownProps: {node: ParserNode}): StateProps => {
+const mapStateToProps = (
+  state: AppStateWithHistory,
+  ownProps: { node: ParserNode },
+): StateProps => {
   // Override with dynamic state for tier
   // Any change causes a repaint
   return {
@@ -23,15 +23,12 @@ const mapStateToProps = (state: AppStateWithHistory, ownProps: {node: ParserNode
 const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
   return {
     onNext: (node: ParserNode, phase: CombatPhase) => {
-      dispatch(toCombatPhase({node, phase}));
+      dispatch(toCombatPhase({ node, phase }));
     },
     onTierSumDelta: (node: ParserNode, current: number, delta: number) => {
-      dispatch(tierSumDelta({node, current, delta}));
+      dispatch(tierSumDelta({ node, current, delta }));
     },
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DrawEnemies);
+export default connect(mapStateToProps, mapDispatchToProps)(DrawEnemies);

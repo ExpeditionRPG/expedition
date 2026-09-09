@@ -44,7 +44,7 @@ describe('SavedQuest actions', () => {
       .dispatch(
         storeSavedQuest(
           next,
-          ({ id: STORED_QUEST_ID } as any) as Quest,
+          { id: STORED_QUEST_ID } as any as Quest,
           STORED_QUEST_TS,
         ),
       )
@@ -100,7 +100,7 @@ describe('SavedQuest actions', () => {
     test('adds to the listing without affecting other quests', () => {
       const store = newMockStore({});
       store.dispatch(
-        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+        storeSavedQuest(pnode, { id: NEW_ID } as any as Quest, NEW_TS),
       );
       expect(getStorageJson(SAVED_QUESTS_KEY, [])).toContainEqual(
         expect.objectContaining({
@@ -113,7 +113,7 @@ describe('SavedQuest actions', () => {
     test('stores xml and context path', () => {
       const store = newMockStore({});
       store.dispatch(
-        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+        storeSavedQuest(pnode, { id: NEW_ID } as any as Quest, NEW_TS),
       );
       expect(getStorageJson(savedQuestKey(NEW_ID, NEW_TS), {})).toEqual(
         expect.objectContaining({ xml: quest + '', path: [0] }),
@@ -123,7 +123,7 @@ describe('SavedQuest actions', () => {
       const store = newMockStore({});
       const startBytes = checkStorageFreeBytes();
       store.dispatch(
-        storeSavedQuest(pnode, ({ id: NEW_ID } as any) as Quest, NEW_TS),
+        storeSavedQuest(pnode, { id: NEW_ID } as any as Quest, NEW_TS),
       );
       const bytesAction = store.getActions()[0];
       expect(bytesAction).toEqual(
@@ -145,7 +145,7 @@ describe('SavedQuest actions', () => {
         .dispatch(
           storeSavedQuest(
             pnode,
-            ({ id: NEW_ID } as any) as Quest,
+            { id: NEW_ID } as any as Quest,
             NEW_TS,
             mockSetKeyValue,
           ),
@@ -191,15 +191,16 @@ describe('SavedQuest actions', () => {
       store.dispatch(
         storeSavedQuest(
           next,
-          ({ id: STORED_QUEST_ID } as any) as Quest,
+          { id: STORED_QUEST_ID } as any as Quest,
           STORED_QUEST_TS + 1,
         ),
       );
       store.clearActions();
 
       store.dispatch(loadSavedQuest(STORED_QUEST_ID, STORED_QUEST_TS + 1));
-      const loaded = store.getActions().filter(a => a.type === 'QUEST_NODE')[0]
-        .node;
+      const loaded = store
+        .getActions()
+        .filter(a => a.type === 'QUEST_NODE')[0].node;
       return { saved: next, loaded };
     }
     test('loads from context, properly binding "lodash" functions in roleplay node', () => {
@@ -421,13 +422,14 @@ describe('SavedQuest actions', () => {
         },
       }));
       // Typed so the Quest cast below still means something.
-      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const actions =
+        require('./SavedQuests') as typeof import('./SavedQuests');
       const store = newMockStore({});
       return store
         .dispatch(
-          actions.saveQuestForOffline(({
+          actions.saveQuestForOffline({
             publishedurl: 'https://example.com/quest.xml',
-          } as any) as Quest),
+          } as any as Quest),
         )
         .then(() =>
           store.getActions().filter((a: any) => a.type === 'SNACKBAR_OPEN'),
@@ -467,13 +469,14 @@ describe('SavedQuest actions', () => {
         ...jest.requireActual('../LocalStorage'),
         setStorageKeyValue,
       }));
-      const actions = require('./SavedQuests') as typeof import('./SavedQuests');
+      const actions =
+        require('./SavedQuests') as typeof import('./SavedQuests');
       const store = newMockStore({});
       return store
         .dispatch(
-          actions.saveQuestForOffline(({
+          actions.saveQuestForOffline({
             publishedurl: 'https://example.com/quest.xml',
-          } as Partial<Quest>) as Quest),
+          } as Partial<Quest> as Quest),
         )
         .then(() => {
           const snackbars = store

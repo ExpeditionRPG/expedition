@@ -35,8 +35,8 @@ export function commitID(
         _committed: stripMultiplayerStateAndSettings(state),
         commitID: 0,
       };
-    case 'MULTIPLAYER_COMMIT': // TODO: error/alert if this takes too long // This should almost always happen within a couple actions. // When no actions are in flight, we're at the correct state.
-    {
+    case 'MULTIPLAYER_COMMIT': {
+      // TODO: error/alert if this takes too long // This should almost always happen within a couple actions. // When no actions are in flight, we're at the correct state.
       const id = (action as MultiplayerCommitAction).id;
       if (!getMultiplayerConnection().bufferedAtOrbelow(id)) {
         return {

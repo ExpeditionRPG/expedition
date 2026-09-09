@@ -17,7 +17,7 @@ import {
 } from './Actions';
 import { EMPTY_DECISION_STATE, LeveledSkillCheck } from './Types';
 
-const cheerio = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 const seedrandom = require('seedrandom');
 
 const TEST_NODE = new ParserNode(

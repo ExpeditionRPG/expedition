@@ -1,6 +1,6 @@
 // We need to keep imports very light here - this code used in Init.tsx
 // before much of our state has been initialized.
-import {getGA} from './Globals';
+import { getGA } from './Globals';
 
 const START_BUFFER_MAX_LENGTH = 25;
 const TAIL_BUFFER_MAX_LENGTH = 50;
@@ -36,26 +36,30 @@ export function getLogBuffer(): Readonly<string[]> {
 export function setupLogging(console: any) {
   const logHook = (f: (args?: any) => void, objects: any[]) => {
     try {
-      logToBuffer(objects.map((o: any) => {
-        if (o === null) {
-          return 'null';
-        }
-        if (o === undefined) {
-          return 'undefined';
-        }
-        if (o.stack) {
-          return o.toString() + '<<<' + o.stack + '>>>';
-        }
-        const str = o.toString();
-        if (str === '[object Object]') {
-          try {
-            return JSON.stringify(o).substr(0, 512);
-          } catch (e) {
-            return '<un-stringifiable Object>';
-          }
-        }
-        return o.toString();
-      }).join(' '));
+      logToBuffer(
+        objects
+          .map((o: any) => {
+            if (o === null) {
+              return 'null';
+            }
+            if (o === undefined) {
+              return 'undefined';
+            }
+            if (o.stack) {
+              return o.toString() + '<<<' + o.stack + '>>>';
+            }
+            const str = o.toString();
+            if (str === '[object Object]') {
+              try {
+                return JSON.stringify(o).substr(0, 512);
+              } catch (e) {
+                return '<un-stringifiable Object>';
+              }
+            }
+            return o.toString();
+          })
+          .join(' '),
+      );
       return f(...objects);
     } catch (e) {
       f(e);
@@ -75,7 +79,11 @@ export function setupLogging(console: any) {
 
 // TODO record modal views as users navigate: ReactGA.modalview('/about/contact-us');
 // likely as a separate logView or logNavigate or something
-export function logEvent(category: string, action: string, argsInput: {[key: string]: any}): void {
+export function logEvent(
+  category: string,
+  action: string,
+  argsInput: { [key: string]: any },
+): void {
   const ga = getGA();
   if (ga) {
     ga.event({

@@ -3,8 +3,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
-import {CONTENT_SET_FULL_NAMES, enumValues, Expansion} from 'shared/schema/Constants';
-import {ContentSetsType} from '../../reducers/StateTypes';
+import {
+  CONTENT_SET_FULL_NAMES,
+  enumValues,
+  Expansion,
+} from 'shared/schema/Constants';
+import { ContentSetsType } from '../../reducers/StateTypes';
 
 interface ExpansionCheck {
   checked: boolean;
@@ -20,7 +24,7 @@ export interface IConnectProps {
 
 const styles = {
   root: {
-    'color': 'black',
+    color: 'black',
     '&$checked': {
       color: 'black',
     },
@@ -33,7 +37,6 @@ interface Props extends IConnectProps {
 }
 
 class ExpansionCheckbox extends React.Component<Props, {}> {
-
   public componentDidMount() {
     // Default to all supported expansions checked
     // Done in a timer so as to not interrupt event/transition loops.
@@ -43,31 +46,36 @@ class ExpansionCheckbox extends React.Component<Props, {}> {
   }
 
   private onChange(expansions: ExpansionCheck[], value: any) {
-    const selected: string[] = expansions.map((expansion) => {
-      if (expansion.value === value) {
-        expansion.checked = !expansion.checked;
-      }
-      return (expansion.checked) ? expansion.value : '';
-    }).filter((e) => e !== '');
+    const selected: string[] = expansions
+      .map(expansion => {
+        if (expansion.value === value) {
+          expansion.checked = !expansion.checked;
+        }
+        return expansion.checked ? expansion.value : '';
+      })
+      .filter(e => e !== '');
     this.props.onChange(selected);
   }
 
   public render() {
-    const expansions: ExpansionCheck[] = enumValues(Expansion).filter((cs: Expansion) => {
-      return cs !== 'base';
-    }).map((cs: Expansion) => {
-      return {
-        value: cs,
-        checked: (this.props.value.indexOf(cs) !== -1),
-        disabled: !this.props.contentSets.has(cs),
-      };
-    });
+    const expansions: ExpansionCheck[] = enumValues(Expansion)
+      .filter((cs: Expansion) => {
+        return cs !== 'base';
+      })
+      .map((cs: Expansion) => {
+        return {
+          value: cs,
+          checked: this.props.value.indexOf(cs) !== -1,
+          disabled: !this.props.contentSets.has(cs),
+        };
+      });
 
     return (
       <FormGroup row>
         {expansions.map((expansion: ExpansionCheck) => {
           const label = `${CONTENT_SET_FULL_NAMES[expansion.value]}${expansion.disabled ? ' (Enable this expansion in settings)' : ''}`;
-          return <FormControlLabel
+          return (
+            <FormControlLabel
               key={expansion.value}
               control={
                 <Checkbox
@@ -83,7 +91,8 @@ class ExpansionCheckbox extends React.Component<Props, {}> {
                 />
               }
               label={label}
-            />;
+            />
+          );
         })}
       </FormGroup>
     );

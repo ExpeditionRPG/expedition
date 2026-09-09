@@ -19,7 +19,7 @@ import {
   unsubscribeFromEvents,
 } from './Multiplayer';
 
-const cheerio = require('cheerio');
+import * as cheerio from 'shared/Cheerio';
 
 // Need to polyfill headers in jest environment.
 // This must be constructible (`new Headers({...})`), so it cannot be an arrow function.
