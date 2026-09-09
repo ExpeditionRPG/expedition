@@ -11,7 +11,7 @@ const options = {
     // webpack-dev-server 4+ replaced `disableHostCheck` with `allowedHosts`.
     allowedHosts: 'all',
     // `quiet` / `noInfo` became `client.logging`.
-    client: { logging: 'info' },
+    client: { logging: 'info', overlay: { errors: true, warnings: false } },
     // `devServer.publicPath` moved under `devMiddleware`.
     devMiddleware: { publicPath: '/' },
     historyApiFallback: true,

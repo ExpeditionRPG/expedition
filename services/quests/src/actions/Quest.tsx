@@ -1,3 +1,4 @@
+import QueryString from 'query-string';
 import Redux from 'redux';
 import { UserState } from 'shared/auth/UserState';
 import { renderXML } from 'shared/render/QDLParser';
@@ -29,7 +30,6 @@ import { setSnackbar } from './Snackbar';
 import { ensureToken } from './User';
 
 const ReactGA = require('react-ga');
-const QueryString = require('query-string');
 
 export interface LoadResult {
   data: string;
