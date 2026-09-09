@@ -106,7 +106,10 @@ const options = {
       'process.env.API_HOST': JSON.stringify(
         process.env.API_HOST || 'https://betaapi.expeditiongame.com',
       ),
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
+      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.EXPEDITION_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'dev',
+      ),
       'process.env.OAUTH2_CLIENT_ID': JSON.stringify(
         process.env.OAUTH2_CLIENT_ID ||
           '545484140970-jq9jp7gdqdugil9qoapuualmkupigpdl.apps.googleusercontent.com',

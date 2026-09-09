@@ -126,7 +126,9 @@ export enum Theme {
 // chain would short-circuit and every value would silently fall back to the
 // defaults below, discarding what DefinePlugin substituted.
 export const VERSION = process.env.VERSION || '0.0.1';
-export const NODE_ENV = process.env.NODE_ENV || 'dev';
+// Deployment channel is independent of the browser libraries' build mode.
+export const NODE_ENV =
+  process.env.EXPEDITION_ENV || process.env.NODE_ENV || 'dev';
 export const API_HOST =
   process.env.API_HOST || 'https://betaapi.expeditiongame.com';
 

@@ -9,6 +9,8 @@ export default class TouchIndicator extends React.Component<Props, {}> {
   public ctx: any;
   public canvas: any;
   public styles: any;
+  private drawFrame: number | null = null;
+  private setupFrame: number | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -27,7 +29,12 @@ export default class TouchIndicator extends React.Component<Props, {}> {
   public shouldComponentUpdate() {
     // Never re-render the canvas (except by force).
     // Instead, take this as a hint to draw the touch points.
-    window.requestAnimationFrame(() => this.drawTouchPoints());
+    if (this.drawFrame === null) {
+      this.drawFrame = window.requestAnimationFrame(() => {
+        this.drawFrame = null;
+        this.drawTouchPoints();
+      });
+    }
     return false;
   }
 
@@ -79,6 +86,16 @@ export default class TouchIndicator extends React.Component<Props, {}> {
       return;
     }
 
+    // Cancel work for the old canvas, including when the ref is detached.
+    if (this.drawFrame !== null) {
+      window.cancelAnimationFrame(this.drawFrame);
+      this.drawFrame = null;
+    }
+    if (this.setupFrame !== null) {
+      window.cancelAnimationFrame(this.setupFrame);
+      this.setupFrame = null;
+    }
+    this.ctx = null;
     // Setup canvas element
     this.canvas = ref;
     if (!this.canvas) {
@@ -88,7 +105,8 @@ export default class TouchIndicator extends React.Component<Props, {}> {
       return;
     }
 
-    window.requestAnimationFrame(() => {
+    this.setupFrame = window.requestAnimationFrame(() => {
+      this.setupFrame = null;
       // The canvas may have been detached (e.g. the component unmounted)
       // between scheduling this frame and it being run.
       if (!this.canvas) {
