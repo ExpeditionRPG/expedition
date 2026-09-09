@@ -1,7 +1,12 @@
 import * as React from 'react';
+import { shallow } from 'enzyme';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import { initialSettings } from 'app/reducers/Settings';
+
 import { defaultContext } from '../Template';
 import { ParserNode, TemplateContext } from '../TemplateTypes';
-import { loadRoleplayNode, RoleplayResult } from './Roleplay';
+import Roleplay, { loadRoleplayNode, RoleplayResult } from './Roleplay';
 
 import * as cheerio from 'shared/Cheerio';
 
@@ -182,7 +187,73 @@ describe('Roleplay', () => {
     expect(result.choices).toEqual([{ jsx: <span>Next</span>, idx: 0 }]);
   });
 
-  test.skip('appends a Retry button if you just got out of combat and next node is **end**', () => {
-    /* TODO */
+  test('does not evaluate unchosen tutorial branches while rendering a choice card', () => {
+    const xml = readFileSync(
+      resolve(
+        process.cwd(),
+        'services/app/src/quests/learning_to_adventure.xml',
+      ),
+      'utf8',
+    );
+    const quest = cheerio.load(xml);
+    const node = new ParserNode(
+      quest('roleplay[title="The Quest"]'),
+      defaultContext(),
+    );
+    const originalOnError = window.onerror;
+    const onError = jest.fn(() => true);
+    window.onerror = onError;
+    try {
+      const renderCard = (card: ParserNode) =>
+        shallow(
+          <Roleplay
+            node={card}
+            questID="tutorial"
+            settings={initialSettings}
+            onChoice={jest.fn()}
+            onRetry={jest.fn()}
+          />,
+        );
+      renderCard(node);
+      const fae = node.handleAction(0);
+      expect(fae?.elem.attr('title')).toBe('A Fairly Big Problem');
+      if (!fae) {
+        throw new Error('Missing tutorial fae branch');
+      }
+      renderCard(fae);
+      // The outgoing choice card remains mounted during the transition.
+      renderCard(node);
+      expect(onError).not.toHaveBeenCalled();
+      expect(node.ctx.scope.intimidated).toBeUndefined();
+      expect(fae.ctx.scope.intimidated).toBeUndefined();
+    } finally {
+      window.onerror = originalOnError;
+    }
+  });
+
+  test('appends Retry after defeated combat immediately before the end', () => {
+    const quest = cheerio.load(
+      '<quest><combat/><roleplay>Defeated.</roleplay><trigger>end</trigger></quest>',
+    );
+    const prevNode = new ParserNode(quest('combat'), defaultContext());
+    prevNode.ctx.templates.combat.numAliveAdventurers = 0;
+    const node = new ParserNode(quest('roleplay'), defaultContext());
+    const onRetry = jest.fn();
+    const wrapper = shallow(
+      <Roleplay
+        node={node}
+        prevNode={prevNode}
+        questID="test"
+        settings={initialSettings}
+        onChoice={jest.fn()}
+        onRetry={onRetry}
+      />,
+    );
+    const retry = wrapper.findWhere(
+      element => element.prop('children') === 'Retry combat',
+    );
+    expect(retry).toHaveLength(1);
+    retry.simulate('click');
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });

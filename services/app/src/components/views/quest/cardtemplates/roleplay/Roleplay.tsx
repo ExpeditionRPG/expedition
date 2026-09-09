@@ -182,7 +182,12 @@ const Roleplay = (props: Props, theme?: CardThemeType | {}): JSX.Element => {
     props.prevNode.getTag() === 'combat' &&
     props.prevNode.ctx.templates.combat &&
     props.prevNode.ctx.templates.combat.numAliveAdventurers;
-  const nextNode = props.node.getNext();
+  // Looking ahead constructs and evaluates the next node. Only do that for
+  // defeat screens; other cards may lead to branches not initialized yet.
+  const nextNode =
+    prevNodeCombatAdventurers === 0 && rpResult.choices.length === 1
+      ? props.node.getNext()
+      : null;
   if (
     prevNodeCombatAdventurers === 0 &&
     rpResult.choices.length === 1 &&
