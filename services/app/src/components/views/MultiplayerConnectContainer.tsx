@@ -27,10 +27,7 @@ export const mapDispatchToProps = (
   dispatch: Redux.Dispatch<any>,
 ): DispatchProps => {
   return {
-    onConnect: (user: UserState) => {
-      const secret = window.prompt(
-        `Enter the session's ${MIN_SECRET_LENGTH} character code to join.`,
-      );
+    onConnect: (user: UserState, secret: string) => {
       if (secret === null || secret.length !== MIN_SECRET_LENGTH) {
         return dispatch(
           openSnackbar(

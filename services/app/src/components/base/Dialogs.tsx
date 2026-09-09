@@ -541,10 +541,15 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
   constructor(props: FeedbackDialogProps) {
     super(props);
     this.title = 'Report Quest';
+    this.helperText = 'Describe the issue';
+  }
+
+  public render(): JSX.Element {
     this.content = (
       <span>
         <p>
-          You're reporting an issue with <i>{props.quest.details.title}</i>.
+          You're reporting an issue with{' '}
+          <i>{this.props.quest.details.title || 'the current quest'}</i>.
         </p>
         <p>
           You should report a quest (instead of reviewing it at the end of the
@@ -559,7 +564,7 @@ export class ReportQuestDialog extends TextAreaDialog<FeedbackDialogProps> {
         </ul>
       </span>
     );
-    this.helperText = 'Describe the issue';
+    return super.render();
   }
 
   public onSubmit() {

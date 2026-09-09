@@ -71,11 +71,11 @@ export function send(
   sendCopy: boolean = true,
   isBeta: boolean = Config.get('API_URL_BASE').indexOf('beta') !== -1,
 ): Promise<any> {
-  if (transporter === null) {
-    return Promise.reject('mail transport not set up');
+  if (transporter === null && Config.get('NODE_ENV') !== 'dev') {
+    return Promise.reject(new Error('mail transport not set up'));
   }
   return sendVia(
-    transporter.sendMail.bind(transporter),
+    options => transporter.sendMail(options),
     to,
     subject,
     htmlMessage,

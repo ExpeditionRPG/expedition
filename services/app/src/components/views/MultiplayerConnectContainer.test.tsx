@@ -13,9 +13,8 @@ beforeEach(() => jest.clearAllMocks());
 test.each([null, 'A', 'ABCDE'])(
   'rejects an incomplete session code %s without connecting',
   code => {
-    jest.spyOn(window, 'prompt').mockReturnValue(code);
     const dispatch = jest.fn();
-    mapDispatchToProps(dispatch).onConnect(loggedOutUser);
+    mapDispatchToProps(dispatch).onConnect(loggedOutUser, code);
     expect(multiplayerConnect).not.toHaveBeenCalled();
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -28,7 +27,7 @@ test.each([null, 'A', 'ABCDE'])(
 test('normalizes joined and reconnected session codes', () => {
   jest.spyOn(window, 'prompt').mockReturnValue('abCd');
   const props = mapDispatchToProps(jest.fn());
-  props.onConnect(loggedOutUser);
+  props.onConnect(loggedOutUser, 'abCd');
   expect(multiplayerConnect).toHaveBeenCalledWith(loggedOutUser, 'ABCD');
   props.onReconnect(loggedOutUser, 'session-id', 'wxyz');
   expect(multiplayerConnect).toHaveBeenLastCalledWith(loggedOutUser, 'WXYZ');

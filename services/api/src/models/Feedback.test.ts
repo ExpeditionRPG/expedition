@@ -279,3 +279,50 @@ describe('feedback', () => {
     });
   });
 });
+
+test.each([false, true])(
+  'rating awaits failed mail and preserves submitted text (existing rating: %s)',
+  async existing => {
+    const db = await testingDBWithState([
+      q.basic,
+      ...(existing ? [fb.rating] : []),
+    ]);
+    try {
+      const rating = new Feedback({
+        ...fb.rating,
+        text: 'A useful text review',
+      });
+      let rejectMail: (e: Error) => void;
+      const delivery = new Promise((resolve, reject) => {
+        rejectMail = reject;
+      });
+      const send = jest.fn(() => delivery);
+      const result = submitRating(db, { send }, rating, null);
+      let settled = false;
+      const observed = result.then(
+        () => {
+          settled = true;
+        },
+        e => {
+          settled = true;
+          throw e;
+        },
+      );
+      while (!send.mock.calls.length) {
+        await new Promise(resolve => setTimeout(resolve, 1));
+      }
+      await new Promise(resolve => setTimeout(resolve, 1));
+      const awaitedDelivery = !settled;
+      // Attach a handler before rejecting even in the broken implementation.
+      delivery.catch(() => undefined);
+      rejectMail(new Error('SMTP unavailable'));
+      if (awaitedDelivery) {
+        await expect(observed).rejects.toThrow('SMTP unavailable');
+      }
+      expect(awaitedDelivery).toBe(true);
+      expect((await db.feedback.findOne()).dataValues.text).toBe(rating.text);
+    } finally {
+      await db.sequelize.close();
+    }
+  },
+);

@@ -29,7 +29,13 @@ test('creates, joins and reconnects with the selected user and historical sessio
   wrapper.find(Button).at(0).simulate('click');
   expect(props.onNewSessionRequest).toHaveBeenCalledWith(user);
   wrapper.find(Button).at(1).simulate('click');
-  expect(props.onConnect).toHaveBeenCalledWith(user);
+  expect(props.onConnect).not.toHaveBeenCalled();
+  const form = wrapper.find('form');
+  form.simulate('submit', { preventDefault: jest.fn() });
+  expect(props.onConnect).not.toHaveBeenCalled();
+  wrapper.find('TextField').simulate('change', { target: { value: 'abCd' } });
+  wrapper.find('form').simulate('submit', { preventDefault: jest.fn() });
+  expect(props.onConnect).toHaveBeenCalledWith(user, 'ABCD');
   wrapper.find(Button).at(2).simulate('click');
   expect(props.onReconnect).toHaveBeenCalledWith(user, 'session-1', 'ABCD');
   expect(

@@ -1,3 +1,9 @@
+import DialogButton from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import { SessionID } from 'shared/multiplayer/Session';
 import {
@@ -18,7 +24,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onConnect: (user: UserState) => void;
+  onConnect: (user: UserState, secret: string) => void;
   onReconnect: (user: UserState, id: SessionID, secret: string) => void;
   onNewSessionRequest: (user: UserState) => void;
 }
@@ -26,11 +32,11 @@ export interface DispatchProps {
 export interface Props extends StateProps, DispatchProps {}
 
 class MultiplayerConnect extends React.Component<Props, {}> {
-  public state: { secret: string };
+  public state: { secret: string; joining: boolean };
 
   constructor(props: Props) {
     super(props);
-    this.state = { secret: '' };
+    this.state = { secret: '', joining: false };
   }
 
   public handleSecret(e: any) {
@@ -96,11 +102,51 @@ class MultiplayerConnect extends React.Component<Props, {}> {
           </Button>
           <Button
             onClick={() => {
-              this.props.onConnect(this.props.user);
+              this.setState({ joining: true, secret: '' });
             }}
           >
             Join a session
           </Button>
+          <Dialog
+            open={this.state.joining}
+            onClose={() => this.setState({ joining: false })}
+            aria-labelledby="join-session-title"
+          >
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                if (this.state.secret.length !== MIN_SECRET_LENGTH) {
+                  return;
+                }
+                this.props.onConnect(this.props.user, this.state.secret);
+                this.setState({ joining: false });
+              }}
+            >
+              <DialogTitle id="join-session-title">Join a session</DialogTitle>
+              <DialogContent>
+                <TextField
+                  id="join-session-code"
+                  autoFocus
+                  label="Session code"
+                  helperText={`Enter the session's ${MIN_SECRET_LENGTH} character code to join.`}
+                  value={this.state.secret}
+                  onChange={e => this.handleSecret(e)}
+                  inputProps={{ maxLength: MIN_SECRET_LENGTH }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <DialogButton onClick={() => this.setState({ joining: false })}>
+                  Cancel
+                </DialogButton>
+                <DialogButton
+                  type="submit"
+                  disabled={this.state.secret.length !== MIN_SECRET_LENGTH}
+                >
+                  Join
+                </DialogButton>
+              </DialogActions>
+            </form>
+          </Dialog>
           {history.length > 0 && (
             <div className="helptext">
               You may also reconnect to these sessions:

@@ -233,14 +233,14 @@ export function submitRating(
     .then((questInstance: QuestInstance) => {
       const quest = new Quest(questInstance.dataValues);
       if (quest.ratingcount === 1) {
-        mailFirstRating(mail, feedback, quest, user);
+        return mailFirstRating(mail, feedback, quest, user);
       } else if (
         feedback.text &&
         feedback.text.length > 0 &&
         !feedback.text.endsWith('Details: --')
       ) {
         // New high quest ratings end with "Details: --" when no details are given.
-        mailNewRating(mail, feedback, quest, user);
+        return mailNewRating(mail, feedback, quest, user);
       }
     });
 }
