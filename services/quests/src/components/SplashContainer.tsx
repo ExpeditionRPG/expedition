@@ -35,7 +35,7 @@ export const mapDispatchToProps = (
       });
       return registerUserAndIdToken(AUTH_SETTINGS.URL_BASE, jwt).then(
         (user: UserState) => {
-          dispatch(postLoginUser(user));
+          dispatch(postLoginUser(user, window.location.hash.slice(1)));
         },
       );
     },

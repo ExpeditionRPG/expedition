@@ -49,13 +49,11 @@ export function postLoginUser(
     }
     const token =
       window.gapi && window.gapi.client && window.gapi.client.getToken();
-    if (quest && token) {
-      if (quest === true) {
-        // create a new quest
-        dispatch(loadQuestFromURL(r, undefined));
-      } else if (typeof quest === 'string') {
-        dispatch(loadQuestFromURL(r, quest));
-      }
+    if (typeof quest === 'string' && quest) {
+      // Existing quests can load from our API without Google Drive consent.
+      dispatch(loadQuestFromURL(r, quest, true));
+    } else if (quest === true && token) {
+      dispatch(loadQuestFromURL(r, undefined));
     }
   };
 }

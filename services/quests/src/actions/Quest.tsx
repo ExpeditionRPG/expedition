@@ -188,7 +188,11 @@ function updateDriveFile(
   }
 }
 
-export function loadQuestFromURL(user: UserState, id?: string) {
+export function loadQuestFromURL(
+  user: UserState,
+  id?: string,
+  deferDriveAuthorization = false,
+) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(questLoading());
     if (id) {
@@ -203,7 +207,7 @@ export function loadQuestFromURL(user: UserState, id?: string) {
         category: 'Background',
       });
     }
-    dispatch(loadQuest(user, id));
+    return dispatch(loadQuest(user, id, undefined, deferDriveAuthorization));
   };
 }
 
@@ -366,6 +370,7 @@ export function loadQuest(
   user: UserState,
   docid?: string,
   edittime: Date = new Date(),
+  deferDriveAuthorization = false,
 ) {
   return (dispatch: Redux.Dispatch<any>): any => {
     if (docid === undefined) {
@@ -373,6 +378,13 @@ export function loadQuest(
     }
     return loadQuestFromAPI(user, docid, edittime)
       .catch(e => {
+        const token =
+          window.gapi && window.gapi.client && window.gapi.client.getToken();
+        if (deferDriveAuthorization && !token) {
+          // Return to the explicit open action only when Drive consent is needed.
+          dispatch({ type: 'QUEST_LOAD_DEFERRED' });
+          return null;
+        }
         // Fall back to Drive API if we get an API error
         console.error(e);
         let result: LoadResult = {
@@ -395,7 +407,8 @@ export function loadQuest(
             return result;
           });
       })
-      .then((result: LoadResult) => {
+      .then((result: LoadResult | null) => {
+        if (result === null) return;
         if (result.data === '' && Object.keys(result.metadata).length === 0) {
           // Even new quests have data/metadata.
           throw new Error(

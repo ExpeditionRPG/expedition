@@ -25,4 +25,12 @@ describe('editor reducer', () => {
         .loadingQuest,
     ).toBe(false);
   });
+  test('returns to the open action when a linked quest needs Drive authorization', () => {
+    expect(
+      editor(
+        { ...defaultState, loadingQuest: true },
+        { type: 'QUEST_LOAD_DEFERRED' },
+      ),
+    ).toEqual(defaultState);
+  });
 });

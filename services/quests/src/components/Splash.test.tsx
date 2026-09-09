@@ -94,13 +94,13 @@ test('a pending quest has separate open and create actions invoked directly by a
   // Even a second callback during the pending operation cannot open another popup.
   view
     .find(Button)
-    .filterWhere(b => b.prop('children') === 'Create a quest')
+    .filterWhere(b => b.prop('children') === 'Create a new quest')
     .simulate('click');
   expect(onNewQuest).not.toHaveBeenCalled();
   for (let i = 0; i < 5; i++) await Promise.resolve();
   view
     .find(Button)
-    .filterWhere(b => b.prop('children') === 'Create a quest')
+    .filterWhere(b => b.prop('children') === 'Create a new quest')
     .simulate('click');
   expect(onNewQuest).toHaveBeenCalledWith(user);
   for (let i = 0; i < 5; i++) await Promise.resolve();

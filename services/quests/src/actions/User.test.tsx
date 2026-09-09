@@ -34,19 +34,19 @@ test('background token checks never open a popup', async () => {
   await expect(ensureToken()).rejects.toThrow('Connect Google Drive');
   expect(getAuthorizationToken).not.toHaveBeenCalled();
 });
-test('restoring a session with a quest URL waits for an explicit Drive connection', () => {
+test('restoring a session tries a linked quest without requesting Drive consent', () => {
   window.gapi = { client: { getToken: () => null } };
   const user = { ...loggedOutUser, email: 'test@example.com' };
   const dispatch = jest.fn();
   postLoginUser(user, 'quest-id')(dispatch);
-  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledTimes(2);
   expect(dispatch).toHaveBeenCalledWith({ type: 'SET_PROFILE_META', user });
-  expect(loadQuestFromURL).not.toHaveBeenCalled();
+  expect(loadQuestFromURL).toHaveBeenCalledWith(user, 'quest-id', true);
   expect(getAuthorizationToken).not.toHaveBeenCalled();
 });
 test('resumes a quest when Drive is already authorized', () => {
   window.gapi = { client: { getToken: () => 'token' } };
   const user = { ...loggedOutUser, email: 'test@example.com' };
   postLoginUser(user, 'quest-id')(jest.fn());
-  expect(loadQuestFromURL).toHaveBeenCalledWith(user, 'quest-id');
+  expect(loadQuestFromURL).toHaveBeenCalledWith(user, 'quest-id', true);
 });

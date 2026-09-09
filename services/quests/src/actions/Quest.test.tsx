@@ -173,12 +173,14 @@ describe('quest actions', () => {
       }
     }
 
-    test('loads from API', done => {
+    test('automatically loads a linked quest from API without a Drive token', done => {
+      const previousGapi = window.gapi;
+      window.gapi = undefined;
       const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
       fetchMock.get(matcher, JSON.stringify({ ...LOAD_RESULT, edittime }));
       fetchMock.post(/.*/, {});
       Action(loadQuest, {})
-        .execute(testUser, qid, edittime)
+        .execute(testUser, qid, edittime, true)
         .then(results => {
           expect(fetchMock.called(matcher)).toEqual(true);
           validateReceiveQuestLoad(results, r => {
@@ -193,9 +195,27 @@ describe('quest actions', () => {
               LOAD_RESULT.metadata,
             );
           });
+          window.gapi = previousGapi;
           done();
         })
-        .catch(done);
+        .catch(error => {
+          window.gapi = previousGapi;
+          done(error);
+        });
+    });
+
+    test('defers to the open action when API loading fails and Drive needs consent', async () => {
+      const previousGapi = window.gapi;
+      window.gapi = undefined;
+      const dispatch = jest.fn();
+      fetchMock.get(`${API_HOST}/qdl/${qid}/${edittime.getTime()}`, 404);
+      try {
+        await loadQuest(testUser, qid, edittime, true)(dispatch);
+        expect(dispatch).toHaveBeenCalledTimes(1);
+        expect(dispatch).toHaveBeenCalledWith({ type: 'QUEST_LOAD_DEFERRED' });
+      } finally {
+        window.gapi = previousGapi;
+      }
     });
 
     test('falls back to Drive API & published metadata', done => {

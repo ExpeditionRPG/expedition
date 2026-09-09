@@ -18,9 +18,17 @@ beforeEach(() => {
 test('asynchronous sign-in only updates the session', async () => {
   (registerUserAndIdToken as jest.Mock).mockResolvedValue(loggedOutUser);
   await mapDispatchToProps(jest.fn()).onLogin('jwt');
-  expect(postLoginUser).toHaveBeenCalledWith(loggedOutUser);
+  expect(postLoginUser).toHaveBeenCalledWith(loggedOutUser, '');
   expect(ensureToken).not.toHaveBeenCalled();
   expect(loadQuestFromURL).not.toHaveBeenCalled();
+});
+
+test('sign-in preserves a linked quest for automatic opening', async () => {
+  window.location.hash = '#linked-quest';
+  (registerUserAndIdToken as jest.Mock).mockResolvedValue(loggedOutUser);
+  await mapDispatchToProps(jest.fn()).onLogin('jwt');
+  expect(postLoginUser).toHaveBeenCalledWith(loggedOutUser, 'linked-quest');
+  expect(ensureToken).not.toHaveBeenCalled();
 });
 test('new quest requests Drive immediately and clears an existing URL only after authorization', async () => {
   window.location.hash = '#existing';
