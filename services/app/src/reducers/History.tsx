@@ -39,7 +39,7 @@ export function history(
     }
 
     if (returnAction.before) {
-      pastStateIdx--;
+      pastStateIdx = Math.max(0, pastStateIdx - 1);
     }
 
     // If we're going back to a point where the quest is no longer defined, clear the URL hash

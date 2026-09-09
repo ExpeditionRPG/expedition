@@ -159,10 +159,10 @@ function setupDevice() {
   }
 }
 
-function setupHotReload() {
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.accept('./components/Compositor', () => {
+export function setupHotReload(hot = module.hot) {
+  if (hot) {
+    hot.accept();
+    hot.accept('./components/Compositor', () => {
       setTimeout(() => {
         render();
       });

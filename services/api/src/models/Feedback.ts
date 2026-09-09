@@ -1,7 +1,6 @@
 import Sequelize from 'sequelize';
 import { Feedback } from 'shared/schema/Feedback';
 import { Quest } from 'shared/schema/Quests';
-import { PLACEHOLDER_DATE } from 'shared/schema/SchemaBase';
 import { User } from 'shared/schema/Users';
 import { MailService } from '../Mail';
 import { Database, FeedbackInstance, QuestInstance } from './Database';
@@ -255,7 +254,7 @@ export function suppressFeedback(
 ): Promise<any> {
   return db.feedback
     .update(
-      { tombstone: suppress ? new Date() : PLACEHOLDER_DATE },
+      { tombstone: suppress ? new Date() : null },
       {
         where: { partition, questid, userid },
         limit: 1,

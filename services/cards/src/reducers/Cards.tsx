@@ -20,7 +20,13 @@ export default function Cards(
 ): CardsState {
   switch (action.type) {
     case 'CARDS_LOADING':
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: undefined };
+    case 'CARDS_ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: (action as Redux.Action & { error: string }).error,
+      };
     case 'CARDS_UPDATE':
       return {
         ...state,

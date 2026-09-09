@@ -1,3 +1,5 @@
+import { handleDecisionRoll, toDecisionCard } from '../decision/Actions';
+import { DecisionPhase } from 'app/Constants';
 import { CombatPhase } from 'app/Constants';
 import { getMultiplayerConnection } from 'app/multiplayer/Connection';
 import { fakeConnection } from 'app/multiplayer/Testing';
@@ -80,9 +82,12 @@ describe('Combat actions', () => {
       expect(result).toEqual(20000);
       checkNodeIntegrity(null, null); // skip
     });
-    test.skip('Accounts for remote play', () => {
-      /* TODO */
-    }); // TODO
+    test('Accounts for remote play', () => {
+      expect(roundTimeMillis({ ...s.basic, numLocalPlayers: 1 }, m.s2p5)).toBe(
+        10000,
+      );
+      checkNodeIntegrity(null, null);
+    });
   });
 
   describe('initCombat', () => {
@@ -655,12 +660,38 @@ describe('Combat actions', () => {
     });
   });
 
-  test.skip('handles global player count change', () => {
-    /* TODO */
+  test('handles global player count change', () => {
+    const before = newCombatNode();
+    const settings = { ...s.basic, numLocalPlayers: 1 };
+    const node = Action(adventurerDelta, { settings }).execute({
+      node: before,
+      settings,
+      current: 3,
+      delta: 0,
+    })[0].node;
+    expect(node.ctx.templates.combat.numAliveAdventurers).toBe(2);
+    checkNodeIntegrity(before, node);
   });
 
-  test.skip('clears combat state on completion', () => {
-    /* TODO */
+  test('records victory and stops combat audio on completion', () => {
+    const before = newCombatNode();
+    const actions = Action(handleCombatEnd, { settings: s.basic }).execute({
+      node: before,
+      settings: s.basic,
+      victory: true,
+      maxTier: 3,
+      seed: 'end',
+    });
+    const node = actions.find(action => action.type === 'QUEST_NODE').node;
+    expect(node.ctx.templates.combat.phase).toBe(CombatPhase.victory);
+    expect(node.ctx.templates.combat.tier).toBe(0);
+    expect(actions).toContainEqual(
+      expect.objectContaining({
+        type: 'AUDIO_SET',
+        delta: expect.objectContaining({ intensity: 0 }),
+      }),
+    );
+    checkNodeIntegrity(before, node);
   });
 
   describe('findCombatParent', () => {
@@ -709,21 +740,78 @@ describe('Combat actions', () => {
       }
       checkNodeIntegrity(startNode, node);
     });
-    test.skip('populates combat decision template with generated LeveledSkillChecks', () => {
-      /* TODO */
+    test('populates combat decision template with generated LeveledSkillChecks', () => {
+      const before = newCombatNode();
+      const node = Action(setupCombatDecision, { settings: s.basic }).execute({
+        node: before,
+        seed: 'checks',
+      })[1].node;
+      expect(node.ctx.templates.decision.leveledChecks).toHaveLength(3);
+      expect(node.ctx.templates.decision.leveledChecks).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            skill: expect.any(String),
+            difficulty: expect.any(String),
+            requiredSuccesses: expect.any(Number),
+          }),
+        ]),
+      );
+      expect(node.ctx.templates.combat.phase).toBe(
+        CombatPhase.midCombatDecision,
+      );
+      checkNodeIntegrity(before, node);
     });
   });
   describe('handleCombatDecisionRoll', () => {
-    test.skip('appends the roll to the combat decision', () => {
-      /* TODO */
+    test('appends the roll to the combat decision', () => {
+      const before = newCombatNode();
+      before.ctx.templates.decision.selected = {
+        skill: 'athletics',
+        difficulty: 'easy',
+        requiredSuccesses: 2,
+      };
+      before.ctx.templates.decision.rolls = [5];
+      const actions = Action(handleDecisionRoll, { settings: s.basic }).execute(
+        { node: before, roll: 20 },
+      );
+      const node = actions.find(action => action.type === 'QUEST_NODE').node;
+      expect(node.ctx.templates.decision.rolls).toEqual([5, 20]);
+      expect(before.ctx.templates.decision.rolls).toEqual([5]);
+      checkNodeIntegrity(before, node);
     });
   });
   describe('toDecisionCard', () => {
-    test.skip('updates node decision phase when in combat', () => {
-      /* TODO */
+    test('updates node decision phase when in combat', () => {
+      const before = newCombatNode();
+      const actions = Action(toDecisionCard, {}).execute({
+        node: before,
+        phase: DecisionPhase.resolve,
+      });
+      const node = actions.find(action => action.type === 'QUEST_NODE').node;
+      expect(node.ctx.templates.decision.phase).toBe(DecisionPhase.resolve);
+      expect(node.ctx.templates.combat.phase).toBe(
+        CombatPhase.midCombatDecision,
+      );
+      checkNodeIntegrity(before, node);
     });
-    test.skip('calls toCard when not in combat', () => {
-      /* TODO */
+    test('calls toCard when not in combat', () => {
+      const before = new ParserNode(
+        cheerio.load('<decision></decision>')('decision'),
+        defaultContext(),
+      );
+      const actions = Action(toDecisionCard, {}).execute({
+        node: before,
+        phase: DecisionPhase.resolve,
+      });
+      const node = actions.find(action => action.type === 'QUEST_NODE').node;
+      expect(actions).toContainEqual(
+        expect.objectContaining({
+          type: 'NAVIGATE',
+          to: expect.objectContaining({ name: 'QUEST_CARD' }),
+        }),
+      );
+      expect(node.inCombat()).toBe(false);
+      checkNodeIntegrity(before, node);
     });
   });
 });

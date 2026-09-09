@@ -284,6 +284,13 @@ export class ThemeManager {
         }
       }
     } else if (delta < 0 && this.active.length > 1) {
+      const audibleBaseline = theme.baselineInstruments.filter(instrument => {
+        const node = this.nodes[this.getActiveInstrument(instrument) || ''];
+        return node && node.isPlaying() && (node.getVolume() || 0) > 0.9;
+      });
+      if (audibleBaseline.length <= 1) {
+        return;
+      }
       // Fade out one random audible baseline track randomly
       // (don't touch the peak instrument, don't go below 1 active instrument)
       for (const inst of [...theme.baselineInstruments].reverse()) {

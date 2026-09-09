@@ -44,7 +44,7 @@ import {
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. Please contact support by emailing Expedition@Fabricate.io';
-const REGEX_SEMVER = /[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?\.[1-9][0-9]?[0-9]?/g;
+const REGEX_SEMVER = /\d+\.\d+\.\d+/;
 
 export function healthCheck(req: express.Request, res: express.Response) {
   res.status(200).end(' ');
@@ -122,7 +122,7 @@ const memoizedVersions =
     : getVersions;
 
 export function announcement(req: express.Request, res: express.Response) {
-  memoizedVersions(new Date().toJSON().slice(0, 10)) // per day / 24 hour cache
+  return memoizedVersions(new Date().toJSON().slice(0, 10)) // per day / 24 hour cache
     .then((versions: Versions) => {
       res.json({
         link: Config.get('ANNOUNCEMENT_LINK') || '',
@@ -236,7 +236,7 @@ export function questXMLHandler(
   req: express.Request,
   res: express.Response,
 ) {
-  db.renderedQuests
+  return db.renderedQuests
     .findOne({
       where: {
         partition: req.params.partition,
@@ -425,9 +425,19 @@ export function unpublish(
   req: express.Request,
   res: express.Response,
 ) {
-  return unpublishQuest(db, Partition.expeditionPublic, req.params.quest)
-    .then(() => {
-      res.status(200).end('ok');
+  if (!res.locals || !res.locals.id) {
+    return res.status(401).end('You are not signed in.');
+  }
+  return getQuest(db, Partition.expeditionPublic, req.params.quest)
+    .then(quest => {
+      if (quest.userid !== res.locals.id) {
+        return res.status(403).end('Quest belongs to another author.');
+      }
+      return unpublishQuest(
+        db,
+        Partition.expeditionPublic,
+        req.params.quest,
+      ).then(() => res.status(200).end('ok'));
     })
     .catch((e: Error) => {
       console.error(e);
@@ -605,6 +615,7 @@ export function subscribe(
   const validation = Joi.string()
     .email({ tlds: { allow: false } })
     .invalid('')
+    .required()
     .validate(req.body.email);
   if (validation.error) {
     return res.status(400).end('Valid email address required.');

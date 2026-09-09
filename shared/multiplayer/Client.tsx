@@ -58,12 +58,19 @@ export abstract class ClientBase {
       };
     }
 
-    if (!parsed.event || !parsed.client || !parsed.instance) {
+    if (
+      !parsed ||
+      typeof parsed !== 'object' ||
+      !parsed.event ||
+      typeof parsed.event !== 'object' ||
+      !parsed.client ||
+      !parsed.instance
+    ) {
       return {
-        client: parsed.client,
+        client: (parsed && parsed.client) || this.id,
         event: { type: 'ERROR', error: 'Received malformed message: ' + s },
         id: null,
-        instance: parsed.instance,
+        instance: (parsed && parsed.instance) || this.instance,
       };
     }
 

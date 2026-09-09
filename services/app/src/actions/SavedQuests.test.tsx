@@ -1,3 +1,4 @@
+import { CombatPhase } from '../Constants';
 import { Quest } from 'shared/schema/Quests';
 import { defaultContext } from '../components/views/quest/cardtemplates/Template';
 import { ParserNode } from '../components/views/quest/cardtemplates/TemplateTypes';
@@ -256,8 +257,24 @@ describe('SavedQuest actions', () => {
       expect(node.ctx.templates.combat.tier).toEqual(4);
       expect(node.getTag()).toEqual('combat');
     });
-    test.skip('handles loading into mid-combat roleplay', () => {
-      /* todo */
+    test('handles loading into mid-combat roleplay', () => {
+      const { saved, loaded } = storeAndLoadQuest(
+        '<quest><roleplay data-line="0"><choice><roleplay data-line="1">Combat interlude</roleplay></choice></roleplay></quest>',
+        ctx => {
+          ctx.templates.combat = {
+            ...ctx.templates.combat,
+            phase: CombatPhase.midCombatRoleplay,
+            roundCount: 6,
+            tier: 4,
+          };
+          return ctx;
+        },
+      );
+      expect(loaded.getTag()).toBe('roleplay');
+      expect(loaded.elem.text()).toBe('Combat interlude');
+      expect(loaded.inCombat()).toBe(true);
+      expect(loaded.ctx.templates.combat).toEqual(saved.ctx.templates.combat);
+      expect(loaded.ctx.seed).toBe(saved.ctx.seed);
     });
   });
 
@@ -400,8 +417,39 @@ describe('SavedQuest actions', () => {
   });
 
   describe('saveQuestForOffline', () => {
-    test.skip('Saves a publishedurl to local storage', () => {
-      /* TODO */
+    test('Saves a publishedurl to local storage', async () => {
+      jest.resetModules();
+      jest.doMock('shared/requests', () => ({
+        ...jest.requireActual('shared/requests'),
+        fetchLocal: jest
+          .fn()
+          .mockResolvedValue(
+            '<quest><roleplay data-line="0">offline</roleplay></quest>',
+          ),
+      }));
+      const { saveQuestForOffline } = require('./SavedQuests');
+      const { fetchLocal } = require('shared/requests');
+      const store = newMockStore({});
+      const details = {
+        id: 'offline-quest',
+        publishedurl: 'https://example.com/quest.xml',
+      };
+      await store.dispatch(saveQuestForOffline(details));
+      expect(fetchLocal).toHaveBeenCalledWith(details.publishedurl);
+      const metadata = getStorageJson(SAVED_QUESTS_KEY, []) as any[];
+      const saved = metadata.find(entry => entry.details.id === details.id);
+      expect(saved.details.publishedurl).toBe(details.publishedurl);
+      const data = getStorageJson(
+        savedQuestKey(details.id, saved.ts),
+        {},
+      ) as any;
+      expect(data.xml).toContain('offline');
+      expect(store.getActions()).toContainEqual(
+        expect.objectContaining({
+          type: 'SNACKBAR_OPEN',
+          message: 'Saved for offline play.',
+        }),
+      );
     });
     // saveQuestForOffline() has no seam for injecting storage, so these
     // scope their mocks with resetModules()/doMock() rather than a file-wide

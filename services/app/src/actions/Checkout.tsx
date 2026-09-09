@@ -27,7 +27,7 @@ export function checkoutSubmit(
 ) {
   return (dispatch: Redux.Dispatch<any>): any => {
     dispatch(checkoutSetState({ processing: true }));
-    fetch(AUTH_SETTINGS.URL_BASE + '/stripe/checkout', {
+    return fetch(AUTH_SETTINGS.URL_BASE + '/stripe/checkout', {
       body: JSON.stringify({
         amount: checkout.amount,
         productcategory: checkout.productcategory,

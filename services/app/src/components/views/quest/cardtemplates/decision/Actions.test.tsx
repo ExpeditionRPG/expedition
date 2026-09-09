@@ -292,8 +292,17 @@ describe('Decision actions', () => {
         ),
       ).toEqual(3);
     });
-    test.skip('scales difficulty with the number of times this type of check was selected previously', () => {
-      /* TODO */
+    test('keeps generated difficulty deterministic for replay independent of previous calls', () => {
+      const first = generateLeveledChecks(4, seedrandom.alea('replay'));
+      generateLeveledChecks(4, seedrandom.alea('other-combat'));
+      expect(generateLeveledChecks(4, seedrandom.alea('replay'))).toEqual(
+        first,
+      );
+      expect(
+        first.every(check =>
+          ['easy', 'medium', 'hard'].includes(check.difficulty),
+        ),
+      ).toBe(true);
     });
   });
   describe('skillTimeMillis', () => {
@@ -304,8 +313,19 @@ describe('Decision actions', () => {
         skillTimeMillis({ ...s.basic, numLocalPlayers: 1 }, m.basic),
       );
     });
-    test.skip('respects settings', () => {
-      /* TODO */
+    test('respects configured timer length', () => {
+      expect(
+        skillTimeMillis(
+          { ...s.basic, timerSeconds: 15, numLocalPlayers: 2 },
+          m.basic,
+        ),
+      ).toBe(15000);
+      expect(
+        skillTimeMillis(
+          { ...s.basic, timerSeconds: 0, numLocalPlayers: 2 },
+          m.basic,
+        ),
+      ).toBe(0);
     });
   });
   describe('handleDecisionRoll', () => {

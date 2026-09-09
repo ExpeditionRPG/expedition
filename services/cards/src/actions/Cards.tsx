@@ -25,7 +25,7 @@ interface ResultType {
 export function downloadCards(
   name: string,
   cardType: string | null = null,
-): (dispatch: Redux.Dispatch<any>) => void {
+): (dispatch: Redux.Dispatch<any>) => Promise<void> {
   return (dispatch: Redux.Dispatch<any>) => {
     const store = getStore();
     dispatch(cardsLoading());
@@ -34,42 +34,46 @@ export function downloadCards(
       cardType !== null
         ? Promise.all([parseSingleSheet(cardType, name)])
         : downloadAndProcessSpreadsheet(name);
-    p.then((results: ResultType[]) => {
-      const cards = results
-        .reduce<CardType[]>((acc, obj: ResultType) => {
-          return [...acc, ...(obj.cards || [])];
-        }, [])
-        .sort((a: CardType, b: CardType) => {
-          if (a.sheet < b.sheet) {
-            return -1;
-          } else if (a.sheet > b.sheet) {
-            return 1;
-          } else if (a.class < b.class) {
-            return -1;
-          } else if (a.class > b.class) {
-            return 1;
-          }
-          return 0;
-        });
+    return p
+      .then((results: ResultType[]) => {
+        const cards = results
+          .reduce<CardType[]>((acc, obj: ResultType) => {
+            return [...acc, ...(obj.cards || [])];
+          }, [])
+          .sort((a: CardType, b: CardType) => {
+            if (a.sheet < b.sheet) {
+              return -1;
+            } else if (a.sheet > b.sheet) {
+              return 1;
+            } else if (a.class < b.class) {
+              return -1;
+            } else if (a.class > b.class) {
+              return 1;
+            }
+            return 0;
+          });
 
-      const translations = results.reduce<Partial<TranslationsType>>(
-        (acc, obj: ResultType) => {
-          return { ...acc, ...(obj.translations || {}) };
-        },
-        {},
-      );
-      if (Object.keys(translations).length > 0) {
-        dispatch(
-          translationsUpdate({ AdjectiveAfterNoun: false, ...translations }),
+        const translations = results.reduce<Partial<TranslationsType>>(
+          (acc, obj: ResultType) => {
+            return { ...acc, ...(obj.translations || {}) };
+          },
+          {},
         );
-      }
-      dispatch(cardsUpdate(cards));
+        if (Object.keys(translations).length > 0) {
+          dispatch(
+            translationsUpdate({ AdjectiveAfterNoun: false, ...translations }),
+          );
+        }
+        dispatch(cardsUpdate(cards));
 
-      // TODO this series of actions is order-dependent
-      // This should be made more robust with something like a Redux watcher
-      dispatch(cardsFilter(cards, store.getState().filters));
-      dispatch(filtersCalculate(store.getState().cards.filtered));
-    });
+        // TODO this series of actions is order-dependent
+        // This should be made more robust with something like a Redux watcher
+        dispatch(cardsFilter(cards, store.getState().filters));
+        dispatch(filtersCalculate(store.getState().cards.filtered));
+      })
+      .catch((error: Error) => {
+        dispatch({ type: 'CARDS_ERROR', error: error.message });
+      });
   };
 }
 
@@ -79,13 +83,14 @@ function parseSingleSheet(sheetName: string, url: string): Promise<ResultType> {
       download: true,
       header: true,
       dynamicTyping: true,
+      error: (error: Error) => reject(error),
       complete(results: any) {
         const data = results.data;
         // Turn into an array, remove commented out / hidden cards, attach sheet name
         let cards: CardType[] = [];
         let translations: TranslationsType | null = null;
 
-        if (sheetName === 'translations') {
+        if (sheetName.toLowerCase() === 'translations') {
           translations = { AdjectiveAfterNoun: false };
           for (const row of data) {
             if (row.Translated && row.Translated !== '') {
@@ -96,7 +101,13 @@ function parseSingleSheet(sheetName: string, url: string): Promise<ResultType> {
           cards = cards.concat(
             data
               .filter((card: CardType) => {
-                return card.Comment === null || card.hide === null;
+                return (
+                  !card.Comment &&
+                  !card.hide &&
+                  Object.values(card).some(
+                    value => value !== null && value !== '',
+                  )
+                );
               })
               .map((card: CardType) => {
                 card.sheet = sheetName;

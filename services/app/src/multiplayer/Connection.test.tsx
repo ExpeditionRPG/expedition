@@ -69,6 +69,41 @@ describe('Connection', () => {
 
     afterEach(() => jest.clearAllTimers());
 
+    test('does not report a connecting or closed socket online just because HTTP is reachable', async () => {
+      const { c, handler, sockets } = setup();
+      Object.assign(sockets[0], { readyState: 3 });
+      await c.checkOnlineState();
+      expect(c.isConnected()).toBe(false);
+      c.connect('first', 'secret');
+      Object.assign(sockets[1], { readyState: 0 });
+      handler.onConnectionChange.mockClear();
+      await c.checkOnlineState();
+      expect(c.isConnected()).toBe(false);
+      expect(handler.onConnectionChange).not.toHaveBeenCalled();
+      Object.assign(sockets[1], { readyState: 1 });
+      sockets[1].onopen();
+      expect(c.isConnected()).toBe(true);
+    });
+    test('ignores a pending open or message callback after disconnect', () => {
+      const { c, handler, sockets } = setup();
+      c.disconnect();
+      handler.onConnectionChange.mockClear();
+      sockets[0].onopen();
+      sockets[0].onmessage(
+        new MessageEvent('message', {
+          data: JSON.stringify({
+            client: 'peer',
+            instance: 'tab',
+            id: null,
+            event: { type: 'STATUS', connected: true },
+          }),
+        }),
+      );
+      expect(c.isConnected()).toBe(false);
+      expect(handler.onConnectionChange).not.toHaveBeenCalled();
+      expect(handler.onEvent).not.toHaveBeenCalled();
+    });
+
     test('does not retry a previous session action in a new session', () => {
       const { c, sockets } = setup();
       c.sendEvent({ type: 'ACTION', name: 'NAVIGATE', args: '{}' }, 0);
@@ -186,17 +221,72 @@ describe('Connection', () => {
       expect(c.isConnected()).toEqual(true);
     });
 
-    test.skip('is triggered on connection failure', () => {
-      /* TODO */
+    test('is triggered on connection failure', () => {
+      const { c, handler } = connected();
+      handler.onConnectionChange.mockClear();
+      dropFromServer();
+      expect(handler.onConnectionChange.mock.calls).toEqual([[false], [true]]);
+      expect(c.isConnected()).toBe(true);
     });
-    test.skip('backs off with random exponential offset', () => {
-      /* TODO */
+    test('backs off with random exponential offset', () => {
+      const { c } = connected();
+      jest.spyOn(Math, 'random').mockReturnValue(0.999);
+      const timeout = jest.spyOn(global, 'setTimeout');
+      for (const delay of [210, 220, 240, 280]) {
+        c.reconnect();
+        expect(timeout).toHaveBeenLastCalledWith(expect.any(Function), delay);
+        flush();
+      }
     });
-    test.skip('publishes client status when reconnected', () => {
-      /* TODO */
+    test('allows the reconnect handler to publish client status immediately', () => {
+      const { c, handler } = connected();
+      handler.onConnectionChange.mockImplementation(online => {
+        if (online) {
+          c.sendEvent({ type: 'STATUS', connected: true }, 0);
+        }
+      });
+      dropFromServer();
+      expect(
+        serverMessages.map(message => JSON.parse(message).event),
+      ).toContainEqual({
+        type: 'STATUS',
+        connected: true,
+      });
     });
-    test.skip('requests missed state and dispatches fast-forward actions', () => {
-      /* TODO */
+    test('delivers missed state returned after reconnect to the event handler', () => {
+      const { handler } = connected();
+      dropFromServer();
+      const event = {
+        id: null,
+        client: 'server',
+        instance: 'server',
+        event: {
+          type: 'MULTI_EVENT',
+          lastId: 1,
+          events: [
+            JSON.stringify({
+              id: 1,
+              event: {
+                type: 'ACTION',
+                name: 'next',
+                args: '{}',
+              },
+            }),
+          ],
+        },
+      };
+      serverSockets[1].send(JSON.stringify(event));
+      flush();
+      expect(handler.onEvent).toHaveBeenCalledWith(event, false);
+    });
+
+    test('cancels a scheduled reconnect when leaving multiplayer', () => {
+      const { c } = connected();
+      c.reconnect();
+      c.disconnect();
+      flush();
+      expect(serverSockets).toHaveLength(1);
+      expect(c.isConnected()).toBe(false);
     });
   });
 
@@ -212,6 +302,7 @@ describe('Connection', () => {
       c.registerHandler(handler);
       c.configure('testid', 'testinstance');
       c.connect('testsession', 'scrt');
+      flush();
       return { c, handler };
     }
 

@@ -4,7 +4,7 @@ import { ENCOUNTERS } from 'app/Encounters';
 import { setWordCount } from './actions/Editor';
 import REGEX from './Regex';
 import { store } from './Store';
-const IGNORE = Object.keys(ENCOUNTERS);
+const IGNORE = Object.keys(ENCOUNTERS).join(' ').toLowerCase().split(/\s+/);
 // The trailing class is `[^\\s]*`, not `[^\s]*`: this argument is a string
 // rather than a regex literal, so a single backslash collapsed to a plain `s`
 // and the class read "any character except a lowercase s" instead of "any
@@ -44,7 +44,7 @@ export default class Spellcheck {
   // Gets the number of words in the text
   // Most accurage if text has already been cleaned
   public static getWordCount(text: string): number {
-    return text.trim().split(/\s+/).length;
+    return text.trim() ? text.trim().split(/\s+/).length : 0;
   }
 
   // Return a list of all unique words in the provided text
@@ -55,7 +55,7 @@ export default class Spellcheck {
         // newlines -> space
         .replace(/\n/g, ' ')
         // split to array of words on spaces
-        .split(' ')
+        .split(/[^a-zA-Z']+/)
         // remove non-word characters
         .map((s: string): string => s.replace(REGEX.NOT_WORD, ''))
         // Drop anything that is not a word. This has to run *after* the strip,
@@ -129,7 +129,10 @@ export default class Spellcheck {
         .getAllLines()
         .forEach((line: string, i: number) => {
           // Before we check for misspellings, remove elements we don't want to check
-          line = line.replace(elementRegexes, '');
+          // Preserve source columns after ignored markup, and match case-insensitively.
+          line = line
+            .toLowerCase()
+            .replace(elementRegexes, match => ' '.repeat(match.length));
           // The regex is /g and shared across lines, so start each line at 0.
           misspellingsRegex.lastIndex = 0;
           let match = misspellingsRegex.exec(line);

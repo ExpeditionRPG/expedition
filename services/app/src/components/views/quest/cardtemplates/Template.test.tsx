@@ -1,3 +1,5 @@
+import * as cheerio from 'shared/Cheerio';
+import { ParserNode } from './TemplateTypes';
 import { initialMultiplayer } from 'app/reducers/Multiplayer';
 import { initialSettings } from 'app/reducers/Settings';
 import { evaluateOp } from 'shared/parse/Context';
@@ -5,8 +7,17 @@ import { defaultContext } from './Template';
 
 describe('CardTemplates template', () => {
   describe('updateContext', () => {
-    test.skip('persists readonly template nodes', () => {
-      /* TODO */
+    test('persists template state when cloning without mutating its source', () => {
+      const node = new ParserNode(
+        cheerio.load('<roleplay>Ready</roleplay>')('roleplay'),
+        defaultContext(),
+      );
+      node.ctx.templates.combat.roundCount = 4;
+      const cloned = node.clone();
+      expect(cloned.ctx.templates).toEqual(node.ctx.templates);
+      cloned.ctx.templates.combat.roundCount = 5;
+      expect(node.ctx.templates.combat.roundCount).toBe(4);
+      expect(cloned.ctx.seed).toBe(node.ctx.seed);
     });
   });
 

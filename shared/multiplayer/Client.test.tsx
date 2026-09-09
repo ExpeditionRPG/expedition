@@ -55,3 +55,19 @@ describe('Client', () => {
     expect(c.doParseEvent(JSON.stringify(basicEvent))).toEqual(basicEvent);
   });
 });
+
+test.each(['null', 'true', '42', '[]', '"text"', '{"event":null}'])(
+  'rejects JSON scalars and missing event envelopes: %s',
+  raw => {
+    const c = new TestClient();
+    c.configure('self', 'tab');
+    expect(c.doParseEvent(raw)).toEqual(
+      expect.objectContaining({
+        client: 'self',
+        instance: 'tab',
+        id: null,
+        event: expect.objectContaining({ type: 'ERROR' }),
+      }),
+    );
+  },
+);

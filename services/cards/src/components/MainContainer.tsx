@@ -5,6 +5,7 @@ import Main, { StateProps } from './Main';
 const mapStateToProps = (state: AppState): StateProps => {
   return {
     loading: state.cards.loading,
+    error: state.cards.error,
   };
 };
 

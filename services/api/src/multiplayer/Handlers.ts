@@ -139,11 +139,10 @@ export function connect(
   }
 
   let session: SessionInstance;
-  getSessionBySecret(db, body.secret)
+  return getSessionBySecret(db, body.secret)
     .then((s: SessionInstance | null) => {
       if (s === null) {
-        res.status(404).send();
-        return Promise.reject(new Error('session not found'));
+        return null;
       }
       session = s;
       return db.sessionClients.upsert({
@@ -153,6 +152,9 @@ export function connect(
       });
     })
     .then(() => {
+      if (!session) {
+        return res.status(404).send();
+      }
       return res
         .status(200)
         .end(JSON.stringify({ session: session.get('id') }));
@@ -199,6 +201,13 @@ function wsParamsFromReq(
     return null;
   }
 
+  if (
+    ['client', 'instance', 'secret'].some(
+      key => typeof parsedURL.query[key] !== 'string' || !parsedURL.query[key],
+    )
+  ) {
+    return null;
+  }
   return {
     client: parsedURL.query.client as string,
     instance: parsedURL.query.instance as string,
@@ -218,7 +227,12 @@ export function verifyWebsocket(
   }
   return verifySessionClient(db, params.session, params.client, params.secret)
     .then((verified: boolean) => {
-      return cb(verified);
+      if (!verified) {
+        return cb(false);
+      }
+      return db.sessions
+        .findOne({ where: { id: params.session, locked: false } })
+        .then(session => cb(session !== null));
     })
     .catch((e: Error) => {
       console.error('WS verify error:', e);
@@ -260,29 +274,26 @@ function maybeFastForwardClient(
   lastEventID: number,
   ws: WebSocket,
 ) {
-  getLargestEventID(db, session).then((dbLastEventID: number) => {
-    if (lastEventID >= dbLastEventID) {
-      return;
-    }
-    makeMultiEvent(db, session, lastEventID).then(
-      (event: MultiEvent | undefined) => {
-        if (event === undefined || ws.readyState !== WebSocket.OPEN) {
-          return;
-        }
-        ws.send(
-          JSON.stringify({
+  return getLargestEventID(db, session)
+    .then((dbLastEventID: number) => {
+      if (lastEventID >= dbLastEventID) {
+        return;
+      }
+      return makeMultiEvent(db, session, lastEventID).then(
+        (event: MultiEvent | undefined) => {
+          if (event === undefined) {
+            return;
+          }
+          sendSocketMessage(ws, {
             client: 'SERVER',
             event,
             id: null,
             instance: Config.get('NODE_ENV'),
-          }),
-          (e?: Error) => {
-            console.error('WS FF error:', e);
-          },
-        );
-      },
-    );
-  });
+          });
+        },
+      );
+    })
+    .catch((error: Error) => sendError(ws, error.toString()));
 }
 
 // We need a little custom server code to pay attention when clients
@@ -310,22 +321,31 @@ function handleClientStatus(
   }
 }
 
+function sendSocketMessage(ws: WebSocket, event: MultiplayerEvent) {
+  // DB work can complete after the peer closes. Never write or recursively send
+  // another error on a socket that can no longer receive the response.
+  if (ws.readyState !== WebSocket.OPEN) {
+    return;
+  }
+  try {
+    ws.send(JSON.stringify(event), (error?: Error) => {
+      if (error) {
+        console.error('WS send error:', error);
+      }
+    });
+  } catch (error) {
+    console.error('WS send error:', error);
+  }
+}
+
 function sendError(ws: WebSocket, e: string) {
   console.error('WS Error:', e);
-  ws.send(
-    JSON.stringify({
-      client: 'SERVER',
-      event: {
-        error: e,
-        type: 'ERROR',
-      },
-      id: null,
-      instance: Config.get('NODE_ENV'),
-    }),
-    (err?: Error) => {
-      console.error('WS sendError error:', err);
-    },
-  );
+  sendSocketMessage(ws, {
+    client: 'SERVER',
+    event: { type: 'ERROR', error: e },
+    id: null,
+    instance: Config.get('NODE_ENV'),
+  });
 }
 
 export function websocketSession(
@@ -383,6 +403,13 @@ export function websocketSession(
   // 'rejects binary frames' / 'accepts text frames' in Handlers.test.ts cover
   // it now.
   ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
+    // A superseded socket may still deliver queued frames while its close handshake finishes.
+    const current = (getSession(params.session) || {})[
+      toClientKey(params.client, params.instance)
+    ];
+    if (!current || current.socket !== ws) {
+      return;
+    }
     if (isBinary) {
       sendError(ws, 'Invalid type for inbound message: binary');
       return;
@@ -408,6 +435,73 @@ export function websocketSession(
       return;
     }
 
+    if (event.client !== params.client || event.instance !== params.instance) {
+      sendError(ws, 'Event identity does not match authenticated socket');
+      return;
+    }
+    // Replay and inflight decisions originate at the server, never another peer.
+    if (!['ACTION', 'STATUS', 'INTERACTION'].includes(event.event.type)) {
+      sendError(ws, 'Unsupported client event type');
+      return;
+    }
+    if (event.event.type !== 'ACTION' && event.id !== null) {
+      sendError(ws, 'Non-ACTION events must have a null ID');
+      return;
+    }
+    if (event.event.type === 'ACTION') {
+      if (
+        typeof event.event.name !== 'string' ||
+        !event.event.name ||
+        typeof event.event.args !== 'string'
+      ) {
+        sendError(ws, 'Invalid ACTION name or arguments');
+        return;
+      }
+      try {
+        JSON.parse(event.event.args);
+      } catch (e) {
+        sendError(ws, 'Invalid ACTION JSON arguments');
+        return;
+      }
+    }
+    if (
+      event.event.type === 'STATUS' &&
+      event.event.lastEventID !== undefined &&
+      (!Number.isSafeInteger(event.event.lastEventID) ||
+        event.event.lastEventID < 0)
+    ) {
+      sendError(ws, 'Invalid STATUS lastEventID');
+      return;
+    }
+    if (event.event.type === 'STATUS') {
+      const status = event.event;
+      const waiting = status.waitingOn;
+      const malformed =
+        (status.connected !== undefined &&
+          typeof status.connected !== 'boolean') ||
+        (status.name !== undefined && typeof status.name !== 'string') ||
+        (['line', 'numLocalPlayers', 'aliveAdventurers'] as const).some(
+          key =>
+            status[key] !== undefined &&
+            (!Number.isSafeInteger(status[key]) ||
+              status[key] < (key === 'line' ? -1 : 0)),
+        ) ||
+        (status.contentSets !== undefined &&
+          (!Array.isArray(status.contentSets) ||
+            status.contentSets.some(set => typeof set !== 'string'))) ||
+        (waiting !== undefined &&
+          waiting !== null &&
+          (!waiting ||
+            typeof waiting !== 'object' ||
+            typeof waiting.type !== 'string' ||
+            (waiting.type === 'TIMER' &&
+              (!Number.isFinite(waiting.elapsedMillis) ||
+                waiting.elapsedMillis < 0))));
+      if (malformed) {
+        sendError(ws, 'Invalid STATUS fields');
+        return;
+      }
+    }
     // If it's not a transactioned action, just broadcast it.
     if (event.event.type !== 'ACTION') {
       broadcast(params.session, msg);
@@ -426,8 +520,8 @@ export function websocketSession(
 
     // Precondition: event is an ACTION
     const eventID = event.id;
-    if (eventID === null) {
-      sendError(ws, 'Received ACTION event with null ID');
+    if (eventID === null || !Number.isSafeInteger(eventID) || eventID < 1) {
+      sendError(ws, 'Received ACTION event with invalid ID');
       return;
     }
 
@@ -445,42 +539,29 @@ export function websocketSession(
       })
       .catch((error: Error) => {
         console.error('WS commit error:', error);
-        let multiEvent: MultiEvent | null = null;
-        // `eventID - 1`, not `eventID`. The commit failed because some other
-        // client already committed this id, so the catch-up has to *include*
-        // that id -- it is the authoritative version of the event this client
-        // just lost, and the thing it needs in order to reconcile.
-        // `getOrderedEventsAfter` filters on `id > start`, so passing `eventID`
-        // asks for everything after the contested id and, when that id is the
-        // newest, returns an empty `MULTI_EVENT` carrying `lastId: 0`.
-        // Contrast `maybeFastForwardClient`, which correctly passes the
-        // client's *last received* id.
-        makeMultiEvent(db, params.session, eventID - 1)
-          .then((e: MultiEvent | undefined) => {
-            multiEvent = e || null;
-          })
-          .catch((e: Error) => {
-            sendError(ws, e.toString());
-          })
-          .finally(() => {
-            ws.send(
-              JSON.stringify({
+        // Include the contested ID, which is needed to reconcile the losing action.
+        return makeMultiEvent(db, params.session, eventID - 1)
+          .then(event => {
+            if (event) {
+              sendSocketMessage(ws, {
                 client: 'SERVER',
-                event: multiEvent,
+                event,
                 id: null,
                 instance: Config.get('NODE_ENV'),
-              }),
-              (e?: Error) => {
-                if (e) {
-                  sendError(ws, e.toString());
-                }
-              },
-            );
-          });
+              });
+            }
+          })
+          .catch((e: Error) => sendError(ws, e.toString()));
       });
   });
 
   ws.on('close', () => {
+    const current = (getSession(params.session) || {})[
+      toClientKey(params.client, params.instance)
+    ];
+    if (!current || current.socket !== ws) {
+      return;
+    }
     rmSessionClient(params.session, params.client, params.instance);
 
     // Notify other clients this client has disconnected

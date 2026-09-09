@@ -100,15 +100,26 @@ describe('Audio', () => {
     expect(props.themeManager.setIntensity).toHaveBeenCalledWith(5, 2);
   });
 
-  test.skip('starts playing on disabled -> intensity change -> enabled -> load complete', () => {
-    // TODO
-    const { props, a } = setup({ themeManager: null });
+  test('starts playing on disabled -> intensity change -> enabled -> load complete', () => {
+    const { props, a } = setup({ enabled: false, themeManager: null });
     const ap = activeProps();
-    a.setProps(tick({ ...props, audio: { ...ap.audio } }, 1));
-    a.setProps(tick({ ...props, enabled: true }, 2));
-
-    const f = fakeThemeManager();
-    a.setProps(tick({ ...props, enabled: true, themeManager: f }, 3));
-    expect(f.setIntensity).toHaveBeenCalledWith(1);
+    a.setProps(tick({ ...props, audio: ap.audio }, 1));
+    a.setProps(tick({ ...props, audio: ap.audio, enabled: true }, 2));
+    expect(props.loadAudio).toHaveBeenCalledTimes(1);
+    const tm = fakeThemeManager();
+    a.setProps(
+      tick(
+        {
+          ...props,
+          audio: { ...ap.audio, loaded: 'LOADED' },
+          enabled: true,
+          themeManager: tm,
+        },
+        3,
+      ),
+    );
+    expect(tm.setIntensity).toHaveBeenCalledWith(1, 2);
+    expect(tm.resume).toHaveBeenCalled();
+    a.unmount();
   });
 });

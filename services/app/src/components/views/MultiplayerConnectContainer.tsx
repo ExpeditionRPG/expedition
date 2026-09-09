@@ -23,7 +23,9 @@ const mapStateToProps = (
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     onConnect: (user: UserState) => {
       const secret = window.prompt(

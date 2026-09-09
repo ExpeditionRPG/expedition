@@ -258,7 +258,6 @@ describe('events', () => {
         .catch(done);
     });
     test('lazily accepts if it matches the most recent event', (done: DoneFn) => {
-      // TODO: This doesn't prevent multiple commits if something sneaks in between retries
       testingDBWithState([
         new Session({ ...s.basic, id: e.basic.session, eventCounter: 4 }),
         new Event({ ...e.basic, timestamp: ts(0), id: 3 }), // Matches this one
@@ -341,4 +340,94 @@ describe('events', () => {
         .catch(done);
     });
   });
+});
+
+describe('event ordering and transaction isolation regressions', () => {
+  test('replays authoritative IDs in order even when server clocks move backwards', async () => {
+    const db = await testingDBWithState([
+      new Event({ ...e.basic, id: 1, timestamp: ts(3) }),
+      new Event({ ...e.basic, id: 2, timestamp: ts(2) }),
+      new Event({ ...e.basic, id: 3, timestamp: ts(1) }),
+    ]);
+    expect(await getLargestEventID(db, e.basic.session)).toBe(3);
+    expect(
+      (await getOrderedEventsAfter(db, e.basic.session, 0)).map(row =>
+        row.get('id'),
+      ),
+    ).toEqual([1, 2, 3]);
+    await db.sequelize.close();
+  });
+  test('locks the shared session counter and reads the contested event in the same transaction', async () => {
+    const db = await testingDBWithState([
+      new Session({ ...s.basic, id: e.basic.session, eventCounter: 0 }),
+    ]);
+    const sessionRead = jest.spyOn(db.sessions, 'findOne');
+    const eventRead = jest.spyOn(db.events, 'findOne');
+    await commitEvent(
+      db,
+      e.basic.session,
+      'alice',
+      'tab',
+      1,
+      'ACTION',
+      '{"winner":true}',
+    );
+    const options = sessionRead.mock.calls[0][0]!;
+    expect(options.lock).toBe('UPDATE');
+    expect(options.transaction).toBeDefined();
+    expect(eventRead.mock.calls[0][0]!.transaction).toBe(options.transaction);
+    await expect(
+      commitEvent(
+        db,
+        e.basic.session,
+        'bob',
+        'tab',
+        1,
+        'ACTION',
+        '{"loser":true}',
+      ),
+    ).rejects.toThrow('mismatch');
+    expect((await db.events.findOne())!.get('json')).toBe('{"winner":true}');
+    await db.sequelize.close();
+  });
+});
+
+test('retrying an assigned server action stays idempotent after intervening commits', async () => {
+  const db = await testingDBWithState([
+    new Session({ ...s.basic, id: e.basic.session, eventCounter: 0 }),
+  ]);
+  const first = {
+    id: null,
+    event: { type: 'ACTION', name: 'advance', args: '{}' },
+  };
+  const second = {
+    id: null,
+    event: { type: 'ACTION', name: 'advance', args: '{}' },
+  };
+  const commit = (struct: object) =>
+    commitEventWithoutID(
+      db,
+      e.basic.session,
+      'SERVER',
+      'instance',
+      'ACTION',
+      struct,
+    );
+  expect(await commit(first)).toBe(1);
+  // A fresh id:null is a distinct intentional action, even with the same body.
+  expect(await commit(second)).toBe(2);
+  expect(await commit(first)).toBe(1);
+  expect(first.id).toBe(1);
+  expect(await db.events.count()).toBe(2);
+  expect(
+    (await db.sessions.findByPk(e.basic.session))!.get('eventCounter'),
+  ).toBe(2);
+  expect(
+    JSON.parse(
+      (await db.events.findOne({
+        where: { session: e.basic.session, id: 1 },
+      }))!.get('json'),
+    ),
+  ).toEqual(first);
+  await db.sequelize.close();
 });

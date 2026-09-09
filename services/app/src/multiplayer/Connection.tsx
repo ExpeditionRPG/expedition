@@ -31,6 +31,7 @@ export class Connection extends ClientBase {
   private reconnectAttempts!: number;
   private sessionID: string;
   private secret: string;
+  private reconnectTimer: ReturnType<typeof setTimeout> | undefined;
   private messageBuffer!: Array<{
     id: number;
     msg: string;
@@ -56,19 +57,21 @@ export class Connection extends ClientBase {
   }
 
   public checkOnlineState(): Promise<void> {
+    const socket = this.session;
     return this.getOnlineState().then(isOnline => {
-      if (!this.sessionID && this.isConnected()) {
-        // If we recently disconnected (i.e. sessionID is "")
-        // then our connection check shouldn't indicate the
-        // multiplayer link is live, regardless of connectivity.
-        this.connected = false;
-      } else if (this.sessionID && this.isConnected() !== isOnline) {
-        this.connected = isOnline;
-      } else {
+      // A reachable HTTP endpoint does not mean the websocket handshake finished.
+      // Also ignore a probe started before a different session replaced this socket.
+      if (socket !== this.session) {
         return;
       }
-      console.warn('online state changed to', isOnline);
-      this.handler.onConnectionChange(this.connected);
+      const connected = Boolean(
+        this.sessionID && isOnline && socket && socket.readyState === 1,
+      );
+      if (connected === this.connected) {
+        return;
+      }
+      this.connected = connected;
+      this.handler.onConnectionChange(connected);
     });
   }
 
@@ -148,6 +151,9 @@ export class Connection extends ClientBase {
   }
 
   public reconnect() {
+    if (this.reconnectTimer !== undefined || !this.sessionID) {
+      return;
+    }
     if (this.session) {
       // Close deliberately (1000) with `connected` already false, so that the
       // resulting onClose takes the "closed normally" branch instead of
@@ -163,7 +169,8 @@ export class Connection extends ClientBase {
     const slot = Math.pow(2, slotIdx);
     const delay = RECONNECT_SLOT_DELAY_MS * slot + RECONNECT_DELAY_BASE_MS;
     console.log(`WS: Waiting to reconnect (${delay} ms)`);
-    setTimeout(() => {
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = undefined;
       console.log('WS: reconnecting...');
       this.connect(this.sessionID, this.secret);
     }, delay);
@@ -174,6 +181,8 @@ export class Connection extends ClientBase {
   }
 
   public connect(sessionID: string, secret: string): void {
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
     // Tear down any live socket *before* recording the new credentials.
     //
     // This used to assign this.sessionID/this.secret first and then call
@@ -203,18 +212,18 @@ export class Connection extends ClientBase {
     // Ignore callbacks from old sockets so they cannot mutate the new session.
     const socket = this.session;
     this.session.onmessage = ev => {
-      if (this.session === socket) {
+      if (this.session === socket && this.sessionID) {
         this.onMessage(ev);
       }
     };
     this.session.onerror = console.error;
     this.session.onclose = ev => {
-      if (this.session === socket) {
+      if (this.session === socket && this.sessionID) {
         this.onClose(ev);
       }
     };
     this.session.onopen = () => {
-      if (this.session === socket) {
+      if (this.session === socket && this.sessionID) {
         this.onOpen();
       }
     };
@@ -236,9 +245,9 @@ export class Connection extends ClientBase {
 
   private onOpen() {
     counterAdd('sessionCount', 1);
+    this.connected = true;
     this.handler.onConnectionChange(true);
     console.log('WS: open');
-    this.connected = true;
   }
 
   private onClose(ev: CloseEvent) {
@@ -281,9 +290,16 @@ export class Connection extends ClientBase {
   }
 
   public disconnect() {
-    this.connected = false;
-    this.session.close(1000);
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
+    // Invalidate credentials before close callbacks, including a pending onopen.
     this.resetState();
+    if (this.session) {
+      this.session.close(1000);
+    }
+    if (this.handler) {
+      this.handler.onConnectionChange(false);
+    }
   }
 
   public sendEvent(event: MultiplayerEventBody, commitID: number): void {

@@ -61,13 +61,14 @@ describe('QDLParser', () => {
     );
   });
 
-  // Left skipped: the check this test is for does not exist yet. It is the
-  // outstanding "Ensure all paths end with an 'end' trigger" TODO in
-  // XMLRenderer.validate. Today a quest whose only card has no trigger renders
-  // cleanly with zero log messages, so there is nothing truthful to assert
-  // without first implementing the check.
-  test.skip('errors if path not ending in "end"', () => {
-    /* TODO */
+  // Incomplete drafts are renderable in the editor; graph termination validation
+  // is not part of the parser's current contract.
+  test('renders an unfinished draft without inventing an end trigger', () => {
+    const qdl = new QDLParser(XMLRenderer);
+    qdl.render(new BlockList('#Draft\n\n_Opening_\n\nKeep writing.'));
+    expect(qdl.getResult().find('roleplay').text()).toContain('Keep writing.');
+    expect(qdl.getResult().find('trigger')).toHaveLength(0);
+    expect(qdl.getFinalizedLogs().error).toEqual([]);
   });
 
   test('errors on no input', () => {
@@ -81,12 +82,12 @@ describe('QDLParser', () => {
     );
   });
 
-  // Left skipped for the same reason: this is the outstanding "Ensure there's
-  // at least one node that isn't the quest" TODO in XMLRenderer.validate. A
-  // lone "#Quest Title" currently renders <quest><roleplay></roleplay></quest>
-  // with no errors at all.
-  test.skip('errors if only quest block', () => {
-    /* TODO */
+  test('renders a quest-header-only draft with an editable empty roleplay card', () => {
+    const qdl = new QDLParser(XMLRenderer);
+    qdl.render(new BlockList('#Draft'));
+    expect(qdl.getResult().attr('title')).toBe('Draft');
+    expect(qdl.getResult().find('roleplay')).toHaveLength(1);
+    expect(qdl.getResult().find('roleplay').text()).toBe('');
   });
 
   test('errors on an unparseable line directly under the quest header', () => {

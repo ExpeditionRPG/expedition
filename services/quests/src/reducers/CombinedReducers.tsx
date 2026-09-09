@@ -18,7 +18,7 @@ export default function combinedReduce(
 
   if (action.type === 'REBOOT_APP') {
     // Setting to undefined here causes defaults to be populated in the preview() reducer.
-    state.preview = undefined as any;
+    state = { ...state, preview: undefined as any };
   }
 
   return {

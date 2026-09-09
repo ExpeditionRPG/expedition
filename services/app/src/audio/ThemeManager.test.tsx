@@ -174,11 +174,50 @@ describe('ThemeManager', () => {
     expect(fades).toEqual(1);
   });
 
-  test.skip('does not go below 1 playing track when decreasing intensity', () => {
-    /* TODO */
+  function audibleTracks() {
+    const nodes = fakeAudioNodes();
+    const volumes: { [file: string]: number } = {};
+    for (const file of Object.keys(nodes)) {
+      nodes[file].playOnce = jest.fn((initial, target) => {
+        volumes[file] = target || initial;
+      });
+      nodes[file].fadeIn = jest.fn(() => {
+        volumes[file] = 1;
+      });
+      nodes[file].fadeOut = jest.fn(() => {
+        volumes[file] = 0;
+      });
+      nodes[file].getVolume = jest.fn(() => volumes[file] || 0);
+      nodes[file].isPlaying = jest.fn(() => file in volumes);
+    }
+    const manager = new ThemeManager(nodes, () => 0.5);
+    return { manager, volumes, nodes };
+  }
+  test('does not go below 1 audible baseline track when decreasing intensity', () => {
+    const { manager, volumes } = audibleTracks();
+    manager.setIntensity(17, 0);
+    for (let intensity = 16; intensity > 0; intensity--) {
+      manager.setIntensity(intensity, 0);
+      expect(
+        Object.keys(volumes).filter(
+          file => !file.includes('HighBrass') && volumes[file] > 0,
+        ).length,
+      ).toBeGreaterThanOrEqual(1);
+    }
   });
-  test.skip('does not go above 4 playing tracks when increasing intensity (avoids peak instrument)', () => {
-    /* TODO */
+  test('does not go above 4 audible baseline tracks or activate peak on intensity increase', () => {
+    const { manager, volumes } = audibleTracks();
+    for (let intensity = 1; intensity <= 17; intensity++) {
+      manager.setIntensity(intensity, 0);
+      expect(
+        Object.keys(volumes).filter(file => volumes[file] > 0).length,
+      ).toBeLessThanOrEqual(4);
+      expect(
+        Object.keys(volumes).filter(
+          file => file.includes('HighBrass') && volumes[file] > 0,
+        ),
+      ).toEqual([]);
+    }
   });
 
   test('changes to heavy music when intensity passes threshold', () => {

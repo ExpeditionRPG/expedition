@@ -8,7 +8,7 @@ import { ParserNode } from '../TemplateTypes';
 import Defeat, { DispatchProps, StateProps } from './Defeat';
 import { mapStateToProps as mapStateToPropsBase } from './Types';
 
-const mapStateToProps = (
+export const mapStateToProps = (
   state: AppStateWithHistory,
   ownProps: { node: ParserNode },
 ): StateProps => {
@@ -21,7 +21,9 @@ const mapStateToProps = (
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     onEvent: (node: ParserNode, evt: string) => {
       dispatch(event({ node, evt }));

@@ -62,12 +62,12 @@ export const fetchQuestXML = remoteify(function fetchQuestXML(
   dispatch: Redux.Dispatch<any>,
 ) {
   const ctx = defaultContext();
+  if (a.seed) {
+    ctx.seed = a.seed;
+  }
   const promise = fetchLocal(a.details.publishedurl)
     .then((result: string) => {
       const questNode = cheerio.load(result)('quest');
-      if (a.seed) {
-        ctx.seed = a.seed;
-      }
       return dispatch(loadQuestXML({ details: a.details, questNode, ctx }));
     })
     .catch((e: Error) => {

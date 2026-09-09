@@ -22,7 +22,11 @@ export interface UsersViewProps
 const UsersView = (props: UsersViewProps): JSX.Element => {
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i} selected={i === props.selected}>
+      <TableRow
+        key={i}
+        selected={i === props.selected}
+        onClick={() => props.onRowSelect(i)}
+      >
         <TableCell>{entry.email}</TableCell>
         <TableCell>{entry.name}</TableCell>
         <TableCell className="smallColumn">{entry.loot_points}</TableCell>
@@ -31,11 +35,6 @@ const UsersView = (props: UsersViewProps): JSX.Element => {
     );
   });
 
-  // TODO
-  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}}
-  // displayRowCheckbox={false}
-  // displaySelectAll={false} adjustForCheckbox={false}
-  // selectable={false}
   return (
     <Table>
       <TableHead>

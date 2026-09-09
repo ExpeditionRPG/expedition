@@ -15,7 +15,7 @@ import Dialogs, { DialogsDispatchProps, DialogsStateProps } from './Dialogs';
 // which webpack resolves for this bundle, so the joi-browser fork is gone.
 import * as Joi from 'joi';
 
-const mapStateToProps = (state: AppState): DialogsStateProps => {
+export const mapStateToProps = (state: AppState): DialogsStateProps => {
   return {
     dialogs: state.dialogs,
     quest: state.quest,

@@ -631,7 +631,8 @@ function saveQuestInternal(
   return new Promise((resolve, reject) => {
     updateDriveFile(id, fileMeta, text, (err: Error | null, result: any) => {
       if (err) {
-        throw err;
+        reject(err);
+        return;
       }
       resolve(result);
     });

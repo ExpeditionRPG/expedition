@@ -174,12 +174,12 @@ export class UserDetailsDialog extends React.Component<
             <p>Loot points: {this.props.user.loot_points}</p>
             <TextField
               id="new_loot"
-              value={this.state.new_loot || ''}
+              value={this.state.new_loot === null ? '' : this.state.new_loot}
               onChange={(e: any) => this.handleLootChange(e.target.value)}
             />
             <Button
               onClick={() => {
-                if (this.state.new_loot) {
+                if (this.state.new_loot !== null) {
                   this.props.onSetUserLootPoints(
                     this.props.user,
                     this.state.new_loot,

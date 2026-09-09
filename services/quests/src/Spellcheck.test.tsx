@@ -36,22 +36,31 @@ describe('Spellcheck', () => {
       );
     });
 
-    test.skip('Removes ops', () => {
-      /* TODO */
+    test('Removes ops', () => {
+      expect(Spellcheck.cleanCorpus('hello {{name}} world')).toBe(
+        'hello   world',
+      );
     });
-    test.skip('Removes ID references', () => {
-      /* TODO */
+    test('Removes ID references', () => {
+      expect(Spellcheck.cleanCorpus('go (#forest) now')).toBe('go   now');
     });
-    test.skip('Removes HTML tags', () => {
-      /* TODO */
+    test('Removes HTML tags', () => {
+      expect(Spellcheck.cleanCorpus('<b> hello </b> world')).toBe(
+        '  hello   world',
+      );
     });
   });
   describe('Word Count', () => {
-    test.skip('returns correct amount even if multiple spaces between words', () => {
-      /* TODO */
+    test('returns correct amount even if multiple spaces between words', () => {
+      expect(Spellcheck.getWordCount('  one   two\nthree  ')).toBe(3);
+      expect(Spellcheck.getWordCount('  ')).toBe(0);
     });
-    test.skip('returns correct amount even if ops and other elements present', () => {
-      /* TODO */
+    test('returns correct amount even if ops and other elements present', () => {
+      expect(
+        Spellcheck.getWordCount(
+          Spellcheck.cleanCorpus('one {{two}} three (#four)'),
+        ),
+      ).toBe(2);
     });
   });
   describe('getUniqueWords', () => {
@@ -85,10 +94,10 @@ describe('Spellcheck', () => {
   });
 
   describe('Spellcheck', () => {
-    test.skip('allows enemy names', () => {
-      // Currently unreachable: IGNORE is Object.keys(ENCOUNTERS), which are
-      // multi-word lowercase names ('arcane devourer'), while getUniqueWords
-      // yields single tokens. Reported separately.
+    test('allows enemy names', () => {
+      const session = fakeSession('Arcane Devourer');
+      new Spellcheck(session, { check: () => false }).spellcheck();
+      expect(session.addMarker).not.toHaveBeenCalled();
     });
     // Every one of these documents contains a standalone punctuation token (a
     // markdown bullet, an em-dash) because that is exactly what used to break
@@ -158,21 +167,39 @@ describe('Spellcheck', () => {
       expect(session.addMarker).toHaveBeenCalledTimes(1);
       expect(session.addMarker.mock.calls[0][0].start.row).toEqual(1);
     });
-    test.skip('catches improper punctuation', () => {
-      // const input = 'You(the wizard)are here.No more!You shout.';
+    test('accepts words adjacent to punctuation', () => {
+      // Punctuation-adjacent words are tokenized independently; grammatical punctuation is not checked.
+      const session = fakeSession('You(the wizard)are here.No more!You shout.');
+      new Spellcheck(session, dictionary).spellcheck();
+      expect(session.addMarker).not.toHaveBeenCalled();
     });
-    test.skip('allows proper punctuation', () => {
-      // const input = 'You (the wizard) are here. No more! You shout.';
+    test('allows proper punctuation', () => {
+      const session = fakeSession(
+        'You (the wizard) are here. No more! You shout.',
+      );
+      new Spellcheck(session, dictionary).spellcheck();
+      expect(session.addMarker).not.toHaveBeenCalled();
     });
-    test.skip('does not flag misspelled words inside of triggers or IDs', () => {
-      /* TODO */
+    test('does not flag misspelled words inside of triggers or IDs', () => {
+      const session = fakeSession('**goto teh**\n(#teh)');
+      new Spellcheck(session, dictionary).spellcheck();
+      expect(session.addMarker).not.toHaveBeenCalled();
     });
-    test.skip('does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus', () => {
-      /* TODO */
+    test('does not flag misspelled words inside of triggers or IDs, even if misspelled words exist elsewhere in corpus', () => {
+      const session = fakeSession('(#teh) teh\n**goto teh**');
+      new Spellcheck(session, dictionary).spellcheck();
+      expect(session.addMarker).toHaveBeenCalledTimes(1);
+      expect(session.addMarker.mock.calls[0][0].start).toEqual({
+        row: 0,
+        column: 7,
+      });
     });
-    test.skip('does not flag suffixes touching ops', () => {
-      // const input = "The {{singer}}'s mother, now that's not a bug";
-      // expected: no spelling errors
+    test('does not flag suffixes touching ops', () => {
+      const session = fakeSession(
+        "The {{singer}}'s mother, now that's not a bug",
+      );
+      new Spellcheck(session, dictionary).spellcheck();
+      expect(session.addMarker).not.toHaveBeenCalled();
     });
     test('clears old spelling markers', () => {
       const session = fakeSession();

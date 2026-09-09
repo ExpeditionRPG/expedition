@@ -265,9 +265,19 @@ export function publishQuest(
 
   let instance: QuestInstance;
   let isNew: boolean = false;
+  let firstPublish = false;
   return db.quests
-    .findOne({ where: { id: quest.id, partition: quest.partition } })
+    .findOne({ where: { userid } })
+    .then(previous => {
+      firstPublish = previous === null;
+      return db.quests.findOne({
+        where: { id: quest.id, partition: quest.partition },
+      });
+    })
     .then((i: QuestInstance | null) => {
+      if (i && i.get('userid') !== userid) {
+        throw new Error('Invalid user: quest belongs to another author');
+      }
       isNew = !i;
       instance = i || db.quests.build(prepare(quest));
 
@@ -293,14 +303,9 @@ export function publishQuest(
           .catch(logSideEffectFailure);
 
         // If this is the author's first published quest, email them a congratulations
-        db.quests
-          .findOne({ where: { userid } })
-          .then((qi: QuestInstance | null) => {
-            if (!qi) {
-              mailFirstQuestPublish(mail, quest);
-            }
-          })
-          .catch(logSideEffectFailure);
+        if (firstPublish) {
+          mailFirstQuestPublish(mail, quest);
+        }
       }
 
       const updateValues: Partial<QuestAttributes> = {

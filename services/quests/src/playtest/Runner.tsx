@@ -75,7 +75,8 @@ function reduce(
       break;
     case 'PLAYTEST_ERROR':
       state = { ...state, [id]: { ...state[id] } };
-      state[id].messages = (action as any).msg;
+      state[id].messages = [(action as any).msg];
+      state[id].complete = true;
       break;
     default:
       break;
@@ -104,6 +105,7 @@ function maybeRunMoreWorkers() {
   worker.onerror = (ev: ErrorEvent) => {
     store.dispatch({ type: 'PLAYTEST_ERROR', msg: ev.error, id });
     worker.terminate();
+    maybeRunMoreWorkers();
   };
   worker.onmessage = (e: MessageEvent) => {
     if (e.data.status === 'COMPLETE') {

@@ -6,6 +6,7 @@ import {
   FabricateFeedbackEmail,
   FabricateReportQuestEmail,
   getFeedback,
+  suppressFeedback,
   submitFeedback,
   submitRating,
   submitReportQuest,
@@ -20,8 +21,28 @@ describe('feedback', () => {
   });
 
   describe('suppressFeedback', () => {
-    test.skip('suppresses feedback', () => {
-      /* TODO */
+    test('suppresses and restores feedback and its contribution to ratings', async () => {
+      const db = await testingDBWithState([q.basic, fb.rating]);
+      await suppressFeedback(
+        db,
+        fb.rating.partition,
+        fb.rating.questid,
+        fb.rating.userid,
+        true,
+      );
+      expect(
+        (await getQuest(db, q.basic.partition, q.basic.id)).ratingcount,
+      ).toBe(0);
+      await suppressFeedback(
+        db,
+        fb.rating.partition,
+        fb.rating.questid,
+        fb.rating.userid,
+        false,
+      );
+      expect(
+        (await getQuest(db, q.basic.partition, q.basic.id)).ratingcount,
+      ).toBe(1);
     });
   });
 

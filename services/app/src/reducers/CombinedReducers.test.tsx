@@ -4,8 +4,21 @@ import combinedReducers from './CombinedReducers';
 import { AppStateWithHistory } from './StateTypes';
 
 describe('CombinedReducers', () => {
-  test.skip('TODO', () => {
-    /* TODO */
+  test('initializes state slices and preserves unrelated state on dialog change', () => {
+    const initial = combinedReducers(undefined, { type: '@@INIT' });
+    expect(initial._history).toEqual([]);
+    expect(initial.settings.numLocalPlayers).toBeGreaterThan(0);
+    expect(initial.multiplayer.connected).toBe(false);
+    const next = combinedReducers(initial, {
+      type: 'DIALOG_SET',
+      dialogID: 'REPORT_ERROR',
+      message: 'offline',
+    } as any);
+    expect(next.dialog).toEqual(
+      expect.objectContaining({ open: 'REPORT_ERROR', message: 'offline' }),
+    );
+    expect(next.multiplayer).toBe(initial.multiplayer);
+    expect(next.quest).toBe(initial.quest);
   });
 
   describe('search params follow settings', () => {

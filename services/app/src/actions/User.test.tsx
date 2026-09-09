@@ -1,64 +1,70 @@
 import { newMockStore } from '../Testing';
-import { ensureLogin, silentLogin } from './User';
+import {
+  getUserBadges,
+  getUserFeedBacks,
+  sendAuthTokenToAPIServer,
+  updateState,
+} from './User';
 
-describe('User actions', () => {
-  test.skip('TODO', () => {
-    /* TODO */
+const fetchMock = require('fetch-mock');
+afterEach(() => fetchMock.restore());
+// Login UI and silent session restoration moved to shared/auth. The app owns
+// token registration and applying the resulting user to its store.
+test('registers an auth token and returns the authenticated user', async () => {
+  fetchMock.post('end:/auth/google', {
+    id: 'u1',
+    email: 'user@example.com',
+    name: 'Player',
+    lastLogin: '2020-01-01',
   });
-
-  describe('silentLogin', () => {
-    test.skip('swallows login errors', () => {
-      /* TODO */
-    });
-
-    test.skip('calls callback on success', () => {
-      const store = newMockStore({});
-      const callback = { success: jest.fn() };
-      store.dispatch(silentLogin());
-      expect(callback.success).toHaveBeenCalledTimes(1);
-    });
-
-    test.skip('loads user quest info on success', () => {
-      /* TODO */
-    });
+  const user = await sendAuthTokenToAPIServer('jwt');
+  expect(user).toEqual(expect.objectContaining({ id: 'u1', loggedIn: true }));
+  expect(JSON.parse(fetchMock.lastOptions().body)).toEqual({ id_token: 'jwt' });
+  expect(fetchMock.lastOptions().credentials).toBe('include');
+});
+test('rejects failed authentication for the login UI to handle', async () => {
+  fetchMock.post('end:/auth/google', 500);
+  await expect(sendAuthTokenToAPIServer('invalid')).rejects.toThrow(
+    'Error authenticating',
+  );
+});
+test('applies successful login, returns user to callback, and loads quest history', async () => {
+  fetchMock.get('end:/user/quests', {
+    history: { quest: { lastPlayed: 'today' } },
   });
-
-  describe('ensureLogin', () => {
-    test.skip('shows snackbar on login failure', () => {
-      /* TODO */
-    });
-
-    test.skip('dispatches USER_LOGIN on successful login', () => {
-      /* TODO */
-    });
-
-    test.skip('calls callback on success', () => {
-      const store = newMockStore({});
-      const callback = { success: jest.fn() };
-      store.dispatch(ensureLogin()).then(callback.success);
-      expect(callback.success).toHaveBeenCalledTimes(1);
-    });
-
-    test.skip('loads user quest info on success', () => {
-      /* TODO */
-    });
+  const store = newMockStore({});
+  const user = { id: 'u1', loggedIn: true } as any;
+  const callback = jest.fn();
+  await updateState(store.dispatch)(user).then(callback);
+  await fetchMock.flush(true);
+  expect(callback).toHaveBeenCalledWith(user);
+  expect(store.getActions()).toContainEqual({ type: 'USER_LOGIN', user });
+  expect(store.getActions()).toContainEqual({
+    type: 'USER_QUESTS',
+    quests: { history: { quest: { lastPlayed: 'today' } } },
   });
-
-  describe('getUserFeedBacks', () => {
-    test.skip('gets feedbacks', () => {
-      /* TODO */
-    });
-    test.skip('fails silently', () => {
-      /* TODO */
-    });
+});
+test('clears user without requesting quest history when login returns null', async () => {
+  const dispatch = jest.fn();
+  expect(await updateState(dispatch)(null)).toBeNull();
+  expect(dispatch.mock.calls).toEqual([[{ type: 'USER_LOGIN', user: null }]]);
+});
+describe.each([
+  ['feedbacks', getUserFeedBacks, 'USER_FEEDBACKS', 'feedbacks'],
+  ['badges', getUserBadges, 'USER_BADGES', 'badges'],
+])('%s', (endpoint, action, type, key) => {
+  test('loads authenticated user data', async () => {
+    const data = ['example'];
+    fetchMock.get('end:/user/' + endpoint, data);
+    const store = newMockStore({});
+    await store.dispatch((action as any)());
+    expect(store.getActions()).toEqual([{ type, [key]: data }]);
+    expect(fetchMock.lastOptions().credentials).toBe('include');
   });
-
-  describe('getUserBadges', () => {
-    test.skip('gets badges', () => {
-      /* TODO */
-    });
-    test.skip('fails silently', () => {
-      /* TODO */
-    });
+  test('recovers quietly with an empty list on request failure', async () => {
+    fetchMock.get('end:/user/' + endpoint, 500);
+    const store = newMockStore({});
+    await store.dispatch((action as any)());
+    expect(store.getActions()).toEqual([{ type, [key]: [] }]);
   });
 });

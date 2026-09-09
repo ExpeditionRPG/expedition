@@ -22,7 +22,11 @@ export interface QuestsViewProps
 const QuestsView = (props: QuestsViewProps): JSX.Element => {
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i} selected={i === props.selected}>
+      <TableRow
+        key={i}
+        selected={i === props.selected}
+        onClick={() => props.onRowSelect(i)}
+      >
         <TableCell>{entry.partition}</TableCell>
         <TableCell>{entry.title}</TableCell>
         <TableCell className="smallColumn">
@@ -38,10 +42,6 @@ const QuestsView = (props: QuestsViewProps): JSX.Element => {
     );
   });
 
-  // TODO
-  // displaySelectAll={false} adjustForCheckbox={false}
-  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}
-  // displayRowCheckbox={false}
   return (
     <Table>
       <TableHead>

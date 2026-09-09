@@ -1,5 +1,9 @@
 import { shallow } from 'enzyme';
-import { generateIconElements } from './Render';
+import {
+  generateIconElements,
+  numberToWord,
+  capitalizeFirstLetter,
+} from './Render';
 
 describe('Render', () => {
   describe('generateIconElements', () => {
@@ -46,20 +50,38 @@ describe('Render', () => {
   });
 
   describe('numberToWord', () => {
-    test.skip('Converts numbers to words', () => {
-      /* TODO */
+    test('Converts numbers to words', () => {
+      expect(Array.from({ length: 11 }, (_, i) => numberToWord(i))).toEqual([
+        'zero',
+        'one',
+        'two',
+        'three',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight',
+        'nine',
+        'ten',
+      ]);
     });
-    test.skip('Passes through numbers it does not recognize', () => {
-      /* TODO */
+    test('Passes through numbers it does not recognize', () => {
+      expect([-1, 11, 1.5, 100].map(numberToWord)).toEqual([
+        '-1',
+        '11',
+        '1.5',
+        '100',
+      ]);
     });
   });
 
   describe('capitalizeFirstLetter', () => {
-    test.skip('capitalizes the first letter', () => {
-      /* TODO */
+    test('capitalizes the first letter', () => {
+      expect(capitalizeFirstLetter('hello WORLD')).toBe('Hello WORLD');
     });
-    test.skip('safely handles empty string', () => {
-      /* TODO */
+    test('safely handles empty string', () => {
+      expect(capitalizeFirstLetter('')).toBe('');
+      expect(capitalizeFirstLetter()).toBe('');
     });
   });
 });

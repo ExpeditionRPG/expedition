@@ -41,8 +41,19 @@ describe('Search actions', () => {
         })
         .catch(done);
     });
-    test.skip('calls getSearchResults with expansion enabled', () => {
-      /* TODO */
+    test('preserves explicit content-set filters with expansions enabled', async () => {
+      const fetchResults = jest
+        .fn()
+        .mockResolvedValue({ quests: [], error: null });
+      const params = { ...initialSearch.params, requires: ['horror'] } as any;
+      const store = newMockStore({});
+      await searchInternal(
+        { params, players: 2, settings: initialSettings },
+        store.dispatch,
+        fetchResults,
+      ).promise;
+      expect(fetchResults).toHaveBeenCalledWith({ ...params, players: 2 });
+      expect(params).not.toHaveProperty('players', 2);
     });
 
     // SEARCH_REQUEST sets `searching: true`; only SEARCH_ERROR or
@@ -123,8 +134,13 @@ describe('Search actions', () => {
   });
 
   describe('fetchSearchResults', () => {
-    test.skip('credentials are included', () => {
-      /* TODO */
+    test('credentials are included', async () => {
+      fetchMock.post(AUTH_SETTINGS.URL_BASE + '/quests', { quests: [] });
+      await fetchSearchResults(initialSearch.params);
+      expect(fetchMock.lastOptions().credentials).toBe('include');
+      expect(JSON.parse(fetchMock.lastOptions().body)).toEqual(
+        initialSearch.params,
+      );
     });
 
     test('formats result', done => {

@@ -18,7 +18,7 @@ import {
 import { setupWebsockets } from './multiplayer/Websockets';
 import { installRoutes } from './Routes';
 
-function setupDB() {
+export function setupDB() {
   if (!Config.get('DATABASE_URL')) {
     throw new Error('No DATABASE_URL defined in config');
   }
@@ -33,7 +33,7 @@ function setupDB() {
   );
 }
 
-function setupSession(db: Database, app: express.Express) {
+export function setupSession(db: Database, app: express.Express) {
   if (!Config.get('SESSION_SECRET')) {
     throw new Error('No SESSION_SECRET defined in config');
   }
@@ -60,9 +60,10 @@ function setupSession(db: Database, app: express.Express) {
 
   // TODO: Use postgres session storage (to prevent session loss due to restarting task)
   app.use(passport.session());
+  return store;
 }
 
-function setupRoutes(db: Database, app: any) {
+export function setupRoutes(db: Database, app: any) {
   const routes = express.Router();
   installRoutes(db, routes);
 
@@ -71,7 +72,7 @@ function setupRoutes(db: Database, app: any) {
   app.use(express.static('dist'));
 }
 
-function setupLogging(app: any) {
+export function setupLogging(app: any) {
   // Add the error logger after all middleware and routes so that
   // it can log errors from the whole application. Any custom error
   // handlers should go after this.
@@ -90,7 +91,7 @@ function setupLogging(app: any) {
   });
 }
 
-function init() {
+export function init() {
   const app = express();
 
   // This process only ever receives traffic through the Heroku router, which
@@ -136,5 +137,8 @@ function init() {
   server.listen(port, () => {
     console.log('App listening on port %s', port);
   });
+  return server;
 }
-init();
+if (require.main === module) {
+  init();
+}
