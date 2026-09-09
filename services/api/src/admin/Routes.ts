@@ -59,7 +59,7 @@ export function installRoutes(db: Database, router: express.Router) {
   router.post('/admin/user/modify', limitCors, requireAdminAuth, (req, res) =>
     Handlers.modifyUser(db, req, res),
   );
-  router.get('/admin/ratings/recalc', limitCors, (req, res) =>
+  router.get('/admin/ratings/recalc', limitCors, requireAdminAuth, (req, res) =>
     Handlers.recalculateRatings(db, req, res),
   );
 }

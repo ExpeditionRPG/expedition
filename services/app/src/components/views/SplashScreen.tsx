@@ -17,10 +17,11 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
     maxTouches: number;
     tip: string;
     touchCount: number;
-    transitionTimeout: number | null;
     progress: number;
-    animFrameReq: number | null;
   };
+
+  private transitionTimeout: number | null = null;
+  private animFrameReq: number | null = null;
 
   protected initialState = {
     lastTouchTime: 0,
@@ -29,9 +30,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       Math.floor(Math.random() * SPLASH_SCREEN_TIPS.length)
     ],
     touchCount: 0,
-    transitionTimeout: null,
     progress: 0,
-    animFrameReq: null,
   };
 
   constructor(props: PlayerCounterProps) {
@@ -41,10 +40,7 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
 
   // NOTE: transitionMillis is also defined in scss for the timer spinner
   private onTouchChange(numFingers: number) {
-    if (this.state.transitionTimeout) {
-      clearTimeout(this.state.transitionTimeout);
-      this.setState({ transitionTimeout: null });
-    }
+    this.stopAnimation();
 
     if (numFingers > 0) {
       let isDoubleTap = false;
@@ -62,14 +58,13 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
       if (isDoubleTap) {
         this.props.onDoubleTap();
       } else if (numFingers > 0) {
-        this.setState({
-          transitionTimeout: setTimeout(() => {
-            this.props.onPlayerCountSelect(numFingers);
-            if (numFingers > 6) {
-              this.setState(this.initialState);
-            }
-          }, this.props.transitionMillis),
-        });
+        this.transitionTimeout = window.setTimeout(() => {
+          this.stopAnimation();
+          this.props.onPlayerCountSelect(numFingers);
+          if (numFingers > 6) {
+            this.setState(this.initialState);
+          }
+        }, this.props.transitionMillis);
         this.animate();
       }
     }
@@ -80,21 +75,22 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
   }
 
   public componentWillUnmount() {
-    // Clear timeout on unmount (prevents action if user holds tap after double tap has cleared)
-    if (this.state.transitionTimeout) {
-      clearTimeout(this.state.transitionTimeout);
-      this.state.transitionTimeout = null;
+    this.stopAnimation();
+  }
+
+  private stopAnimation() {
+    if (this.transitionTimeout !== null) {
+      window.clearTimeout(this.transitionTimeout);
+      this.transitionTimeout = null;
     }
-    // Clear animation frames on unmount (or we get stuck rendering nothing endlessly)
-    if (this.state.animFrameReq) {
-      window.cancelAnimationFrame(this.state.animFrameReq);
-      this.state.animFrameReq = null;
+    if (this.animFrameReq !== null) {
+      window.cancelAnimationFrame(this.animFrameReq);
+      this.animFrameReq = null;
     }
   }
 
   private animate() {
-    if (this.state.transitionTimeout === null) {
-      this.setState({ animFrameReq: null });
+    if (this.transitionTimeout === null) {
       return;
     }
     const progress = Math.min(
@@ -103,9 +99,12 @@ class PlayerCounter extends React.Component<PlayerCounterProps, {}> {
         100,
     );
 
-    const animFrameReq = window.requestAnimationFrame(() => this.animate());
+    this.animFrameReq = window.requestAnimationFrame(() => {
+      this.animFrameReq = null;
+      this.animate();
+    });
     if (progress !== this.state.progress) {
-      this.setState({ progress, animFrameReq });
+      this.setState({ progress });
     }
   }
 

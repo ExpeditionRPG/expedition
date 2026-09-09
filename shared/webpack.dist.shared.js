@@ -31,7 +31,11 @@ const options = {
     // Webpack.optimize.AggressiveMergingPlugin was removed in webpack 5.
     new Webpack.DefinePlugin({
       // Default to beta for safety
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
+      // Optimize library runtimes even when deploying to beta.
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.EXPEDITION_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'dev',
+      ),
       'process.env.API_HOST': JSON.stringify(
         process.env.API_HOST || 'http://betaapi.expeditiongame.com',
       ),

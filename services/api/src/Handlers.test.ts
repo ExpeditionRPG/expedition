@@ -1,6 +1,11 @@
+import Config from './config';
+import { Quest } from 'shared/schema/Quests';
+import * as request from 'request-promise';
+jest.mock('request-promise', () => jest.fn());
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { Partition } from 'shared/schema/Constants';
 import {
+  announcement,
   feedback,
   healthCheck,
   loadQuestData,
@@ -41,23 +46,80 @@ describe('handlers', () => {
   });
 
   describe('announcement', () => {
-    test.skip('returns with message and link', () => {
-      /* TODO */
+    test('returns with message and link', async () => {
+      jest
+        .spyOn(Config, 'get')
+        .mockImplementation(
+          (key: string) =>
+            ({ ANNOUNCEMENT_LINK: '/news', ANNOUNCEMENT_MESSAGE: 'Hello' })[
+              key
+            ],
+        );
+      (request as any).mockResolvedValue('{}');
+      const res = mockRes();
+      await announcement(mockReq(), res);
+      expect(res.json.firstCall.args[0]).toMatchObject({
+        link: '/news',
+        message: 'Hello',
+      });
     });
-    test.skip('returns default version if unable to reach a version API', () => {
-      /* TODO */
+    test('returns default version if unable to reach a version API', async () => {
+      jest.useFakeTimers({ doNotFake: ['setImmediate', 'nextTick'] });
+      jest.setSystemTime(new Date('2030-01-02'));
+      (request as any).mockRejectedValue(new Error('offline'));
+      const res = mockRes();
+      await announcement(mockReq(), res);
+      expect(res.json.firstCall.args[0].versions).toEqual({
+        android: '1.0.0',
+        ios: '1.0.0',
+        web: '1.0.0',
+      });
+      jest.useRealTimers();
     });
-    test.skip('returns the latest version from API', () => {
-      /* TODO */
+    test('returns the latest version from API', async () => {
+      jest.useFakeTimers({ doNotFake: ['setImmediate', 'nextTick'] });
+      jest.setSystemTime(new Date('2030-01-03'));
+      (request as any).mockImplementation((url: string) =>
+        Promise.resolve(
+          url.includes('play.google')
+            ? '<div>Version 2.0.1</div>'
+            : url.includes('itunes')
+              ? '{"results":[{"version":"3.0.0"}]}'
+              : '{"version":"4.0.0"}',
+        ),
+      );
+      const res = mockRes();
+      await announcement(mockReq(), res);
+      expect(res.json.firstCall.args[0].versions).toEqual({
+        android: '2.0.1',
+        ios: '3.0.0',
+        web: '4.0.0',
+      });
+      jest.useRealTimers();
     });
-    test.skip('caches valid version results', () => {
-      /* TODO */
+    test('caches valid version results', async () => {
+      jest.useFakeTimers({ doNotFake: ['setImmediate', 'nextTick'] });
+      jest.setSystemTime(new Date('2030-01-04'));
+      (request as any)
+        .mockClear()
+        .mockResolvedValue(
+          '{"version":"2.0.0","results":[{"version":"2.0.0"}]}',
+        );
+      const res = mockRes();
+      await announcement(mockReq(), res);
+      await announcement(mockReq(), res);
+      expect(request).toHaveBeenCalledTimes(3);
+      jest.useRealTimers();
     });
   });
 
   describe('search', () => {
-    test.skip('handles missing locals', () => {
-      /* TODO */
+    test('handles missing locals', async () => {
+      const db = await testingDBWithState([q.basic]);
+      const res = mockRes();
+      res.locals = {};
+      await search(db, mockReq({ body: '{}' }), res);
+      expect(res.status.calledWith(200)).toBe(true);
     });
     test('successfully searches and returns data', (done: DoneFn) => {
       const res = mockRes();
@@ -186,8 +248,21 @@ describe('handlers', () => {
         })
         .catch(done);
     });
-    test.skip('returns error when given invalid quest id', () => {
-      /* TODO */
+    test('returns error when given invalid quest id', async () => {
+      const db = await testingDBWithState([]);
+      const res = mockRes();
+      await questXMLHandler(
+        db,
+        mockReq({
+          params: {
+            quest: 'missing',
+            partition: q.basic.partition,
+            version: '1',
+          },
+        }),
+        res,
+      );
+      expect(res.status.calledWith(500)).toBe(true);
     });
   });
 
@@ -197,20 +272,184 @@ describe('handlers', () => {
       ms = { send: jest.fn() };
     });
 
-    test.skip('handles missing locals', () => {
-      /* TODO */
+    test('handles missing locals', async () => {
+      const db = await testingDBWithState([
+        u.basic,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+      ]);
+      const res = mockRes();
+      res.locals.id = u.basic.id;
+      const query: any = {};
+      for (const key of [
+        'author',
+        'contentrating',
+        'email',
+        'genre',
+        'language',
+        'maxplayers',
+        'maxtimeminutes',
+        'minplayers',
+        'mintimeminutes',
+        'partition',
+        'summary',
+        'title',
+      ]) {
+        query[key] = String((q.basic as any)[key]);
+      }
+      res.locals = {};
+      await publish(
+        db,
+        ms,
+        mockReq({ body: rq.basic.xml, query, params: { id: q.basic.id } }),
+        res,
+      );
+      expect(res.status.calledWith(500)).toBe(true);
     });
-    test.skip('publishes minor release', () => {
-      /* TODO */
+    test('publishes minor release', async () => {
+      const db = await testingDBWithState([
+        u.basic,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+      ]);
+      const res = mockRes();
+      res.locals.id = u.basic.id;
+      const query: any = {};
+      for (const key of [
+        'author',
+        'contentrating',
+        'email',
+        'genre',
+        'language',
+        'maxplayers',
+        'maxtimeminutes',
+        'minplayers',
+        'mintimeminutes',
+        'partition',
+        'summary',
+        'title',
+      ]) {
+        query[key] = String((q.basic as any)[key]);
+      }
+      query.majorRelease = 'false';
+      await publish(
+        db,
+        ms,
+        mockReq({ body: rq.basic.xml, query, params: { id: q.basic.id } }),
+        res,
+      );
+      const row = await db.quests.findOne();
+      expect(res.status.calledWith(200)).toBe(true);
+      expect(row!.get('questversion')).toBe(2);
+      expect(row!.get('questversionlastmajor')).toBe(1);
     });
-    test.skip('publishes major release', () => {
-      /* TODO */
+    test('publishes major release', async () => {
+      const db = await testingDBWithState([
+        u.basic,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+      ]);
+      const res = mockRes();
+      res.locals.id = u.basic.id;
+      const query: any = {};
+      for (const key of [
+        'author',
+        'contentrating',
+        'email',
+        'genre',
+        'language',
+        'maxplayers',
+        'maxtimeminutes',
+        'minplayers',
+        'mintimeminutes',
+        'partition',
+        'summary',
+        'title',
+      ]) {
+        query[key] = String((q.basic as any)[key]);
+      }
+      query.majorRelease = 'true';
+      await publish(
+        db,
+        ms,
+        mockReq({ body: rq.basic.xml, query, params: { id: q.basic.id } }),
+        res,
+      );
+      const row = await db.quests.findOne();
+      expect(res.status.calledWith(200)).toBe(true);
+      expect(row!.get('questversionlastmajor')).toBe(2);
     });
-    test.skip('sends mail to admin', () => {
-      /* TODO */
+    test('sends mail to admin', async () => {
+      const db = await testingDBWithState([
+        u.basic,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+      ]);
+      const res = mockRes();
+      res.locals.id = u.basic.id;
+      const query: any = {};
+      for (const key of [
+        'author',
+        'contentrating',
+        'email',
+        'genre',
+        'language',
+        'maxplayers',
+        'maxtimeminutes',
+        'minplayers',
+        'mintimeminutes',
+        'partition',
+        'summary',
+        'title',
+      ]) {
+        query[key] = String((q.basic as any)[key]);
+      }
+      await db.quests.destroy({ where: {} });
+      await publish(
+        db,
+        ms,
+        mockReq({ body: rq.basic.xml, query, params: { id: q.basic.id } }),
+        res,
+      );
+      expect(ms.send).toHaveBeenCalledWith(
+        ['team+newquest@fabricate.io'],
+        expect.stringContaining(q.basic.title),
+        expect.stringContaining(q.basic.summary),
+      );
     });
-    test.skip('sends mail to user on first publish', () => {
-      /* TODO */
+    test('sends mail to user on first publish', async () => {
+      const db = await testingDBWithState([
+        u.basic,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+      ]);
+      const res = mockRes();
+      res.locals.id = u.basic.id;
+      const query: any = {};
+      for (const key of [
+        'author',
+        'contentrating',
+        'email',
+        'genre',
+        'language',
+        'maxplayers',
+        'maxtimeminutes',
+        'minplayers',
+        'mintimeminutes',
+        'partition',
+        'summary',
+        'title',
+      ]) {
+        query[key] = String((q.basic as any)[key]);
+      }
+      await db.quests.destroy({ where: {} });
+      await publish(
+        db,
+        ms,
+        mockReq({ body: rq.basic.xml, query, params: { id: q.basic.id } }),
+        res,
+      );
+      await new Promise(resolve => setTimeout(resolve, 25));
+      expect(ms.send).toHaveBeenCalledWith(
+        expect.arrayContaining([q.basic.email]),
+        expect.any(String),
+        expect.stringContaining('Congratulations'),
+      );
     });
     test('publishes new quest', (done: DoneFn) => {
       const res = mockRes();
@@ -264,6 +503,7 @@ describe('handlers', () => {
   describe('unpublish', () => {
     test('unpublishes a quest', (done: DoneFn) => {
       const res = mockRes();
+      res.locals.id = q.basic.userid;
       let db: Database;
       testingDBWithState([q.basic])
         .then(tdb => {
@@ -288,8 +528,15 @@ describe('handlers', () => {
         })
         .catch(done);
     });
-    test.skip('handles missing locals', () => {
-      /* TODO */
+    test('handles missing locals', async () => {
+      const res = mockRes();
+      res.locals = {};
+      await unpublish(
+        {} as any,
+        mockReq({ params: { quest: q.basic.id } }),
+        res,
+      );
+      expect(res.status.calledWith(401)).toBe(true);
     });
   });
 
@@ -545,8 +792,19 @@ describe('handlers', () => {
   });
 
   describe('subscribe', () => {
-    test.skip('handles invalid email address', () => {
-      /* TODO */
+    test('handles invalid email address', async () => {
+      const mc = { post: jest.fn() };
+      for (const email of ['bad-address', '', undefined]) {
+        const res = mockRes();
+        subscribe(
+          mc,
+          'list',
+          mockReq({ body: JSON.stringify({ email }) }),
+          res,
+        );
+        expect(res.status.calledWith(400)).toBe(true);
+      }
+      expect(mc.post).not.toHaveBeenCalled();
     });
     test('subscribes user to list', () => {
       const res = mockRes();
@@ -570,4 +828,14 @@ describe('handlers', () => {
       );
     });
   });
+});
+
+test('unpublish rejects another author without changing quest visibility', async () => {
+  const db = await testingDBWithState([q.basic]);
+  const res = mockRes();
+  res.locals.id = 'other-author';
+  await unpublish(db, mockReq({ params: { quest: q.basic.id } }), res);
+  expect(res.status.calledWith(403)).toBe(true);
+  expect((await db.quests.findOne())!.get('tombstone')).toBeNull();
+  await db.sequelize.close();
 });

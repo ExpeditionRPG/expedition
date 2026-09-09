@@ -34,7 +34,7 @@ _combat_
 
 - Giant Rat
 
-* {{!useExtraEvent}} on win
+* {{not useExtraEvent}} on win
 
   **end**
 

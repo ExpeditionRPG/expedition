@@ -15,13 +15,19 @@ export const AUTH_SETTINGS = {
       : 'pk_test_8SATEnwfIx0U2vkomn04kSou',
 };
 
-const splitURL = API_HOST.split('/');
+export function multiplayerWebsocketURL(apiHost: string): string {
+  return (
+    apiHost
+      .replace(/^http:/, 'ws:')
+      .replace(/^https:/, 'wss:')
+      .replace(/\/$/, '') + '/ws/multiplayer/v1/session'
+  );
+}
 export const MULTIPLAYER_SETTINGS = {
   connectURI: API_HOST + '/multiplayer/v1/connect',
   firstLoadURI: API_HOST + '/multiplayer/v1/user',
   newSessionURI: API_HOST + '/multiplayer/v1/new_session',
-  websocketSession:
-    'wss://' + splitURL[splitURL.length - 1] + '/ws/multiplayer/v1/session',
+  websocketSession: multiplayerWebsocketURL(API_HOST),
 };
 
 const EPOCH = new Date('2017-01-10'); // The date Expedition V1 shipped

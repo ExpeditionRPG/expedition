@@ -1,10 +1,13 @@
-import { EditableString } from '../Editable';
+import { EditableString, EditableMap, EditableModel } from '../Editable';
 import { QuestType } from '../reducers/StateTypes';
 import { API_HOST } from 'shared/schema/Constants';
-import { loggedOutUser } from '../reducers/User';
+import { loggedOutUser } from 'shared/auth/UserState';
 import { Action } from '../Testing';
 import {
   loadQuest,
+  newQuest,
+  saveQuest,
+  questMetadataChange,
   LoadResult,
   publishQuest,
   QUEST_NOTES_HEADER,
@@ -30,53 +33,116 @@ describe('quest actions', () => {
   });
 
   describe('newQuest', () => {
-    test.skip('calls out to Drive API to create file', () => {
-      /* TODO */
-    });
-
-    test.skip('grants file discovery to Fabricate', () => {
-      /* TODO */
-    });
-
-    test.skip('uploads example quest to API', () => {
-      /* TODO */
-    });
-
-    test.skip('begins quest load after new quest created', () => {
-      /* TODO */
+    test('creates and shares a Drive file, uploads the template, then loads the new quest', async () => {
+      const insert = jest
+        .fn()
+        .mockReturnValue({ execute: (cb: any) => cb({ id: 'new-id' }) });
+      window.gapi.client.load = jest.fn((_api: any, _version: any, cb: any) =>
+        cb(),
+      );
+      window.gapi.client.drive = { files: { insert } };
+      window.gapi.client.request = jest.fn().mockResolvedValue({});
+      fetchMock.post(API_HOST + '/save/quest/new-id', {});
+      const dispatch = jest.fn();
+      await newQuest(loggedOutUser)(dispatch);
+      expect(insert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resource: expect.objectContaining({ mimeType: 'text/plain' }),
+        }),
+      );
+      expect(window.gapi.client.request).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'POST',
+          path: '/drive/v3/files/new-id/permissions',
+          body: expect.objectContaining({
+            allowFileDiscovery: true,
+            domain: 'Fabricate.io',
+          }),
+        }),
+      );
+      expect(fetchMock.called(API_HOST + '/save/quest/new-id')).toBe(true);
+      expect(
+        JSON.parse(fetchMock.lastOptions(API_HOST + '/save/quest/new-id').body)
+          .data,
+      ).toContain('#');
+      expect(dispatch).toHaveBeenCalledWith(expect.any(Function));
     });
   });
-
   describe('saveQuest', () => {
-    test.skip('converts md to xml', () => {
-      /* TODO */
+    function fixture() {
+      return {
+        id: 'save-id',
+        edittime: new Date(1000),
+        mdRealtime: new EditableString(
+          'md',
+          '# Test Quest\n\nHello.\n\n**end**',
+        ),
+        notesRealtime: new EditableString('notes', 'Secret\nSecond line'),
+        metadataRealtime: new EditableMap('metadata', { author: 'Tester' }),
+      };
+    }
+    test('saves source, notes and metadata, renders XML and resolves after success', async () => {
+      window.gapi.client.request = jest.fn().mockResolvedValue({});
+      fetchMock.post(API_HOST + '/save/quest/save-id', {});
+      const dispatch = jest.fn();
+      const q = fixture();
+      const done = jest.fn();
+      const pending = saveQuest(q)(dispatch).then(done);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'REQUEST_QUEST_SAVE',
+        quest: q,
+      });
+      await pending;
+      expect(done).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(fetchMock.lastOptions().body)).toEqual({
+        data: q.mdRealtime.getText(),
+        notes: q.notesRealtime.getText(),
+        metadata: { author: 'Tester' },
+        edittime: 1000,
+      });
+      const render = dispatch.mock.calls
+        .map(c => c[0])
+        .find(a => a.type === 'QUEST_RENDER');
+      expect(render.qdl.getResult().toString()).toContain('<quest');
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'RECEIVE_QUEST_SAVE',
+        meta: expect.objectContaining({ title: 'Test Quest' }),
+      });
+      const drive = window.gapi.client.request.mock.calls[0][0];
+      expect(drive.method).toBe('PUT');
+      expect(drive.body).toContain('Test Quest.quest');
     });
-
-    test.skip('passes xml through', () => {
-      /* TODO */
+    test('reports Drive failure without hanging or claiming a successful save', async () => {
+      window.gapi.client.request = jest.fn().mockRejectedValue({
+        result: { error: new Error('Drive unavailable') },
+      });
+      const dispatch = jest.fn();
+      await saveQuest(fixture())(dispatch);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'RECEIVE_QUEST_SAVE_ERR',
+        err: 'Error: Drive unavailable',
+      });
+      expect(
+        dispatch.mock.calls.some(c => c[0].type === 'RECEIVE_QUEST_SAVE'),
+      ).toBe(false);
+      expect(fetchMock.calls()).toHaveLength(0);
     });
-
-    test.skip('dispatches on request', () => {
-      /* TODO */
+    test('reports API failure after Drive has saved', async () => {
+      window.gapi.client.request = jest.fn().mockResolvedValue({});
+      fetchMock.post(API_HOST + '/save/quest/save-id', {
+        status: 500,
+        body: 'API unavailable',
+      });
+      const dispatch = jest.fn();
+      await saveQuest(fixture())(dispatch);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'RECEIVE_QUEST_SAVE_ERR',
+        err: 'Error: API unavailable',
+      });
     });
-
-    test.skip('dispatches on response', () => {
-      /* TODO */
-    });
-
-    test.skip('runs cb() after successful save', () => {
-      /* TODO */
-    });
-
-    test.skip('does not run cb() if save failed', () => {
-      /* TODO */
-    });
-
-    test.skip('sends data, notes, and metadata to API server', () => {
-      /* TODO */
-    });
+    // Saving persists QDL; XML conversion belongs to the preview/publication renderer.
+    // The former save callback is replaced by the returned Promise and Redux result.
   });
-
   describe('loadQuest', () => {
     const qid = 'testquestid';
     const edittime = new Date();
@@ -107,12 +173,14 @@ describe('quest actions', () => {
       }
     }
 
-    test('loads from API', done => {
+    test('automatically loads a linked quest from API without a Drive token', done => {
+      const previousGapi = window.gapi;
+      window.gapi = undefined;
       const matcher = `${API_HOST}/qdl/${qid}/${edittime.getTime()}`;
       fetchMock.get(matcher, JSON.stringify({ ...LOAD_RESULT, edittime }));
       fetchMock.post(/.*/, {});
       Action(loadQuest, {})
-        .execute(testUser, qid, edittime)
+        .execute(testUser, qid, edittime, true)
         .then(results => {
           expect(fetchMock.called(matcher)).toEqual(true);
           validateReceiveQuestLoad(results, r => {
@@ -127,9 +195,27 @@ describe('quest actions', () => {
               LOAD_RESULT.metadata,
             );
           });
+          window.gapi = previousGapi;
           done();
         })
-        .catch(done);
+        .catch(error => {
+          window.gapi = previousGapi;
+          done(error);
+        });
+    });
+
+    test('defers to the open action when API loading fails and Drive needs consent', async () => {
+      const previousGapi = window.gapi;
+      window.gapi = undefined;
+      const dispatch = jest.fn();
+      fetchMock.get(`${API_HOST}/qdl/${qid}/${edittime.getTime()}`, 404);
+      try {
+        await loadQuest(testUser, qid, edittime, true)(dispatch);
+        expect(dispatch).toHaveBeenCalledTimes(1);
+        expect(dispatch).toHaveBeenCalledWith({ type: 'QUEST_LOAD_DEFERRED' });
+      } finally {
+        window.gapi = previousGapi;
+      }
     });
 
     test('falls back to Drive API & published metadata', done => {
@@ -205,22 +291,163 @@ describe('quest actions', () => {
         }
       },
     );
-    test.skip('throws error(s) with default metadata', () => {
-      /* TODO */
-    });
-
-    test.skip('does not throw errors with changed metadata', () => {
-      /* TODO */
+    // Metadata validation now belongs to DialogsContainer, covered there.
+  });
+  describe('questMetadataChange', () => {
+    test('updates the realtime map in a non-undoable transaction and dispatches metadata/autosave', () => {
+      const metadataRealtime = new EditableMap('metadata', { title: 'Old' });
+      const realtimeModel = {
+        beginCompoundOperation: jest.fn(),
+        endCompoundOperation: jest.fn(),
+      };
+      const dispatch = jest.fn();
+      const delta = { title: 'New', minplayers: 2 };
+      questMetadataChange({ metadataRealtime, realtimeModel }, delta)(dispatch);
+      expect(metadataRealtime.getValue()).toEqual(delta);
+      expect(realtimeModel.beginCompoundOperation).toHaveBeenCalledWith(
+        '',
+        false,
+      );
+      expect(realtimeModel.endCompoundOperation).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: 'QUEST_METADATA_CHANGE',
+        delta,
+      });
+      expect(dispatch).toHaveBeenLastCalledWith(expect.any(Function));
     });
   });
+});
 
-  describe('questMetadataChange', () => {
-    test.skip('updates realtime object', () => {
-      /* TODO */
-    });
+test('saving after losing Drive authorization reports a save error without an unhandled rejection', async () => {
+  const previousGapi = window.gapi;
+  window.gapi = { client: { getToken: () => null } };
+  const dispatch = jest.fn();
+  try {
+    await saveQuest({
+      id: 'quest',
+      mdRealtime: new EditableString('quest', '# Test Quest'),
+      notesRealtime: new EditableString('notes', ''),
+      metadataRealtime: new EditableMap('metadata', {}),
+    })(dispatch);
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'RECEIVE_QUEST_SAVE_ERR',
+        err: expect.stringContaining('Connect Google Drive'),
+      }),
+    );
+  } finally {
+    window.gapi = previousGapi;
+  }
+});
 
-    test.skip('creates action / updates store', () => {
-      /* TODO */
-    });
+describe('new quest failures', () => {
+  const previousGapi = window.gapi;
+  afterEach(() => {
+    window.gapi = previousGapi;
+    fetchMock.restore();
+  });
+  test.each([
+    'token',
+    'load rejection',
+    'load callback',
+    'load throw',
+    'insert missing id',
+    'insert error',
+    'insert throw',
+    'upload',
+    'template upload',
+    'API save',
+  ])('reports %s errors instead of leaving creation loading', async stage => {
+    const dispatch = jest.fn();
+    const insert = jest.fn(() => ({
+      execute: (callback: any) => callback({ id: 'new-id' }),
+    }));
+    window.gapi = {
+      client: {
+        getToken: () => (stage === 'token' ? null : { access_token: 'token' }),
+        load: (_api: any, _version: any, callback: any) => callback(),
+        drive: { files: { insert } },
+        request: jest.fn().mockResolvedValue({}),
+      },
+    };
+    if (stage === 'load rejection')
+      window.gapi.client.load = () =>
+        Promise.reject(new Error('load rejected'));
+    if (stage === 'load callback')
+      window.gapi.client.load = (_api: any, _version: any, callback: any) =>
+        callback({ error: { message: 'load failed' } });
+    if (stage === 'load throw')
+      window.gapi.client.load = () => {
+        throw new Error('load threw');
+      };
+    if (stage === 'insert missing id')
+      insert.mockReturnValue({ execute: callback => callback({}) });
+    if (stage === 'insert error')
+      insert.mockReturnValue({
+        execute: callback =>
+          callback({ error: { message: 'Drive quota exceeded' } }),
+      });
+    if (stage === 'insert throw')
+      insert.mockImplementation(() => {
+        throw new Error('insert threw');
+      });
+    if (stage === 'upload')
+      window.gapi.client.request.mockRejectedValue({
+        result: { error: { message: 'Upload failed' } },
+      });
+    // Count PUTs instead of inspecting the template's title.
+    if (stage === 'template upload') {
+      let uploads = 0;
+      window.gapi.client.request.mockImplementation(args =>
+        args.method === 'PUT' && ++uploads === 2
+          ? Promise.reject({
+              result: { error: { message: 'Template failed' } },
+            })
+          : Promise.resolve({}),
+      );
+    }
+    fetchMock.post(
+      API_HOST + '/save/quest/new-id',
+      stage === 'API save' ? 500 : {},
+    );
+    await newQuest(loggedOutUser)(dispatch);
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'SET_FATAL',
+        error: expect.stringContaining('Failed to create new quest:'),
+      }),
+    );
+    expect(
+      dispatch.mock.calls.some(call => typeof call[0] === 'function'),
+    ).toBe(false);
+    if (stage.startsWith('insert'))
+      expect(window.gapi.client.request).not.toHaveBeenCalled();
+  });
+  test('optional publisher sharing failure still opens the saved quest', async () => {
+    window.gapi = {
+      client: {
+        getToken: () => ({ access_token: 'token' }),
+        load: (_api: any, _version: any, callback: any) => callback(),
+        drive: {
+          files: {
+            insert: () => ({
+              execute: (callback: any) => callback({ id: 'new-id' }),
+            }),
+          },
+        },
+        request: jest.fn(args =>
+          args.method === 'POST'
+            ? Promise.reject(new Error('sharing disabled'))
+            : Promise.resolve({}),
+        ),
+      },
+    };
+    fetchMock.post(API_HOST + '/save/quest/new-id', {});
+    const dispatch = jest.fn();
+    await newQuest(loggedOutUser)(dispatch);
+    expect(dispatch).toHaveBeenCalledWith(expect.any(Function));
+    expect(dispatch.mock.calls.some(call => call[0].type === 'SET_FATAL')).toBe(
+      false,
+    );
   });
 });

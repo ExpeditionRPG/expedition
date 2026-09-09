@@ -57,7 +57,7 @@ export function lineNumbersToggle() {
 
 export function updateDirtyState(): (dispatch: Redux.Dispatch<any>) => any {
   return (dispatch: Redux.Dispatch<any>): any => {
-    const editor = store.getState();
+    const editor = store.getState().editor;
     if (!editor.dirty) {
       dispatch(setDirty(true));
     }

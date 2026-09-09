@@ -1,3 +1,6 @@
+import { newMockStoreWithInitializedState, newMockStore } from 'app/Testing';
+import { mapStateToProps, mapDispatchToProps } from './DefeatContainer';
+import { CombatPhase } from 'app/Constants';
 import { initialMultiplayer } from 'app/reducers/Multiplayer';
 import { initialSettings } from 'app/reducers/Settings';
 import { AppStateWithHistory } from 'app/reducers/StateTypes';
@@ -46,10 +49,27 @@ describe('DefeatContainer', () => {
     const e = setup({ combat: undefined });
     expect(e).toBeDefined();
   });
-  test.skip('calculates max tier from history', () => {
-    /* TODO */
+  test('maps combat state and latest rolls from the current quest', () => {
+    const state = newMockStoreWithInitializedState().getState();
+    const node = TEST_NODE.clone();
+    node.ctx.templates.combat = newCombat(node);
+    node.ctx.templates.combat.mostRecentRolls = [12, 7];
+    state.quest.node = node;
+    const result = mapStateToProps(state, { node });
+    expect(result.combat).toBe(node.ctx.templates.combat);
+    expect(result.mostRecentRolls).toEqual([12, 7]);
   });
-  test.skip('skips the timer card on prev button', () => {
-    /* TODO */
+  test('Retry requests the history entry before combat and skips timer phases', () => {
+    const store = newMockStoreWithInitializedState();
+    const props = mapDispatchToProps(store.dispatch);
+    props.onRetry();
+    const action = store.getActions().find(a => a.type === 'RETURN');
+    expect(action.before).toBe(true);
+    const node = TEST_NODE.clone();
+    node.ctx.templates.combat = newCombat(node);
+    node.ctx.templates.combat.phase = CombatPhase.drawEnemies;
+    expect(action.matchFn('QUEST_CARD', node)).toBe(true);
+    node.ctx.templates.combat.phase = CombatPhase.timer;
+    expect(action.matchFn('QUEST_CARD', node)).toBe(false);
   });
 });

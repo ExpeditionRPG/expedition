@@ -12,7 +12,7 @@ import { StatsCrawlEntry, StatsCrawler } from './StatsCrawler';
 // <count> is a positive integer, and <type> is any of ability/health/loot.
 // These matches are case insensitive and global, using the /gi suffix.
 const HEALTH_INSTRUCTION = /(\w+ \w+ (health|hp))/gi;
-const VALID_HEALTH_INSTRUCTION = /(([gG]ain|[lL]ose) (all|\d+) health)/;
+const VALID_HEALTH_INSTRUCTION = /((gain|lose) (all|\d+) health)/i;
 const ABILITY_INSTRUCTION = /(\w+ \w+ abili(ty|ties))/gi;
 const VALID_ABILITY_INSTRUCTION =
   /(([lL]earn|[dD]iscard) (one|two|three|four|five|six|seven|eight|nine|ten) abili(ty|ties))/;
@@ -123,11 +123,8 @@ export class PlaytestCrawler extends StatsCrawler {
 
   private verifyRoleplayArt(roleplayNode: Node<Context>, line: number) {
     roleplayNode.loopChildren((tag, child, orig) => {
-      if (tag === 'choice') {
-        // Only validate nodes' direct contents so that formatting is correct
-        return;
-      }
-      const inst = child.text();
+      // Choice labels live in attributes; their bodies are validated as separate cards.
+      const inst = tag === 'choice' ? child.attr('text') || '' : child.text();
       const invalidArt = REGEX.INVALID_ART.exec(inst);
       if (invalidArt) {
         this.logger.err(
@@ -234,10 +231,8 @@ export class PlaytestCrawler extends StatsCrawler {
   }
 
   private verifyChoiceCount(roleplayNode: Node<Context>, line: number) {
-    let choiceCount = 0;
-    roleplayNode.loopChildren((tag, child, orig) => {
-      choiceCount += tag === 'choice' ? 1 : 0;
-    });
+    // Rendered children exclude hidden choices, so count the source elements.
+    const choiceCount = roleplayNode.elem.children('choice').length;
     const keys = roleplayNode.getVisibleKeys();
     if (keys.length === 0 && choiceCount > 0) {
       this.logger.err(

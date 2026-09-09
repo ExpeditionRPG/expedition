@@ -193,4 +193,15 @@ describe('Typescript files', () => {
     }
     expect(violations).toEqual([]);
   });
+
+  test('do not reintroduce skipped or pending test placeholders', () => {
+    const violations = FILES.filter(file => /\.test\.[jt]sx?$/.test(file))
+      .filter(file =>
+        /\b(?:test|it|describe)\s*\.\s*(?:skip|todo)\s*\(|\b(?:xit|xdescribe)\s*\(/.test(
+          fs.readFileSync(file, 'utf8'),
+        ),
+      )
+      .map(repoRelativeStem);
+    expect(violations).toEqual([]);
+  });
 });

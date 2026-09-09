@@ -72,7 +72,7 @@ export function horizontalCounter(count: number | string): JSX.Element {
 
   if (typeof count === 'string') {
     numbers = count.split(',');
-    count = numbers.length;
+    count = numbers.length - 1;
   } else {
     numbers = [...Array(count + 1).keys()];
   }
@@ -130,6 +130,7 @@ export function translateTier(
 // (since they have different widths)
 // TODO modernize
 export function healthCounter(health: number, back = false): JSX.Element {
+  health = Math.min(health, MAX_COUNTER_HEALTH);
   const digitWidth = [0, 17, 24];
   let maxWidth = 268;
   let outputtedWidth = 0;

@@ -279,7 +279,7 @@ export function queryUser(
 
     const where: any = {};
     if (q.userid) {
-      where.userid = q.userid;
+      where.id = q.userid;
     }
     if (q.substring) {
       where[Op.or] = [
@@ -325,11 +325,11 @@ export function modifyUser(
     const body: any = JSON.parse(req.body);
 
     const m: QT.UserMutation = {
-      loot_points: body.loot_points || null,
+      loot_points: body.loot_points ?? null,
       userid: body.userid || null,
     };
 
-    if (m.loot_points) {
+    if (m.loot_points !== null && m.loot_points !== undefined) {
       return setLootPoints(db, m.userid, m.loot_points)
         .then(() => {
           res.status(200).send(JSON.stringify({ status: 'OK' }));

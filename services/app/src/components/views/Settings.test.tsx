@@ -29,11 +29,31 @@ describe('Settings', () => {
     return { elem, props };
   }
 
-  test.skip('displays with initial settings', () => {
-    /* TODO */
+  test('displays with initial settings', () => {
+    const { elem } = setup();
+    expect(elem.find('PlayerCount#playerCount').prop('localPlayers')).toBe(
+      initialSettings.numLocalPlayers,
+    );
+    expect(elem.find('Checkbox#sound').prop('value')).toBe(
+      initialSettings.audioEnabled,
+    );
+    expect(elem.find('Checkbox#multitouch').prop('value')).toBe(
+      initialSettings.multitouch,
+    );
+    expect(elem.find('Picker').map(p => p.prop('label'))).toEqual(
+      expect.arrayContaining(['Difficulty', 'Timer', 'Font Size']),
+    );
   });
-  test.skip('displays with timerSeconds = null', () => {
-    /* TODO */
+  test('displays with timerSeconds = null', () => {
+    const { elem, props } = setup({
+      settings: { ...initialSettings, timerSeconds: null },
+    });
+    const timer = elem
+      .find('Picker')
+      .filterWhere(p => p.prop('label') === 'Timer');
+    expect(timer.prop('value')).toBe('Disabled');
+    timer.prop('onDelta')(1);
+    expect(props.onTimerSecondsDelta).toHaveBeenCalledWith(0, 1);
   });
 
   test('changes player count', () => {

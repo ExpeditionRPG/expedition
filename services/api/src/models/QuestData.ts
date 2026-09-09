@@ -69,7 +69,14 @@ export function claimNewestQuestData(
       }
       result = new QuestData(i ? i.dataValues : {});
       result.edittime = edittime;
-      return i.update({ edittime });
+      // Model-level WHERE serialization preserves DATE primary-key formatting
+      // on SQLite; instance.update binds this timestamp as an ISO string.
+      return db.questData.update(
+        { edittime },
+        {
+          where: { id, userid, created: i.dataValues.created, tombstone: null },
+        },
+      );
     })
     .then(() => {
       return result;

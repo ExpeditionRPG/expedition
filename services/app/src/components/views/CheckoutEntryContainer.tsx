@@ -14,7 +14,9 @@ const mapStateToProps = (state: AppState): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     onError: (err: string): void => {
       logEvent('error', 'checkout_err', { label: err });
@@ -27,8 +29,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
       stripeToken: string,
       checkout: CheckoutState,
       user: UserState,
-    ): void => {
-      dispatch(checkoutSubmit(stripeToken, checkout, user));
+    ) => {
+      return dispatch(checkoutSubmit(stripeToken, checkout, user));
     },
   };
 };

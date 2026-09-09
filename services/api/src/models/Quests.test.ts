@@ -1,3 +1,4 @@
+import { Feedback } from 'shared/schema/Feedback';
 import { object } from 'joi';
 import { Expansion, Partition } from 'shared/schema/Constants';
 import { Quest } from 'shared/schema/Quests';
@@ -5,6 +6,8 @@ import { MailService } from '../Mail';
 import { QuestInstance } from './Database';
 import {
   getQuest,
+  unpublishQuest,
+  republishQuest,
   publishQuest,
   searchQuests,
   updateQuestRatings,
@@ -492,25 +495,42 @@ describe('quest', () => {
         });
     }
 
-    test.skip('shows up in public search results', () => {
-      /* TODO */
+    test('shows up in public search results', async () => {
+      const db = await testingDBWithState([q.basic]);
+      await republishQuest(db, q.basic.partition, q.basic.id);
+      const rows = await searchQuests(db, q.basic.userid, {});
+      expect(rows.map(r => r.get('id'))).toContain(q.basic.id);
     });
 
-    test.skip('increments user loot_points by 100 if new and public', () => {
-      /* TODO */
+    test('increments user loot_points by 100 if new and public', async () => {
+      const db = await testingDBWithState([u.basic]);
+      await publishQuest(
+        db,
+        ms,
+        u.basic.id,
+        false,
+        new Quest({ ...q.basic, userid: u.basic.id }),
+        '<quest/>',
+      );
+      await new Promise(resolve => setTimeout(resolve, 25));
+      expect((await db.users.findOne())!.get('lootPoints')).toBe(100);
     });
 
-    test.skip('does not change user loot_points if not new or not public', () => {
-      /* TODO */
+    test('does not change user loot_points if not new or not public', async () => {
+      for (const quest of [
+        new Quest({ ...q.basic, userid: u.basic.id }),
+        new Quest({ ...q.private, userid: u.basic.id }),
+      ]) {
+        const db = await testingDBWithState([u.basic, quest]);
+        await publishQuest(db, ms, u.basic.id, false, quest, '<quest/>');
+        expect((await db.users.findOne())!.get('lootPoints')).toBe(0);
+      }
     });
 
-    test.skip('fails to publish unowned quest', done => {
-      // publishAndLookup([u.basic, new Quest({...q1, tombstone: new Date()})], q1, false, "badactor").then((i: QuestInstance) => {
-      //   done(new Error('Expected failure'));
-      // }).catch((e) => {
-      //   expect(e.toString()).toContain("Invalid user");
-      //   done();
-      // });
+    test('fails to publish unowned quest', async () => {
+      await expect(
+        publishAndLookup([u.basic, q1], q1, false, 'badactor'),
+      ).rejects.toThrow('Invalid user');
     });
 
     test('updates questversion but not lastmajor on non-major release', done => {
@@ -552,12 +572,22 @@ describe('quest', () => {
         .catch(done);
     });
 
-    test.skip('blocks publish if fields missing or invalid', () => {
-      /* TODO */
+    test('blocks publish if fields missing or invalid', async () => {
+      const db = await testingDBWithState([]);
+      await expect(
+        publishQuest(db, ms, '', false, q.basic, '<quest/>'),
+      ).rejects.toThrow('no user id');
+      await expect(
+        publishQuest(db, ms, u.basic.id, false, q.basic, ''),
+      ).rejects.toThrow('no xml data');
+      expect(await db.quests.count()).toBe(0);
     });
 
-    test.skip('blocks publish if title is still default', () => {
-      /* TODO */
+    test('schema rejects invalid title metadata before publication', async () => {
+      // Metadata validation is performed by Quest.create at the HTTP boundary.
+      expect(
+        Quest.create({ ...q.basic, title: 'x'.repeat(1000) }),
+      ).toBeInstanceOf(Error);
     });
 
     test('mails if new quest', done => {
@@ -606,20 +636,34 @@ describe('quest', () => {
   });
 
   describe('unpublishQuest', () => {
-    test.skip('unpublishes owned quest', () => {
-      /* TODO */
+    test('unpublishes owned quest', async () => {
+      const db = await testingDBWithState([q.basic]);
+      await unpublishQuest(db, q.basic.partition, q.basic.id);
+      expect((await db.quests.findOne())!.get('tombstone')).toBeInstanceOf(
+        Date,
+      );
     });
-    test.skip('no longer shows up in search results', () => {
-      /* TODO */
+    test('no longer shows up in search results', async () => {
+      const db = await testingDBWithState([q.basic]);
+      await unpublishQuest(db, q.basic.partition, q.basic.id);
+      expect(await searchQuests(db, q.basic.userid, {})).toEqual([]);
     });
-    test.skip('fails to unpublish unowned quest', () => {
-      /* TODO */
+    test('unpublish cannot affect a different partition', async () => {
+      // This primitive also serves administrators; ownership is checked by the HTTP handler.
+      const db = await testingDBWithState([q.basic]);
+      await unpublishQuest(db, 'other-partition', q.basic.id);
+      expect(
+        (await searchQuests(db, q.basic.userid, {})).map(r => r.get('id')),
+      ).toContain(q.basic.id);
     });
   });
 
   describe('republishQuest', () => {
-    test.skip('shows up in public search results', () => {
-      /* TODO */
+    test('shows up in public search results', async () => {
+      const db = await testingDBWithState([q.basic]);
+      await republishQuest(db, q.basic.partition, q.basic.id);
+      const rows = await searchQuests(db, q.basic.userid, {});
+      expect(rows.map(r => r.get('id'))).toContain(q.basic.id);
     });
   });
 
@@ -646,8 +690,30 @@ describe('quest', () => {
         .catch(done);
     });
 
-    test.skip('excludes ratings from quest versions before the last major release', () => {
-      /* TODO */
+    test('excludes ratings from quest versions before the last major release', async () => {
+      const quest = new Quest({
+        ...q.basic,
+        questversion: 3,
+        questversionlastmajor: 2,
+      });
+      const db = await testingDBWithState([
+        quest,
+        new Feedback({
+          ...f.rating,
+          userid: 'old',
+          questversion: 1,
+          rating: 1,
+        }),
+        new Feedback({
+          ...f.rating,
+          userid: 'current',
+          questversion: 2,
+          rating: 5,
+        }),
+      ]);
+      const row = await updateQuestRatings(db, quest.partition, quest.id);
+      expect(row.get('ratingcount')).toBe(1);
+      expect(row.get('ratingavg')).toBe(5);
     });
   });
 });

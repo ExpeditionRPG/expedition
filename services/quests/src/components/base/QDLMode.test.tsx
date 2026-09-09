@@ -1,15 +1,34 @@
-// TODO breaks on use; window is not defined when accessed by brace
-// Known issue with brace - not meant to be run outside of a browser: https://github.com/thlorenz/brace/issues/40
-// One option would be to split out the line-parsing logic from the brace / UI file entirely,
-// since just importing a file that imports brace is enough to break it
-// (of course, won't be that simple, will also have to mock several parts of session object)
-
-describe('QDL Mode', () => {
-  test.skip('correctly identifies rows to show the fold widget on', () => {
-    /* TODO */
+import 'brace';
+import 'brace/mode/markdown';
+import { QDLMode } from './QDLMode';
+test('shows folds for titles/cards/choices, with correct hierarchical and EOF ranges', () => {
+  const lines = [
+    '# Quest',
+    '_Opening_',
+    '* Choice',
+    '  detail',
+    '_Ending_',
+    'goodbye',
+  ];
+  const session = {
+    getLine: (row: number) => lines[row],
+    getLength: () => lines.length,
+  };
+  const folding = new QDLMode().foldingRules;
+  expect(lines.map((_, i) => folding.getFoldWidget(session, '', i))).toEqual([
+    'start',
+    'start',
+    'start',
+    '',
+    'start',
+    '',
+  ]);
+  const card = folding.getFoldWidgetRange(session, '', 1);
+  expect(card.start).toEqual({ row: 1, column: 9 });
+  expect(card.end).toEqual({ row: 3, column: 8 });
+  expect(folding.getFoldWidgetRange(session, '', 0).end).toEqual({
+    row: 5,
+    column: 7,
   });
-
-  test.skip('correctly identifies the start and end row of an expansion', () => {
-    /* TODO */
-  });
+  expect(folding.getFoldWidgetRange(session, '', 5)).toBeUndefined();
 });

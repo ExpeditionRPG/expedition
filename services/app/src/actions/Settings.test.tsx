@@ -1,8 +1,10 @@
+import { newMockStore } from '../Testing';
 import { initialMultiplayer } from 'app/reducers/Multiplayer';
 import { initialSettings } from 'app/reducers/Settings';
 import { MultiplayerState } from 'app/reducers/StateTypes';
 import {
   numAdventurers,
+  changeSettings,
   numPlayers,
   playerOrder,
   numAliveAdventurers,
@@ -17,8 +19,28 @@ import * as cheerio from 'shared/Cheerio';
 
 describe('Settings action', () => {
   describe('changeSettings', () => {
-    test('Empty', () => {
-      /* Empty */
+    test('updates settings and sends revised player status', () => {
+      const store = newMockStore({
+        settings: initialSettings,
+        multiplayer: {
+          ...initialMultiplayer,
+          connected: true,
+          client: 'client',
+          instance: 'device',
+        },
+        commitID: 3,
+      });
+      const c = (store as any).multiplayerClient;
+      c.sendEvent = jest.fn();
+      store.dispatch(changeSettings({ numLocalPlayers: 2 }));
+      expect(store.getActions()[0]).toEqual({
+        type: 'CHANGE_SETTINGS',
+        settings: { numLocalPlayers: 2 },
+      });
+      expect(c.sendEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'STATUS' }),
+        3,
+      );
     });
   });
 

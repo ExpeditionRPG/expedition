@@ -1,3 +1,7 @@
+import { PlaytestCrawler } from '../src/playtest/PlaytestCrawler';
+import { Node } from 'shared/parse/Node';
+import { defaultContext } from 'shared/parse/Context';
+import { Logger } from 'shared/render/Logger';
 import * as assert from 'assert';
 import { BlockList } from 'shared/render/block/BlockList';
 import { QDLParser } from 'shared/render/QDLParser';
@@ -12,7 +16,20 @@ describe('Errors', () => {
     err.VALID.forEach((valid: string, index: number) => {
       test(err.NUMBER + ': ' + err.NAME + ' valid case ' + index, () => {
         if (err.TEST_WITH_CRAWLER) {
-          return; // TODO actually test
+          const qdl = new QDLParser(XMLRenderer);
+          qdl.render(new BlockList(addQuestHeader(valid)));
+          const logger = new Logger();
+          new PlaytestCrawler().crawlWithLog(
+            new Node(qdl.getResult().children().first(), defaultContext()),
+            logger,
+          );
+          const logs = [qdl.getFinalizedLogs(), logger.getFinalizedLogs()];
+          expect(
+            logs
+              .flatMap(m => [...m.error, ...m.warning, ...m.internal])
+              .filter(m => m.url === String(err.NUMBER)),
+          ).toEqual([]);
+          return;
         }
         const qdl = new QDLParser(XMLRenderer);
         let quest = valid;
@@ -31,7 +48,25 @@ describe('Errors', () => {
     err.INVALID.forEach((invalid: string, index: number) => {
       test(err.NUMBER + ': ' + err.NAME + ' invalid case ' + index, () => {
         if (err.TEST_WITH_CRAWLER) {
-          return; // TODO actually test
+          const qdl = new QDLParser(XMLRenderer);
+          qdl.render(new BlockList(addQuestHeader(invalid)));
+          const logger = new Logger();
+          new PlaytestCrawler().crawlWithLog(
+            new Node(qdl.getResult().children().first(), defaultContext()),
+            logger,
+          );
+          const logs = [qdl.getFinalizedLogs(), logger.getFinalizedLogs()];
+          expect(
+            logs.flatMap(m => [...m.error, ...m.warning, ...m.internal]),
+          ).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                url: String(err.NUMBER),
+                text: expect.any(String),
+              }),
+            ]),
+          );
+          return;
         }
         const qdl = new QDLParser(XMLRenderer);
         let quest = invalid;

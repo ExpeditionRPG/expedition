@@ -16,22 +16,15 @@ function toAnnotation(
   for (const m of msgs) {
     errorLines.add(m.line || 0);
 
-    if (m.type === 'internal') {
-      m.text = 'PLEASE REPORT: ' + m.text;
-      m.type = 'error';
-    }
+    const type = m.type === 'internal' ? 'error' : m.type;
+    const text = m.type === 'internal' ? 'PLEASE REPORT: ' + m.text : m.text;
 
     result.push({
       column: 0,
       row: m.line || 0,
       text:
-        m.type[0].toUpperCase() +
-        m.type.substring(1) +
-        ' ' +
-        m.url +
-        ': ' +
-        m.text,
-      type: m.type,
+        type[0].toUpperCase() + type.substring(1) + ' ' + m.url + ': ' + text,
+      type,
     });
   }
 }

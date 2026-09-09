@@ -93,10 +93,45 @@ describe('QuestEnd', () => {
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
 
-  test.skip('can tip if tipping enabled', () => {
-    /* TODO */
+  test('can tip if tipping enabled', () => {
+    const previous = Object.getOwnPropertyDescriptor(window, 'Stripe');
+    Object.defineProperty(window, 'Stripe', {
+      configurable: true,
+      value: jest.fn(),
+    });
+    try {
+      const { e, props } = setup(5);
+      const tips = e.find('.tipAmounts');
+      expect(tips.hasClass('checkoutDisabled')).toBe(false);
+      tips.find('ExpeditionButton').at(1).prop('onClick')();
+      expect(props.onTip).toHaveBeenCalledWith(
+        null,
+        3,
+        props.user,
+        props.quest,
+        props.settings,
+        false,
+        expect.any(String),
+        5,
+      );
+    } finally {
+      if (previous) Object.defineProperty(window, 'Stripe', previous);
+      else Reflect.deleteProperty(window, 'Stripe');
+    }
   });
-  test.skip('disables tipping if tipping disabled', () => {
-    /* TODO */
+  test('disables tipping if tipping disabled', () => {
+    const previous = Object.getOwnPropertyDescriptor(window, 'Stripe');
+    Reflect.deleteProperty(window, 'Stripe');
+    try {
+      const { e, props } = setup(5);
+      const tips = e.find('.tipAmounts');
+      expect(tips.hasClass('checkoutDisabled')).toBe(true);
+      tips.find('ExpeditionButton').at(0).prop('onClick')();
+      expect(props.onTip.mock.calls[0][0]).toBe(
+        'Tipping temporarily unavailable.',
+      );
+    } finally {
+      if (previous) Object.defineProperty(window, 'Stripe', previous);
+    }
   });
 });

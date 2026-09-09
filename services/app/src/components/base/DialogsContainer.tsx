@@ -25,7 +25,7 @@ import {
 import { ParserNode } from '../views/quest/cardtemplates/TemplateTypes';
 import Dialogs, { DispatchProps, StateProps } from './Dialogs';
 
-const mapStateToProps = (state: AppState): StateProps => {
+export const mapStateToProps = (state: AppState): StateProps => {
   return {
     dialog: state.dialog,
     multiplayer: state.multiplayer,

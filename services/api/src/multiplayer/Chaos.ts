@@ -47,7 +47,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       oldMessageBuf.shift();
     }
 
-    if (Math.random() <= (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)) {
+    if (Math.random() >= (parseFloat(Config.get(CHAOS_FRACTION_FIELD)) || 0)) {
       oldSend(s, errCallback);
       return;
     }
@@ -63,6 +63,8 @@ export function chaosWS(ws: WebSocket): WebSocket {
       setTimeout(() => {
         oldSend(s, errCallback);
       }, delay);
+    } else {
+      oldSend(s, errCallback);
     }
   };
 
@@ -85,7 +87,7 @@ export function chaosWS(ws: WebSocket): WebSocket {
       // Send fuzz to server
       const fuzzmsg = fuzzMessage();
       console.warn(LOGPRE + 'fuzzing ws message to server: ' + fuzzmsg);
-      (ws as any)._receiver.onmessage(fuzzmsg); // {data: fuzzmsg, type: 'test', target: ws});
+      ws.emit('message', Buffer.from(fuzzmsg), false);
     } else if (enabled(ChaosParam.replay) && oldMessageBuf.length > 0) {
       // Send replay to client
       const replaymsg =

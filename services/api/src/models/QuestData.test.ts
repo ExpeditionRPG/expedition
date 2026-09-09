@@ -193,3 +193,42 @@ describe('quest', () => {
     });
   });
 });
+
+test('new editor claim persists ownership and permits its save while rejecting the old tab', async () => {
+  const db = await testingDBWithState([qd.basic]);
+  try {
+    const edittime = new Date(qd.basic.edittime.getTime() + 1000);
+    const claimed = await claimNewestQuestData(
+      db,
+      qd.basic.id,
+      qd.basic.userid,
+      edittime,
+    );
+    expect((await db.questData.findOne()).dataValues.edittime).toEqual(
+      edittime,
+    );
+    await expect(
+      saveQuestData(
+        db,
+        new QuestData({
+          ...qd.basic,
+          created: new Date(Date.now() + 1000),
+        }),
+      ),
+    ).rejects.toThrow('Edit time mismatch');
+    await saveQuestData(
+      db,
+      new QuestData({
+        ...claimed,
+        data: 'new tab edit',
+        created: new Date(Date.now() + 2000),
+      }),
+    );
+    expect(
+      (await db.questData.findOne({ order: [['created', 'DESC']] })).dataValues
+        .data,
+    ).toBe('new tab edit');
+  } finally {
+    await db.sequelize.close();
+  }
+});

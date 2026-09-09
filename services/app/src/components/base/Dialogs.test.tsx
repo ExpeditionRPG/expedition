@@ -1,3 +1,5 @@
+import { shallow } from 'enzyme';
+import { initialQuestState } from '../../reducers/Quest';
 import { TUTORIAL_QUESTS } from 'app/Constants';
 import { initialMultiplayerCounters } from 'app/multiplayer/Connection';
 import { initialMultiplayer } from 'app/reducers/Multiplayer';
@@ -7,6 +9,7 @@ import * as React from 'react';
 import { loggedOutUser } from 'shared/auth/UserState';
 import { Quest } from 'shared/schema/Quests';
 import {
+  ReportQuestDialog,
   BaseDialogProps,
   ConfirmationDialog,
   ExpansionSelectDialog,
@@ -319,4 +322,35 @@ describe('Dialogs', () => {
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
   });
+});
+
+test('Report Quest displays the quest loaded after the closed dialog mounted', () => {
+  const e = shallow(
+    <ReportQuestDialog
+      open={false}
+      quest={initialQuestState}
+      settings={initialSettings}
+      user={loggedOutUser}
+      onClose={jest.fn()}
+      onFeedbackSubmit={jest.fn()}
+    />,
+  );
+  e.setProps({
+    open: true,
+    quest: {
+      ...initialQuestState,
+      details: new Quest({ ...TUTORIAL_QUESTS[0], title: 'Oust Albanus' }),
+    },
+  });
+  expect(e.find('i').text()).toContain('Oust Albanus');
+  e.setProps({ open: false });
+  e.setProps({
+    open: true,
+    quest: {
+      ...initialQuestState,
+      details: new Quest({ ...TUTORIAL_QUESTS[0], title: 'Custom Combat' }),
+    },
+  });
+  expect(e.find('i').text()).toContain('Custom Combat');
+  e.unmount();
 });

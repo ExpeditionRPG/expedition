@@ -34,8 +34,10 @@ describe('PlayerTier', () => {
   }
 
   describe('Combat PlayerTier', () => {
-    test.skip('starts at current player and tier count', () => {
-      /* TODO */
+    test('starts at current player and tier count and reports tier adjustments', () => {
+      const { e, props } = setup({ tier: 4, localAliveAdventurers: 2 });
+      expect(e.find('Picker#tier_sum').prop('value')).toBe(4);
+      expect(e.find('Picker#adventurers').prop('value')).toBe(2);
     });
     test('shows total alive player count along with local alive player count', () => {
       const { e } = setup();

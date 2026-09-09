@@ -143,7 +143,7 @@ class QDLFoldMode {
     const maxRow = session.getLength();
     const startIndent = QDLFoldMode.getIndent(line);
     const startImportance = QDLFoldMode.getImportance(line);
-    let endRow = maxRow;
+    let endRow = maxRow - 1;
 
     for (row += 1; row < maxRow; row++) {
       line = session.getLine(row);

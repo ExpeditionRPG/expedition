@@ -4,6 +4,7 @@ import TopBarContainer from './TopBarContainer';
 
 export interface StateProps {
   loading: boolean;
+  error?: string;
 }
 
 class Main extends React.Component<StateProps, {}> {
@@ -17,6 +18,12 @@ class Main extends React.Component<StateProps, {}> {
     return (
       <div>
         <TopBarContainer />
+        {this.props.error && (
+          <p role="alert">
+            Could not load cards: {this.props.error}. Use Reload card data to
+            try again.
+          </p>
+        )}
         {this.props.loading && (
           <div className="sk-circle" id="loading">
             {loadingCircles}

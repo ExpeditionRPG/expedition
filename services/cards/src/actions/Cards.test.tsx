@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { filterAndFormatCards } from './Cards';
+import { downloadCards, filterAndFormatCards } from './Cards';
+import { getStore } from '../Store';
+import { SHEETS } from '../Constants';
 
 const dummyFilters = {
   class: {
@@ -18,14 +20,78 @@ const dummyFilters = {
 
 describe('Cards actions', () => {
   describe('Download cards', () => {
-    test.skip('returns an error if HTTP errors', () => {
-      /* TODO */
+    let xhr: jest.SpyInstance;
+    beforeEach(() => {
+      xhr = jest.spyOn(XMLHttpRequest.prototype, 'send');
     });
-    test.skip('dispatches actions on success', () => {
-      /* TODO */
+    function respond(csv: string, status = 200) {
+      xhr.mockImplementation(function (this: XMLHttpRequest) {
+        Object.defineProperty(this, 'status', { value: status });
+        Object.defineProperty(this, 'readyState', { value: 4 });
+        Object.defineProperty(this, 'responseText', { value: csv });
+        this.dispatchEvent(new ProgressEvent('load'));
+      });
+    }
+    test('reports HTTP errors and clears loading state', async () => {
+      respond('unavailable', 500);
+      await getStore().dispatch(
+        downloadCards('https://example.com/cards.csv', 'Encounter'),
+      );
+      expect(getStore().getState().cards.loading).toBe(false);
+      expect(getStore().getState().cards.error).toEqual(expect.any(String));
     });
-    test.skip('end to end downloads a simple sheet and returns expected state', () => {
-      /* TODO */
+    test('dispatches loading, update, filter and choices on success', async () => {
+      respond('name,class,tier,Comment,hide\nArcher,Ranged,1,,');
+      const store = getStore();
+      const dispatch = jest.fn(action => store.dispatch(action));
+      await downloadCards(
+        'https://example.com/cards.csv',
+        'Encounter',
+      )(dispatch);
+      expect(dispatch.mock.calls.map(([action]) => action.type)).toEqual([
+        'CARDS_LOADING',
+        'CARDS_UPDATE',
+        'CARDS_FILTER',
+        'FILTERS_CALCULATE',
+      ]);
+      expect(store.getState().cards.loading).toBe(false);
+      expect(store.getState().cards.error).toBeUndefined();
+    });
+    test('downloads CSV through the real parser and reducers, excluding hidden/comment rows', async () => {
+      respond(
+        'name,class,tier,Comment,hide\nArcher,Ranged,1,,\nSecret,Beast,2,,true\nDraft,Beast,3,unfinished,\nGoblin,Beast,1,,',
+      );
+      const store = getStore();
+      await store.dispatch(
+        downloadCards('https://example.com/cards.csv', 'Encounter'),
+      );
+      expect(
+        store.getState().cards.data.map((card: { name: string }) => card.name),
+      ).toEqual(['Goblin', 'Archer']);
+      expect(store.getState().cards.filtered).toHaveLength(2);
+      expect(store.getState().filters.class.options).toEqual([
+        'All',
+        'Beast',
+        'Ranged',
+      ]);
+    });
+    test('recognizes the published Translations sheet name', async () => {
+      respond('Language,Translated\nTier,Niveau');
+      const source = {
+        name: 'Test translations',
+        key: 'test',
+        sheets: { Translations: '1' },
+      };
+      SHEETS.push(source);
+      try {
+        await getStore().dispatch(downloadCards(source.name));
+        expect(getStore().getState().cards.translations).toEqual({
+          AdjectiveAfterNoun: false,
+          tier: 'Niveau',
+        });
+      } finally {
+        SHEETS.pop();
+      }
     });
   });
 

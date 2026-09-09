@@ -102,7 +102,22 @@ describe('DecisionTimer', () => {
     expect(e.text()).toContain(TEST_LEVELED_CHECKS[1].skill);
     expect(e.text()).toContain(TEST_LEVELED_CHECKS[2].skill);
   });
-  test.skip('falls back to generated checks if it cannot parse any', () => {
-    /* TODO */
+  test('displays generated combat checks without authored decision events', () => {
+    const node = new ParserNode(
+      cheerio.load('<combat></combat>')('combat'),
+      defaultContext(),
+    );
+    node.ctx.templates.decision = {
+      ...EMPTY_DECISION_STATE,
+      leveledChecks: TEST_LEVELED_CHECKS,
+    };
+    const { e, props } = setup({ node });
+    expect(e.find('button')).toHaveLength(3);
+    e.find('button').at(2).simulate('click');
+    expect(props.onSelect).toHaveBeenCalledWith(
+      node,
+      TEST_LEVELED_CHECKS[2],
+      expect.any(Number),
+    );
   });
 });

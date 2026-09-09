@@ -23,7 +23,7 @@ export interface DispatchProps {
     stripeToken: string,
     checkout: CheckoutState,
     user: UserState,
-  ) => void;
+  ) => void | Promise<void>;
 }
 
 interface Props extends StateProps, DispatchProps {}

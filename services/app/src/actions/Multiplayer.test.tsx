@@ -10,6 +10,9 @@ import {
   handleEvent,
   loadMultiplayer,
   multiplayerConnect,
+  multiplayerDisconnect,
+  registerHandler,
+  rejectEvent,
   multiplayerNewSession,
   sendEvent,
   sendStatus,
@@ -60,8 +63,13 @@ describe('Multiplayer actions', () => {
   });
 
   describe('multiplayerDisconnect', () => {
-    test('empty', () => {
-      /* Simple enough, no tests needed */
+    test('disconnects the transport and dispatches disconnect state', () => {
+      const c = fakeConnection();
+      c.disconnect = jest.fn();
+      expect(multiplayerDisconnect(c)).toEqual({
+        type: 'MULTIPLAYER_DISCONNECT',
+      });
+      expect(c.disconnect).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -109,6 +117,24 @@ describe('Multiplayer actions', () => {
   });
 
   describe('multiplayerConnect', () => {
+    test('does not open a socket or change sessions on malformed response', async () => {
+      const c = { configure: jest.fn(), connect: jest.fn() };
+      const handler = () => Promise.resolve(mockResponse(200, null, {}));
+      const actions = await Action(multiplayerConnect, { multiplayer }).execute(
+        { id: 'user' },
+        'secret',
+        c,
+        handler,
+      );
+      expect(c.connect).not.toHaveBeenCalled();
+      expect(c.configure).not.toHaveBeenCalled();
+      expect(actions).toContainEqual(
+        expect.objectContaining({ type: 'SNACKBAR_OPEN' }),
+      );
+      expect(
+        actions.some(action => action.type === 'MULTIPLAYER_SESSION'),
+      ).toBe(false);
+    });
     test('connects to a session', done => {
       const fakeClient = {
         configure: jest.fn(),
@@ -314,6 +340,11 @@ describe('Multiplayer actions', () => {
       store.dispatch(sendEvent(e, 0, c));
       expect(c.sendEvent).toHaveBeenCalledTimes(1);
     });
+    test('preserves an explicit zero commit ID', () => {
+      const c = fakeConnection();
+      newMockStore({ commitID: 5 }).dispatch(sendEvent(e, 0, c));
+      expect(c.sendEvent).toHaveBeenCalledWith(e, 0);
+    });
     test('uses state commitID if not passed', () => {
       const c = fakeConnection();
       const store = newMockStore({ commitID: 2 });
@@ -323,14 +354,31 @@ describe('Multiplayer actions', () => {
   });
 
   describe('subscribeToEvents/unsubscribeFromEvents/registerHandler', () => {
-    test('empty', () => {
-      /* Passthrough functions - nothing needed to test. */
+    test('registers handlers and removes subscribers without leaking events', () => {
+      const c = fakeConnection();
+      const handler = jest.fn();
+      subscribeToEvents(handler, c);
+      unsubscribeFromEvents(handler, c);
+      const callbacks = {
+        onEvent: handler,
+        onReject: jest.fn(),
+        onConnectionChange: jest.fn(),
+      };
+      c.registerHandler = jest.fn();
+      registerHandler(callbacks, c);
+      expect(c.subscribe).toHaveBeenCalledWith(handler);
+      expect(c.unsubscribe).toHaveBeenCalledWith(handler);
+      expect(c.registerHandler).toHaveBeenCalledWith(callbacks);
     });
   });
 
   describe('rejectEvent', () => {
-    test('empty', () => {
-      /* Simple - no need to test. */
+    test('retains the transaction ID and rejection reason', () => {
+      expect(rejectEvent(5, 'conflict')).toEqual({
+        type: 'MULTIPLAYER_REJECT',
+        id: 5,
+        error: 'conflict',
+      });
     });
   });
 
@@ -526,6 +574,184 @@ describe('Multiplayer actions', () => {
           done();
         })
         .catch(done);
+    });
+    test.each([
+      'malformed JSON',
+      'malformed args',
+      'throwing action',
+      'rejected action',
+      'unknown action',
+    ])('aborts and recovers a batch with %s', async failure => {
+      const c = fakeConnection();
+      const store = newMockStore({
+        multiplayer,
+        settings: initialSettings,
+        commitID: 0,
+      });
+      const following = jest.fn();
+      remoteify(function broken() {
+        if (failure === 'throwing action') {
+          throw new Error('action failed');
+        }
+        return { promise: Promise.reject(new Error('async action failed')) };
+      });
+      remoteify(function followingAction() {
+        following();
+      });
+      const broken =
+        failure === 'malformed JSON'
+          ? '{'
+          : JSON.stringify({
+              id: 1,
+              event: {
+                type: 'ACTION',
+                name: failure === 'unknown action' ? 'missingAction' : 'broken',
+                args: failure === 'malformed args' ? '{' : '{}',
+              },
+            });
+      await store.dispatch(
+        handleEvent(
+          {
+            id: null,
+            event: {
+              type: 'MULTI_EVENT',
+              lastId: 2,
+              events: [
+                broken,
+                JSON.stringify({
+                  id: 2,
+                  event: {
+                    type: 'ACTION',
+                    name: 'followingAction',
+                    args: '{}',
+                  },
+                }),
+              ],
+            },
+          } as any,
+          false,
+          0,
+          multiplayer,
+          c,
+        ),
+      );
+      expect(following).not.toHaveBeenCalled();
+      expect(store.getActions()).toContainEqual({
+        type: 'MULTIPLAYER_MULTI_EVENT',
+      });
+      expect(store.getActions()).toContainEqual(
+        expect.objectContaining({ type: 'MULTIPLAYER_REJECT', id: 1 }),
+      );
+      expect(
+        store.getActions().some(action => action.type === 'MULTIPLAYER_COMMIT'),
+      ).toBe(false);
+      expect(c.sendEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'STATUS', lastEventID: 0 }),
+        0,
+      );
+      // A later valid replay can proceed after the failed batch releases its guard.
+      store.clearActions();
+      await store.dispatch(
+        handleEvent(
+          {
+            id: null,
+            event: {
+              type: 'MULTI_EVENT',
+              lastId: 1,
+              events: [
+                JSON.stringify({
+                  id: 1,
+                  event: {
+                    type: 'ACTION',
+                    name: 'followingAction',
+                    args: '{}',
+                  },
+                }),
+              ],
+            },
+          } as any,
+          false,
+          0,
+          multiplayer,
+          c,
+        ),
+      );
+      expect(following).toHaveBeenCalledTimes(1);
+      expect(store.getActions()).toContainEqual({
+        type: 'MULTIPLAYER_COMMIT',
+        id: 1,
+      });
+    });
+    test('ignores an already committed replay prefix and applies only new actions', async () => {
+      const calls: number[] = [];
+      remoteify(function replayPrefix(args: { n: number }) {
+        calls.push(args.n);
+      });
+      const store = newMockStore({ multiplayer, commitID: 1 });
+      await store.dispatch(
+        handleEvent(
+          {
+            id: null,
+            event: {
+              type: 'MULTI_EVENT',
+              lastId: 2,
+              events: [1, 2].map(id =>
+                JSON.stringify({
+                  id,
+                  event: {
+                    type: 'ACTION',
+                    name: 'replayPrefix',
+                    args: JSON.stringify({ n: id }),
+                  },
+                }),
+              ),
+            },
+          } as any,
+          false,
+          1,
+          multiplayer,
+          fakeConnection(),
+        ),
+      );
+      expect(calls).toEqual([2]);
+      expect(store.getActions()).toContainEqual({
+        type: 'MULTIPLAYER_COMMIT',
+        id: 2,
+      });
+      expect(
+        store.getActions().some(action => action.type === 'MULTIPLAYER_REJECT'),
+      ).toBe(false);
+    });
+    test('commits an async action only after it finishes', async () => {
+      let finish: () => void;
+      const promise = new Promise<void>(resolve => {
+        finish = resolve;
+      });
+      remoteify(function delayedCommit() {
+        return { promise };
+      });
+      const store = newMockStore({ multiplayer });
+      const result = store.dispatch(
+        handleEvent(
+          {
+            id: 1,
+            event: { type: 'ACTION', name: 'delayedCommit', args: '{}' },
+          } as any,
+          false,
+          0,
+          multiplayer,
+          fakeConnection(),
+        ),
+      );
+      expect(
+        store.getActions().some(action => action.type === 'MULTIPLAYER_COMMIT'),
+      ).toBe(false);
+      finish();
+      await result;
+      expect(store.getActions()).toContainEqual({
+        type: 'MULTIPLAYER_COMMIT',
+        id: 1,
+      });
     });
     test('handles MULTI_EVENT with async events', done => {
       // Update the commit ID when the action is executed

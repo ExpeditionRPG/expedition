@@ -238,12 +238,19 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      // Left skipped: this stub is a duplicate of "errors on inner block
-      // without event bullet" above - the same code path (BlockRenderer.toNode
-      // logging 411 for a rendered block with no owning bullet), the same
-      // inputs, the same assertions. Reviving it would only double-count.
-      test.skip('errors if inner combat block with no event bullet', () => {
-        /* TODO */
+      test('reports an orphan nested combat event after an enemy list', () => {
+        const log = new Logger();
+        const blocks: Block[] = [
+          { indent: 0, lines: ['_combat_', '', '- Skeleton'], startLine: 10 },
+          {
+            indent: 2,
+            lines: [],
+            render: XMLRenderer.toTemplate('roleplay', {}, ['orphan'], 13),
+            startLine: 13,
+          },
+        ];
+        br.toNode(blocks, log);
+        expect(prettifyMsgs(log.finalize())).toContain('411');
       });
 
       test('errors if invalid combat event', () => {
@@ -607,21 +614,38 @@ describe('BlockRenderer', () => {
         expect(prettifyMsgs(log.finalize())).toEqual('');
       });
 
-      // Left skipped: BlockRenderer has no whitelist of roleplay attributes, so
-      // there is nothing to assert. Unknown keys in a card's JSON blob are
-      // copied onto the element verbatim (see the "renders with JSON" test
-      // above). Implementing this is the outstanding
-      // "Validate roleplay attributes (w/ whitelist)" TODO in XMLRenderer.validate.
-      test.skip('errors if invalid roleplay attribute', () => {
-        /* TODO */
+      // Attributes are extensible JSON; malformed JSON, rather than an arbitrary
+      // key whitelist, is the supported validation boundary.
+      test('reports malformed roleplay attribute JSON', () => {
+        const log = new Logger();
+        const blocks: Block[] = [
+          {
+            indent: 0,
+            lines: ['_Title_ {"icon": }', '', 'text'],
+            startLine: 0,
+          },
+        ];
+        br.toNode(blocks, log);
+        expect(prettifyMsgs(log.finalize())).toContain('413');
       });
 
-      // Left skipped for the same reason: no choice-attribute whitelist exists
-      // yet ("Validate choice attributes (w/ whitelist)" in XMLRenderer.validate).
-      // Malformed choice *syntax* is already covered by "alerts the user to
-      // choice with invalid choice string".
-      test.skip('errors if invalid choice attribute', () => {
-        /* TODO */
+      test('reports malformed choice attribute JSON', () => {
+        const log = new Logger();
+        const blocks: Block[] = [
+          {
+            indent: 0,
+            lines: ['_Title_', '', '* Continue {"icon": }'],
+            startLine: 0,
+          },
+          {
+            indent: 2,
+            lines: [],
+            render: XMLRenderer.toTemplate('roleplay', {}, ['next'], 3),
+            startLine: 3,
+          },
+        ];
+        br.toNode(blocks, log);
+        expect(prettifyMsgs(log.finalize())).not.toBe('');
       });
     });
   });

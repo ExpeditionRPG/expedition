@@ -33,7 +33,16 @@ describe('Combat Resolve', () => {
     const { e } = setup({ contentSets: new Set() });
     expect(e.html()).not.toContain(PERSONA_SUBSTR);
   });
-  test.skip('shows rolls if enabled in settings', () => {
-    /* TODO */
+  test('shows rolls only when automatic rolling is enabled', () => {
+    const { e } = setup({
+      settings: { ...initialSettings, autoRoll: true },
+      mostRecentRolls: [4, 12, 20],
+    });
+    expect(e.find('.roll').map(r => r.text())).toEqual(['4', '12', '20']);
+    const hidden = setup({
+      settings: { ...initialSettings, autoRoll: false },
+      mostRecentRolls: [4, 12, 20],
+    });
+    expect(hidden.e.find('.roll')).toHaveLength(0);
   });
 });

@@ -1,44 +1,43 @@
-import { publishQuest } from '../actions/Quest';
-import { mapDispatchToProps } from './DialogsContainer';
+import { publishQuest, questMetadataChange } from '../actions/Quest';
+import { mapDispatchToProps, mapStateToProps } from './DialogsContainer';
 
 jest.mock('../actions/Quest', () => ({
   publishQuest: jest.fn(() => ({ type: 'TEST_PUBLISH' })),
-  questMetadataChange: jest.fn(),
+  questMetadataChange: jest.fn(() => ({ type: 'TEST_METADATA' })),
 }));
 
 describe('DialogsContainer', () => {
-  test.skip('maps state', () => {
-    /* TODO */
+  test('maps dialogs, quest and user without rewriting state', () => {
+    const state: any = {
+      dialogs: { open: {} },
+      quest: { id: 'q' },
+      user: { name: 'Tester' },
+    };
+    expect(mapStateToProps(state)).toEqual(state);
   });
-
-  test.skip('dispatches dialog change with onClose', () => {
-    /* TODO */
+  test('closes the requested dialog', () => {
+    const dispatch = jest.fn();
+    mapDispatchToProps(dispatch).onClose('ERROR');
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'SET_DIALOG',
+      dialog: 'ERROR',
+      shown: false,
+      annotations: undefined,
+    });
   });
-
-  test.skip('saves with onConfirmSave(true) and dispatches', () => {
-    /* TODO */
+  // Save confirmations and sign-in/out dialogs have been removed; autosave and the appbar own them.
+  test('saves metadata live and requires Horror when Future is selected', () => {
+    const dispatch = jest.fn();
+    const quest = { id: 'q' };
+    mapDispatchToProps(dispatch).handleMetadataChange(quest, {
+      expansionfuture: true,
+    });
+    expect(questMetadataChange).toHaveBeenCalledWith(quest, {
+      expansionfuture: true,
+      expansionhorror: true,
+    });
+    expect(dispatch).toHaveBeenCalledWith({ type: 'TEST_METADATA' });
   });
-
-  test.skip('forces "new quest" action with onConfirmSave(false)', () => {
-    /* TODO */
-  });
-
-  test.skip('forces "load quest" action with onConfirmSave(false)', () => {
-    /* TODO */
-  });
-
-  test.skip('dispatches with onSignIn', () => {
-    /* TODO */
-  });
-
-  test.skip('dispatches with onSignOut', () => {
-    /* TODO */
-  });
-
-  test.skip('Saves metadata changes live', () => {
-    /* TODO */
-  });
-
   describe('publishing metadata validation', () => {
     const quest = {
       title: 'A valid quest',

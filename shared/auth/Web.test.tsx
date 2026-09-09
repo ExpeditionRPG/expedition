@@ -142,7 +142,9 @@ describe('Web Auth', () => {
           throw new Error('expected getAuthorizationToken to reject');
         },
         (e: Error) => {
-          expect(e.message).toEqual('popup_closed');
+          expect(e.message).toEqual(
+            'Google authorization was closed. Please try again.',
+          );
         },
       );
     });
@@ -200,4 +202,59 @@ describe('Web Auth', () => {
       );
     });
   });
+});
+
+test('GAPI initialization waits until its client module is available', async () => {
+  let loaded: () => void = () => {};
+  const gapi: any = {
+    load: jest.fn((modules, callback) => {
+      loaded = callback;
+    }),
+  };
+  const result = loadGapi(gapi, 'key', false);
+  gapi.client = {
+    init: jest.fn().mockResolvedValue(undefined),
+    setApiKey: jest.fn(),
+  };
+  loaded();
+  await result;
+  expect(gapi.client.init).toHaveBeenCalledTimes(1);
+});
+test('GAPI initialization errors propagate rather than reporting the client as ready', async () => {
+  const gapi = fakeGapi();
+  gapi.client.init.mockRejectedValue(new Error('initialization failed'));
+  await expect(loadGapi(gapi, 'key', false)).rejects.toThrow(
+    'initialization failed',
+  );
+  expect(gapi.client.setApiKey).not.toHaveBeenCalled();
+});
+test('OAuth callback errors reject rather than installing an invalid token', async () => {
+  const google = {
+    accounts: {
+      oauth2: {
+        initTokenClient: config => ({
+          requestAccessToken: () => config.callback({ error: 'access_denied' }),
+        }),
+      },
+    },
+  };
+  await expect(
+    getAuthorizationToken(google, URL_BASE, 'client', 'scopes'),
+  ).rejects.toThrow('access_denied');
+});
+
+test('a blocked Google popup gives actionable retry guidance', async () => {
+  const google = {
+    accounts: {
+      oauth2: {
+        initTokenClient: config => ({
+          requestAccessToken: () =>
+            config.error_callback({ type: 'popup_failed_to_open' }),
+        }),
+      },
+    },
+  };
+  await expect(
+    getAuthorizationToken(google, URL_BASE, 'client', 'scopes'),
+  ).rejects.toThrow('Allow Google popups in your browser, then try again.');
 });

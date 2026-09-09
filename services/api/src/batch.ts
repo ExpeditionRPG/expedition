@@ -4,7 +4,7 @@ import { Database, postgresSSLOptions, QuestInstance } from './models/Database';
 
 const request = require('request');
 
-function doFn(quest: QuestInstance) {
+export function doFn(quest: QuestInstance) {
   if (!quest.get('published')) {
     console.log(`Skipping "${quest.get('title')}" (unpublished)`);
     return;
@@ -18,7 +18,7 @@ function doFn(quest: QuestInstance) {
     console.log(
       `${quest.get('partition')}: ${quest.get('title')} (${quest.get('id')})`,
     );
-    if (!body.startsWith('<quest')) {
+    if (err || typeof body !== 'string' || !body.startsWith('<quest')) {
       return console.error(
         `${quest.get('id')}: "${quest.get(
           'title',
@@ -31,7 +31,7 @@ function doFn(quest: QuestInstance) {
   });
 }
 
-function main() {
+export function main() {
   const db = new Database(
     new Sequelize(Config.get('DATABASE_URL'), {
       // Handed in explicitly, as in index.ts: sequelize resolves its dialect
@@ -53,4 +53,6 @@ function main() {
   });
 }
 
-main();
+if (require.main === module) {
+  main();
+}

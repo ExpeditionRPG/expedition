@@ -13,26 +13,29 @@ export function setProfileMeta(user: UserState): SetProfileMetaAction {
   return { type: 'SET_PROFILE_META', user };
 }
 
-export function ensureToken(): Promise<string> {
-  const token = window.gapi.client.getToken();
-  if (token !== null) {
+// Only a direct button click may request interactive authorization.
+export function ensureToken(interactive = false): Promise<any> {
+  const token =
+    window.gapi && window.gapi.client && window.gapi.client.getToken();
+  if (token) {
     return Promise.resolve(token);
-  } else {
-    return loadGapi(window.gapi, AUTH_SETTINGS.API_KEY)
-      .then((gapi: any) =>
-        getAuthorizationToken(
-          window.google,
-          AUTH_SETTINGS.URL_BASE,
-          AUTH_SETTINGS.CLIENT_ID,
-          AUTH_SETTINGS.SCOPES +
-            ' https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install',
-        ),
-      )
-      .then((newToken: any) => {
-        window.gapi.auth.setToken(newToken);
-        return newToken;
-      });
   }
+  if (!interactive) {
+    return Promise.reject(new Error('Connect Google Drive to continue.'));
+  }
+  // Open the popup before asynchronous initialization loses the user gesture.
+  return getAuthorizationToken(
+    window.google,
+    AUTH_SETTINGS.URL_BASE,
+    AUTH_SETTINGS.CLIENT_ID,
+    AUTH_SETTINGS.SCOPES +
+      ' https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install',
+  ).then(newToken =>
+    loadGapi(window.gapi, AUTH_SETTINGS.API_KEY).then(gapi => {
+      gapi.client.setToken(newToken);
+      return newToken;
+    }),
+  );
 }
 
 export function postLoginUser(
@@ -44,13 +47,13 @@ export function postLoginUser(
     if (r.email === null) {
       alert('Issue logging in! Please contact support about user ID ' + r.id);
     }
-    if (quest) {
-      if (quest === true) {
-        // create a new quest
-        dispatch(loadQuestFromURL(r, undefined));
-      } else if (typeof quest === 'string') {
-        dispatch(loadQuestFromURL(r, quest));
-      }
+    const token =
+      window.gapi && window.gapi.client && window.gapi.client.getToken();
+    if (typeof quest === 'string' && quest) {
+      // Existing quests can load from our API without Google Drive consent.
+      dispatch(loadQuestFromURL(r, quest, true));
+    } else if (quest === true && token) {
+      dispatch(loadQuestFromURL(r, undefined));
     }
   };
 }
@@ -62,8 +65,7 @@ export function logoutUser(): (dispatch: Redux.Dispatch<any>) => void {
 
     // GAPI still used in quest creator
     if (window.gapi) {
-      window.gapi.auth.setToken(null);
-      window.gapi.auth.signOut();
+      window.gapi.client.setToken(null);
     }
 
     // Remove document ID, so we get kicked back to home page.

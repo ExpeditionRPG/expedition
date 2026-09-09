@@ -43,9 +43,11 @@ describe('middleware behavior', () => {
       jest
         .spyOn(store.multiplayerClient, 'sendEvent')
         .mockImplementation(() => undefined);
-      store.dispatch(['asyncAction', asyncAction, { n: 1 }]).then(result => {
-        expect(result).toEqual(5);
-      });
+      return store
+        .dispatch(['asyncAction', asyncAction, { n: 1 }])
+        .then(result => {
+          expect(result).toEqual(5);
+        });
     });
   });
 
@@ -91,7 +93,35 @@ describe('middleware behavior', () => {
     });
   });
 
-  test.skip('wraps derived actions with LOCAL', () => {
-    /* TODO */
+  test('wraps derived actions with LOCAL', () => {
+    const store = newMockStore({
+      commitID: 3,
+      multiplayer: { connected: true },
+    });
+    const client = (store as any).multiplayerClient;
+    client.sendEvent = jest.fn();
+    const nested = jest.fn((_args, dispatch) => {
+      dispatch({ type: 'NESTED' });
+      return { nested: true };
+    });
+    store.dispatch([
+      'parent',
+      (_args, dispatch) => {
+        dispatch(['child', nested, {}]);
+        return { parent: true };
+      },
+      {},
+    ]);
+    expect(nested).toHaveBeenCalledTimes(1);
+    expect(store.getActions()).toEqual([{ type: 'NESTED', _inflight: 4 }]);
+    expect(client.sendEvent).toHaveBeenCalledTimes(1);
+    expect(client.sendEvent).toHaveBeenCalledWith(
+      {
+        type: 'ACTION',
+        name: 'parent',
+        args: '{"parent":true}',
+      },
+      3,
+    );
   });
 });

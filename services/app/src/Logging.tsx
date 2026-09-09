@@ -82,7 +82,7 @@ export function setupLogging(console: any) {
 export function logEvent(
   category: string,
   action: string,
-  argsInput: { [key: string]: any },
+  argsInput: { [key: string]: any } = {},
 ): void {
   const ga = getGA();
   if (ga) {
@@ -90,7 +90,7 @@ export function logEvent(
       category,
       action,
       label: argsInput.label || '',
-      value: argsInput.value || undefined,
+      value: argsInput.value,
     });
   }
 }

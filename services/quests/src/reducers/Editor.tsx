@@ -54,6 +54,7 @@ export function editor(
         },
       };
     case 'RECEIVE_QUEST_LOAD':
+    case 'QUEST_LOAD_DEFERRED':
       return { ...state, loadingQuest: false };
     case 'QUEST_LOADING':
       return { ...state, loadingQuest: true };

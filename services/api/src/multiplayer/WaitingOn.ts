@@ -1,8 +1,44 @@
 import { ClientID, TimerWait, WaitType } from 'shared/multiplayer/Events';
 import { Database } from '../models/Database';
 import { commitAndBroadcastAction } from '../models/multiplayer/Events';
-import { getSession } from './Sessions';
+import { getSession, InMemorySession } from './Sessions';
 import { broadcastError } from './Websockets';
+
+// Key by the session object so resetSessions naturally discards old latches.
+// Replacing a socket leaves that object intact: retransmitted readiness after
+// reconnect must not resolve the same combat round or review a second time.
+const resolutions = new WeakMap<InMemorySession, Map<string, number>>();
+
+function beginResolution(session: number, type: string): (() => void) | null {
+  const state = getSession(session);
+  if (!state) {
+    return null;
+  }
+  const epochs = Object.values(state).map(
+    c => c.status && c.status.lastEventID,
+  );
+  const known = epochs.filter((id): id is number => typeof id === 'number');
+  // Do not combine readiness from two different committed rounds.
+  if (known.some(id => id !== known[0])) {
+    return null;
+  }
+  const epoch = known.length ? known[0] : -1;
+  let resolved = resolutions.get(state);
+  if (!resolved) {
+    resolved = new Map();
+    resolutions.set(state, resolved);
+  }
+  const last = resolved.get(type);
+  if (last !== undefined && epoch <= last) {
+    return null;
+  }
+  resolved.set(type, epoch);
+  return () => {
+    if (resolved && resolved.get(type) === epoch) {
+      resolved.delete(type);
+    }
+  };
+}
 
 function allWaitingOn(
   session: number,
@@ -27,7 +63,17 @@ function allWaitingOn(
       map(wo);
     }
   }
-  return waitCount === Object.keys(s).length;
+  const allWaiting =
+    Object.keys(s).length > 0 && waitCount === Object.keys(s).length;
+  if (
+    !allWaiting &&
+    Object.values(s).every(c => !c.status || c.status.lastEventID === undefined)
+  ) {
+    // Older clients omit the epoch. Their explicit leave/reenter-wait transition
+    // is the only available signal that a new resolution may begin.
+    resolutions.get(s)?.delete(type);
+  }
+  return allWaiting;
 }
 
 export function handleWaitingOnTimer(
@@ -50,11 +96,18 @@ export function handleWaitingOnTimer(
     return Promise.resolve();
   }
 
+  const release = beginResolution(session, 'TIMER');
+  if (!release) {
+    return Promise.resolve();
+  }
   return commitAndBroadcast(db, session, client, instance, {
     args: JSON.stringify({ elapsedMillis: maxElapsedMillis, seed: Date.now() }),
     name: 'handleCombatTimerStop',
     type: 'ACTION',
-  }).catch((error: Error) => broadcastError(session, error));
+  }).catch((error: Error) => {
+    release();
+    broadcastError(session, error);
+  });
 }
 
 export function handleWaitingOnReview(
@@ -69,6 +122,10 @@ export function handleWaitingOnReview(
     return Promise.resolve();
   }
 
+  const release = beginResolution(session, 'REVIEW');
+  if (!release) {
+    return Promise.resolve();
+  }
   return commitAndBroadcast(db, session, client, instance, {
     args: JSON.stringify({
       skip: [{ name: 'QUEST_CARD' }, { name: 'QUEST_SETUP' }],
@@ -83,5 +140,8 @@ export function handleWaitingOnReview(
         type: 'ACTION',
       }),
     )
-    .catch((error: Error) => broadcastError(session, error));
+    .catch((error: Error) => {
+      release();
+      broadcastError(session, error);
+    });
 }

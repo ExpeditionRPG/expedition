@@ -1,3 +1,4 @@
+import { mockReq, mockRes } from 'sinon-express-mock';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as session from 'express-session';
@@ -13,11 +14,37 @@ interface Result {
 }
 
 describe('Routes', () => {
-  test.skip('Blocks CORS requests from rogue origins', () => {
-    /* TODO */
+  test('does not grant CORS access to rogue origins on the search route', () => {
+    const router = express.Router();
+    installRoutes({} as any, router);
+    const route = router.stack.find(
+      (layer: any) => layer.route?.path === '/quests',
+    ).route;
+    const res = mockRes();
+    res.setHeader = jest.fn();
+    res.getHeader = jest.fn();
+    route.stack[0].handle(
+      mockReq({ headers: { origin: 'https://evil.com' } }),
+      res,
+      jest.fn(),
+    );
+    expect(
+      (res.setHeader as jest.Mock).mock.calls.some(
+        c => c[0] === 'Access-Control-Allow-Origin',
+      ),
+    ).toBe(false);
   });
-  test.skip('Requires auth to access user information', () => {
-    /* TODO */
+  test('requires auth to access user information', () => {
+    const router = express.Router();
+    installRoutes({} as any, router);
+    const route = router.stack.find(
+      (layer: any) => layer.route?.path === '/user/quests',
+    ).route;
+    const res = mockRes();
+    const next = jest.fn();
+    route.stack[2].handle(mockReq(), res, next);
+    expect(res.status.calledWith(401)).toBe(true);
+    expect(next).not.toHaveBeenCalled();
   });
 
   // Sequelize 5 resolved to bluebird promises, where an unhandled rejection is

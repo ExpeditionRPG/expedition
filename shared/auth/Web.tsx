@@ -73,16 +73,37 @@ export function getAuthorizationToken(
     const client = google.accounts.oauth2.initTokenClient({
       client_id: clientId,
       scope: scopes,
-      // Callback is invoked with a CredentialsResponse object
-      // see https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
+      // OAuth authorization returns a TokenResponse, separate from sign-in's ID token.
+      // https://developers.google.com/identity/oauth2/web/reference/js-reference#TokenResponse
       callback: (response: any) => {
+        if (response.error || !response.access_token) {
+          reject(
+            new Error(
+              response.error_description ||
+                response.error ||
+                'Google Drive authorization was not granted.',
+            ),
+          );
+          return;
+        }
         resolve(response);
       },
-      error_callback: reject,
+      error_callback: (error: any) => {
+        const type = error.type || error.message;
+        reject(
+          new Error(
+            type === 'popup_failed_to_open'
+              ? 'Allow Google popups in your browser, then try again.'
+              : type === 'popup_closed'
+                ? 'Google authorization was closed. Please try again.'
+                : error.message ||
+                  'Unable to connect to Google. Please try again.',
+          ),
+        );
+      },
     });
 
-    // Redirects user to authorization page, then to redirect URI with URL parameters set as
-    // per https://developers.google.com/identity/oauth2/web/reference/js-reference#CodeResponse
+    // Call directly from a user gesture so the browser allows the consent popup.
     client.requestAccessToken();
   });
 }
@@ -105,11 +126,7 @@ export function loadGapi(
       resolve();
     });
   })
-    .then(
-      gapi.client.init({
-        // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
-      }),
-    )
+    .then(() => gapi.client.init({}))
     .then(() => {
       gapi.client.setApiKey(apiKey);
       gapiLoaded = true;

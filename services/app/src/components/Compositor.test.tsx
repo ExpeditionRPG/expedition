@@ -1,4 +1,5 @@
-import { render } from 'enzyme';
+import Snackbar from '@material-ui/core/Snackbar';
+import { render, shallow } from 'enzyme';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { loggedOutUser } from 'shared/auth/UserState';
@@ -69,4 +70,35 @@ describe('Compositor', () => {
     const { wrapper } = setup({ card: { name: 'TUTORIAL_QUESTS' } });
     expect(wrapper.find('.has_footer').html()).not.toEqual(null);
   });
+});
+
+test('updates and closes error snackbar without navigating to another card', () => {
+  const closeSnackbar = jest.fn();
+  const props = {
+    card: initialCardState,
+    quest: initialQuestState,
+    settings: initialSettings,
+    snackbar: initialSnackbar,
+    theme: 'light',
+    transition: 'instant',
+    closeSnackbar,
+  };
+  const e = shallow(<Compositor {...(props as any)} />);
+  const action = jest.fn();
+  e.setProps({
+    snackbar: {
+      ...initialSnackbar,
+      open: true,
+      message: 'Error!',
+      action,
+      actionLabel: 'Report',
+    },
+  });
+  expect(e.find(Snackbar).prop('open')).toBe(true);
+  const button = e.find(Snackbar).prop('action')[0];
+  button.props.onClick({});
+  expect(action).toHaveBeenCalledTimes(1);
+  expect(closeSnackbar).toHaveBeenCalledTimes(1);
+  e.setProps({ snackbar: initialSnackbar });
+  expect(e.find(Snackbar).prop('open')).toBe(false);
 });

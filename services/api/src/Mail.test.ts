@@ -1,4 +1,5 @@
-import { sendVia } from './Mail';
+import Config from './config';
+import { send, sendVia } from './Mail';
 
 describe('mail', () => {
   test('sends simple mail with no bcc', done => {
@@ -72,4 +73,18 @@ describe('mail', () => {
       })
       .catch(done);
   });
+});
+
+test('development mail is mocked without SMTP credentials', async () => {
+  const originalGet = Config.get.bind(Config);
+  const get = jest
+    .spyOn(Config, 'get')
+    .mockImplementation(key => (key === 'NODE_ENV' ? 'dev' : originalGet(key)));
+  try {
+    await expect(
+      send(['nobody@example.com'], 'test', 'mock only', false, false),
+    ).resolves.toEqual({ response: '' });
+  } finally {
+    get.mockRestore();
+  }
 });

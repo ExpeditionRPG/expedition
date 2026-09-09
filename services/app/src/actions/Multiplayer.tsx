@@ -66,7 +66,7 @@ function doConnect(
     .then((response: Response) => response.json())
     .then((data: { session: string }) => {
       if (!data.session) {
-        return dispatch(openSnackbar(Error('Error parsing session')));
+        throw new Error('Error parsing session');
       }
       sessionID = data.session;
     })
@@ -290,7 +290,7 @@ export function sendEvent(
     dispatch: Redux.Dispatch<any>,
     getState: () => AppStateWithHistory,
   ): any => {
-    commitID = commitID || getState().commitID;
+    commitID = commitID === undefined ? getState().commitID : commitID;
     c.sendEvent(event, commitID);
   };
 }
@@ -409,12 +409,13 @@ export function handleEvent(
         let result: any;
         try {
           result = dispatch(action);
-        } finally {
-          if (e.id !== null) {
-            dispatch(commit(e.id));
-          }
+        } catch (error) {
+          return Promise.reject(error);
         }
-        return result;
+        const actionID = e.id;
+        return Promise.resolve(result).then(() => {
+          dispatch(commit(actionID));
+        });
       }
       case 'MULTI_EVENT': {
         if (multiplayer.multiEvent) {
@@ -422,49 +423,64 @@ export function handleEvent(
           return Promise.resolve();
         }
 
-        let chain = Promise.resolve().then(() => {
-          dispatch({
-            type: 'MULTIPLAYER_MULTI_EVENT_START',
-            syncID: body.lastId,
-          } as MultiplayerMultiEventStartAction);
-        });
-
-        for (let i = 0; i < body.events.length; i++) {
-          const event = body.events[i];
-          let parsed: MultiplayerEvent;
-          try {
-            parsed = JSON.parse(event);
-            if (!parsed.id) {
-              throw new Error('MULTI_EVENT without ID: ' + parsed);
-            }
-          } catch (err) {
-            console.error(err);
-            continue;
-          }
-
-          // Sometimes we need to handle async actions - e.g. when calls to dispatch() return a promise in the inner routeEvent().
-          // This constructs a chain of promises out of the calls to MULTI_EVENT so that async actions like fetchQuestXML are
-          // allowed to complete before the next action is processed.
-          // Actions are dispatched within a timeout so that react UI updates aren't blocked by
-          // event routing.
-          chain = chain.then((_: any) => {
-            return new Promise<void>((fulfill, reject) => {
-              setTimeout(() => {
-                const route: any = dispatch(
-                  handleEvent(parsed, false, commitID + i, multiplayer),
-                ); // TODO: should buffered be set?
-                if (route && typeof route === 'object' && route.then) {
-                  fulfill(route);
+        // Mark replay synchronously so another batch arriving before the first
+        // timer runs cannot start a second replay against the same state.
+        dispatch({
+          type: 'MULTIPLAYER_MULTI_EVENT_START',
+          syncID: body.lastId,
+        } as MultiplayerMultiEventStartAction);
+        let chain = Promise.resolve();
+        let replayID = commitID;
+        for (const event of body.events) {
+          chain = chain.then(() => {
+            // Yield for rendering, then parse and dispatch inside a promise
+            // callback so malformed events and synchronous action exceptions
+            // reject the chain instead of escaping setTimeout and hanging it.
+            return new Promise<void>(resolve => setTimeout(resolve, 0)).then(
+              () => {
+                const parsed: MultiplayerEvent = JSON.parse(event);
+                if (parsed.id !== null && parsed.id <= replayID) {
+                  return;
                 }
-                fulfill();
-              }, 0);
-            });
+                if (!parsed.id || parsed.id !== replayID + 1) {
+                  throw new Error('Unexpected MULTI_EVENT ID: ' + parsed.id);
+                }
+                if (
+                  parsed.event.type === 'ACTION' &&
+                  !getMultiplayerAction(parsed.event.name)
+                ) {
+                  throw new Error(
+                    'Unknown replay action: ' + parsed.event.name,
+                  );
+                }
+                const parsedID = parsed.id;
+                return Promise.resolve(
+                  dispatch(
+                    handleEvent(parsed, false, replayID, multiplayer, c),
+                  ),
+                ).then(() => {
+                  replayID = parsedID;
+                });
+              },
+            );
           });
         }
-
-        chain = chain.then((_: any) => {
-          dispatch({ type: 'MULTIPLAYER_MULTI_EVENT' });
-        });
+        chain = chain
+          .then(() => {
+            dispatch({ type: 'MULTIPLAYER_MULTI_EVENT' });
+          })
+          .catch((error: Error) => {
+            console.error(error);
+            dispatch({ type: 'MULTIPLAYER_MULTI_EVENT' });
+            dispatch(rejectEvent(replayID + 1, error.toString()));
+            dispatch(
+              openSnackbar(
+                Error('Unable to sync multiplayer: ' + error.toString()),
+                true,
+              ),
+            );
+            dispatch(sendStatus(undefined, undefined, undefined, c));
+          });
         c.publish(e);
         return chain;
       }

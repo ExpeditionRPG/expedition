@@ -1,6 +1,8 @@
 const packageJson: any = require('../package.json');
 
-export const NODE_ENV = process.env.NODE_ENV || 'dev';
+// Deployment channel is independent of the browser libraries' build mode.
+export const NODE_ENV =
+  process.env.EXPEDITION_ENV || process.env.NODE_ENV || 'dev';
 export const API_HOST =
   process.env.API_HOST || 'http://betaapi.expeditiongame.com';
 export const VERSION = packageJson.version;

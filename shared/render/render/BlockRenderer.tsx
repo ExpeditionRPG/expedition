@@ -26,7 +26,10 @@ export class BlockRenderer {
     // There are cases where we don't have a roleplay header, e.g.
     // the first roleplay block inside a choice. This is fine,
     // and not an error, so we don't pass a logger here.
-    let extracted = this.extractTemplate(blocks[0].lines[0], undefined);
+    let extracted = this.extractTemplate(
+      blocks[0].lines[0],
+      /^_.*_/.test(blocks[0].lines[0] || '') ? log : undefined,
+    );
     const hasHeader = Boolean(extracted);
 
     let templateType: TemplateType = TEMPLATE_TYPES[0];

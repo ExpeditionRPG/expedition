@@ -26,7 +26,7 @@ export function getOrderedEventsAfter(
   start: number,
 ): Promise<EventInstance[]> {
   return db.events.findAll({
-    order: [['timestamp', 'ASC']],
+    order: [['id', 'ASC']],
     where: { session, id: { [Op.gt]: start } },
   });
 }
@@ -35,19 +35,21 @@ export function getLargestEventID(
   db: Database,
   session: number,
 ): Promise<number> {
-  return getLastEvent(db, session).then((e: EventInstance | null) => {
-    if (e === null) {
-      return 0;
-    }
-    // `id` is a BIGINT column and node-postgres hands int8 back as a *string*,
-    // so the declared `number` type is a lie at runtime in production (the
-    // sqlite-backed tests do return a number, which is why nothing catches it
-    // here). Callers do arithmetic on this -- Chaos.ts does `latestID + 1` --
-    // so the coercion the original `parseInt(e.get('id'), 10)` performed has
-    // to stay. `Number()` accepts both shapes; `parseInt` no longer typechecks
-    // now that `get('id')` is typed.
-    return Number(e.get('id'));
-  });
+  return db.events
+    .findOne({ order: [['id', 'DESC']], where: { session } })
+    .then((e: EventInstance | null) => {
+      if (e === null) {
+        return 0;
+      }
+      // `id` is a BIGINT column and node-postgres hands int8 back as a *string*,
+      // so the declared `number` type is a lie at runtime in production (the
+      // sqlite-backed tests do return a number, which is why nothing catches it
+      // here). Callers do arithmetic on this -- Chaos.ts does `latestID + 1` --
+      // so the coercion the original `parseInt(e.get('id'), 10)` performed has
+      // to stay. `Number()` accepts both shapes; `parseInt` no longer typechecks
+      // now that `get('id')` is typed.
+      return Number(e.get('id'));
+    });
 }
 
 export function commitAndBroadcastAction(
@@ -88,13 +90,29 @@ export function commitEventWithoutID(
   return db.sequelize
     .transaction((txn: Sequelize.Transaction) => {
       return db.sessions
-        .findOne({ where: { id: session }, transaction: txn })
+        .findOne({
+          where: { id: session },
+          transaction: txn,
+          lock: Sequelize.Transaction.LOCK.UPDATE,
+        })
         .then((sessionInstance: SessionInstance | null) => {
           if (!sessionInstance) {
             throw new Error('could not find session ' + session.toString());
           }
           s = sessionInstance;
-          return getLastEvent(db, session);
+          // A successful attempt writes its assigned id back into struct.
+          // Retry that exact event, even if another action has committed since.
+          const assignedID = (struct as { id?: number | null }).id;
+          return db.events.findOne({
+            where:
+              typeof assignedID === 'number' &&
+              Number.isSafeInteger(assignedID) &&
+              assignedID > 0
+                ? { session, id: assignedID }
+                : { session },
+            order: [['id', 'DESC']],
+            transaction: txn,
+          });
         })
         .then((eventInstance: EventInstance | null) => {
           if (
@@ -112,7 +130,7 @@ export function commitEventWithoutID(
                 ' instance ' +
                 instance,
             );
-            id = s.get('eventCounter');
+            id = Number(eventInstance.get('id'));
             (struct as any).id = id;
             return false;
           }
@@ -162,13 +180,20 @@ export function commitEvent(
   return db.sequelize
     .transaction((txn: Sequelize.Transaction) => {
       return db.sessions
-        .findOne({ where: { id: session }, transaction: txn })
+        .findOne({
+          where: { id: session },
+          transaction: txn,
+          lock: Sequelize.Transaction.LOCK.UPDATE,
+        })
         .then((sessionInstance: SessionInstance | null) => {
           if (!sessionInstance) {
             throw new Error('could not find session ' + session.toString());
           }
           s = sessionInstance;
-          return db.events.findOne({ where: { session, id: event } });
+          return db.events.findOne({
+            where: { session, id: event },
+            transaction: txn,
+          });
         })
         .then((eventInstance: EventInstance | null) => {
           if (

@@ -22,7 +22,11 @@ export interface FeedbackViewProps
 const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
   const rows = props.list.map((entry, i) => {
     return (
-      <TableRow key={i} selected={i === props.selected}>
+      <TableRow
+        key={i}
+        selected={i === props.selected}
+        onClick={() => props.onRowSelect(i)}
+      >
         <TableCell>{entry.partition}</TableCell>
         <TableCell>{entry.quest.title}</TableCell>
         <TableCell className="smallColumn">
@@ -35,10 +39,6 @@ const FeedbackView = (props: FeedbackViewProps): JSX.Element => {
     );
   });
 
-  // TODO
-  // onCellClick={(rowNumber: number) => {props.onRowSelect(rowNumber);}} selectable={false}
-  // displaySelectAll={false} adjustForCheckbox={false}
-  // displayRowCheckbox={false} deselectOnClickaway={true}
   return (
     <Table>
       <TableHead>

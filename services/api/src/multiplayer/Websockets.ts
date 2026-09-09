@@ -22,6 +22,7 @@ export function setupWebsockets(db: Database, server: any) {
     ws.on('error', (e: Error) => console.error(e));
     websocketSession(db, ws, req);
   });
+  return wss;
 }
 
 export function broadcast(session: number, msg: string) {

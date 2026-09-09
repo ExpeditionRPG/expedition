@@ -68,6 +68,7 @@ export default class Compositor extends React.Component<Props, {}> {
   public snackbarActionClicked(e: React.MouseEvent<HTMLElement>) {
     if (this.props.snackbar.action) {
       this.props.snackbar.action(e);
+      this.props.closeSnackbar();
     }
   }
 
@@ -144,6 +145,11 @@ export default class Compositor extends React.Component<Props, {}> {
   }
 
   public shouldComponentUpdate(nextProps: Props) {
+    // Snackbar visibility and callbacks must not remain stale on the same card.
+    if (this.props.snackbar !== nextProps.snackbar) {
+      return true;
+    }
+
     // Don't update the main UI if we're on the same card key
     if (this.props.card.key === nextProps.card.key) {
       return false;

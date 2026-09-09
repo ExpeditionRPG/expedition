@@ -18,7 +18,7 @@ import QuestAppBar, { DispatchProps, StateProps } from './QuestAppBar';
 
 const ReactGA = require('react-ga');
 
-const mapStateToProps = (state: AppState): StateProps => {
+export const mapStateToProps = (state: AppState): StateProps => {
   // TODO optional chaining with babel 7
   const scope =
     (state.preview.quest &&
@@ -38,7 +38,9 @@ const mapStateToProps = (state: AppState): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<any>): DispatchProps => {
+export const mapDispatchToProps = (
+  dispatch: Redux.Dispatch<any>,
+): DispatchProps => {
   return {
     onMenuSelect: (action: QuestActionType, quest: QuestType) => {
       ReactGA.event({

@@ -15,9 +15,14 @@ export default class MultiplayerSync extends React.Component<Props, {}> {
   public render() {
     let body = null;
     if (this.props.multiplayer && this.props.multiplayer.syncing === true) {
-      const value = Math.floor(
-        (100 * this.props.commitID) / this.props.multiplayer.syncID,
-      );
+      const target = this.props.multiplayer.syncID;
+      const value =
+        target > 0
+          ? Math.max(
+              0,
+              Math.min(100, Math.floor((100 * this.props.commitID) / target)),
+            )
+          : 0;
       body = (
         <CSSTransition
           classNames="fade"
