@@ -83,7 +83,11 @@ export function updateDirtyState(): (dispatch: Redux.Dispatch<any>) => any {
   };
 }
 
-export function getPlayNode(node: Cheerio): Cheerio | null {
+export function getPlayNode(node: Cheerio | null): Cheerio | null {
+  // The cursor can be outside the parsed document after replacing its text.
+  if (!node) {
+    return null;
+  }
   // cheerio's own types report `get(0)` as `Element | undefined`; the set is
   // empty for an unrendered / empty quest.
   let el = node.get(0);

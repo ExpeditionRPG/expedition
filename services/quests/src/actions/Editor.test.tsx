@@ -1,4 +1,5 @@
-// import {getPlayNode} from './Editor'
+import { getPlayNode } from './Editor';
+import { renderXML } from 'shared/render/QDLParser';
 // const cheerio: any = require('cheerio');
 
 describe('Editor action', () => {
@@ -15,6 +16,10 @@ describe('Editor action', () => {
   });
 
   describe('getPlayNode', () => {
+    test('returns null when the cursor is outside the rendered document', () => {
+      const result = renderXML('# Quest\n\n_Opening_\n\nHello.');
+      expect(getPlayNode(result.getResultAt(100))).toBeNull();
+    });
     test('works on root quest node', () => {
       // TODO fix dependency chain loading - auth.tsx failing b/c utils not defined (external dependency)
       // const quest = cheerio.load('<quest><roleplay>Foo</roleplay></quest>');
