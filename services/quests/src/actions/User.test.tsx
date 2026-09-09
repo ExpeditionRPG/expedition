@@ -9,29 +9,44 @@ import { ensureToken, postLoginUser } from './User';
 import { loadGapi, getAuthorizationToken } from 'shared/auth/Web';
 import { loadQuestFromURL } from './Quest';
 import { loggedOutUser } from 'shared/auth/UserState';
-// Popup polling was replaced by GIS authorization and a post-login callback.
+beforeEach(() => jest.clearAllMocks());
 test('reuses an existing Drive token without opening authorization', async () => {
   window.gapi = { client: { getToken: () => 'token' } };
   expect(await ensureToken()).toBe('token');
   expect(getAuthorizationToken).not.toHaveBeenCalled();
 });
-test('loads GAPI, requests authorization and stores the new token', async () => {
-  window.gapi = {
-    client: { getToken: () => null },
-    auth: { setToken: jest.fn() },
-  };
+test('requests authorization synchronously before GAPI initialization', async () => {
+  window.gapi = { client: { getToken: () => null, setToken: jest.fn() } };
   (loadGapi as jest.Mock).mockResolvedValue(window.gapi);
-  (getAuthorizationToken as jest.Mock).mockResolvedValue('new-token');
-  expect(await ensureToken()).toBe('new-token');
-  expect(loadGapi).toHaveBeenCalled();
+  (getAuthorizationToken as jest.Mock).mockResolvedValue({
+    access_token: 'new-token',
+  });
+  const result = ensureToken(true);
   expect(getAuthorizationToken).toHaveBeenCalled();
-  expect(window.gapi.auth.setToken).toHaveBeenCalledWith('new-token');
+  expect(loadGapi).not.toHaveBeenCalled();
+  expect(await result).toEqual({ access_token: 'new-token' });
+  expect(window.gapi.client.setToken).toHaveBeenCalledWith({
+    access_token: 'new-token',
+  });
 });
-test('dispatches profile metadata and loads the requested quest after login', () => {
+test('background token checks never open a popup', async () => {
+  window.gapi = undefined;
+  await expect(ensureToken()).rejects.toThrow('Connect Google Drive');
+  expect(getAuthorizationToken).not.toHaveBeenCalled();
+});
+test('restoring a session with a quest URL waits for an explicit Drive connection', () => {
+  window.gapi = { client: { getToken: () => null } };
   const user = { ...loggedOutUser, email: 'test@example.com' };
   const dispatch = jest.fn();
   postLoginUser(user, 'quest-id')(dispatch);
+  expect(dispatch).toHaveBeenCalledTimes(1);
   expect(dispatch).toHaveBeenCalledWith({ type: 'SET_PROFILE_META', user });
+  expect(loadQuestFromURL).not.toHaveBeenCalled();
+  expect(getAuthorizationToken).not.toHaveBeenCalled();
+});
+test('resumes a quest when Drive is already authorized', () => {
+  window.gapi = { client: { getToken: () => 'token' } };
+  const user = { ...loggedOutUser, email: 'test@example.com' };
+  postLoginUser(user, 'quest-id')(jest.fn());
   expect(loadQuestFromURL).toHaveBeenCalledWith(user, 'quest-id');
-  expect(dispatch).toHaveBeenLastCalledWith({ type: 'LOAD_FROM_URL' });
 });

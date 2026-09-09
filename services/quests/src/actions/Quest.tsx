@@ -132,7 +132,7 @@ function loadQuestFromDrive(
         };
       },
       (json: any) => {
-        throw new Error(json.result.error.message);
+        throw new Error(json.result ? json.result.error.message : json.message);
       },
     );
 }
@@ -161,26 +161,28 @@ function updateDriveFile(
       base64Data +
       closeDelim;
 
-    ensureToken().then(() => {
-      return window.gapi.client
-        .request({
-          body: multipartRequestBody,
-          headers: {
-            'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
-          },
-          method: 'PUT',
-          params: { uploadType: 'multipart', alt: 'json' },
-          path: '/upload/drive/v2/files/' + fileId,
-        })
-        .then(
-          (json: any, raw: any) => {
-            return callback(null, json);
-          },
-          (json: any) => {
-            return callback(json.result.error);
-          },
-        );
-    });
+    return ensureToken()
+      .then(() => {
+        return window.gapi.client
+          .request({
+            body: multipartRequestBody,
+            headers: {
+              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"',
+            },
+            method: 'PUT',
+            params: { uploadType: 'multipart', alt: 'json' },
+            path: '/upload/drive/v2/files/' + fileId,
+          })
+          .then(
+            (json: any, raw: any) => {
+              return callback(null, json);
+            },
+            (json: any) => {
+              return callback(json.result ? json.result.error : json);
+            },
+          );
+      })
+      .catch(callback);
   } catch (err) {
     return callback(err);
   }
@@ -214,58 +216,95 @@ export function newQuest(user: UserState) {
         title: 'New Expedition Quest',
       },
     };
-    // TODO migrate this to use same upload method as updateDriveFile to remove dependency
-    // on loading drive2 api
-    ensureToken().then(() => {
-      window.gapi.client.load('drive', 'v2', () => {
-        window.gapi.client.drive.files
-          .insert(insertHash)
-          .execute((createResponse: { id: string }) => {
-            updateDriveFile(createResponse.id, {}, '', (err, result) => {
-              if (err) {
-                return dispatch(
-                  pushError(
-                    new Error('Failed to create new quest: ' + err.message),
-                  ),
-                );
-              }
-              // save an equivalent to the API server
-              saveQuestInternal(
-                createResponse.id,
-                NEW_QUEST_TEMPLATE,
-                '',
-                '',
-              ).then(() => {
-                dispatch(loadQuest(user, createResponse.id));
+    // Bridge the legacy Drive callbacks into one chain so every required step
+    // reports a visible error instead of leaving the loading screen active.
+    return ensureToken()
+      .then(
+        () =>
+          new Promise<void>((resolve, reject) => {
+            const loaded = window.gapi.client.load(
+              'drive',
+              'v2',
+              (response: any) => {
+                if (response && response.error) {
+                  reject(response.error);
+                } else {
+                  resolve();
+                }
+              },
+            );
+            if (loaded && typeof loaded.then === 'function') {
+              loaded.then(resolve, reject);
+            }
+          }),
+      )
+      .then(
+        () =>
+          new Promise<string>((resolve, reject) => {
+            window.gapi.client.drive.files
+              .insert(insertHash)
+              .execute((response: any) => {
+                if (!response || response.error || !response.id) {
+                  reject(
+                    (response && response.error) ||
+                      new Error('Google Drive did not return a quest file ID.'),
+                  );
+                  return;
+                }
+                resolve(response.id);
               });
-              window.gapi.client
-                .request({
-                  body: {
-                    allowFileDiscovery: true,
-                    domain: 'Fabricate.io',
-                    role: 'writer',
-                    type: 'domain',
-                  },
-                  method: 'POST',
-                  params: { sendNotificationEmails: false },
-                  path: '/drive/v3/files/' + createResponse.id + '/permissions',
-                })
-                .then(
-                  (json: any, raw: any) => {
-                    // Succeed silently
-                  },
-                  (json: any) => {
-                    ReactGA.event({
-                      action: 'Error connecting quest file to Fabricate.IO',
-                      category: 'Error',
-                      label: createResponse.id,
-                    });
-                  },
-                );
+          }),
+      )
+      .then(
+        fileId =>
+          new Promise<string>((resolve, reject) => {
+            updateDriveFile(fileId, {}, '', error => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(fileId);
+              }
+            });
+          }),
+      )
+      .then(fileId => {
+        // Sharing with the publisher is optional and must not block creation.
+        Promise.resolve()
+          .then(() =>
+            window.gapi.client.request({
+              body: {
+                allowFileDiscovery: true,
+                domain: 'Fabricate.io',
+                role: 'writer',
+                type: 'domain',
+              },
+              method: 'POST',
+              params: { sendNotificationEmails: false },
+              path: '/drive/v3/files/' + fileId + '/permissions',
+            }),
+          )
+          .catch(() => {
+            ReactGA.event({
+              action: 'Error connecting quest file to Fabricate.IO',
+              category: 'Error',
+              label: fileId,
             });
           });
+        return saveQuestInternal(fileId, NEW_QUEST_TEMPLATE, '', '').then(
+          () => {
+            dispatch(loadQuest(user, fileId));
+          },
+        );
+      })
+      .catch(error => {
+        const details = (error && error.result && error.result.error) || error;
+        dispatch(
+          setFatal(
+            'Failed to create new quest: ' +
+              ((details && details.message) || String(details)),
+          ),
+        );
       });
-    });
   };
 }
 

@@ -12,8 +12,11 @@ jest.mock('./actions/Announcement', () => ({
   fetchAnnouncements: () => ({ type: 'TEST_ANNOUNCEMENTS' }),
 }));
 jest.mock('./actions/Quest', () => ({
-  questLoading: () => ({ type: 'QUEST_LOADING' }),
   saveQuest: jest.fn(() => ({ type: 'TEST_SAVE' })),
+}));
+jest.mock('shared/auth/Web', () => ({
+  checkForLogin: jest.fn(() => Promise.resolve(null)),
+  getAuthorizationToken: jest.fn(),
 }));
 jest.mock('./actions/Editor', () => ({
   renderAndPlay: jest.fn(() => ({ type: 'TEST_PLAY' })),
@@ -25,11 +28,15 @@ import { store } from './Store';
 import { saveQuest } from './actions/Quest';
 import { renderAndPlay } from './actions/Editor';
 import * as ReactDOM from 'react-dom';
-test('boots the creator and wires save/play shortcuts and unsaved-change protection', () => {
+import { checkForLogin, getAuthorizationToken } from 'shared/auth/Web';
+import { AUTH_SETTINGS } from 'shared/schema/Constants';
+test('restores the session without Google scripts and wires save/play shortcuts and unsaved-change protection', async () => {
   jest.useFakeTimers();
   const add = jest.spyOn(window, 'addEventListener');
   const previousError = window.onerror;
   const previousUnload = window.onbeforeunload;
+  const previousGapi = window.gapi;
+  window.gapi = undefined;
   const previousDollar = Object.getOwnPropertyDescriptor(globalThis, '$');
   Object.defineProperty(globalThis, '$', {
     configurable: true,
@@ -46,6 +53,10 @@ test('boots the creator and wires save/play shortcuts and unsaved-change protect
   (store.getState as jest.Mock).mockReturnValue(state);
   try {
     require('./React');
+    expect(checkForLogin).toHaveBeenCalledWith(AUTH_SETTINGS.URL_BASE);
+    await Promise.resolve();
+    expect(getAuthorizationToken).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith({ type: 'QUEST_LOADING' });
     expect(ReactDOM.render).toHaveBeenCalledWith(expect.anything(), base);
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'TEST_ANNOUNCEMENTS' });
     expect((window.onbeforeunload as any)()).toBe(false);
@@ -64,6 +75,7 @@ test('boots the creator and wires save/play shortcuts and unsaved-change protect
       window.removeEventListener(event, handler);
     window.onerror = previousError;
     window.onbeforeunload = previousUnload;
+    window.gapi = previousGapi;
     base.remove();
     jest.clearAllTimers();
     jest.useRealTimers();

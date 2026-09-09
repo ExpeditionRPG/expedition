@@ -388,6 +388,190 @@ body #olark-wrapper button.olark-launch-button {
   }
 }
 
+.splash {
+  .splash_app_bar {
+    flex-shrink: 0;
+    > div {
+      height: auto !important;
+    }
+    .splash_header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      padding: 12px 24px;
+      > * {
+        min-width: 0;
+      }
+      h2 {
+        white-space: normal;
+      }
+    }
+    .splash_account {
+      margin-left: auto;
+      overflow-wrap: anywhere;
+    }
+    .announcement {
+      white-space: normal;
+    }
+  }
+  .body,
+  .body.announcing {
+    padding-top: 0;
+  }
+  .body .quest_hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 24px 32px;
+    h1 {
+      margin: 0 0 12px;
+      padding: 0;
+      font-size: 36px !important;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+    p {
+      padding: 0;
+      line-height: 1.5;
+      font-size: 16px;
+      margin: 12px 0;
+    }
+    .quest_hero_summary {
+      max-width: 580px;
+      margin: 0 auto 24px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 24px !important;
+      line-height: 1.3;
+    }
+    .quest_action_panel {
+      padding: 24px;
+      border: 1px solid rgba(52, 43, 30, 0.25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.55);
+    }
+    .quest_actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      button {
+        min-height: 48px;
+        padding: 12px 28px;
+        font-size: 16px;
+        text-transform: none;
+        &:focus-visible,
+        &.Mui-focusVisible,
+        &[class*='MuiButton-focusVisible'] {
+          outline: 3px solid #29251f;
+          outline-offset: 4px;
+        }
+      }
+      .quest_primary {
+        background: #29251f;
+        color: white;
+        &:hover {
+          background: #454037;
+        }
+        &:disabled {
+          background: #69645c;
+          color: white;
+        }
+      }
+      .quest_secondary {
+        color: #29251f;
+        border: 1px solid #60594f;
+        background: transparent;
+        &:hover {
+          background: rgba(41, 37, 31, 0.1);
+          border-color: #29251f;
+        }
+        &:disabled {
+          color: #69645c;
+          border-color: #888177;
+          background: transparent;
+        }
+      }
+    }
+    .quest_signin {
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+      border: 0;
+      padding: 4px 0;
+      margin: 0;
+      &:disabled {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+    }
+    .quest_account_note,
+    .quest_desktop_advice {
+      font-size: 14px;
+      color: #60594f;
+    }
+    .quest_desktop_advice {
+      margin-bottom: 0;
+    }
+    .quest_error {
+      color: #9c2424;
+    }
+  }
+  .worldMap img {
+    max-height: 240px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .splash {
+    .body > div:not(.quest_home_intro) {
+      h1 {
+        font-size: 24px !important;
+      }
+      h3 {
+        font-size: 20px !important;
+      }
+      h1,
+      h3 {
+        overflow-wrap: anywhere;
+        span {
+          max-width: 100%;
+        }
+      }
+    }
+    .splash_app_bar .splash_header {
+      padding: 12px 16px;
+    }
+    .splash_app_bar .splash_account {
+      width: 100%;
+      margin-left: 0;
+    }
+    .body .quest_hero {
+      padding: 24px 16px;
+      h1 {
+        font-size: 24px !important;
+      }
+      .quest_action_panel {
+        padding: 20px 16px;
+      }
+      .quest_actions {
+        flex-direction: column;
+        button {
+          width: 100%;
+        }
+      }
+    }
+    .showcase {
+      margin: 0;
+      > div {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
 .editor_snackbar {
   background: $grey600 !important;
   div,

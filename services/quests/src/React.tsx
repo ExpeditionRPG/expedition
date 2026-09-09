@@ -13,7 +13,7 @@ import { AUTH_SETTINGS } from 'shared/schema/Constants';
 import theme from 'shared/Theme';
 import { fetchAnnouncements } from './actions/Announcement';
 import { renderAndPlay } from './actions/Editor';
-import { questLoading, saveQuest } from './actions/Quest';
+import { saveQuest } from './actions/Quest';
 import { setSnackbar } from './actions/Snackbar';
 import { postLoginUser } from './actions/User';
 import { store } from './Store';
@@ -70,25 +70,18 @@ if (!window.location.hash && window.location.search.indexOf('ids') !== -1) {
 }
 
 if (questId !== '') {
-  store.dispatch(questLoading());
   ReactGA.pageview('/quest');
 } else {
   store.dispatch(fetchAnnouncements());
   ReactGA.pageview('/');
 }
 
-// Try silently logging in
-// 10/10/2017: Also avoids popup blockers by making future login attempts
-// Trigger directly from the user action, rather than needing to load files
-if (window.gapi) {
-  window.gapi.load('client,drive-share', () => {
-    checkForLogin(AUTH_SETTINGS.URL_BASE).then((user: UserState | null) => {
-      if (user !== null) {
-        store.dispatch(postLoginUser(user, questId));
-      }
-    });
-  });
-}
+// Restore the API session without requesting Drive permissions or opening a popup.
+checkForLogin(AUTH_SETTINGS.URL_BASE).then((user: UserState | null) => {
+  if (user !== null) {
+    store.dispatch(postLoginUser(user, questId));
+  }
+});
 
 // alert user if they try to close the page with unsaved changes
 window.onbeforeunload = () => {
