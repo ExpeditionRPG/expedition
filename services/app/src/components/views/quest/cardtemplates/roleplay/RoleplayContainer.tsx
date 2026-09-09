@@ -11,11 +11,12 @@ import Redux from 'redux';
 import { ParserNode } from '../TemplateTypes';
 import Roleplay, { DispatchProps, Props, StateProps } from './Roleplay';
 
-const mapStateToProps = (
+export const mapStateToProps = (
   state: AppStateWithHistory,
   ownProps: Partial<Props>,
 ): StateProps => {
-  const histIdx = state._history.length - 2; // the card before this one
+  // initRoleplay records the departing card before installing the new node.
+  const histIdx = state._history.length - 1;
   const prevNode =
     state._history[histIdx] &&
     state._history[histIdx].quest &&
