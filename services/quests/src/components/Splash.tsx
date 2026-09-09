@@ -100,13 +100,28 @@ class Splash extends React.Component<
         </AppBar>
         <div className={`body ${announcementVisible && 'announcing'}`}>
           <div className="quest_home_intro">
-            <section className="quest_hero" aria-labelledby="quest-hero-title">
-              <h1 id="quest-hero-title">Create your next adventure</h1>
-              <p className="quest_hero_summary">
-                Write, preview, and publish an Expedition quest. Save your work
-                in Google Drive.
-              </p>
-              <div className="quest_action_panel" aria-busy={pending}>
+            <section
+              className="quest_hero"
+              aria-label={props.user.loggedIn ? 'Quest actions' : undefined}
+              aria-labelledby={
+                props.user.loggedIn ? undefined : 'quest-hero-title'
+              }
+            >
+              {!props.user.loggedIn && (
+                <>
+                  <h1 id="quest-hero-title">Create your next adventure</h1>
+                  <p className="quest_hero_summary">
+                    Write, preview, and publish an Expedition quest. Save your
+                    work in Google Drive.
+                  </p>
+                </>
+              )}
+              <div
+                className={
+                  props.user.loggedIn ? undefined : 'quest_action_panel'
+                }
+                aria-busy={pending}
+              >
                 {!props.user.loggedIn ? (
                   <>
                     <h2>
@@ -130,12 +145,6 @@ class Splash extends React.Component<
                   </>
                 ) : (
                   <>
-                    {pendingQuestId && onOpenQuest && (
-                      <p>
-                        Your quest is ready to open. Connect Google Drive to
-                        continue editing.
-                      </p>
-                    )}
                     <div className="quest_actions">
                       {pendingQuestId && onOpenQuest && (
                         <Button
@@ -166,10 +175,6 @@ class Splash extends React.Component<
                         Create a quest
                       </Button>
                     </div>
-                    <p>Your quest will be saved in your Google Drive.</p>
-                    <p className="quest_account_note">
-                      Signed in as {props.user.email}
-                    </p>
                   </>
                 )}
                 {error && (
@@ -178,9 +183,11 @@ class Splash extends React.Component<
                   </p>
                 )}
                 {pending && <p role="status">{operation}</p>}
-                <p className="quest_desktop_advice">
-                  For the best writing experience, use a desktop browser.
-                </p>
+                {!props.user.loggedIn && (
+                  <p className="quest_desktop_advice">
+                    For the best writing experience, use a desktop browser.
+                  </p>
+                )}
               </div>
             </section>
             <div className="worldMap">
@@ -195,12 +202,9 @@ class Splash extends React.Component<
             <h3>Build an international fanbase</h3>
             <h3>Write on the bleeding edge of interactive storytelling</h3>
             <h3>
-              Earn money through{' '}
-              <a
-                target="_blank"
-                href="https://expeditiongame.com/writing-contests"
-              >
-                monthly writing contests
+              Earn money through player tips{' '}
+              <a target="_blank" href="https://app.expeditiongame.com">
+                in the app
               </a>
             </h3>
             <p>
