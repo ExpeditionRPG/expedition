@@ -9002,9 +9002,10 @@ node-uuid@1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.3.tgz#319bb7a56e7cb63f00b5c0cd7851cd4b4ddf1df9"
 
-nodemailer@^4.6.4:
-  version "4.6.7"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.6.7.tgz#b68de7f36d65618bdeeeb76234e3547d51266373"
+nodemailer@^10.0.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-10.2.0.tgz#92d4e0d6f951c7c529b2893eb2b855859a78dd09"
+  integrity sha512-/XyGw6kX2stMdKGUJdAQmYAeY1FscWfdRydfd2NtK3A3KDfUUXCqZzExSNAt2xhh90X2qLCR+o2Gd48YPJcJwA==
 
 nomnom@~1.6.2:
   version "1.6.2"
